@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono, DM_Sans, Playfair_Display } from "next/font/google"
+import { Geist_Mono, DM_Sans, Playfair_Display } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
