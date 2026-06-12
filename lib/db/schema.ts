@@ -212,6 +212,27 @@ export const courseCategories = pgTable(
   }),
 )
 
+// ─── Topic Completion (progress tracking) ────────────────────────────────────
+
+export const topicCompletions = pgTable(
+  "topic_completions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    enrollmentId: uuid("enrollment_id")
+      .notNull()
+      .references(() => enrollments.id, { onDelete: "cascade" }),
+    topicId: uuid("topic_id")
+      .notNull()
+      .references(() => courseTopics.id, { onDelete: "cascade" }),
+    completedAt: timestamp("completed_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    uniqueCompletion: unique("unique_completion").on(table.enrollmentId, table.topicId),
+    enrollmentIdx: index("topic_completions_enrollment_idx").on(table.enrollmentId),
+    topicIdx: index("topic_completions_topic_idx").on(table.topicId),
+  }),
+)
+
 // ─── Inferred Types ──────────────────────────────────────────────────────────
 
 export type InsertUser = typeof users.$inferInsert
@@ -240,3 +261,6 @@ export type SelectEnrollment = typeof enrollments.$inferSelect
 
 export type InsertCourseCategory = typeof courseCategories.$inferInsert
 export type SelectCourseCategory = typeof courseCategories.$inferSelect
+
+export type InsertTopicCompletion = typeof topicCompletions.$inferInsert
+export type SelectTopicCompletion = typeof topicCompletions.$inferSelect

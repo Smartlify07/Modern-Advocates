@@ -10,6 +10,7 @@ import {
   reviews,
   enrollments,
   courseCategories,
+  topicCompletions,
 } from "./schema"
 
 async function seed() {
@@ -39,6 +40,12 @@ async function seed() {
   const topic4Id = randomUUID()
   const topic5Id = randomUUID()
   const topic6Id = randomUUID()
+
+  const enrollment1Id = randomUUID()
+  const enrollment2Id = randomUUID()
+
+  const completion1Id = randomUUID()
+  const completion2Id = randomUUID()
 
   // ── Users ───────────────────────────────────────────────────────────────
   await db.insert(users).values([
@@ -134,8 +141,14 @@ async function seed() {
 
   // ── Enrollments ─────────────────────────────────────────────────────────
   await db.insert(enrollments).values([
-    { courseId: course1Id, studentId: studentProfileId, status: "active" },
-    { courseId: course2Id, studentId: studentProfileId, status: "completed", completedAt: new Date("2026-05-28") },
+    { id: enrollment1Id, courseId: course1Id, studentId: studentProfileId, status: "active" },
+    { id: enrollment2Id, courseId: course2Id, studentId: studentProfileId, status: "completed", completedAt: new Date("2026-05-28") },
+  ])
+
+  // ── Topic Completions ────────────────────────────────────────────────
+  await db.insert(topicCompletions).values([
+    { enrollmentId: enrollment1Id, topicId: topic1Id },
+    { enrollmentId: enrollment1Id, topicId: topic2Id },
   ])
 
   // ── Course <-> Category ─────────────────────────────────────────────────
@@ -145,7 +158,7 @@ async function seed() {
     { courseId: course2Id, categoryId: catBusinessId },
   ])
 
-  console.log("✓ Seed complete — 3 users, 3 profiles, 3 categories, 2 courses, 3 modules, 6 topics, 2 reviews, 2 enrollments")
+  console.log("✓ Seed complete — 3 users, 3 profiles, 3 categories, 2 courses, 3 modules, 6 topics, 2 reviews, 2 enrollments, 2 topic completions")
 }
 
 seed().catch((e) => {
