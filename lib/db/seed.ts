@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto"
+import { sql } from "drizzle-orm"
 import { db } from "./client"
 import {
   users,
@@ -13,7 +14,28 @@ import {
   topicCompletions,
 } from "./schema"
 
+async function reset() {
+  console.log("⏳ Clearing existing data...")
+  await db.execute(sql`
+    TRUNCATE TABLE
+      users,
+      profiles,
+      categories,
+      courses,
+      course_modules,
+      course_topics,
+      reviews,
+      enrollments,
+      topic_completions,
+      course_categories
+    RESTART IDENTITY CASCADE
+  `)
+  console.log("✓ Database cleared")
+}
+
 async function seed() {
+  await reset()
+
   // ── IDs ─────────────────────────────────────────────────────────────────
   const adminUserId = randomUUID()
   const tutorUserId = randomUUID()
@@ -43,9 +65,6 @@ async function seed() {
 
   const enrollment1Id = randomUUID()
   const enrollment2Id = randomUUID()
-
-  const completion1Id = randomUUID()
-  const completion2Id = randomUUID()
 
   // ── Users ───────────────────────────────────────────────────────────────
   await db.insert(users).values([
