@@ -12,7 +12,7 @@ import {
   enrollments,
   courseCategories,
   topicCompletions,
-} from "./schema"
+} from "./schema/course"
 
 async function reset() {
   console.log("⏳ Clearing existing data...")
