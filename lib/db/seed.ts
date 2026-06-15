@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto"
 import { sql } from "drizzle-orm"
 import { db } from "./client"
+import { user } from "./schema/auth"
 import {
-  users,
   profiles,
   categories,
   courses,
@@ -18,7 +18,6 @@ async function reset() {
   console.log("⏳ Clearing existing data...")
   await db.execute(sql`
     TRUNCATE TABLE
-      users,
       profiles,
       categories,
       courses,
@@ -67,10 +66,10 @@ async function seed() {
   const enrollment2Id = randomUUID()
 
   // ── Users ───────────────────────────────────────────────────────────────
-  await db.insert(users).values([
-    { id: adminUserId, email: "admin@modernadvocates.com" },
-    { id: tutorUserId, email: "sarah.chen@modernadvocates.com" },
-    { id: studentUserId, email: "jake.student@example.com" },
+  await db.insert(user).values([
+    { id: adminUserId, name: "Alex Martinez", email: "admin@modernadvocates.com" },
+    { id: tutorUserId, name: "Sarah Chen", email: "sarah.chen@modernadvocates.com" },
+    { id: studentUserId, name: "Jake Sullivan", email: "jake.student@example.com" },
   ])
 
   // ── Profiles ────────────────────────────────────────────────────────────

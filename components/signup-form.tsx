@@ -25,7 +25,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       image: "https://example.com/image.png",
       callbackURL: "http://localhost:3000",
     })
-    console.log(data, error)
   }
   return (
     <Card {...props}>

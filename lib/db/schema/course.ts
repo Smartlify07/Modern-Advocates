@@ -10,6 +10,7 @@ import {
   integer,
   numeric,
 } from "drizzle-orm/pg-core"
+import { user } from "./auth"
 
 // ─── Enums ───────────────────────────────────────────────────────────────────
 
@@ -19,29 +20,16 @@ export const profileType = pgEnum("profile_type", ["student", "tutor", "admin"])
 export const courseStatus = pgEnum("course_status", ["draft", "published", "archived"])
 export const enrollmentStatus = pgEnum("enrollment_status", ["active", "completed", "cancelled"])
 
-// ─── Users (auth) ────────────────────────────────────────────────────────────
-
-export const users = pgTable("users", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  email: text("email").notNull().unique(),
-  passwordHash: text("password_hash"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at")
-    .notNull()
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-})
-
 // ─── Profile ─────────────────────────────────────────────────────────────────
 
 export const profiles = pgTable(
   "profiles",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    userId: uuid("user_id")
+    userId: text("user_id")
       .notNull()
       .unique()
-      .references(() => users.id, { onDelete: "restrict" }),
+      .references(() => user.id, { onDelete: "restrict" }),
     type: profileType("type").notNull(),
     firstName: text("first_name").notNull(),
     lastName: text("last_name").notNull(),
@@ -235,8 +223,8 @@ export const topicCompletions = pgTable(
 
 // ─── Inferred Types ──────────────────────────────────────────────────────────
 
-export type InsertUser = typeof users.$inferInsert
-export type SelectUser = typeof users.$inferSelect
+export type InsertUser = typeof user.$inferInsert
+export type SelectUser = typeof user.$inferSelect
 
 export type InsertProfile = typeof profiles.$inferInsert
 export type SelectProfile = typeof profiles.$inferSelect
