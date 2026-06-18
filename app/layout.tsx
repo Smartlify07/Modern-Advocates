@@ -1,4 +1,5 @@
 import { Geist_Mono, DM_Sans, Playfair_Display } from "next/font/google"
+import { Providers } from "@/components/providers"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -33,7 +34,9 @@ export default function RootLayout({
         playfairDisplayHeading.variable
       )}
     >
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   )
 }
