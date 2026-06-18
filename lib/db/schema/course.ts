@@ -16,35 +16,8 @@ import { user } from "./auth"
 
 export const level = pgEnum("level", ["beginner", "intermediate", "advanced"])
 export const topicFormat = pgEnum("topic_format", ["text", "video"])
-export const profileType = pgEnum("profile_type", ["student", "tutor", "admin"])
 export const courseStatus = pgEnum("course_status", ["draft", "published", "archived"])
 export const enrollmentStatus = pgEnum("enrollment_status", ["active", "completed", "cancelled"])
-
-// ─── Profile ─────────────────────────────────────────────────────────────────
-
-export const profiles = pgTable(
-  "profiles",
-  {
-    id: uuid("id").defaultRandom().primaryKey(),
-    userId: text("user_id")
-      .notNull()
-      .unique()
-      .references(() => user.id, { onDelete: "restrict" }),
-    type: profileType("type").notNull(),
-    firstName: text("first_name").notNull(),
-    lastName: text("last_name").notNull(),
-    bio: text("bio"),
-    avatarUrl: text("avatar_url"),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
-    updatedAt: timestamp("updated_at")
-      .notNull()
-      .defaultNow()
-      .$onUpdate(() => new Date()),
-  },
-  (table) => ({
-    typeIdx: index("profiles_type_idx").on(table.type),
-  }),
-)
 
 // ─── Category ────────────────────────────────────────────────────────────────
 
@@ -72,9 +45,9 @@ export const courses = pgTable(
     discountedPrice: numeric("discounted_price", { precision: 10, scale: 2, mode: "number" }),
     duration: integer("duration"),
     status: courseStatus("status").notNull().default("draft"),
-    tutorId: uuid("tutor_id")
+    tutorId: text("tutor_id")
       .notNull()
-      .references(() => profiles.id, { onDelete: "restrict" }),
+      .references(() => user.id, { onDelete: "restrict" }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at")
       .notNull()
@@ -146,9 +119,9 @@ export const reviews = pgTable(
     courseId: uuid("course_id")
       .notNull()
       .references(() => courses.id, { onDelete: "cascade" }),
-    studentId: uuid("student_id")
+    studentId: text("student_id")
       .notNull()
-      .references(() => profiles.id, { onDelete: "restrict" }),
+      .references(() => user.id, { onDelete: "restrict" }),
     body: text("body"),
     rating: integer("rating").notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -169,9 +142,9 @@ export const enrollments = pgTable(
     courseId: uuid("course_id")
       .notNull()
       .references(() => courses.id, { onDelete: "cascade" }),
-    studentId: uuid("student_id")
+    studentId: text("student_id")
       .notNull()
-      .references(() => profiles.id, { onDelete: "restrict" }),
+      .references(() => user.id, { onDelete: "restrict" }),
     status: enrollmentStatus("status").notNull().default("active"),
     enrolledAt: timestamp("enrolled_at").notNull().defaultNow(),
     completedAt: timestamp("completed_at"),
@@ -225,9 +198,6 @@ export const topicCompletions = pgTable(
 
 export type InsertUser = typeof user.$inferInsert
 export type SelectUser = typeof user.$inferSelect
-
-export type InsertProfile = typeof profiles.$inferInsert
-export type SelectProfile = typeof profiles.$inferSelect
 
 export type InsertCategory = typeof categories.$inferInsert
 export type SelectCategory = typeof categories.$inferSelect

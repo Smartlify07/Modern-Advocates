@@ -1,6 +1,5 @@
 import { user, session, account, verification, userRelations, sessionRelations, accountRelations } from "./auth"
 import {
-  profiles,
   categories,
   courses,
   courseModules,
@@ -19,7 +18,6 @@ export const schema = {
   userRelations,
   sessionRelations,
   accountRelations,
-  profiles,
   categories,
   courses,
   courseModules,
