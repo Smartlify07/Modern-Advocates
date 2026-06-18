@@ -3,7 +3,6 @@ import { sql } from "drizzle-orm"
 import { db } from "./client"
 import { user } from "./schema/auth"
 import {
-  profiles,
   categories,
   courses,
   courseModules,
@@ -18,7 +17,10 @@ async function reset() {
   console.log("⏳ Clearing existing data...")
   await db.execute(sql`
     TRUNCATE TABLE
-      profiles,
+      "user",
+      session,
+      account,
+      verification,
       categories,
       courses,
       course_modules,
@@ -35,14 +37,9 @@ async function reset() {
 async function seed() {
   await reset()
 
-  // ── IDs ─────────────────────────────────────────────────────────────────
   const adminUserId = randomUUID()
   const tutorUserId = randomUUID()
   const studentUserId = randomUUID()
-
-  const adminProfileId = randomUUID()
-  const tutorProfileId = randomUUID()
-  const studentProfileId = randomUUID()
 
   const catBusinessId = randomUUID()
   const catTechId = randomUUID()
@@ -65,40 +62,25 @@ async function seed() {
   const enrollment1Id = randomUUID()
   const enrollment2Id = randomUUID()
 
-  // ── Users ───────────────────────────────────────────────────────────────
   await db.insert(user).values([
-    { id: adminUserId, name: "Alex Martinez", email: "admin@modernadvocates.com" },
-    { id: tutorUserId, name: "Sarah Chen", email: "sarah.chen@modernadvocates.com" },
-    { id: studentUserId, name: "Jake Sullivan", email: "jake.student@example.com" },
-  ])
-
-  // ── Profiles ────────────────────────────────────────────────────────────
-  await db.insert(profiles).values([
     {
-      id: adminProfileId,
-      userId: adminUserId,
-      type: "admin",
-      firstName: "Alex",
-      lastName: "Martinez",
+      id: adminUserId,
+      name: "Alex Martinez",
+      email: "admin@modernadvocates.com",
+      role: "admin",
     },
     {
-      id: tutorProfileId,
-      userId: tutorUserId,
-      type: "tutor",
-      firstName: "Sarah",
-      lastName: "Chen",
-      bio: "Senior legal consultant with 12 years of experience in corporate law and legaltech.",
+      id: tutorUserId,
+      name: "Sarah Chen",
+      email: "sarah.chen@modernadvocates.com",
     },
     {
-      id: studentProfileId,
-      userId: studentUserId,
-      type: "student",
-      firstName: "Jake",
-      lastName: "Sullivan",
+      id: studentUserId,
+      name: "Jake Sullivan",
+      email: "jake.student@example.com",
     },
   ])
 
-  // ── Categories ──────────────────────────────────────────────────────────
   await db.insert(categories).values([
     {
       id: catBusinessId,
@@ -120,7 +102,6 @@ async function seed() {
     },
   ])
 
-  // ── Courses ─────────────────────────────────────────────────────────────
   await db.insert(courses).values([
     {
       id: course1Id,
@@ -135,7 +116,7 @@ async function seed() {
       discountedPrice: 199.99,
       duration: 480,
       status: "published",
-      tutorId: tutorProfileId,
+      tutorId: tutorUserId,
     },
     {
       id: course2Id,
@@ -149,11 +130,10 @@ async function seed() {
       price: 149.99,
       duration: 320,
       status: "published",
-      tutorId: tutorProfileId,
+      tutorId: tutorUserId,
     },
   ])
 
-  // ── Course Modules ──────────────────────────────────────────────────────
   await db.insert(courseModules).values([
     {
       id: module1Id,
@@ -175,7 +155,6 @@ async function seed() {
     },
   ])
 
-  // ── Course Topics ───────────────────────────────────────────────────────
   await db.insert(courseTopics).values([
     {
       id: topic1Id,
@@ -235,46 +214,42 @@ async function seed() {
     },
   ])
 
-  // ── Reviews ─────────────────────────────────────────────────────────────
   await db.insert(reviews).values([
     {
       courseId: course1Id,
-      studentId: studentProfileId,
+      studentId: studentUserId,
       rating: 5,
       body: "Excellent course! Sarah breaks down complex drafting concepts into digestible lessons.",
     },
     {
       courseId: course2Id,
-      studentId: studentProfileId,
+      studentId: studentUserId,
       rating: 4,
       body: "Great introduction to data privacy. Could use more depth on enforcement mechanics.",
     },
   ])
 
-  // ── Enrollments ─────────────────────────────────────────────────────────
   await db.insert(enrollments).values([
     {
       id: enrollment1Id,
       courseId: course1Id,
-      studentId: studentProfileId,
+      studentId: studentUserId,
       status: "active",
     },
     {
       id: enrollment2Id,
       courseId: course2Id,
-      studentId: studentProfileId,
+      studentId: studentUserId,
       status: "completed",
       completedAt: new Date("2026-05-28"),
     },
   ])
 
-  // ── Topic Completions ────────────────────────────────────────────────
   await db.insert(topicCompletions).values([
     { enrollmentId: enrollment1Id, topicId: topic1Id },
     { enrollmentId: enrollment1Id, topicId: topic2Id },
   ])
 
-  // ── Course <-> Category ─────────────────────────────────────────────────
   await db.insert(courseCategories).values([
     { courseId: course1Id, categoryId: catBusinessId },
     { courseId: course2Id, categoryId: catTechId },
@@ -282,7 +257,7 @@ async function seed() {
   ])
 
   console.log(
-    "✓ Seed complete — 3 users, 3 profiles, 3 categories, 2 courses, 3 modules, 6 topics, 2 reviews, 2 enrollments, 2 topic completions"
+    "✓ Seed complete — 3 users, 3 categories, 2 courses, 3 modules, 6 topics, 2 reviews, 2 enrollments, 2 topic completions"
   )
 }
 
