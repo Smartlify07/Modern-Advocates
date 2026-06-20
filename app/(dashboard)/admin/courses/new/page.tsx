@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { useQuery } from "@tanstack/react-query"
 import { Controller, useForm } from "react-hook-form"
 import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -25,7 +26,15 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { PlusIcon, SaveIcon, XIcon } from "lucide-react"
+import { ModuleEditor } from "@/components/course-editor/module-editor"
+import type { Module } from "@/components/course-editor/types"
+import {
+  PlusIcon,
+  SaveIcon,
+  XIcon,
+  BookOpenIcon,
+  FolderKanbanIcon,
+} from "lucide-react"
 
 const formSchema = z.object({
   title: z
@@ -48,8 +57,24 @@ const steps = ["Basic Info", "Course Content", "Pricing", "Publish"]
 
 export default function CreateCoursePage() {
   const router = useRouter()
-  const [categories, setCategories] = useState<Category[]>([])
+  const [modules, setModules] = useState<Module[]>([])
   const [activeTab, setActiveTab] = useState("Basic Info")
+  const [activeModuleId, setActiveModuleId] = useState<string | null>(null)
+  const [activeTopicId, setActiveTopicId] = useState<string | null>(null)
+
+  const nextModuleId = useRef(1)
+  const addModule = () => {
+    const id = `module_${nextModuleId.current++}`
+    setModules((prev) => [
+      ...prev,
+      {
+        id,
+        title: "",
+        topics: [],
+        order: prev.length,
+      },
+    ])
+  }
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -60,11 +85,11 @@ export default function CreateCoursePage() {
     },
   })
 
-  useEffect(() => {
-    fetch("/api/categories")
-      .then((res) => res.json())
-      .then(setCategories)
-  }, [])
+  const { data: categories } = useQuery<Category[]>({
+    queryKey: ["categories"],
+    queryFn: () => fetch("/api/categories").then((r) => r.json()),
+    refetchOnWindowFocus: false,
+  })
 
   const onSubmit = async (data: FormValues) => {
     console.log(data)
@@ -158,7 +183,7 @@ export default function CreateCoursePage() {
                                 <SelectValue placeholder="Select a category" />
                               </SelectTrigger>
                               <SelectContent>
-                                {categories.map((cat) => (
+                                {(categories ?? []).map((cat) => (
                                   <SelectItem key={cat.id} value={cat.id}>
                                     {cat.name}
                                   </SelectItem>
@@ -229,12 +254,91 @@ export default function CreateCoursePage() {
           </form>
         </TabsContent>
 
-        <TabsContent value="Course Content">
-          <div className="flex flex-1 items-center justify-center rounded-xl bg-muted/50">
-            <p className="text-muted-foreground">
-              Course Content — Coming soon
-            </p>
-          </div>
+        <TabsContent value="Course Content" className="flex flex-col gap-4">
+          {activeModuleId ? (
+            (() => {
+              const mod = modules.find((m) => m.id === activeModuleId)
+              if (!mod) return null
+              return (
+                <ModuleEditor
+                  module={mod}
+                  onChange={(updated) => {
+                    setModules((prev) =>
+                      prev.map((m) => (m.id === mod.id ? updated : m))
+                    )
+                    if (
+                      activeTopicId &&
+                      !updated.topics.find((t) => t.id === activeTopicId)
+                    ) {
+                      setActiveTopicId(null)
+                    }
+                  }}
+                  activeTopicId={activeTopicId}
+                  onActiveTopicChange={setActiveTopicId}
+                  onBack={() => {
+                    setActiveModuleId(null)
+                    setActiveTopicId(null)
+                  }}
+                />
+              )
+            })()
+          ) : modules.length === 0 ? (
+            <div className="flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-muted-foreground/25 py-20">
+              <div className="flex size-16 items-center justify-center rounded-full bg-muted">
+                <BookOpenIcon className="size-8 text-muted-foreground" />
+              </div>
+              <div className="text-center">
+                <h3 className="text-lg font-medium">Start building your course</h3>
+                <p className="mt-1 text-sm text-muted-foreground max-w-sm">
+                  Modules help organize your course content. Create your first module to
+                  start adding topics, videos, and text lessons.
+                </p>
+              </div>
+              <Button onClick={addModule}>
+                <PlusIcon className="size-4" />
+                Add your first module
+              </Button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Modules ({modules.length})
+                </h3>
+                <Button variant="outline" size="sm" onClick={addModule}>
+                  <PlusIcon className="size-3.5" />
+                  Add module
+                </Button>
+              </div>
+              {modules.map((mod) => (
+                <button
+                  key={mod.id}
+                  type="button"
+                  onClick={() => {
+                    setActiveModuleId(mod.id)
+                    setActiveTopicId(mod.topics[0]?.id ?? null)
+                  }}
+                  className="flex items-center gap-3 rounded-lg border bg-card p-4 text-start transition-colors hover:bg-muted/50"
+                >
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+                    <FolderKanbanIcon className="size-5 text-muted-foreground" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">
+                      {mod.title || (
+                        <span className="text-muted-foreground italic">
+                          Untitled module
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {mod.topics.length} topic{mod.topics.length !== 1 ? "s" : ""}
+                    </p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="Pricing">
