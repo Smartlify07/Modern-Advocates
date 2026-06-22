@@ -72,7 +72,7 @@ export function PublishChecklist({ title, categoryId, level, hasModules, hasPric
   ]
 
   return (
-    <div className="flex flex-wrap py-4 gap-x-6 gap-y-2">
+    <div className="flex flex-wrap gap-x-6 gap-y-2">
       {items.map((item) => (
         <Item key={item.label} {...item} />
       ))}

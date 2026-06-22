@@ -8,15 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover"
 import { Calendar } from "@/shared/ui/calendar"
 import { format } from "date-fns"
 import { CalendarIcon, FileTextIcon, SendIcon, ClockIcon } from "lucide-react"
-
-interface Props {
-  level: string
-  onLevelChange: (v: string) => void
-  onSaveDraft: () => void
-  onPublish: () => void
-  onSchedule: (date: Date) => void
-  canPublish: boolean
-}
+import { useCourseFormStore } from "@/features/courses/store/use-course-form-store"
 
 const levels = [
   { value: "beginner", label: "Beginner" },
@@ -24,15 +16,22 @@ const levels = [
   { value: "advanced", label: "Advanced" },
 ]
 
-export function PublishActions({ level, onLevelChange, onSaveDraft, onPublish, onSchedule, canPublish }: Props) {
+interface Props {
+  canPublish: boolean
+}
+
+export function PublishActions({ canPublish }: Props) {
+  const level = useCourseFormStore((s) => s.level)
+  const setLevel = useCourseFormStore((s) => s.setLevel)
+
   const [scheduleOpen, setScheduleOpen] = useState(false)
   const [scheduleDate, setScheduleDate] = useState<Date>()
 
   return (
-    <div className="space-y-4 py-4">
+    <div className="space-y-6">
       <Field>
         <FieldLabel htmlFor="course-level">Course level</FieldLabel>
-        <Select value={level} onValueChange={onLevelChange}>
+        <Select value={level} onValueChange={setLevel}>
           <SelectTrigger id="course-level" className="w-full">
             <SelectValue placeholder="Select course level" />
           </SelectTrigger>
@@ -45,7 +44,7 @@ export function PublishActions({ level, onLevelChange, onSaveDraft, onPublish, o
       </Field>
 
       <div className="flex flex-wrap items-center gap-3">
-        <Button variant="outline" onClick={onSaveDraft}>
+        <Button variant="outline" onClick={() => console.log("Save draft")}>
           <FileTextIcon className="size-4" />
           Save as Draft
         </Button>
@@ -64,7 +63,7 @@ export function PublishActions({ level, onLevelChange, onSaveDraft, onPublish, o
               onSelect={(date) => {
                 setScheduleDate(date)
                 if (date) {
-                  onSchedule(date)
+                  console.log("Schedule for", date)
                   setScheduleOpen(false)
                 }
               }}
@@ -73,7 +72,7 @@ export function PublishActions({ level, onLevelChange, onSaveDraft, onPublish, o
           </PopoverContent>
         </Popover>
 
-        <Button onClick={onPublish} disabled={!canPublish}>
+        <Button onClick={() => console.log("Publish")} disabled={!canPublish}>
           <SendIcon className="size-4" />
           Publish Now
         </Button>

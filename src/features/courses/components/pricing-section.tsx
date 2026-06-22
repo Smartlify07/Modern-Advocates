@@ -14,31 +14,14 @@ import {
 import { Calendar } from "@/shared/ui/calendar"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
+import { useCourseFormStore } from "@/features/courses/store/use-course-form-store"
 
-interface Props {
-  price: string
-  onPriceChange: (v: string) => void
-  discount: number
-  onDiscountChange: (v: number) => void
-  isFree: boolean
-  onFreeChange: (v: boolean) => void
-  saleStart: Date | undefined
-  onSaleStartChange: (v: Date | undefined) => void
-  saleEnd: Date | undefined
-  onSaleEndChange: (v: Date | undefined) => void
-}
+function SalePeriodPicker() {
+  const saleStart = useCourseFormStore((s) => s.saleStart)
+  const saleEnd = useCourseFormStore((s) => s.saleEnd)
+  const setSaleStart = useCourseFormStore((s) => s.setSaleStart)
+  const setSaleEnd = useCourseFormStore((s) => s.setSaleEnd)
 
-function SalePeriodPicker({
-  saleStart,
-  saleEnd,
-  onSaleStartChange,
-  onSaleEndChange,
-}: {
-  saleStart: Date | undefined
-  saleEnd: Date | undefined
-  onSaleStartChange: (v: Date | undefined) => void
-  onSaleEndChange: (v: Date | undefined) => void
-}) {
   return (
     <Field>
       <div className="flex items-center justify-between">
@@ -53,7 +36,7 @@ function SalePeriodPicker({
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
-            <Calendar mode="single" selected={saleStart} onSelect={onSaleStartChange} />
+            <Calendar mode="single" selected={saleStart} onSelect={setSaleStart} />
           </PopoverContent>
         </Popover>
         <span className="text-xs text-muted-foreground">to</span>
@@ -65,7 +48,7 @@ function SalePeriodPicker({
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
-            <Calendar mode="single" selected={saleEnd} onSelect={onSaleEndChange} />
+            <Calendar mode="single" selected={saleEnd} onSelect={setSaleEnd} />
           </PopoverContent>
         </Popover>
       </div>
@@ -73,19 +56,15 @@ function SalePeriodPicker({
   )
 }
 
-function SalePreviewCard({
-  isFree,
-  numericPrice,
-  discount,
-  salePrice,
-  saleEnd,
-}: {
-  isFree: boolean
-  numericPrice: number
-  discount: number
-  salePrice: number
-  saleEnd: Date | undefined
-}) {
+function SalePreviewCard() {
+  const isFree = useCourseFormStore((s) => s.isFree)
+  const price = useCourseFormStore((s) => s.price)
+  const discount = useCourseFormStore((s) => s.discount)
+  const saleEnd = useCourseFormStore((s) => s.saleEnd)
+
+  const numericPrice = isFree ? 0 : parseFloat(price) || 0
+  const salePrice = numericPrice * (1 - discount / 100)
+
   if (isFree) {
     return (
       <div className="rounded-lg border bg-muted/30 p-4">
@@ -113,20 +92,13 @@ function SalePreviewCard({
   )
 }
 
-export function PricingSection({
-  price,
-  onPriceChange,
-  discount,
-  onDiscountChange,
-  isFree,
-  onFreeChange,
-  saleStart,
-  onSaleStartChange,
-  saleEnd,
-  onSaleEndChange,
-}: Props) {
-  const numericPrice = isFree ? 0 : parseFloat(price) || 0
-  const salePrice = numericPrice * (1 - discount / 100)
+export function PricingSection() {
+  const price = useCourseFormStore((s) => s.price)
+  const setPrice = useCourseFormStore((s) => s.setPrice)
+  const discount = useCourseFormStore((s) => s.discount)
+  const setDiscount = useCourseFormStore((s) => s.setDiscount)
+  const isFree = useCourseFormStore((s) => s.isFree)
+  const setIsFree = useCourseFormStore((s) => s.setIsFree)
 
   return (
     <div className="max-w-lg space-y-6">
@@ -136,7 +108,7 @@ export function PricingSection({
           <Field>
             <div className="flex items-center justify-between">
               <FieldLabel htmlFor="free-switch">Free course</FieldLabel>
-              <Switch id="free-switch" checked={isFree} onCheckedChange={onFreeChange} />
+              <Switch id="free-switch" checked={isFree} onCheckedChange={setIsFree} />
             </div>
           </Field>
 
@@ -144,18 +116,11 @@ export function PricingSection({
             <FieldLabel htmlFor="price">Course price</FieldLabel>
             <div className="relative">
               <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-sm text-muted-foreground">$</span>
-              <Input id="price" type="number" min="0" step="0.01" placeholder="0.00" value={price} onChange={(e) => onPriceChange(e.target.value)} disabled={isFree} className="pl-7" />
+              <Input id="price" type="number" min="0" step="0.01" placeholder="0.00" value={price} onChange={(e) => setPrice(e.target.value)} disabled={isFree} className="pl-7" />
             </div>
           </Field>
 
-          {!isFree && discount > 0 && (
-            <SalePeriodPicker
-              saleStart={saleStart}
-              saleEnd={saleEnd}
-              onSaleStartChange={onSaleStartChange}
-              onSaleEndChange={onSaleEndChange}
-            />
-          )}
+          {!isFree && discount > 0 && <SalePeriodPicker />}
 
           {!isFree && (
             <Field>
@@ -163,17 +128,11 @@ export function PricingSection({
                 <FieldLabel htmlFor="discount">Discount</FieldLabel>
                 <span className="text-sm font-medium tabular-nums text-muted-foreground">{discount}%</span>
               </div>
-              <Slider id="discount" value={[discount]} onValueChange={([v]) => onDiscountChange(v)} max={100} step={1} className="py-2" />
+              <Slider id="discount" value={[discount]} onValueChange={([v]) => setDiscount(v)} max={100} step={1} className="py-2" />
             </Field>
           )}
 
-          <SalePreviewCard
-            isFree={isFree}
-            numericPrice={numericPrice}
-            discount={discount}
-            salePrice={salePrice}
-            saleEnd={saleEnd}
-          />
+          <SalePreviewCard />
         </CardContent>
       </Card>
     </div>

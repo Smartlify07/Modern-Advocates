@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/shared/ui/select"
 import { ThumbnailUpload } from "@/features/courses/components/thumbnail-upload"
+import { useCourseFormStore } from "@/features/courses/store/use-course-form-store"
 
 type FormValues = {
   title: string
@@ -31,8 +32,6 @@ interface Props {
   form: UseFormReturn<FormValues>
   categories: Category[] | undefined
   onSubmit: (data: FormValues) => void
-  thumbnail: File | null
-  onThumbnailChange: (file: File | null) => void
 }
 
 function DescriptionField({ control }: { control: Props["form"]["control"] }) {
@@ -60,7 +59,10 @@ function DescriptionField({ control }: { control: Props["form"]["control"] }) {
   )
 }
 
-export function BasicInfoSection({ form, categories, onSubmit, thumbnail, onThumbnailChange }: Props) {
+export function BasicInfoSection({ form, categories, onSubmit }: Props) {
+  const thumbnail = useCourseFormStore((s) => s.thumbnail)
+  const setThumbnail = useCourseFormStore((s) => s.setThumbnail)
+
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <div className="grid grid-cols-2 gap-6">
@@ -106,7 +108,7 @@ export function BasicInfoSection({ form, categories, onSubmit, thumbnail, onThum
           </Card>
         </div>
         <div className="flex flex-col gap-6">
-          <ThumbnailUpload file={thumbnail} onChange={onThumbnailChange} />
+          <ThumbnailUpload file={thumbnail} onChange={setThumbnail} />
         </div>
       </div>
     </form>

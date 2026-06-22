@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect } from "react"
 import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
@@ -9,11 +9,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 
 import { Button } from "@/shared/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
-import type { Module } from "@/features/courses/types"
 import { BasicInfoSection } from "@/features/courses/components/basic-info-section"
 import { CourseContentSection } from "@/features/courses/components/course-content-section"
 import { PricingSection } from "@/features/courses/components/pricing-section"
 import { PublishSection } from "@/features/courses/components/publish-section"
+import { useCourseFormStore } from "@/features/courses/store/use-course-form-store"
 import { SaveIcon, SendIcon, XIcon } from "lucide-react"
 
 const formSchema = z.object({
@@ -23,41 +23,14 @@ const formSchema = z.object({
 })
 
 type FormValues = z.infer<typeof formSchema>
-
 type Category = { id: string; name: string }
 
 const steps = ["Basic Info", "Course Content", "Pricing", "Publish"]
 
 export default function CreateCoursePage() {
-  const [modules, setModules] = useState<Module[]>([])
-  const [activeTab, setActiveTab] = useState("Basic Info")
-  const [activeModuleId, setActiveModuleId] = useState<string | null>(null)
-  const [activeTopicId, setActiveTopicId] = useState<string | null>(null)
-
-  const [price, setPrice] = useState("")
-  const [discount, setDiscount] = useState(0)
-  const [isFree, setIsFree] = useState(false)
-  const [saleStart, setSaleStart] = useState<Date>()
-  const [saleEnd, setSaleEnd] = useState<Date>()
-  const [level, setLevel] = useState("")
-  const [thumbnail, setThumbnail] = useState<File | null>(null)
-  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (!thumbnail) {
-      setThumbnailPreview(null)
-      return
-    }
-    const url = URL.createObjectURL(thumbnail)
-    setThumbnailPreview(url)
-    return () => URL.revokeObjectURL(url)
-  }, [thumbnail])
-
-  const nextModuleId = useRef(1)
-  const addModule = () => {
-    const id = `module_${nextModuleId.current++}`
-    setModules((prev) => [...prev, { id, title: "", topics: [], order: prev.length }])
-  }
+  const activeTab = useCourseFormStore((s) => s.activeTab)
+  const setActiveTab = useCourseFormStore((s) => s.setActiveTab)
+  const syncFormValues = useCourseFormStore((s) => s.syncFormValues)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -69,6 +42,11 @@ export default function CreateCoursePage() {
     queryFn: () => fetch("/api/categories").then((r) => r.json()),
     refetchOnWindowFocus: false,
   })
+
+  const formValues = form.watch()
+  useEffect(() => {
+    syncFormValues(formValues, categories ?? [])
+  }, [formValues, categories, syncFormValues])
 
   const onSubmit = async (data: FormValues) => {
     console.log(data)
@@ -110,55 +88,19 @@ export default function CreateCoursePage() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
         <TabsContent value="Basic Info" className="flex flex-col gap-4">
-          <BasicInfoSection form={form} categories={categories} onSubmit={onSubmit} thumbnail={thumbnail} onThumbnailChange={setThumbnail} />
+          <BasicInfoSection form={form} categories={categories} onSubmit={onSubmit} />
         </TabsContent>
 
         <TabsContent value="Course Content" className="flex flex-col gap-4">
-          <CourseContentSection
-            modules={modules}
-            activeModuleId={activeModuleId}
-            activeTopicId={activeTopicId}
-            onAddModule={addModule}
-            onModuleChange={(id, updated) => setModules((prev) => prev.map((m) => (m.id === id ? updated : m)))}
-            onModuleSelect={(id) => { setActiveModuleId(id); setActiveTopicId(null) }}
-            onBack={() => { setActiveModuleId(null); setActiveTopicId(null) }}
-            onActiveTopicChange={setActiveTopicId}
-          />
+          <CourseContentSection />
         </TabsContent>
 
         <TabsContent value="Pricing">
-          <PricingSection
-            price={price}
-            onPriceChange={setPrice}
-            discount={discount}
-            onDiscountChange={setDiscount}
-            isFree={isFree}
-            onFreeChange={setIsFree}
-            saleStart={saleStart}
-            onSaleStartChange={setSaleStart}
-            saleEnd={saleEnd}
-            onSaleEndChange={setSaleEnd}
-          />
+          <PricingSection />
         </TabsContent>
 
         <TabsContent value="Publish">
-          <PublishSection
-            formValues={form.watch()}
-            categoryName={categories?.find((c) => c.id === form.watch("categoryId"))?.name ?? ""}
-            modules={modules}
-            price={price}
-            discount={discount}
-            isFree={isFree}
-            saleStart={saleStart}
-            saleEnd={saleEnd}
-            level={level}
-            onLevelChange={setLevel}
-            onNavigate={setActiveTab}
-            onSaveDraft={() => console.log("Save draft")}
-            onPublish={() => console.log("Publish")}
-            onSchedule={(date) => console.log("Schedule for", date)}
-            thumbnailPreview={thumbnailPreview}
-          />
+          <PublishSection />
         </TabsContent>
       </Tabs>
     </div>
