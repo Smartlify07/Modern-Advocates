@@ -1,7 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
@@ -15,7 +14,7 @@ import { BasicInfoSection } from "@/features/courses/components/basic-info-secti
 import { CourseContentSection } from "@/features/courses/components/course-content-section"
 import { PricingSection } from "@/features/courses/components/pricing-section"
 import { PublishSection } from "@/features/courses/components/publish-section"
-import { SaveIcon, XIcon } from "lucide-react"
+import { SaveIcon, SendIcon, XIcon } from "lucide-react"
 
 const formSchema = z.object({
   title: z.string({ message: "Title is required" }).min(1, { message: "Title is required" }),
@@ -30,7 +29,6 @@ type Category = { id: string; name: string }
 const steps = ["Basic Info", "Course Content", "Pricing", "Publish"]
 
 export default function CreateCoursePage() {
-  const router = useRouter()
   const [modules, setModules] = useState<Module[]>([])
   const [activeTab, setActiveTab] = useState("Basic Info")
   const [activeModuleId, setActiveModuleId] = useState<string | null>(null)
@@ -41,6 +39,19 @@ export default function CreateCoursePage() {
   const [isFree, setIsFree] = useState(false)
   const [saleStart, setSaleStart] = useState<Date>()
   const [saleEnd, setSaleEnd] = useState<Date>()
+  const [level, setLevel] = useState("")
+  const [thumbnail, setThumbnail] = useState<File | null>(null)
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!thumbnail) {
+      setThumbnailPreview(null)
+      return
+    }
+    const url = URL.createObjectURL(thumbnail)
+    setThumbnailPreview(url)
+    return () => URL.revokeObjectURL(url)
+  }, [thumbnail])
 
   const nextModuleId = useRef(1)
   const addModule = () => {
@@ -64,10 +75,16 @@ export default function CreateCoursePage() {
   }
 
   const handleSaveAndContinue = async () => {
-    const valid = await form.trigger()
-    if (!valid) return
-    const data = form.getValues()
-    await onSubmit(data)
+    const currentIndex = steps.indexOf(activeTab)
+    if (activeTab === "Basic Info") {
+      const valid = await form.trigger()
+      if (!valid) return
+    }
+    if (currentIndex < steps.length - 1) {
+      setActiveTab(steps[currentIndex + 1])
+    } else {
+      console.log("Publishing course...")
+    }
   }
 
   return (
@@ -85,15 +102,15 @@ export default function CreateCoursePage() {
             <Link href="/admin/courses"><XIcon className="size-4" />Cancel</Link>
           </Button>
           <Button onClick={handleSaveAndContinue}>
-            <SaveIcon className="size-4" />
-            Save and Continue
+            {activeTab === "Publish" ? <SendIcon className="size-4" /> : <SaveIcon className="size-4" />}
+            {activeTab === "Publish" ? "Publish" : "Save and Continue"}
           </Button>
         </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
         <TabsContent value="Basic Info" className="flex flex-col gap-4">
-          <BasicInfoSection form={form} categories={categories} onSubmit={onSubmit} />
+          <BasicInfoSection form={form} categories={categories} onSubmit={onSubmit} thumbnail={thumbnail} onThumbnailChange={setThumbnail} />
         </TabsContent>
 
         <TabsContent value="Course Content" className="flex flex-col gap-4">
@@ -125,7 +142,23 @@ export default function CreateCoursePage() {
         </TabsContent>
 
         <TabsContent value="Publish">
-          <PublishSection />
+          <PublishSection
+            formValues={form.watch()}
+            categoryName={categories?.find((c) => c.id === form.watch("categoryId"))?.name ?? ""}
+            modules={modules}
+            price={price}
+            discount={discount}
+            isFree={isFree}
+            saleStart={saleStart}
+            saleEnd={saleEnd}
+            level={level}
+            onLevelChange={setLevel}
+            onNavigate={setActiveTab}
+            onSaveDraft={() => console.log("Save draft")}
+            onPublish={() => console.log("Publish")}
+            onSchedule={(date) => console.log("Schedule for", date)}
+            thumbnailPreview={thumbnailPreview}
+          />
         </TabsContent>
       </Tabs>
     </div>

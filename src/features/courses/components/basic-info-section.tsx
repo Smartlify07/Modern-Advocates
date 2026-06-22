@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select"
-import { PlusIcon } from "lucide-react"
+import { ThumbnailUpload } from "@/features/courses/components/thumbnail-upload"
 
 type FormValues = {
   title: string
@@ -31,23 +31,8 @@ interface Props {
   form: UseFormReturn<FormValues>
   categories: Category[] | undefined
   onSubmit: (data: FormValues) => void
-}
-
-function ThumbnailUpload() {
-  return (
-    <Card className="ring-0">
-      <CardHeader><CardTitle>Thumbnail</CardTitle></CardHeader>
-      <CardContent>
-        <div className="flex aspect-video cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/50 transition-colors hover:border-muted-foreground/50">
-          <div className="flex flex-col items-center gap-1 text-muted-foreground">
-            <PlusIcon className="size-8" />
-            <span className="text-sm font-medium">Upload Image</span>
-            <span className="text-xs">16:9 ratio recommended</span>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  )
+  thumbnail: File | null
+  onThumbnailChange: (file: File | null) => void
 }
 
 function DescriptionField({ control }: { control: Props["form"]["control"] }) {
@@ -75,7 +60,7 @@ function DescriptionField({ control }: { control: Props["form"]["control"] }) {
   )
 }
 
-export function BasicInfoSection({ form, categories, onSubmit }: Props) {
+export function BasicInfoSection({ form, categories, onSubmit, thumbnail, onThumbnailChange }: Props) {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <div className="grid grid-cols-2 gap-6">
@@ -121,7 +106,7 @@ export function BasicInfoSection({ form, categories, onSubmit }: Props) {
           </Card>
         </div>
         <div className="flex flex-col gap-6">
-          <ThumbnailUpload />
+          <ThumbnailUpload file={thumbnail} onChange={onThumbnailChange} />
         </div>
       </div>
     </form>
