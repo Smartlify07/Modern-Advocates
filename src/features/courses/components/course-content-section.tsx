@@ -2,51 +2,23 @@
 
 import { Button } from "@/shared/ui/button"
 import { ModuleEditor } from "@/features/courses/components/module-editor"
-import type { Module } from "@/features/courses/types"
 import {
   PlusIcon,
   BookOpenIcon,
   FolderKanbanIcon,
 } from "lucide-react"
+import { useCourseFormStore } from "@/features/courses/store/use-course-form-store"
 
-interface Props {
-  modules: Module[]
-  activeModuleId: string | null
-  activeTopicId: string | null
-  onAddModule: () => void
-  onModuleChange: (id: string, updated: Module) => void
-  onModuleSelect: (id: string) => void
-  onBack: () => void
-  onActiveTopicChange: (id: string | null) => void
-}
+export function CourseContentSection() {
+  const modules = useCourseFormStore((s) => s.modules)
+  const activeModuleId = useCourseFormStore((s) => s.activeModuleId)
+  const addModule = useCourseFormStore((s) => s.addModule)
+  const selectModule = useCourseFormStore((s) => s.selectModule)
 
-export function CourseContentSection({
-  modules,
-  activeModuleId,
-  activeTopicId,
-  onAddModule,
-  onModuleChange,
-  onModuleSelect,
-  onBack,
-  onActiveTopicChange,
-}: Props) {
   if (activeModuleId) {
     const mod = modules.find((m) => m.id === activeModuleId)
     if (!mod) return null
-    return (
-      <ModuleEditor
-        module={mod}
-        onChange={(updated) => {
-          onModuleChange(mod.id, updated)
-          if (activeTopicId && !updated.topics.find((t) => t.id === activeTopicId)) {
-            onActiveTopicChange(null)
-          }
-        }}
-        activeTopicId={activeTopicId}
-        onActiveTopicChange={onActiveTopicChange}
-        onBack={onBack}
-      />
-    )
+    return <ModuleEditor />
   }
 
   if (modules.length === 0) {
@@ -62,7 +34,7 @@ export function CourseContentSection({
             start adding topics, videos, and text lessons.
           </p>
         </div>
-        <Button onClick={onAddModule}>
+        <Button onClick={addModule}>
           <PlusIcon className="size-4" />
           Add your first module
         </Button>
@@ -76,7 +48,7 @@ export function CourseContentSection({
         <h3 className="text-sm font-medium text-muted-foreground">
           Modules ({modules.length})
         </h3>
-        <Button variant="outline" size="sm" onClick={onAddModule}>
+        <Button variant="outline" size="sm" onClick={addModule}>
           <PlusIcon className="size-3.5" />
           Add module
         </Button>
@@ -85,7 +57,7 @@ export function CourseContentSection({
         <button
           key={mod.id}
           type="button"
-          onClick={() => onModuleSelect(mod.id)}
+          onClick={() => selectModule(mod.id)}
           className="flex items-center gap-3 rounded-lg border bg-card p-4 text-start transition-colors hover:bg-muted/50"
         >
           <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted">

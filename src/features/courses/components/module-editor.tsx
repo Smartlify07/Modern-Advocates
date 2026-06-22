@@ -8,44 +8,43 @@ import { ArrowLeftIcon, FileTextIcon, PlusIcon } from "lucide-react"
 import { ModuleTitle } from "./module-title"
 import { TopicTabs } from "./topic-tabs"
 import { TopicEditorPanel } from "./topic-editor-panel"
-import type { Module, Topic } from "@/features/courses/types"
+import { useCourseFormStore } from "@/features/courses/store/use-course-form-store"
+import type { Topic } from "@/features/courses/types"
 
-let nextTopicId = 1
-function generateTopicId() { return `topic_${nextTopicId++}` }
-function createEmptyTopic(order: number): Topic {
-  return { id: generateTopicId(), title: "", type: "video_and_text", videoUrl: null, description: null, order }
-}
+export function ModuleEditor() {
+  const modules = useCourseFormStore((s) => s.modules)
+  const activeModuleId = useCourseFormStore((s) => s.activeModuleId)
+  const activeTopicId = useCourseFormStore((s) => s.activeTopicId)
+  const updateModule = useCourseFormStore((s) => s.updateModule)
+  const selectModule = useCourseFormStore((s) => s.selectModule)
+  const setActiveTopicId = useCourseFormStore((s) => s.setActiveTopicId)
 
-interface Props {
-  module: Module
-  onChange: (mod: Module) => void
-  activeTopicId: string | null
-  onActiveTopicChange: (id: string | null) => void
-  onBack: () => void
-}
+  const module = modules.find((m) => m.id === activeModuleId)
+  if (!module) return null
 
-export function ModuleEditor({ module, onChange, activeTopicId, onActiveTopicChange, onBack }: Props) {
   useEffect(() => {
     if (!activeTopicId && module.topics.length > 0) {
-      onActiveTopicChange(module.topics[0].id)
+      setActiveTopicId(module.topics[0].id)
     }
-  }, [activeTopicId, module.topics.length, onActiveTopicChange])
+  }, [activeTopicId, module.topics.length, setActiveTopicId])
 
-  const updateModule = (partial: Partial<Module>) => onChange({ ...module, ...partial })
+  const updateModulePartial = (partial: Partial<typeof module>) =>
+    updateModule(module.id, { ...module, ...partial })
+
   const updateTopic = (topicId: string, updated: Topic) => {
-    updateModule({ topics: module.topics.map((t) => (t.id === topicId ? updated : t)) })
+    updateModulePartial({ topics: module.topics.map((t) => (t.id === topicId ? updated : t)) })
   }
 
   const deleteTopic = (topicId: string) => {
     const remaining = module.topics.filter((t) => t.id !== topicId).map((t, i) => ({ ...t, order: i }))
-    updateModule({ topics: remaining })
-    if (activeTopicId === topicId) onActiveTopicChange(remaining[0]?.id ?? null)
+    updateModulePartial({ topics: remaining })
+    if (activeTopicId === topicId) setActiveTopicId(remaining[0]?.id ?? null)
   }
 
   const addTopic = () => {
-    const newTopic = createEmptyTopic(module.topics.length)
-    updateModule({ topics: [...module.topics, newTopic] })
-    onActiveTopicChange(newTopic.id)
+    const newTopic = { id: `topic_${Date.now()}`, title: "", type: "video_and_text" as const, videoUrl: null, description: null, order: module.topics.length }
+    updateModulePartial({ topics: [...module.topics, newTopic] })
+    setActiveTopicId(newTopic.id)
   }
 
   const moveTopic = (index: number, dir: -1 | 1) => {
@@ -53,7 +52,7 @@ export function ModuleEditor({ module, onChange, activeTopicId, onActiveTopicCha
     if (ni < 0 || ni >= module.topics.length) return
     const topics = [...module.topics];
     [topics[index], topics[ni]] = [topics[ni], topics[index]]
-    updateModule({ topics: topics.map((t, i) => ({ ...t, order: i })) })
+    updateModulePartial({ topics: topics.map((t, i) => ({ ...t, order: i })) })
   }
 
   const selIdx = activeTopicId ? module.topics.findIndex((t) => t.id === activeTopicId) : -1
@@ -63,14 +62,14 @@ export function ModuleEditor({ module, onChange, activeTopicId, onActiveTopicCha
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" onClick={onBack}>
+        <Button variant="ghost" size="sm" onClick={() => selectModule(null)}>
           <ArrowLeftIcon className="size-4" />Modules
         </Button>
       </div>
 
-      <ModuleTitle title={module.title} topicCount={module.topics.length} onChange={(t) => updateModule({ title: t })} />
+      <ModuleTitle title={module.title} topicCount={module.topics.length} onChange={(t) => updateModulePartial({ title: t })} />
 
-      {module.topics.length > 0 && <TopicTabs topics={module.topics} activeTopicId={activeTopicId} onSelect={onActiveTopicChange} onAdd={addTopic} />}
+      {module.topics.length > 0 && <TopicTabs topics={module.topics} activeTopicId={activeTopicId} onSelect={setActiveTopicId} onAdd={addTopic} />}
 
       {selectedTopic ? (
         <TopicEditorPanel

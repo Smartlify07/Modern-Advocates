@@ -1,42 +1,28 @@
 "use client"
 
-import type { Module } from "@/features/courses/types"
+import { useCourseFormStore } from "@/features/courses/store/use-course-form-store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card"
 import { Separator } from "@/shared/ui/separator"
 import { BookOpenIcon, ClockIcon, LayersIcon, TagIcon } from "lucide-react"
 
-interface Props {
-  title: string
-  categoryName: string
-  description: string
-  level: string
-  modules: Module[]
-  price: string
-  discount: number
-  isFree: boolean
-  thumbnailPreview: string | null
-}
+export function PublishPreview() {
+  const title = useCourseFormStore((s) => s.title)
+  const categoryName = useCourseFormStore((s) => s.categoryName)
+  const description = useCourseFormStore((s) => s.description)
+  const level = useCourseFormStore((s) => s.level)
+  const modules = useCourseFormStore((s) => s.modules)
+  const price = useCourseFormStore((s) => s.price)
+  const discount = useCourseFormStore((s) => s.discount)
+  const isFree = useCourseFormStore((s) => s.isFree)
+  const thumbnailPreview = useCourseFormStore((s) => s.thumbnailPreview)
 
-export function PublishPreview({
-  title,
-  categoryName,
-  description,
-  level,
-  modules,
-  price,
-  discount,
-  isFree,
-  thumbnailPreview,
-}: Props) {
   const topicCount = modules.reduce((acc, m) => acc + m.topics.length, 0)
   const numericPrice = isFree ? 0 : parseFloat(price) || 0
   const salePrice = numericPrice * (1 - discount / 100)
 
   return (
     <Card className="ring-0">
-      <CardHeader>
-        <CardTitle>Course Summary</CardTitle>
-      </CardHeader>
+      <CardHeader><CardTitle>Course Summary</CardTitle></CardHeader>
       <CardContent>
         <div className="space-y-4">
           {thumbnailPreview ? (
