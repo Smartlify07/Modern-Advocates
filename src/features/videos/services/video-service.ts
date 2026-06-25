@@ -4,8 +4,7 @@ import {
   courseVideos,
   videoProgress,
 } from "@/infrastructure/database/schema/video"
-import { courses } from "@/infrastructure/database/schema/course"
-import { enrollments } from "@/infrastructure/database/schema/course"
+import { courses, enrollments } from "@/infrastructure/database/schema/course"
 import {
   deleteCloudinaryAsset,
   generatePlaybackUrl,
@@ -36,6 +35,40 @@ export async function getVideoById(videoId: string): Promise<SelectCourseVideo |
     .then((r) => r[0])
 
   return video ?? null
+}
+
+export async function getVideoByTopicId(topicId: string): Promise<SelectCourseVideo | null> {
+  const video = await db
+    .select()
+    .from(courseVideos)
+    .where(eq(courseVideos.topicId, topicId))
+    .then((r) => r[0])
+
+  return video ?? null
+}
+
+export async function resetVideoRecord(videoId: string): Promise<void> {
+  const existing = await getVideoById(videoId)
+  if (!existing) throw new Error("Video record not found")
+
+  if (existing.cloudinaryPublicId) {
+    try {
+      await deleteCloudinaryAsset(existing.cloudinaryPublicId)
+    } catch (error) {
+      console.error("Cloudinary deletion failed (proceeding with reset):", error)
+    }
+  }
+
+  await db
+    .update(courseVideos)
+    .set({
+      cloudinaryPublicId: null,
+      playbackUrl: null,
+      thumbnailUrl: null,
+      duration: null,
+      status: "uploading",
+    })
+    .where(eq(courseVideos.id, videoId))
 }
 
 export async function verifyCourseAccess(

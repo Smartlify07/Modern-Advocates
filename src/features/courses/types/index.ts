@@ -7,6 +7,7 @@ export interface Topic {
   title: string
   type: TopicType
   videoUrl: string | null
+  videoId: string | null
   description: JSONContent | null
   order: number
 }

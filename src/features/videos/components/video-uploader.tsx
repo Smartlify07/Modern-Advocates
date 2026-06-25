@@ -54,6 +54,7 @@ export function VideoUploader({
         body: JSON.stringify({ courseId, moduleId, topicId, title, description }),
       })
 
+
       if (!res.ok) {
         const err = await res.json()
         throw new Error(err.error ?? "Failed to get upload signature")
@@ -68,7 +69,6 @@ export function VideoUploader({
       formData.append("signature", config.signature)
       formData.append("folder", config.folder)
       formData.append("public_id", config.videoId)
-      formData.append("resource_type", "video")
       formData.append("eager", "sp_hd")
       formData.append("eager_async", "1")
 
