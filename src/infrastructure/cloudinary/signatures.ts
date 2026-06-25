@@ -15,6 +15,8 @@ export interface UploadSignatureResult {
   folder: string
 }
 
+
+
 export function generateUploadSignature({
   courseId,
   moduleId,
@@ -28,10 +30,9 @@ export function generateUploadSignature({
     timestamp,
     folder,
     public_id: videoId,
-    resource_type: "video",
     eager: "sp_hd",
-    eager_async: 1,
-    notification_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/cloudinary`,
+    eager_async: "1",
+    // notification_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/cloudinary`,
   }
 
   const signature = cloudinary.utils.api_sign_request(

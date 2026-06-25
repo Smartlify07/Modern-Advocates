@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
+import { eq } from "drizzle-orm"
+import { db } from "@/infrastructure/database/client"
+import { courseVideos } from "@/infrastructure/database/schema/video"
 import { requireInstructorOrAdmin } from "@/infrastructure/auth/helpers"
 import { generateUploadSignature } from "@/infrastructure/cloudinary/signatures"
 import {
   createVideoRecord,
+  getVideoByTopicId,
+  resetVideoRecord,
   verifyInstructorOwnership,
 } from "@/features/videos/services/video-service"
 import * as Sentry from "@sentry/nextjs"
@@ -42,24 +47,37 @@ export async function POST(request: Request) {
       }
     }
 
-    const video = await createVideoRecord({
-      courseId,
-      moduleId,
-      topicId,
-      title,
-      description,
-    })
+    const existing = await getVideoByTopicId(topicId)
+
+    let videoId: string
+    if (existing) {
+      await resetVideoRecord(existing.id)
+      await db
+        .update(courseVideos)
+        .set({ title, description })
+        .where(eq(courseVideos.id, existing.id))
+      videoId = existing.id
+    } else {
+      const video = await createVideoRecord({
+        courseId,
+        moduleId,
+        topicId,
+        title,
+        description,
+      })
+      videoId = video.id
+    }
 
     const uploadConfig = generateUploadSignature({
       courseId,
       moduleId,
       topicId,
-      videoId: video.id,
+      videoId,
     })
 
     return NextResponse.json({
       ...uploadConfig,
-      videoId: video.id,
+      videoId,
     })
   } catch (error) {
     if (error instanceof Error) {
@@ -71,6 +89,7 @@ export async function POST(request: Request) {
       }
     }
     Sentry.captureException(error)
+    console.error(error)
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

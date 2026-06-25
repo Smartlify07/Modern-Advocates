@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback,  } from "react"
+import { useCallback, useState } from "react"
 
 import { Button } from "@/shared/ui/button"
 import { Card } from "@/shared/ui/card"
@@ -12,11 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select"
-import { Trash2Icon, XIcon, UploadIcon } from "lucide-react"
+import { Trash2Icon, UploadIcon, Loader2 } from "lucide-react"
 
 import { TiptapEditor } from "./tiptap-editor"
+import { VideoUploader } from "@/features/videos/components/video-uploader"
+import { useCourseFormStore } from "@/features/courses/store/use-course-form-store"
 import type { Topic, TopicType } from "@/features/courses/types"
-import {type JSONContent } from '@tiptap/react'
+import type { JSONContent } from "@tiptap/react"
+
 interface TopicEditorProps {
   topic: Topic
   onChange: (topic: Topic) => void
@@ -30,9 +33,19 @@ const typeLabels: Record<TopicType, string> = {
 }
 
 export function TopicEditor({ topic, onChange, onDelete }: TopicEditorProps) {
+  const courseId = useCourseFormStore((s) => s.courseId)
+  const modules = useCourseFormStore((s) => s.modules)
+  const activeModuleId = useCourseFormStore((s) => s.activeModuleId)
+  const isSaving = useCourseFormStore((s) => s.isSaving)
+  const saveAsDraft = useCourseFormStore((s) => s.saveAsDraft)
+
+  const [savingForUpload, setSavingForUpload] = useState(false)
+
   const showVideo = topic.type === "video" || topic.type === "video_and_text"
-  const showDescription =
-    topic.type === "text" || topic.type === "video_and_text"
+  const showDescription = topic.type === "text" || topic.type === "video_and_text"
+
+  const activeModule = modules.find((m) => m.id === activeModuleId)
+  const hasRealIds = !!courseId && !!activeModule?.id && !activeModule.id.startsWith("module_")
 
   const update = (partial: Partial<Topic>) => {
     onChange({ ...topic, ...partial })
@@ -42,8 +55,21 @@ export function TopicEditor({ topic, onChange, onDelete }: TopicEditorProps) {
     (json: JSONContent) => {
       update({ description: json })
     },
-    [topic]
+    [topic],
   )
+
+  const handleVideoSuccess = useCallback(
+    (videoId: string) => {
+      update({ videoId })
+    },
+    [topic],
+  )
+
+  const handleSaveAndUpload = async () => {
+    setSavingForUpload(true)
+    await saveAsDraft()
+    setSavingForUpload(false)
+  }
 
   return (
     <Card className="overflow-hidden ring-0">
@@ -78,7 +104,7 @@ export function TopicEditor({ topic, onChange, onDelete }: TopicEditorProps) {
                     <SelectItem key={t} value={t}>
                       {typeLabels[t]}
                     </SelectItem>
-                  )
+                  ),
                 )}
               </SelectContent>
             </Select>
@@ -86,52 +112,46 @@ export function TopicEditor({ topic, onChange, onDelete }: TopicEditorProps) {
 
           {showVideo && (
             <div>
-              {topic.videoUrl ? (
+              {topic.videoId ? (
                 <div className="relative overflow-hidden rounded-lg border bg-muted/30">
                   <div className="flex aspect-video items-center justify-center bg-black/5">
                     <div className="flex flex-col items-center gap-1 text-muted-foreground">
-                      <span className="text-xs font-medium">Video URL</span>
+                      <span className="text-xs font-medium">Video uploaded</span>
                       <span className="max-w-full truncate px-4 text-xs">
-                        {topic.videoUrl}
+                        {topic.videoId}
                       </span>
                     </div>
                   </div>
                   <Button
                     variant="ghost"
                     size="icon-xs"
-                    className="absolute top-1 right-1"
-                    onClick={() => update({ videoUrl: null })}
+                    className="absolute right-1 top-1"
+                    onClick={() => update({ videoUrl: null, videoId: null })}
                   >
-                    <XIcon className="size-3" />
+                    <Trash2Icon className="size-3" />
                   </Button>
                 </div>
+              ) : hasRealIds ? (
+                <VideoUploader
+                  courseId={courseId!}
+                  moduleId={activeModule!.id}
+                  topicId={topic.id}
+                  onSuccess={handleVideoSuccess}
+                />
               ) : (
-                <div className="flex flex-col gap-2 rounded-lg border-2 border-dashed border-muted-foreground/25 p-4">
-                  <div className="flex items-center justify-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        const url = window.prompt("Paste a video URL")
-                        if (url) update({ videoUrl: url })
-                      }}
-                    >
-                      <UploadIcon className="size-3.5" />
-                      Upload
-                    </Button>
-                    <span className="text-xs text-muted-foreground">or</span>
-                    <Input
-                      placeholder="Paste a video URL"
-                      className="h-7 flex-1 text-xs"
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          const url = (e.target as HTMLInputElement).value
-                          if (url) update({ videoUrl: url })
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
+                <Button
+                  variant="outline"
+                  onClick={handleSaveAndUpload}
+                  disabled={isSaving || savingForUpload}
+                  className="w-full"
+                >
+                  {isSaving || savingForUpload ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <UploadIcon className="size-4" />
+                  )}
+                  {isSaving || savingForUpload ? "Saving course..." : "Save & Upload Video"}
+                </Button>
               )}
             </div>
           )}

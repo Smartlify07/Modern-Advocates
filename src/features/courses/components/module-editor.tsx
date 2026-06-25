@@ -42,7 +42,7 @@ export function ModuleEditor() {
   }
 
   const addTopic = () => {
-    const newTopic = { id: `topic_${Date.now()}`, title: "", type: "video_and_text" as const, videoUrl: null, description: null, order: module.topics.length }
+    const newTopic = { id: `topic_${Date.now()}`, title: "", type: "video_and_text" as const, videoUrl: null, videoId: null, description: null, order: module.topics.length }
     updateModulePartial({ topics: [...module.topics, newTopic] })
     setActiveTopicId(newTopic.id)
   }
