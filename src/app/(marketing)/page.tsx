@@ -7,8 +7,6 @@ import { FeaturedCourses } from "@/features/marketing/components/featured-course
 import { HowItWorks } from "@/features/marketing/components/how-it-works"
 import { Testimonials } from "@/features/marketing/components/testimonials"
 import { Faq } from "@/features/marketing/components/faq"
-import { CtaSection } from "@/features/marketing/components/cta-section"
-import { Footer } from "@/features/marketing/components/footer"
 import SupportSection from "@/features/marketing/components/how-can-we-support"
 
 export default function Page() {
@@ -21,8 +19,6 @@ export default function Page() {
       <SupportSection />
       <Testimonials />
       <Faq />
-      <CtaSection />
-      <Footer />
     </main>
   )
 }
