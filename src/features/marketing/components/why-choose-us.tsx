@@ -39,9 +39,9 @@ const cards = [
 
 export function WhyChooseUs() {
   return (
-    <section className="bg-white py-20 sm:py-28 lg:py-32">
+    <section id="why-choose-us" className="bg-white py-20 sm:py-28 lg:py-32">
       <div className="mx-auto max-w-6xl px-6">
-        <h2 className="font-heading text-4xl font-extrabold leading-[1.15] tracking-tight text-ma-text sm:text-5xl">
+        <h2 className="font-heading text-4xl leading-[1.15] font-extrabold tracking-tight text-ma-text sm:text-5xl">
           Learning Designed for Real-World Success
         </h2>
 
