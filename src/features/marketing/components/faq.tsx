@@ -1,68 +1,46 @@
-"use client"
-
-import { useState } from "react"
-import { ChevronDown } from "lucide-react"
+import { Plus } from "lucide-react"
 
 const faqs = [
-  {
-    question: "Who are these courses for?",
-    answer:
-      "Our courses are designed for professionals, entrepreneurs, students, and lifelong learners seeking practical skills and measurable results.",
-  },
-  {
-    question: "How long do I have access?",
-    answer:
-      "Most courses include lifetime access to learning materials and updates.",
-  },
-  {
-    question: "Do I receive a certificate?",
-    answer:
-      "Yes. Certificates are awarded upon successful completion of eligible courses.",
-  },
-  {
-    question: "Can I learn at my own pace?",
-    answer:
-      "Absolutely. You can access course materials whenever it suits your schedule.",
-  },
+  "Who is ModernAdvocates Inc. for?",
+  "Is the consultation really free?",
+  "What kind of AI workforce training do you offer?",
+  "Do I need any prior experience to join the training programs?",
+  "How does ModernAdvocates help with healthcare resources?",
+  "How can I support your mission?",
 ]
 
 export function Faq() {
-  const [open, setOpen] = useState<number | null>(null)
-
   return (
-    <section className="bg-ma-bg py-20 sm:py-28 lg:py-32">
-      <div className="mx-auto max-w-3xl px-6">
-        <h2 className="text-center font-heading text-4xl font-extrabold leading-[1.15] tracking-tight text-ma-text sm:text-5xl">
-          Frequently Asked Questions
-        </h2>
+    <section id="faq" className="bg-white px-6 py-24 lg:py-[100px]">
+      <div className="mx-auto grid max-w-[1044px] gap-12 lg:grid-cols-[425px_598px] lg:gap-[77px]">
+        <div>
+          <h2 className="max-w-[425px] font-heading text-[40px] leading-[60px] font-extrabold text-black">
+            Got questions? we&apos;ve got answers
+          </h2>
+          <p className="mt-[30px] max-w-[425px] text-[18px] leading-normal text-black">
+            We&apos;ve compiled answers to frequently asked questions to help
+            you get started quickly and confidently.
+          </p>
+        </div>
 
-        <div className="mt-12 space-y-3">
-          {faqs.map((faq, i) => {
-            const isOpen = open === i
-            return (
-              <div
-                key={i}
-                className="overflow-hidden rounded-2xl bg-white"
-              >
-                <button
-                  onClick={() => setOpen(isOpen ? null : i)}
-                  className="flex w-full items-center justify-between px-6 py-5 text-left text-sm font-semibold text-ma-text transition-colors hover:text-ma-text/70 sm:px-8 sm:text-base"
-                >
-                  {faq.question}
-                  <ChevronDown
-                    className={`size-4 shrink-0 text-ma-text/40 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
-                  />
-                </button>
-                <div
-                  className={`transition-all duration-300 ease-in-out ${isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
-                >
-                  <p className="border-t border-ma-text/5 px-6 py-5 text-sm leading-relaxed text-ma-text/60 sm:px-8">
-                    {faq.answer}
-                  </p>
-                </div>
-              </div>
-            )
-          })}
+        <div className="flex flex-col gap-[29px]">
+          {faqs.map((question) => (
+            <button
+              key={question}
+              type="button"
+              aria-label={question}
+              className="flex w-full items-start gap-4 rounded-3xl border border-[#d9d9d9] bg-white px-5 py-[30px] text-left text-black transition-colors hover:border-ma-text/35"
+            >
+              <Plus
+                className="size-[30px] shrink-0"
+                strokeWidth={2.5}
+                aria-hidden="true"
+              />
+              <span className="min-w-0 flex-1 text-[22px] leading-normal font-bold">
+                {question}
+              </span>
+            </button>
+          ))}
         </div>
       </div>
     </section>

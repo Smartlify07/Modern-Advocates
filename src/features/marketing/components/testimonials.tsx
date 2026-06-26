@@ -1,107 +1,103 @@
 "use client"
 
-import { useEffect, useRef } from "react"
-import { Quote } from "lucide-react"
+import Image from "next/image"
+import { useRef } from "react"
+import { ArrowLeft, ArrowRight } from "lucide-react"
 
-const testimonials = [
+const reviews = [
   {
-    quote:
-      "One of the most practical learning experiences I've ever had. I was able to apply what I learned immediately.",
-    name: "Alex Rivera",
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80",
+    image: "/figma/reviews/testimonial-1.png",
+    name: "Michael R.",
   },
   {
-    quote:
-      "The instructors explained complex topics in a way that was easy to understand and implement.",
-    name: "Maria Thompson",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80",
+    image: "/figma/reviews/testimonial-2.png",
+    name: "Michael R.",
   },
   {
-    quote:
-      "The course exceeded my expectations and helped me gain confidence in my abilities.",
-    name: "James Carter",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80",
+    image: "/figma/reviews/testimonial-3.png",
+    name: "Michael R.",
   },
   {
-    quote:
-      "I appreciated the hands-on projects. They made the learning process engaging and effective.",
-    name: "Sophia Lee",
-    avatar:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80",
-  },
-  {
-    quote:
-      "The flexibility allowed me to balance my studies with work. Highly recommended for professionals.",
-    name: "David Kim",
-    avatar:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80",
-  },
-  {
-    quote:
-      "A transformative experience. The skills I gained directly translated to a promotion at work.",
-    name: "Emily Foster",
-    avatar:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80",
+    image: "/figma/reviews/testimonial-4.png",
+    name: "Michael R.",
   },
 ]
 
 export function Testimonials() {
   const scrollRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    const el = scrollRef.current
-    if (!el) return
-
-    const interval = setInterval(() => {
-      const maxScroll = el.scrollWidth - el.clientWidth
-      if (el.scrollLeft >= maxScroll - 1) {
-        el.scrollTo({ left: 0, behavior: "smooth" })
-      } else {
-        el.scrollBy({ left: 360, behavior: "smooth" })
-      }
-    }, 3500)
-
-    return () => clearInterval(interval)
-  }, [])
+  function scrollReviews(direction: "previous" | "next") {
+    scrollRef.current?.scrollBy({
+      left: direction === "next" ? 360 : -360,
+      behavior: "smooth",
+    })
+  }
 
   return (
-    <section className="bg-white py-20 sm:py-28 lg:py-32">
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="mt-3 font-heading text-4xl leading-[1.15] font-extrabold tracking-tight text-ma-text sm:text-5xl">
-            What Our Learners Say
+    <section className="overflow-hidden bg-white py-[100px]">
+      <div className="mx-auto flex max-w-[1044px] flex-col gap-8 px-6 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="font-heading text-[40px] leading-[60px] font-extrabold text-black">
+            What they say about us?
           </h2>
+          <p className="mt-6 max-w-[650px] text-[18px] leading-normal text-black">
+            Real stories from customers who have experienced measurable results
+            and meaningful progress with our support.
+          </p>
+        </div>
+
+        <div className="flex gap-[18px] sm:pb-2">
+          <button
+            type="button"
+            aria-label="Previous review"
+            onClick={() => scrollReviews("previous")}
+            className="flex size-[50px] items-center justify-center rounded-2xl bg-[#f5f5f5] text-black transition-colors hover:bg-[#ececec]"
+          >
+            <ArrowLeft className="size-6" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            aria-label="Next review"
+            onClick={() => scrollReviews("next")}
+            className="flex size-[50px] items-center justify-center rounded-2xl bg-[#f5f5f5] text-black transition-colors hover:bg-[#ececec]"
+          >
+            <ArrowRight className="size-6" aria-hidden="true" />
+          </button>
         </div>
       </div>
 
       <div
         ref={scrollRef}
-        className="hide-scrollbar mt-14 flex gap-8 overflow-x-auto px-6 pb-4 lg:px-[calc((100vw-76rem)/2+1.5rem)]"
+        className="hide-scrollbar mt-[86px] flex gap-[30px] overflow-x-auto scroll-smooth px-6 pb-2 lg:pl-[calc((100vw_-_1044px)/2)]"
       >
-        {testimonials.concat(testimonials).map((t, i) => (
+        {reviews.map((review) => (
           <article
-            key={`${t.name}-${i}`}
-            className="flex min-h-[28rem] w-[22rem] shrink-0 flex-col justify-between rounded-2xl bg-ma-bg p-8 sm:w-[26rem] sm:p-10"
+            key={review.image}
+            className="relative flex h-[500px] w-[330px] shrink-0 flex-col justify-end overflow-hidden rounded-3xl px-[15px] pb-[30px]"
           >
-            <div>
-              <Quote className="size-8 text-ma-text/15" />
-              <p className="mt-5 text-base leading-relaxed text-ma-text/70">
-                &ldquo;{t.quote}&rdquo;
+            <Image
+              src={review.image}
+              alt=""
+              fill
+              sizes="330px"
+              className="object-cover"
+            />
+            <div
+              className="absolute inset-0 bg-gradient-to-b from-transparent from-[30%] to-black"
+              aria-hidden="true"
+            />
+
+            <div className="relative z-10 h-[166px] w-[300px] text-white">
+              <p className="font-heading text-[100px] leading-[60px] font-extrabold">
+                &ldquo;
               </p>
-            </div>
-            <div className="mt-8 flex items-center gap-4">
-              <img
-                src={t.avatar}
-                alt=""
-                className="size-11 rounded-full object-cover ring-2 ring-white"
-                loading="lazy"
-              />
-              <span className="text-sm font-semibold text-ma-text">
-                {t.name}
-              </span>
+              <p className="mt-[-14px] text-[18px] leading-normal font-semibold">
+                ModernAdvocates helped me see a clear path forward. The guidance
+                and training resources gave
+              </p>
+              <p className="mt-5 text-[18px] leading-normal font-semibold">
+                -{review.name}
+              </p>
             </div>
           </article>
         ))}
