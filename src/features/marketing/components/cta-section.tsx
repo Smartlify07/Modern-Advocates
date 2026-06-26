@@ -15,7 +15,7 @@ export function CtaSection() {
 
         <div className="mt-[52px] flex flex-col items-center justify-center gap-5 sm:flex-row">
           <Link
-            href="#contact"
+            href="/contact"
             className="inline-flex items-center justify-center gap-2.5 rounded-[60px] bg-[linear-gradient(90deg,#4f7cf7_0%,#7b5cff_68.269%)] px-5 py-4 text-center text-base font-semibold text-white transition-opacity hover:opacity-90"
           >
             Book a free consultation

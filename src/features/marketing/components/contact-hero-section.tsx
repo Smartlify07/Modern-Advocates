@@ -1,0 +1,177 @@
+import { ArrowRight, Mail, MapPin, Phone } from "lucide-react"
+import Image from "next/image"
+
+import { Button } from "@/shared/ui/button"
+import { Field, FieldGroup, FieldLabel } from "@/shared/ui/field"
+import { Input } from "@/shared/ui/input"
+
+const contactMethods = [
+  {
+    icon: Mail,
+    label: "Email",
+    value: "modadvinc@gmail.com",
+    href: "mailto:modadvinc@gmail.com",
+  },
+  {
+    icon: Phone,
+    label: "Phone",
+    value: "+(561) 236-7059",
+    href: "tel:+15612367059",
+  },
+]
+
+const socialLinks = [
+  { label: "Facebook", src: "/figma-contact/facebook.svg" },
+  { label: "LinkedIn", src: "/figma-contact/linkedin.svg" },
+  { label: "Instagram", src: "/figma-contact/instagram.svg" },
+]
+
+export function ContactHeroSection() {
+  return (
+    <section id="contact" className="bg-white px-6 py-20 text-ma-text sm:py-25">
+      <div className="mx-auto grid max-w-[1040px] items-start gap-14 lg:grid-cols-[444px_1fr] lg:gap-[88px]">
+        <div className="flex flex-col gap-10">
+          <div className="flex flex-col gap-[30px]">
+            <p className="text-base leading-normal font-medium tracking-[0.1em] text-[#6b7280] uppercase">
+              Contact
+            </p>
+            <h1 className="font-heading text-[clamp(3rem,6vw,60px)] leading-[1.15] font-extrabold text-balance text-ma-text sm:leading-[70px]">
+              Reach out today
+            </h1>
+            <p className="max-w-[444px] text-lg leading-normal text-ma-text">
+              Have questions about our membership and donation programs? Reach
+              out using the form below, and our team will get back to you
+              promptly.
+            </p>
+          </div>
+
+          <div className="flex max-w-[320px] flex-col gap-10">
+            {contactMethods.map((method) => (
+              <a
+                key={method.href}
+                href={method.href}
+                className="flex items-start gap-5 text-base font-medium text-ma-text underline underline-offset-2 transition-colors hover:text-ma-text/70"
+                aria-label={`${method.label}: ${method.value}`}
+              >
+                <method.icon className="mt-0.5 size-6 shrink-0 text-[#6b7280]" />
+                <span>{method.value}</span>
+              </a>
+            ))}
+
+            <address className="flex items-start gap-5 text-base leading-normal text-ma-text not-italic">
+              <MapPin className="mt-0.5 size-6 shrink-0 text-[#6b7280]" />
+              <span>
+                2695 N. Military Trail Suite 22-1012
+                <br />
+                West Palm Beach,
+                <br />
+                FL 33409
+              </span>
+            </address>
+
+            <div className="flex items-center gap-[9px] text-lg">
+              <p>Social media:</p>
+              <div className="flex items-center gap-2 text-[#6d63ff]">
+                {socialLinks.map((social) => (
+                  <span
+                    key={social.label}
+                    className="inline-flex size-7 items-center justify-center"
+                    aria-label={social.label}
+                    role="img"
+                  >
+                    <Image
+                      src={social.src}
+                      alt=""
+                      width={28}
+                      height={28}
+                      className="size-7"
+                    />
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form className="rounded-[24px] bg-[#f5f5f5] p-[30px]">
+          <FieldGroup className="gap-5">
+            <Field>
+              <FieldLabel
+                htmlFor="contact-name"
+                className="text-lg font-normal text-ma-text"
+              >
+                Full Name
+              </FieldLabel>
+              <Input
+                id="contact-name"
+                name="name"
+                autoComplete="name"
+                placeholder="Justine Ryan"
+                className="h-9 rounded-md border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base placeholder:text-[#6b7280]"
+              />
+            </Field>
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Field>
+                <FieldLabel
+                  htmlFor="contact-email"
+                  className="text-lg font-normal text-ma-text"
+                >
+                  Email
+                </FieldLabel>
+                <Input
+                  id="contact-email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="example@gmail.com"
+                  className="h-9 rounded-md border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base placeholder:text-[#6b7280]"
+                />
+              </Field>
+
+              <Field>
+                <FieldLabel
+                  htmlFor="contact-phone"
+                  className="text-lg font-normal text-ma-text"
+                >
+                  Phone number
+                </FieldLabel>
+                <Input
+                  id="contact-phone"
+                  name="phone"
+                  type="tel"
+                  autoComplete="tel"
+                  placeholder="+10000023045"
+                  className="h-9 rounded-md border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base placeholder:text-[#6b7280]"
+                />
+              </Field>
+            </div>
+
+            <Field>
+              <FieldLabel
+                htmlFor="contact-message"
+                className="text-lg font-normal text-ma-text"
+              >
+                Message
+              </FieldLabel>
+              <textarea
+                id="contact-message"
+                name="message"
+                placeholder="Type your message..."
+                className="h-[180px] w-full min-w-0 resize-none rounded-md border border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base transition-colors outline-none placeholder:text-[#6b7280] focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20"
+              />
+            </Field>
+
+            <Button
+              type="button"
+              className="mt-1 h-[53px] w-full gap-2.5 rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white hover:bg-ma-text/90"
+            >
+              Send your message
+              <ArrowRight className="size-5" aria-hidden="true" />
+            </Button>
+          </FieldGroup>
+        </form>
+      </div>
+    </section>
+  )
+}
