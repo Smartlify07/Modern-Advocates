@@ -7,8 +7,8 @@ import React from "react"
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Courses", href: "#courses" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
   { label: "Donation", href: "#donation" },
   { label: "Login", href: "/login" },
 ]
@@ -49,7 +49,7 @@ const Navbar = () => {
           asChild
           className="h-13 w-[157px] gap-[6px] rounded-[60px] px-5 py-4"
         >
-          <Link href="#contact">
+          <Link href="/contact">
             Consultation
             <ArrowRight className="size-3.5" aria-hidden="true" />
           </Link>

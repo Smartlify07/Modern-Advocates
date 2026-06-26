@@ -57,7 +57,7 @@ export function HeroSection() {
 
         <div className="mt-10 flex flex-col items-center gap-5 sm:flex-row">
           <Link
-            href="#contact"
+            href="/contact"
             className="inline-flex items-center justify-center gap-2.5 rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white transition-colors hover:bg-ma-text/90"
           >
             Book consultation
