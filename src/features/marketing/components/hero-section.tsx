@@ -12,7 +12,7 @@ const supporters = [
 export function HeroSection() {
   return (
     <section className="relative isolate overflow-hidden bg-white text-ma-text">
-      <div className="relative z-10 mx-auto flex min-h-[924px] max-w-6xl flex-col items-center px-6 pt-[118px] text-center">
+      <div className="relative z-10 mx-auto flex min-h-[924px] max-w-6xl flex-col items-center px-6 py-[118px] text-center">
         <div className="flex items-center justify-center gap-4">
           <div className="flex -space-x-2">
             {supporters.map((src, index) => (

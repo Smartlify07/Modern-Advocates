@@ -125,7 +125,7 @@ export function FounderStorySection() {
     <section className="bg-white px-6 py-20 sm:py-24">
       <div className="mx-auto max-w-260 items-center items-start gap-10 lg:grid lg:grid-cols-[0.8fr_1.2fr]">
         <Image
-          src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&q=80"
+          src="/figma-about/founder.png"
           alt=""
           className="h-[500px] w-[422px] rounded-2xl object-cover"
           loading="lazy"
