@@ -22,7 +22,7 @@ export function CtaSection() {
             <ArrowRight className="size-5" aria-hidden="true" />
           </Link>
           <Link
-            href="#donation"
+            href="/donation"
             className="inline-flex items-center justify-center gap-2.5 rounded-[60px] bg-white px-5 py-4 text-center text-base font-semibold text-ma-text transition-colors hover:bg-white/90"
           >
             Support our mission

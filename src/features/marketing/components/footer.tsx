@@ -6,7 +6,7 @@ const quickLinks = [
   { label: "Courses", href: "#courses" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
-  { label: "Donate", href: "#donation" },
+  { label: "Donate", href: "/donation" },
 ]
 
 export function Footer() {
