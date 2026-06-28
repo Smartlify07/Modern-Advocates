@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import Image from "next/image"
 import Link from "next/link"
 import { Star } from "lucide-react"
+import { Skeleton } from "@/shared/ui/skeleton"
 
 type Course = {
   id: string
@@ -105,8 +106,21 @@ export function CoursesHeroSection() {
             ? Array.from({ length: 3 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-[430px] animate-pulse rounded-[24px] bg-gray-100 sm:max-w-[334px]"
-                />
+                  className="flex w-full flex-col gap-5 sm:max-w-[334px]"
+                >
+                  <Skeleton className="h-[254px] rounded-[24px]" />
+                  <div className="flex flex-col gap-2 px-2.5">
+                    <Skeleton className="h-7 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                  <div className="flex flex-col gap-5 px-2.5">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Skeleton className="h-7 w-16 rounded-md" />
+                      <Skeleton className="h-7 w-20 rounded-md" />
+                    </div>
+                    <Skeleton className="h-6 w-28" />
+                  </div>
+                </div>
               ))
             : courses?.map((course) => (
                 <CourseCard key={course.id} course={course} />
