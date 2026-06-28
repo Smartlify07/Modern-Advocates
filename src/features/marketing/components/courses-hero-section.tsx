@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import Image from "next/image"
+import Link from "next/link"
 import { Star } from "lucide-react"
 
 type Course = {
@@ -20,7 +21,7 @@ function CourseCard({ course }: { course: Course }) {
   const originalPrice = course.discountedPrice ? course.price : null
 
   return (
-    <article className="flex w-full flex-col gap-5 rounded-[24px] border border-[#d9d9d9] bg-white px-2.5 pt-2.5 pb-[30px] sm:max-w-[334px]">
+    <Link href={`/courses/${course.id}`} className="flex w-full flex-col gap-5 rounded-[24px] border border-[#d9d9d9] bg-white px-2.5 pt-2.5 pb-[30px] sm:max-w-[334px]">
       <div className="relative h-[254px] overflow-hidden rounded-[24px]">
         {course.thumbnailUrl ? (
           <Image
@@ -69,7 +70,7 @@ function CourseCard({ course }: { course: Course }) {
           </div>
         </div>
       </div>
-    </article>
+    </Link>
   )
 }
 
