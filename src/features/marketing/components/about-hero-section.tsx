@@ -10,19 +10,19 @@ const supporters = [
 
 export function AboutHeroSection() {
   return (
-    <section className="bg-white px-6 pt-18 pb-20 text-ma-text sm:pt-24 sm:pb-25">
-      <div className="mx-auto max-w-[1040px]">
-        <div className="mx-auto max-w-[800px] text-center">
-          <p className="text-base leading-normal font-medium tracking-[0.1em] text-[#6b7280] uppercase">
+    <section className="bg-white pt-18 pb-20 text-ma-text sm:pt-24 sm:pb-25">
+      <div className="mx-auto lg:px-25 2xl:px-50">
+        <div className="mx-auto max-w-200 text-center">
+          <p className="text-base leading-normal font-medium tracking-[10%] text-[#6b7280] uppercase">
             About us
           </p>
 
-          <h1 className="mt-[30px] font-heading text-[clamp(2.75rem,6vw,60px)] leading-[1.16] font-extrabold text-balance text-black sm:leading-[70px]">
+          <h1 className="mt-7.5 font-sans text-[clamp(2.75rem,6vw,60px)] leading-[1.16] font-extrabold text-balance text-black sm:leading-[70px]">
             This Organization Exists Now Because It Didn&apos;t When I Needed
             It.
           </h1>
 
-          <div className="mt-[46px] flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-4">
+          <div className="mt-11.5 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-4">
             <div className="flex -space-x-3">
               {supporters.map((src, index) => (
                 <Image
@@ -55,7 +55,7 @@ export function AboutHeroSection() {
           </div>
         </div>
 
-        <div className="mt-16 grid gap-5 lg:grid-cols-2">
+        <div className="mt-22.5 grid gap-5 lg:grid-cols-2">
           <div className="relative min-h-[420px] overflow-hidden rounded-[24px] bg-ma-bg sm:min-h-[550px]">
             <Image
               src="/figma-about/founder.png"

@@ -4,9 +4,12 @@ import { Gift } from "lucide-react"
 import Image from "next/image"
 import React from "react"
 
-const SupportSection = () => {
+const AboutOurValuesSection = () => {
   return (
     <section id="about" className="bg-white py-25 sm:py-24 xl:px-25 2xl:px-50">
+      <p className="mb-[19px] text-center text-base leading-normal font-medium tracking-[10%] text-[#6b7280] uppercase">
+        OUR VALUES{" "}
+      </p>
       <div className="mx-auto text-center">
         <h2 className="mx-auto max-w-160 text-center font-sans text-[40px] font-extrabold text-ma-text sm:text-5xl">
           How can we support your healthcare journey?{" "}
@@ -74,4 +77,4 @@ function SupportCard({
     </Card>
   )
 }
-export default SupportSection
+export default AboutOurValuesSection

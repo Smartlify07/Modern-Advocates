@@ -230,8 +230,8 @@ function CourseInformationCard() {
 
 export function CourseDetailContentSection() {
   return (
-    <section className="bg-white px-6 py-20 text-ma-text">
-      <div className="mx-auto grid max-w-[1040px] gap-12 lg:grid-cols-[598px_335px] lg:items-start lg:justify-between">
+    <section className="bg-white py-20 text-ma-text">
+      <div className="mx-auto grid gap-12 lg:grid-cols-[598px_335px] lg:items-start lg:justify-between lg:px-25 2xl:px-50">
         <div className="flex w-full max-w-[598px] flex-col gap-[30px]">
           <section className="flex flex-col gap-4">
             <h2 className="text-2xl leading-normal font-extrabold text-ma-text">

@@ -8,8 +8,8 @@ const ecosystemItems = [
 
 export function AboutAiHealthcareSection() {
   return (
-    <section className="bg-white px-6 py-20 text-ma-text sm:py-25">
-      <div className="mx-auto grid max-w-[1044px] items-start gap-10 lg:grid-cols-[422px_1fr] lg:gap-[50px]">
+    <section className="bg-white py-20 text-ma-text sm:py-25">
+      <div className="mx-auto grid items-start gap-10 lg:grid-cols-[422px_1fr] lg:gap-[50px] lg:px-25 2xl:px-50">
         <div className="relative min-h-[360px] overflow-hidden rounded-[24px] bg-ma-bg sm:min-h-[500px]">
           <Image
             src="/figma-about/healthcare-ai.png"
@@ -21,7 +21,7 @@ export function AboutAiHealthcareSection() {
         </div>
 
         <div className="pt-0 lg:pt-1">
-          <h2 className="max-w-[578px] font-heading text-[clamp(2.25rem,4vw,40px)] leading-[1.25] font-extrabold text-balance text-ma-text sm:leading-[60px]">
+          <h2 className="max-w-[578px] font-sans text-[clamp(2.25rem,4vw,40px)] leading-[1.25] font-extrabold text-balance text-ma-text sm:leading-[60px]">
             ModernAdvocates is redefining how AI is used in Healthcare
           </h2>
 

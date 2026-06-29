@@ -12,12 +12,10 @@ const quickLinks = [
 export function Footer() {
   return (
     <footer className="overflow-hidden bg-white text-ma-text">
-      <div className="relative mx-auto min-h-[500px] max-w-[1040px] px-6 pt-[70px]">
+      <div className="relative mx-auto min-h-[500px] pt-[70px] lg:px-25 2xl:px-50">
         <div className="grid gap-12 md:grid-cols-[254px_180px_1fr] md:gap-[100px] lg:gap-[120px]">
           <section>
-            <h2 className="font-heading text-2xl font-extrabold">
-              Get in Touch
-            </h2>
+            <h2 className="font-sans text-2xl font-extrabold">Get in Touch</h2>
             <address className="mt-5 not-italic">
               <p className="text-base leading-normal">
                 2695 N. Military Trail Suite 22-1012
@@ -42,9 +40,7 @@ export function Footer() {
           </section>
 
           <nav aria-label="Footer navigation">
-            <h2 className="font-heading text-2xl font-extrabold">
-              Quick Links
-            </h2>
+            <h2 className="font-sans text-2xl font-extrabold">Quick Links</h2>
             <ul className="mt-5 space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.href}>
@@ -60,7 +56,7 @@ export function Footer() {
           </nav>
 
           <section>
-            <h2 className="font-heading text-2xl font-extrabold">
+            <h2 className="font-sans text-2xl font-extrabold">
               Join our News letter
             </h2>
             <p className="mt-5 max-w-[387px] text-sm leading-normal">

@@ -6,8 +6,8 @@ import { Button } from "@/shared/ui/button"
 
 export function CourseDetailHeroSection() {
   return (
-    <section className="bg-[#f5f5f5] px-6 py-16 text-ma-text sm:py-[90px]">
-      <div className="mx-auto grid max-w-[1040px] gap-5 rounded-[24px] lg:grid-cols-2">
+    <section className="bg-[#f5f5f5] py-16 text-ma-text sm:py-[90px]">
+      <div className="mx-auto grid gap-5 rounded-[24px] lg:grid-cols-2 lg:px-25 2xl:px-50">
         <div className="relative min-h-[320px] overflow-hidden rounded-[24px] sm:min-h-[428px]">
           <Image
             src="/figma-courses/foundational-ai-skills.png"

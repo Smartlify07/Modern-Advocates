@@ -12,7 +12,7 @@ const supporters = [
 export function HeroSection() {
   return (
     <section className="relative isolate overflow-hidden bg-white text-ma-text">
-      <div className="relative z-10 mx-auto flex min-h-[924px] max-w-6xl flex-col items-center px-6 py-[118px] text-center">
+      <div className="relative z-10 mx-auto flex min-h-[924px] flex-col items-center py-[118px] text-center xl:px-25 2xl:px-50">
         <div className="flex items-center justify-center gap-4">
           <div className="flex -space-x-2">
             {supporters.map((src, index) => (
@@ -44,7 +44,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <h1 className="mt-[30px] max-w-[800px] font-heading text-[clamp(3rem,5vw,60px)] leading-[70px] font-extrabold text-balance">
+        <h1 className="mt-[30px] max-w-[800px] font-sans text-[clamp(3rem,5vw,60px)] leading-[70px] font-extrabold">
           Navigate today&apos;s world with the skills, resources, and support
           you deserve.
         </h1>

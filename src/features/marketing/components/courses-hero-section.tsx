@@ -22,7 +22,10 @@ function CourseCard({ course }: { course: Course }) {
   const originalPrice = course.discountedPrice ? course.price : null
 
   return (
-    <Link href={`/courses/${course.id}`} className="flex w-full flex-col gap-5 rounded-[24px] border border-[#d9d9d9] bg-white px-2.5 pt-2.5 pb-[30px] sm:max-w-[334px]">
+    <Link
+      href={`/courses/${course.id}`}
+      className="flex w-full flex-col gap-5 rounded-[24px] border border-[#d9d9d9] bg-white px-2.5 pt-2.5 pb-[30px] sm:max-w-[334px]"
+    >
       <div className="relative h-[254px] overflow-hidden rounded-[24px]">
         {course.thumbnailUrl ? (
           <Image
@@ -62,7 +65,9 @@ function CourseCard({ course }: { course: Course }) {
           </div>
 
           <div className="flex flex-wrap items-baseline gap-2.5 leading-normal font-medium">
-            <p className="text-xl text-ma-text">$ {displayPrice.toFixed(2)} USD</p>
+            <p className="text-xl text-ma-text">
+              $ {displayPrice.toFixed(2)} USD
+            </p>
             {originalPrice && (
               <p className="text-base text-[#6b7280] line-through">
                 $ {originalPrice.toFixed(2)} USD
@@ -83,14 +88,14 @@ export function CoursesHeroSection() {
   })
 
   return (
-    <section className="bg-white px-6 pt-18 pb-20 text-ma-text sm:pt-25 sm:pb-25">
-      <div className="mx-auto max-w-[1042px]">
-        <div className="mx-auto max-w-[800px] text-center">
+    <section className="bg-white pt-18 pb-20 text-ma-text sm:pt-25 sm:pb-25">
+      <div className="mx-auto lg:px-25 2xl:px-50">
+        <div className="mx-auto max-w-200 text-center">
           <p className="text-base leading-normal font-medium tracking-[0.1em] text-[#6b7280] uppercase">
             Courses
           </p>
 
-          <h1 className="mt-[30px] font-heading text-[clamp(2.75rem,6vw,60px)] leading-[1.16] font-extrabold text-balance text-ma-text sm:leading-[70px]">
+          <h1 className="mt-7.5 font-sans text-[clamp(2.75rem,6vw,60px)] leading-[1.16] font-extrabold text-balance text-ma-text sm:leading-[70px]">
             Build the Skills That Keep You Moving Forward
           </h1>
 

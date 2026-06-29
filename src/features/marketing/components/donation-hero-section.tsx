@@ -4,15 +4,15 @@ export function DonationHeroSection() {
   return (
     <section
       id="donation"
-      className="bg-white px-6 pt-18 pb-20 text-ma-text sm:pt-25 sm:pb-25"
+      className="bg-white pt-18 pb-20 text-ma-text sm:pt-25 sm:pb-25 lg:px-25 2xl:px-50"
     >
-      <div className="mx-auto max-w-[1040px]">
+      <div className="mx-auto">
         <div className="mx-auto max-w-[800px] text-center">
-          <p className="text-base leading-normal font-medium tracking-[0.1em] text-black uppercase">
+          <p className="text-base leading-normal font-medium tracking-[10%] text-[#6B7280] uppercase">
             Donation
           </p>
 
-          <h1 className="mt-[30px] font-heading text-[clamp(2.75rem,6vw,60px)] leading-[1.16] font-extrabold text-balance text-black sm:leading-[70px]">
+          <h1 className="mt-7.5 font-sans text-[clamp(2.75rem,6vw,60px)] leading-[1.16] font-extrabold text-balance text-primary sm:leading-[70px]">
             Your Support Keeps Someone in the Game
           </h1>
 
@@ -54,9 +54,9 @@ export function DonationHeroSection() {
                 here.
               </p>
               <p>
-                ModernAdvocates Inc. is a 501(c)(3) nonprofit organization.
-                EIN: [insert]. All donations are tax-deductible to the full
-                extent permitted by law.
+                ModernAdvocates Inc. is a 501(c)(3) nonprofit organization. EIN:
+                [insert]. All donations are tax-deductible to the full extent
+                permitted by law.
               </p>
               <p>
                 <strong>Melanie Reyes,</strong>
