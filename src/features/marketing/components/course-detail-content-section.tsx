@@ -78,7 +78,7 @@ function CourseModule({
       className="group rounded-2xl border border-[#d9d9d9] bg-white px-5 pt-[17px] pb-5 open:bg-[#f5f5f5]"
     >
       <summary className="flex cursor-pointer list-none items-center justify-between gap-4 [&::-webkit-details-marker]:hidden">
-        <h3 className="text-base leading-normal font-bold text-ma-text">
+        <h3 className="text-sm/[100%] leading-normal font-bold text-ma-text sm:text-base">
           {title}
         </h3>
         <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-[15px] border border-[#d9d9d9] bg-white">
@@ -94,7 +94,7 @@ function CourseModule({
       </summary>
 
       {topics ? (
-        <div className="mt-4 text-[15px] leading-normal text-ma-text">
+        <div className="mt-4 text-sm leading-normal text-ma-text sm:text-[15px]">
           <p>Topics:</p>
           <ul className="list-disc pl-5">
             {topics.map((topic) => (
@@ -109,8 +109,8 @@ function CourseModule({
 
 function TutorCard() {
   return (
-    <article className="flex flex-col gap-5 rounded-2xl bg-[#f5f5f5] p-4 sm:flex-row">
-      <div className="relative h-[190px] w-full shrink-0 overflow-hidden rounded-[10px] sm:w-[190px]">
+    <article className="flex gap-5 rounded-2xl bg-[#f5f5f5] p-4 sm:flex-row lg:flex-col">
+      <div className="relative h-[190px] min-w-[106px] shrink-0 overflow-hidden rounded-[10px] sm:w-[190px] lg:w-full">
         <Image
           src="/figma-courses/tutor-maxwell.png"
           alt="Mr. Maxwell"
@@ -120,26 +120,28 @@ function TutorCard() {
         />
       </div>
 
-      <div className="flex flex-col gap-[22px]">
+      <div className="flex flex-col gap-4 sm:gap-[22px]">
         <div className="flex flex-col gap-1 text-ma-text">
           <h3 className="text-base leading-normal font-bold">Mr. Maxwell</h3>
-          <p className="text-[15px] leading-normal">Software engineer</p>
+          <p className="text-xs leading-normal sm:text-[15px]">
+            Software engineer
+          </p>
         </div>
 
-        <p className="text-[15px] leading-normal text-ma-text">
+        <p className="text-xs leading-normal text-ma-text sm:text-[15px]">
           With 10+ years of experience in ML engineering and applied AI, Mr
           Henry has worked with tech companies, universities, and startups to
           build real-world AI systems.
         </p>
 
-        <div className="flex flex-wrap items-center gap-4 text-sm leading-normal font-medium text-[#6b7280]">
+        <div className="flex flex-nowrap items-center gap-4 text-[10px] leading-normal font-medium text-nowrap text-[#6b7280] sm:text-sm lg:flex-wrap">
           <span className="inline-flex items-center gap-1">
-            <User className="size-5" aria-hidden="true" />
+            <User className="size-3.5 sm:size-5" aria-hidden="true" />
             210 students
           </span>
           <span className="inline-flex items-center gap-1">
             <Star
-              className="size-5 fill-[#ff9d00] text-[#ff9d00]"
+              className="size-3.5 fill-[#ff9d00] text-[#ff9d00] sm:size-5"
               aria-hidden="true"
             />
             5.0 (100 reviews)
@@ -155,7 +157,7 @@ function ReviewCard({ review }: { review: (typeof reviews)[number] }) {
     <article className="flex flex-col gap-[22px] rounded-2xl border border-[#d9d9d9] p-5">
       <p className="text-[15px] leading-normal text-ma-text">{review.text}</p>
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+      <div className="flex gap-4 sm:flex-row sm:items-end lg:flex-col">
         <div className="flex flex-1 items-end gap-2.5">
           <Image
             src={review.image}
@@ -165,7 +167,7 @@ function ReviewCard({ review }: { review: (typeof reviews)[number] }) {
             className="size-[50px] rounded-full object-cover"
           />
           <div className="flex flex-col gap-1 text-ma-text">
-            <h3 className="text-base leading-normal font-bold">
+            <h3 className="text-base leading-normal font-bold text-nowrap">
               {review.name}
             </h3>
             <p className="text-[15px] leading-normal">{review.role}</p>
@@ -185,7 +187,7 @@ function ReviewCard({ review }: { review: (typeof reviews)[number] }) {
 function CourseInformationCard() {
   return (
     <aside className="w-full rounded-2xl border border-[#d9d9d9] bg-white px-4 pt-4 pr-3.5 pb-[25px] lg:sticky lg:top-8">
-      <h2 className="text-2xl leading-normal font-extrabold text-ma-text">
+      <h2 className="leading/[100%]-normal text-xl font-extrabold text-ma-text sm:text-2xl">
         Course information
       </h2>
 
@@ -230,11 +232,11 @@ function CourseInformationCard() {
 
 export function CourseDetailContentSection() {
   return (
-    <section className="bg-white py-20 text-ma-text">
-      <div className="mx-auto grid gap-12 lg:grid-cols-[598px_335px] lg:items-start lg:justify-between lg:px-25 2xl:px-50">
+    <section className="bg-white py-10 text-ma-text lg:py-20">
+      <div className="mx-auto flex flex-col-reverse gap-12 px-4 lg:grid lg:grid-cols-[598px_335px] lg:items-start lg:justify-between lg:px-25 2xl:px-50">
         <div className="flex w-full max-w-[598px] flex-col gap-[30px]">
           <section className="flex flex-col gap-4">
-            <h2 className="text-2xl leading-normal font-extrabold text-ma-text">
+            <h2 className="text-xl/[100%] leading-normal font-extrabold text-ma-text sm:text-2xl">
               Course overview
             </h2>
             <p className="text-base leading-normal text-ma-text">
@@ -246,7 +248,7 @@ export function CourseDetailContentSection() {
           </section>
 
           <section className="flex flex-col gap-5">
-            <h2 className="text-2xl leading-normal font-extrabold text-ma-text">
+            <h2 className="text-xl/[100%] leading-normal font-extrabold text-ma-text sm:text-2xl">
               Course Module
             </h2>
             <div className="flex flex-col gap-4">
@@ -262,14 +264,14 @@ export function CourseDetailContentSection() {
           </section>
 
           <section className="flex flex-col gap-5">
-            <h2 className="text-2xl leading-normal font-extrabold text-ma-text">
+            <h2 className="/[100%]leading-normal text-xl font-extrabold text-ma-text sm:text-2xl">
               Meet your tutor
             </h2>
             <TutorCard />
           </section>
 
           <section className="flex flex-col gap-5">
-            <h2 className="text-2xl leading-normal font-extrabold text-ma-text">
+            <h2 className="text-xl/[100%] leading-normal font-extrabold text-ma-text sm:text-2xl">
               Student review of this course
             </h2>
             {reviews.map((review) => (

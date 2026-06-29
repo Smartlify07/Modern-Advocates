@@ -16,14 +16,17 @@ const supportCards = [
 
 export function MissionBridgeSection() {
   return (
-    <section id="about" className="bg-white py-25 sm:py-24 xl:px-25 2xl:px-50">
+    <section
+      id="about"
+      className="bg-white px-4 py-12.5 sm:py-25 xl:px-25 2xl:px-50"
+    >
       <div className="mx-auto max-w-xl text-center">
-        <h2 className="font-heading text-[40px] font-extrabold tracking-[-0.01em] text-ma-text sm:text-5xl">
+        <h2 className="font-sans text-[28px]/[100%] font-extrabold tracking-[0%] text-ma-text sm:text-5xl sm:text-[40px] sm:tracking-[-0.01em]">
           Bridging the Gap between Technology and Care
         </h2>
       </div>
 
-      <div className="mt-12.5 space-y-5 text-lg text-ma-text">
+      <div className="mt-10 space-y-5 text-base text-ma-text sm:mt-12.5 sm:text-lg">
         <p>
           Millions of people face delayed diagnoses, fragmented care, and
           limited access to support. At the same time, AI technology is
@@ -45,9 +48,9 @@ export function MissionBridgeSection() {
         </p>
       </div>
 
-      <div className="mx-auto mt-15 grid gap-5 rounded-2xl bg-[#F5F5F5] p-5 md:grid-cols-[2fr_1fr]">
-        <div className="flex gap-5 rounded-2xl bg-white px-5 pt-5 pb-7.5">
-          <div className="flex min-h-[318px] flex-col justify-between">
+      <div className="mt-15 grid gap-5 rounded-2xl bg-[#F5F5F5] p-5 md:grid-cols-[2fr_1fr]">
+        <div className="flex flex-col gap-5 rounded-2xl bg-white p-5 sm:flex-row">
+          <div className="flex flex-col justify-between gap-2.5 sm:min-h-79.5 sm:gap-0">
             <div className="flex size-12.5 items-center justify-center rounded-full border">
               <Gift />
             </div>
@@ -73,8 +76,8 @@ export function MissionBridgeSection() {
           />
         </div>
 
-        <div className="flex gap-5 rounded-2xl bg-white px-5 pt-5 pb-7.5">
-          <div className="flex min-h-[318px] flex-col justify-between">
+        <div className="hidden gap-5 rounded-2xl bg-white p-5 sm:flex">
+          <div className="flex flex-col justify-between gap-2.5 sm:min-h-79.5">
             <div className="flex size-12.5 items-center justify-center rounded-full border">
               <Gift />
             </div>
@@ -98,8 +101,8 @@ export function MissionBridgeSection() {
 
 export function FounderStorySection() {
   return (
-    <section className="bg-white py-20 sm:py-24 xl:px-25 2xl:px-50">
-      <div className="mx-auto items-center items-start gap-10 lg:grid lg:grid-cols-[0.8fr_1.2fr]">
+    <section className="bg-white px-4 py-20 sm:py-24 xl:px-25 2xl:px-50">
+      <div className="mx-auto flex flex-col-reverse items-start gap-10 lg:grid lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
         <Image
           src="/figma-about/founder.png"
           alt=""
@@ -109,12 +112,32 @@ export function FounderStorySection() {
           height={500}
         />
 
+        <div className="mt-10 space-y-5 text-base text-ma-text lg:hidden">
+          <p>
+            I built ModernAdvocates Inc. out of something I lived - not
+            something I studied.
+          </p>
+          <p>
+            Navigating Endometriosis in a healthcare system that kept dismissing
+            me taught me that the gap between the help that exists and the
+            people who need it most is not a coincidence. It&apos;s a design
+            flaw. And as AI began reshaping how we work, how we access care, and
+            how we navigate every major system in our lives, I saw that same gap
+            widening. So, I built the bridge.
+          </p>
+          <p>
+            If any part of this resonates - if you&apos;ve felt unseen by a
+            system that was supposed to serve you - there&apos;s a place here
+            for you.
+          </p>
+        </div>
+
         <div>
-          <h2 className="font-sans text-[40px]/[60px] font-extrabold tracking-[0%] text-ma-text sm:text-5xl">
+          <h2 className="font-sans text-[28px]/[100%] font-extrabold tracking-[0%] text-ma-text sm:text-5xl lg:text-[40px]/[60px]">
             I built ModernAdvocates Inc. out of something I lived...
           </h2>
 
-          <div className="mt-10 space-y-5 text-base text-ma-text">
+          <div className="mt-10 hidden space-y-5 text-base text-ma-text lg:block">
             <p>
               I built ModernAdvocates Inc. out of something I lived - not
               something I studied.

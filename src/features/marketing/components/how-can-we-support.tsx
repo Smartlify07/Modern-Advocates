@@ -6,9 +6,12 @@ import React from "react"
 
 const SupportSection = () => {
   return (
-    <section id="about" className="bg-white py-25 sm:py-24 xl:px-25 2xl:px-50">
+    <section
+      id="about"
+      className="bg-white px-4 py-12.5 sm:py-25 xl:px-25 2xl:px-50"
+    >
       <div className="mx-auto text-center">
-        <h2 className="mx-auto max-w-160 text-center font-sans text-[40px] font-extrabold text-ma-text sm:text-5xl">
+        <h2 className="mx-auto max-w-160 text-center font-sans text-[28px] font-extrabold tracking-[0%] text-ma-text sm:text-5xl sm:text-[40px]">
           How can we support your healthcare journey?{" "}
         </h2>
       </div>
@@ -20,8 +23,8 @@ const SupportSection = () => {
         </p>
       </div>
 
-      <div className="mx-auto mt-15.5 grid gap-4 rounded-2xl bg-[#f5f5f5] p-4">
-        <div className="grid grid-cols-2 gap-4">
+      <div className="mx-auto mt-10 grid gap-4 rounded-2xl bg-[#f5f5f5] p-4 lg:mt-15.5">
+        <div className="grid gap-4 lg:grid-cols-2">
           <SupportCard
             title="Card Title"
             description="We create distinctive brand identities that communicate your values clearly and build strong connections with your audience."
@@ -31,7 +34,7 @@ const SupportSection = () => {
             description="We create distinctive brand identities that communicate your values clearly and build strong connections with your audience."
           />{" "}
         </div>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid gap-4 lg:grid-cols-3">
           <SupportCard
             title="Card Title"
             description="We create distinctive brand identities that communicate your values clearly and build strong connections with your audience."

@@ -8,9 +8,9 @@ const ecosystemItems = [
 
 export function AboutAiHealthcareSection() {
   return (
-    <section className="bg-white py-20 text-ma-text sm:py-25">
-      <div className="mx-auto grid items-start gap-10 lg:grid-cols-[422px_1fr] lg:gap-[50px] lg:px-25 2xl:px-50">
-        <div className="relative min-h-[360px] overflow-hidden rounded-[24px] bg-ma-bg sm:min-h-[500px]">
+    <section className="bg-white py-12.5 text-ma-text sm:py-20">
+      <div className="mx-auto grid items-start gap-10 px-4 lg:grid-cols-[422px_1fr] lg:gap-[50px] lg:px-25 2xl:px-50">
+        <div className="relative hidden min-h-[360px] overflow-hidden rounded-[24px] bg-ma-bg sm:min-h-[500px] lg:block">
           <Image
             src="/figma-about/healthcare-ai.png"
             alt="A gloved hand operating medical equipment"
@@ -21,11 +21,21 @@ export function AboutAiHealthcareSection() {
         </div>
 
         <div className="pt-0 lg:pt-1">
-          <h2 className="max-w-[578px] font-sans text-[clamp(2.25rem,4vw,40px)] leading-[1.25] font-extrabold text-balance text-ma-text sm:leading-[60px]">
+          <h2 className="max-w-[578px] font-sans text-[28px]/[100%] leading-[1.25] font-extrabold text-balance text-ma-text sm:leading-[60px] lg:text-[40px]">
             ModernAdvocates is redefining how AI is used in Healthcare
           </h2>
 
-          <div className="mt-8 max-w-[578px] space-y-5 text-base leading-normal text-ma-text sm:mt-[30px] sm:text-lg">
+          <div className="relative mt-5 min-h-[360px] overflow-hidden rounded-[24px] bg-ma-bg sm:min-h-[500px] lg:block lg:hidden">
+            <Image
+              src="/figma-about/healthcare-ai.png"
+              alt="A gloved hand operating medical equipment"
+              fill
+              sizes="(min-width: 1024px) 422px, calc(100vw - 48px)"
+              className="object-cover"
+            />
+          </div>
+
+          <div className="mt-5 max-w-[578px] space-y-5 text-base leading-normal text-ma-text sm:mt-[30px] sm:text-lg lg:mt-8">
             <p>
               Most organizations operate in silos-technology, education, or care
               delivery. ModernAdvocates brings these elements together into one

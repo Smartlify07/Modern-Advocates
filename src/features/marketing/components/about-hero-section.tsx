@@ -11,13 +11,13 @@ const supporters = [
 export function AboutHeroSection() {
   return (
     <section className="bg-white pt-18 pb-20 text-ma-text sm:pt-24 sm:pb-25">
-      <div className="mx-auto lg:px-25 2xl:px-50">
+      <div className="mx-auto px-4 lg:px-25 2xl:px-50">
         <div className="mx-auto max-w-200 text-center">
           <p className="text-base leading-normal font-medium tracking-[10%] text-[#6b7280] uppercase">
             About us
           </p>
 
-          <h1 className="mt-7.5 font-sans text-[clamp(2.75rem,6vw,60px)] leading-[1.16] font-extrabold text-balance text-black sm:leading-[70px]">
+          <h1 className="mt-7.5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold text-balance text-primary sm:leading-[70px] lg:text-[60px]">
             This Organization Exists Now Because It Didn&apos;t When I Needed
             It.
           </h1>
@@ -56,7 +56,7 @@ export function AboutHeroSection() {
         </div>
 
         <div className="mt-22.5 grid gap-5 lg:grid-cols-2">
-          <div className="relative min-h-[420px] overflow-hidden rounded-[24px] bg-ma-bg sm:min-h-[550px]">
+          <div className="relative min-h-[424px] overflow-hidden rounded-[24px] bg-ma-bg sm:min-h-[550px] lg:min-h-[420px]">
             <Image
               src="/figma-about/founder.png"
               alt="Melanie Reyes, founder of ModernAdvocates Inc."
@@ -67,12 +67,12 @@ export function AboutHeroSection() {
             />
           </div>
 
-          <article className="flex min-h-[550px] flex-col rounded-[24px] bg-[#f5f5f5] p-7 sm:p-[30px]">
+          <article className="flex min-h-[550px] flex-col rounded-[24px] bg-[#f5f5f5] px-4 py-7.5 sm:p-[30px] lg:p-7">
             <div>
-              <h2 className="text-[32px] leading-normal font-semibold text-ma-text sm:text-4xl">
+              <h2 className="text-[30px] leading-normal font-semibold text-ma-text sm:text-4xl sm:text-[32px]">
                 Melanie Reyes
               </h2>
-              <p className="text-base leading-normal text-black">Founder</p>
+              <p className="text-base leading-normal text-primary">Founder</p>
             </div>
 
             <div className="mt-[31px] space-y-5 text-base leading-normal text-ma-text sm:text-lg">

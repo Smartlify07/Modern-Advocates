@@ -19,7 +19,7 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <header className="relative z-20 bg-white py-5 xl:px-25 2xl:px-50">
+    <header className="relative z-20 bg-white px-4 py-5 xl:px-25 2xl:px-50">
       <div className="flex w-full items-center justify-between">
         <Link href="/" className="flex w-[157px] flex-col gap-1">
           <Image
@@ -60,17 +60,19 @@ const Navbar = () => {
           type="button"
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           onClick={() => setMobileOpen((prev) => !prev)}
-          className="md:hidden"
+          className="size-10 rounded-[12px] border p-2 md:hidden"
         >
-          {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+          {mobileOpen ? (
+            <X className="size-6 text-[#6B7280]" />
+          ) : (
+            <Menu className="size-6 text-[#6B7280]" />
+          )}
         </button>
       </div>
 
       <div
         className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${
-          mobileOpen
-            ? "mt-4 max-h-96 opacity-100"
-            : "max-h-0 opacity-0"
+          mobileOpen ? "mt-4 max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <nav

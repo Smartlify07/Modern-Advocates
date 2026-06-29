@@ -28,17 +28,20 @@ const socialLinks = [
 
 export function ContactHeroSection() {
   return (
-    <section id="contact" className="bg-white py-20 text-ma-text sm:py-25">
-      <div className="mx-auto grid items-start gap-14 lg:grid-cols-[444px_1fr] lg:gap-[88px] lg:px-25 2xl:px-50">
+    <section
+      id="contact"
+      className="bg-white py-12.5 text-ma-text sm:py-25 lg:py-20"
+    >
+      <div className="mx-auto grid items-start gap-14 px-4 lg:grid-cols-[444px_1fr] lg:gap-[88px] lg:px-25 2xl:px-50">
         <div className="flex flex-col gap-10">
-          <div className="flex flex-col gap-[30px]">
+          <div className="flex flex-col gap-5 lg:gap-[30px]">
             <p className="text-base leading-normal font-medium tracking-[0.1em] text-[#6b7280] uppercase">
               Contact
             </p>
-            <h1 className="font-sans text-[clamp(3rem,6vw,55px)] leading-[1.15] font-extrabold text-balance text-ma-text sm:leading-[70px]">
+            <h1 className="font-sans text-[28px]/[100%] leading-[1.15] font-extrabold text-balance text-ma-text sm:leading-[70px] lg:text-[55px]">
               Reach out today
             </h1>
-            <p className="max-w-[444px] text-lg leading-normal text-ma-text">
+            <p className="max-w-[444px] text-base leading-normal text-ma-text lg:text-lg">
               Have questions about our membership and donation programs? Reach
               out using the form below, and our team will get back to you
               promptly.
@@ -93,7 +96,7 @@ export function ContactHeroSection() {
           </div>
         </div>
 
-        <form className="rounded-[24px] bg-[#f5f5f5] p-[30px]">
+        <form className="rounded-[24px] bg-[#f5f5f5] px-4 py-7.5 lg:p-[30px]">
           <FieldGroup className="gap-5">
             <Field>
               <FieldLabel

@@ -6,17 +6,20 @@ import React from "react"
 
 const AboutOurValuesSection = () => {
   return (
-    <section id="about" className="bg-white py-25 sm:py-24 xl:px-25 2xl:px-50">
-      <p className="mb-[19px] text-center text-base leading-normal font-medium tracking-[10%] text-[#6b7280] uppercase">
+    <section
+      id="about"
+      className="bg-white px-4 py-12.5 sm:py-24 lg:py-25 xl:px-25 2xl:px-50"
+    >
+      <p className="mb-5 text-center text-sm leading-normal font-medium tracking-[10%] text-[#6b7280] uppercase sm:text-base">
         OUR VALUES{" "}
       </p>
       <div className="mx-auto text-center">
-        <h2 className="mx-auto max-w-160 text-center font-sans text-[40px] font-extrabold text-ma-text sm:text-5xl">
+        <h2 className="mx-auto max-w-160 text-center font-sans text-[28px]/[100%] font-extrabold text-ma-text sm:text-5xl lg:text-[40px]">
           How can we support your healthcare journey?{" "}
         </h2>
       </div>
 
-      <div className="mx-auto mt-10 max-w-3xl space-y-5 text-center text-lg text-ma-text">
+      <div className="mx-auto mt-10 max-w-3xl space-y-5 text-center text-base text-ma-text lg:text-lg">
         <p>
           ModernAdvocates creates a continuous learning system that improves
           outcomes while expanding access to support.
@@ -24,7 +27,7 @@ const AboutOurValuesSection = () => {
       </div>
 
       <div className="mx-auto mt-15.5 grid gap-4 rounded-2xl bg-[#f5f5f5] p-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid gap-4 lg:grid-cols-2">
           <SupportCard
             title="Card Title"
             description="We create distinctive brand identities that communicate your values clearly and build strong connections with your audience."
@@ -34,7 +37,7 @@ const AboutOurValuesSection = () => {
             description="We create distinctive brand identities that communicate your values clearly and build strong connections with your audience."
           />{" "}
         </div>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid gap-4 lg:grid-cols-3">
           <SupportCard
             title="Card Title"
             description="We create distinctive brand identities that communicate your values clearly and build strong connections with your audience."

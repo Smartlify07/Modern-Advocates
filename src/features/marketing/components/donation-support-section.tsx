@@ -7,19 +7,19 @@ const donationTypes = ["Fixed Donation", "Tier Donation", "Monthly Pay"]
 
 export function DonationSupportSection() {
   return (
-    <section className="bg-white py-20 text-ma-text sm:py-25 lg:px-25 2xl:px-50">
+    <section className="bg-white px-4 py-12.5 text-ma-text sm:py-25 lg:px-25 lg:py-20 2xl:px-50">
       <div className="mx-auto grid items-start gap-12 lg:grid-cols-[506px_510px] lg:gap-6">
         <div className="pt-0 lg:pt-2">
-          <h2 className="font-sans text-[clamp(2.75rem,5.5vw,60px)] leading-[1.12] font-extrabold text-balance text-primary sm:leading-[70px]">
+          <h2 className="font-sans text-[28px]/[100%] leading-[1.12] font-extrabold text-balance text-primary lg:text-[60px]/[70px]">
             Support us and make a difference for the future!
           </h2>
-          <p className="mt-[30px] max-w-[506px] text-lg leading-normal text-black">
+          <p className="mt-[30px] max-w-[506px] text-base leading-normal text-primary lg:text-lg">
             Together, we can make a real impact in communities around the world.
             Help us bring hope and support.
           </p>
         </div>
 
-        <form className="flex w-full max-w-[510px] flex-col gap-[30px] rounded-[24px] border border-[#d9d9d9] bg-[#f5f5f5] px-7 pt-[30px] pb-7 sm:px-[30px]">
+        <form className="flex w-full max-w-[510px] flex-col gap-[30px] rounded-[24px] border border-[#d9d9d9] bg-[#f5f5f5] px-4 pt-[30px] pb-7 sm:px-[30px] lg:px-7">
           <div className="border-b border-[#d9d9d9] pb-2.5">
             <h3 className="text-2xl leading-normal font-bold text-black">
               Make Your Donation

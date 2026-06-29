@@ -34,10 +34,10 @@ export function Testimonials() {
   }
 
   return (
-    <section className="overflow-hidden bg-white py-[100px]">
-      <div className="mx-auto flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between xl:px-25 2xl:px-50">
+    <section className="overflow-hidden bg-white py-12.5 lg:py-25">
+      <div className="mx-auto flex flex-col gap-8 px-4 sm:flex-row sm:items-end sm:justify-between xl:px-25 2xl:px-50">
         <div>
-          <h2 className="font-sans text-[40px] leading-[60px] font-extrabold text-primary">
+          <h2 className="font-sans text-[28px]/[100%] font-extrabold text-primary lg:text-[40px] lg:leading-15">
             What they say about us?
           </h2>
           <p className="mt-6 max-w-[650px] text-[18px] leading-normal text-primary">
@@ -68,7 +68,7 @@ export function Testimonials() {
 
       <div
         ref={scrollRef}
-        className="hide-scrollbar mt-[86px] flex gap-[30px] overflow-x-auto scroll-smooth px-6 pb-2 xl:px-25 2xl:pl-50"
+        className="hide-scrollbar mt-[86px] flex gap-[30px] overflow-x-auto scroll-smooth px-4 pb-2 xl:px-25 2xl:pl-50"
       >
         {reviews.map((review) => (
           <article
