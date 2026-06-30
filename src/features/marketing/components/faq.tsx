@@ -71,7 +71,7 @@ export function Faq() {
                 className="flex w-full items-start gap-4 text-left text-primary"
               >
                 <Plus
-                  className={`size-[30px] shrink-0 transition-transform duration-300 ${
+                  className={`size-[30px] shrink-0 transition-transform duration-600 ${
                     openIndex === i ? "rotate-[360deg]" : ""
                   }`}
                   strokeWidth={2.5}
