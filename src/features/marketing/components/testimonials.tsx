@@ -70,22 +70,20 @@ export function Testimonials() {
 
       <div
         ref={scrollRef}
-        className="hide-scrollbar mt-[86px] flex gap-[30px] overflow-x-auto scroll-smooth px-4 pb-2 xl:px-25 2xl:pl-50"
+        className="hide-scrollbar relative mt-[86px] flex gap-[30px] overflow-x-auto scroll-smooth px-4 pb-2 xl:px-25 2xl:pl-50"
       >
         {reviews.map((review) => (
           <article
             key={review.image}
-            className="relative flex h-[500px] w-[330px] shrink-0 flex-col justify-end rounded-3xl px-[15px] pb-[30px]"
+            className="relative flex h-[500px] w-[330px] shrink-0 flex-col justify-end overflow-hidden rounded-3xl px-[15px] pb-[30px]"
           >
-            <div className="absolute inset-0 overflow-hidden rounded-3xl">
-              <Image
-                src={review.image}
-                alt=""
-                fill
-                sizes="330px"
-                className="object-cover"
-              />
-            </div>
+            <Image
+              src={review.image}
+              alt=""
+              fill
+              sizes="330px"
+              className="object-cover"
+            />
             <div
               className="absolute inset-0 bg-gradient-to-b from-transparent from-[30%] to-black"
               aria-hidden="true"
