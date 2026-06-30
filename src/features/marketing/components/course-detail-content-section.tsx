@@ -218,7 +218,7 @@ function CourseInformationCard() {
         <Button
           asChild
           variant="outline"
-          className="group relative mt-6"
+          className="group relative mt-6 bg-transparent"
         >
           <Link
             href="/signup"
