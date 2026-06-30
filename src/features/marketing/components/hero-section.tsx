@@ -58,10 +58,13 @@ export function HeroSection() {
         <div className="mt-10 flex items-center gap-5">
           <Link
             href="/contact"
-            className="inline-flex items-center justify-center gap-1.5 rounded-[60px] bg-ma-text px-5 py-4 text-xs font-semibold text-nowrap text-white transition-colors hover:bg-ma-text/90 sm:gap-2.5 sm:text-base"
+            className="group relative inline-flex items-center justify-center overflow-hidden rounded-[60px] bg-ma-text px-5 py-4 sm:gap-2.5 sm:text-base"
           >
-            Book consultation
-            <ArrowRight className="size-5" aria-hidden="true" />
+            <span className="relative z-10 inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-nowrap text-white sm:gap-2.5 sm:text-base">
+              Book consultation
+              <ArrowRight className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" aria-hidden="true" />
+            </span>
+            <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </Link>
           <Link
             href="/donation"
