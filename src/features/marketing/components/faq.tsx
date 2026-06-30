@@ -11,13 +11,16 @@ const faqs = [
 
 export function Faq() {
   return (
-    <section id="faq" className="bg-white px-6 py-24 lg:py-[100px]">
-      <div className="mx-auto grid max-w-[1044px] gap-12 lg:grid-cols-[425px_598px] lg:gap-[77px]">
+    <section
+      id="faq"
+      className="bg-white px-4 py-12.5 lg:px-25 lg:py-25 2xl:px-50"
+    >
+      <div className="mx-auto grid gap-12 lg:grid-cols-[425px_1fr] lg:gap-[77px]">
         <div>
-          <h2 className="max-w-[425px] font-heading text-[40px] leading-[60px] font-extrabold text-black">
+          <h2 className="max-w-[425px] font-sans text-[28px]/[100%] font-extrabold text-primary lg:text-[40px]/[60px]">
             Got questions? we&apos;ve got answers
           </h2>
-          <p className="mt-[30px] max-w-[425px] text-[18px] leading-normal text-black">
+          <p className="mt-7.5 max-w-[425px] text-base leading-normal text-primary lg:text-[18px]">
             We&apos;ve compiled answers to frequently asked questions to help
             you get started quickly and confidently.
           </p>
@@ -29,14 +32,14 @@ export function Faq() {
               key={question}
               type="button"
               aria-label={question}
-              className="flex w-full items-start gap-4 rounded-3xl border border-[#d9d9d9] bg-white px-5 py-[30px] text-left text-black transition-colors hover:border-ma-text/35"
+              className="flex w-full items-start gap-4 rounded-3xl border border-[#d9d9d9] bg-white p-5 px-5 text-left text-primary transition-colors hover:border-ma-text/35 lg:py-7.5"
             >
               <Plus
                 className="size-[30px] shrink-0"
                 strokeWidth={2.5}
                 aria-hidden="true"
               />
-              <span className="min-w-0 flex-1 text-[22px] leading-normal font-bold">
+              <span className="min-w-0 flex-1 text-lg leading-normal font-bold lg:text-[22px]">
                 {question}
               </span>
             </button>

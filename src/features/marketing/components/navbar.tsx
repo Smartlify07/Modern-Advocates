@@ -1,8 +1,10 @@
+"use client"
+
 import { Button } from "@/shared/ui/button"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Menu, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import React from "react"
+import { useState } from "react"
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -12,33 +14,32 @@ const navItems = [
   { label: "Donation", href: "/donation" },
   { label: "Login", href: "/login" },
 ]
+
 const Navbar = () => {
+  const [mobileOpen, setMobileOpen] = useState(false)
+
   return (
-    <header className="relative z-20 bg-white py-5">
-      <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-6">
-        <Link href="/" className="flex flex-col items-center gap-1">
+    <header className="relative z-20 bg-white px-4 py-5 xl:px-25 2xl:px-50">
+      <div className="flex w-full items-center justify-between">
+        <Link href="/" className="flex w-[157px] flex-col gap-1">
           <Image
             src="/figma-home/logo.svg"
             alt="ModernAdvocates Inc."
             width={58}
             height={44}
-            className="h-8 w-11"
             priority
           />
-          <span className="text-[5px] leading-none font-bold">
-            ModernAdvocates Inc
-          </span>
         </Link>
 
         <nav
           aria-label="Main navigation"
-          className="hidden items-center gap-7 text-ma-text md:flex"
+          className="hidden items-center gap-2 text-ma-text md:flex"
         >
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="font p-2.5 text-base transition-colors"
+              className="p-2.5 text-base transition-colors hover:text-secondary-foreground"
             >
               {item.label}
             </Link>
@@ -47,13 +48,62 @@ const Navbar = () => {
 
         <Button
           asChild
-          className="h-13 w-[157px] gap-[6px] rounded-[60px] px-5 py-4"
+          className="hidden h-13 w-[157px] gap-[6px] rounded-[60px] px-5 py-4 md:inline-flex"
         >
           <Link href="/contact">
             Consultation
             <ArrowRight className="size-3.5" aria-hidden="true" />
           </Link>
         </Button>
+
+        <button
+          type="button"
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          onClick={() => setMobileOpen((prev) => !prev)}
+          className="size-10 rounded-[12px] border p-2 md:hidden"
+        >
+          {mobileOpen ? (
+            <X className="size-6 text-[#6B7280]" />
+          ) : (
+            <Menu className="size-6 text-[#6B7280]" />
+          )}
+        </button>
+      </div>
+
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${
+          mobileOpen ? "mt-4 max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <nav
+          aria-label="Mobile navigation"
+          className="flex flex-col gap-1 border-t border-gray-100 pt-4"
+        >
+          {navItems.map((item, i) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setMobileOpen(false)}
+              className={`rounded-lg p-3 text-base transition-all duration-300 hover:bg-gray-50 ${
+                mobileOpen
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-1 opacity-0"
+              }`}
+              style={{ transitionDelay: mobileOpen ? `${i * 50}ms` : "0ms" }}
+            >
+              {item.label}
+            </Link>
+          ))}
+          <Button
+            asChild
+            className="mt-2 h-13 w-full gap-[6px] rounded-[60px] px-5 py-4"
+          >
+            <Link href="/contact" onClick={() => setMobileOpen(false)}>
+              Consultation
+              <ArrowRight className="size-3.5" aria-hidden="true" />
+            </Link>
+          </Button>
+        </nav>
       </div>
     </header>
   )

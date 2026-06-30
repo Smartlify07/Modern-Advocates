@@ -22,7 +22,10 @@ function CourseCard({ course }: { course: Course }) {
   const originalPrice = course.discountedPrice ? course.price : null
 
   return (
-    <Link href={`/courses/${course.id}`} className="flex w-full flex-col gap-5 rounded-[24px] border border-[#d9d9d9] bg-white px-2.5 pt-2.5 pb-[30px] sm:max-w-[334px]">
+    <Link
+      href={`/courses/${course.id}`}
+      className="flex w-full flex-col gap-5 rounded-[24px] border border-[#d9d9d9] bg-white px-2.5 pt-2.5 pb-7.5 sm:max-w-[334px]"
+    >
       <div className="relative h-[254px] overflow-hidden rounded-[24px]">
         {course.thumbnailUrl ? (
           <Image
@@ -62,7 +65,9 @@ function CourseCard({ course }: { course: Course }) {
           </div>
 
           <div className="flex flex-wrap items-baseline gap-2.5 leading-normal font-medium">
-            <p className="text-xl text-ma-text">$ {displayPrice.toFixed(2)} USD</p>
+            <p className="text-xl text-ma-text">
+              $ {displayPrice.toFixed(2)} USD
+            </p>
             {originalPrice && (
               <p className="text-base text-[#6b7280] line-through">
                 $ {originalPrice.toFixed(2)} USD
@@ -83,25 +88,25 @@ export function CoursesHeroSection() {
   })
 
   return (
-    <section className="bg-white px-6 pt-18 pb-20 text-ma-text sm:pt-25 sm:pb-25">
-      <div className="mx-auto max-w-[1042px]">
-        <div className="mx-auto max-w-[800px] text-center">
+    <section className="bg-white px-4 py-20 pb-20 text-ma-text sm:pt-25 sm:pb-25 lg:pt-18">
+      <div className="mx-auto lg:px-25 2xl:px-50">
+        <div className="mx-auto max-w-200 text-center">
           <p className="text-base leading-normal font-medium tracking-[0.1em] text-[#6b7280] uppercase">
             Courses
           </p>
 
-          <h1 className="mt-[30px] font-heading text-[clamp(2.75rem,6vw,60px)] leading-[1.16] font-extrabold text-balance text-ma-text sm:leading-[70px]">
+          <h1 className="mt-7.5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold text-balance text-ma-text sm:text-[60px] sm:leading-[70px]">
             Build the Skills That Keep You Moving Forward
           </h1>
 
-          <p className="mt-10 text-lg leading-normal text-ma-text">
+          <p className="mt-5 text-base leading-normal text-ma-text lg:mt-10 lg:text-lg">
             Our AI training sessions are designed for people who are managing
             life&apos;s challenges and still showing up. No tech background
             required.
           </p>
         </div>
 
-        <div className="mt-16 grid justify-items-center gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid justify-items-center gap-5 md:grid-cols-2 lg:mt-16 lg:grid-cols-3">
           {isLoading
             ? Array.from({ length: 3 }).map((_, i) => (
                 <div
@@ -127,7 +132,7 @@ export function CoursesHeroSection() {
               ))}
         </div>
 
-        <p className="mt-14 max-w-[1042px] text-2xl leading-normal font-medium text-ma-text sm:mt-16">
+        <p className="mt-10 text-xl leading-normal font-medium text-ma-text sm:mt-16 lg:mt-14 lg:text-2xl">
           The same AI tools reshaping the workplace are also changing how
           healthcare is accessed and navigated. We teach you both - so that a
           diagnosis or a job change doesn&apos;t leave you behind.

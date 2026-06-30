@@ -18,7 +18,6 @@ export default function Page() {
       <FounderStorySection />
       <SupportSection />
       <Testimonials />
-      <Faq />
     </main>
   )
 }

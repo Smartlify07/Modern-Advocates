@@ -11,8 +11,8 @@ const supporters = [
 
 export function HeroSection() {
   return (
-    <section className="relative isolate overflow-hidden bg-white text-ma-text">
-      <div className="relative z-10 mx-auto flex min-h-[924px] max-w-6xl flex-col items-center px-6 py-[118px] text-center">
+    <section className="relative isolate bg-white text-ma-text">
+      <div className="relative z-10 mx-auto flex flex-col items-center px-4 py-12.5 text-center lg:min-h-[924px] lg:py-[118px] xl:px-25 2xl:px-50">
         <div className="flex items-center justify-center gap-4">
           <div className="flex -space-x-2">
             {supporters.map((src, index) => (
@@ -44,40 +44,40 @@ export function HeroSection() {
           </div>
         </div>
 
-        <h1 className="mt-[30px] max-w-[800px] font-heading text-[clamp(3rem,5vw,60px)] leading-[70px] font-extrabold text-balance">
+        <h1 className="mt-[30px] max-w-[800px] font-sans text-[28px]/[100%] font-extrabold lg:text-[60px] lg:leading-[70px]">
           Navigate today&apos;s world with the skills, resources, and support
           you deserve.
         </h1>
 
-        <p className="mt-10 max-w-[750px] text-base leading-normal text-ma-text">
+        <p className="mt-6 max-w-[750px] text-base/[100%] text-ma-text lg:mt-10">
           ModernAdvocates Inc. helps low-to-moderate income individuals access
           AI workforce training and healthcare resources - so a diagnosis or a
           job displacement does not define your future.
         </p>
 
-        <div className="mt-10 flex flex-col items-center gap-5 sm:flex-row">
+        <div className="mt-10 flex items-center gap-5">
           <Link
             href="/contact"
-            className="inline-flex items-center justify-center gap-2.5 rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white transition-colors hover:bg-ma-text/90"
+            className="inline-flex items-center justify-center gap-1.5 rounded-[60px] bg-ma-text px-5 py-4 text-xs font-semibold text-nowrap text-white transition-colors hover:bg-ma-text/90 sm:gap-2.5 sm:text-base"
           >
             Book consultation
             <ArrowRight className="size-5" aria-hidden="true" />
           </Link>
           <Link
             href="/donation"
-            className="inline-flex items-center justify-center gap-2.5 rounded-[60px] bg-white px-5 py-4 text-base font-semibold text-ma-text transition-colors hover:bg-ma-bg"
+            className="inline-flex items-center justify-center gap-1.5 rounded-[60px] bg-white px-5 py-4 text-xs font-semibold text-nowrap text-ma-text transition-colors hover:bg-ma-bg sm:gap-2.5 sm:text-base"
           >
             Support our mission
             <ArrowRight className="size-5" aria-hidden="true" />
           </Link>
         </div>
 
-        <div className="relative mt-[100px] w-full max-w-[700px]">
+        <div className="relative mt-15 w-full max-w-[700px] lg:mt-[100px]">
           <div
-            className="ma-hero-glow pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[780px] w-[954px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-90"
+            className="ma-hero-glow pointer-events-none absolute top-1/4 left-1/2 -z-10 h-[500px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-90 lg:top-1/5 lg:left-1/2 lg:h-[780px] lg:w-[954px]"
             aria-hidden="true"
           />
-          <div className="relative h-[560px] overflow-hidden rounded-[20px] bg-ma-bg">
+          <div className="relative h-[280px] overflow-hidden rounded-[20px] bg-ma-bg lg:h-[560px]">
             <Image
               src="/figma-home/hero.jpg"
               alt="Two students smiling in a city setting"

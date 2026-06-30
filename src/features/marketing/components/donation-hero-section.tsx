@@ -4,15 +4,15 @@ export function DonationHeroSection() {
   return (
     <section
       id="donation"
-      className="bg-white px-6 pt-18 pb-20 text-ma-text sm:pt-25 sm:pb-25"
+      className="bg-white px-4 pt-18 pb-20 text-ma-text sm:pt-25 sm:pb-25 lg:px-25 2xl:px-50"
     >
-      <div className="mx-auto max-w-[1040px]">
+      <div className="mx-auto">
         <div className="mx-auto max-w-[800px] text-center">
-          <p className="text-base leading-normal font-medium tracking-[0.1em] text-black uppercase">
+          <p className="text-base leading-normal font-medium tracking-[10%] text-[#6B7280] uppercase">
             Donation
           </p>
 
-          <h1 className="mt-[30px] font-heading text-[clamp(2.75rem,6vw,60px)] leading-[1.16] font-extrabold text-balance text-black sm:leading-[70px]">
+          <h1 className="mt-7.5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold text-balance text-primary sm:leading-[70px] lg:text-[60px]/[70px]">
             Your Support Keeps Someone in the Game
           </h1>
 
@@ -24,7 +24,7 @@ export function DonationHeroSection() {
         </div>
 
         <div className="mt-16 grid gap-5 lg:grid-cols-2">
-          <div className="relative min-h-[420px] overflow-hidden rounded-[24px] bg-ma-bg sm:min-h-[550px]">
+          <div className="relative min-h-[424px] overflow-hidden rounded-[24px] bg-ma-bg lg:min-h-[420px]">
             <Image
               src="/figma-about/founder.png"
               alt="Melanie Reyes, founder of ModernAdvocates Inc."
@@ -35,9 +35,9 @@ export function DonationHeroSection() {
             />
           </div>
 
-          <article className="flex min-h-[550px] flex-col rounded-[24px] bg-[#f5f5f5] p-7 sm:p-[30px]">
+          <article className="flex flex-col rounded-[24px] bg-[#f5f5f5] p-7.5 sm:p-[30px] lg:min-h-[550px] lg:p-7">
             <div>
-              <h2 className="text-[32px] leading-normal font-semibold text-ma-text sm:text-4xl">
+              <h2 className="text-[30px] leading-normal font-semibold text-ma-text sm:text-4xl lg:text-[32px]">
                 Melanie Reyes
               </h2>
               <p className="text-base leading-normal text-black">Founder</p>
@@ -54,9 +54,9 @@ export function DonationHeroSection() {
                 here.
               </p>
               <p>
-                ModernAdvocates Inc. is a 501(c)(3) nonprofit organization.
-                EIN: [insert]. All donations are tax-deductible to the full
-                extent permitted by law.
+                ModernAdvocates Inc. is a 501(c)(3) nonprofit organization. EIN:
+                [insert]. All donations are tax-deductible to the full extent
+                permitted by law.
               </p>
               <p>
                 <strong>Melanie Reyes,</strong>

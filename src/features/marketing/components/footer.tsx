@@ -12,10 +12,10 @@ const quickLinks = [
 export function Footer() {
   return (
     <footer className="overflow-hidden bg-white text-ma-text">
-      <div className="relative mx-auto min-h-[500px] max-w-[1040px] px-6 pt-[70px]">
-        <div className="grid gap-12 md:grid-cols-[254px_180px_1fr] md:gap-[100px] lg:gap-[120px]">
+      <div className="relative mx-auto min-h-125 px-4 pt-12.5 lg:px-25 lg:pt-17.5 2xl:px-50">
+        <div className="grid gap-10 md:grid-cols-[254px_180px_1fr] md:gap-[100px] lg:gap-[120px]">
           <section>
-            <h2 className="font-heading text-2xl font-extrabold">
+            <h2 className="font-sans text-lg font-extrabold lg:text-2xl">
               Get in Touch
             </h2>
             <address className="mt-5 not-italic">
@@ -42,7 +42,7 @@ export function Footer() {
           </section>
 
           <nav aria-label="Footer navigation">
-            <h2 className="font-heading text-2xl font-extrabold">
+            <h2 className="font-sans text-lg font-extrabold lg:text-2xl">
               Quick Links
             </h2>
             <ul className="mt-5 space-y-3">
@@ -60,7 +60,7 @@ export function Footer() {
           </nav>
 
           <section>
-            <h2 className="font-heading text-2xl font-extrabold">
+            <h2 className="font-sans text-lg font-extrabold lg:text-2xl">
               Join our News letter
             </h2>
             <p className="mt-5 max-w-[387px] text-sm leading-normal">
@@ -87,13 +87,13 @@ export function Footer() {
               </button>
             </form>
 
-            <p className="mt-8 text-base leading-normal">
+            <p className="mt-8 text-sm leading-normal sm:text-base">
               &copy; All Rights Reserved. 2026, ModernAdvocates Inc
             </p>
           </section>
         </div>
 
-        <p className="pointer-events-none absolute top-[370px] left-1/2 -translate-x-1/2 bg-gradient-to-b from-ma-text from-[40%] to-ma-text/0 to-[74%] bg-clip-text font-heading text-[clamp(4.8rem,12vw,7.75rem)] leading-none font-extrabold whitespace-nowrap text-transparent select-none">
+        <p className="pointer-events-none mt-10 bg-gradient-to-b from-ma-text from-[40%] to-ma-text/0 to-[74%] bg-clip-text font-heading text-[40px] leading-none font-extrabold whitespace-nowrap text-transparent select-none lg:absolute lg:top-[370px] lg:left-1/2 lg:-translate-x-1/2 lg:text-[124px]">
           ModernAdvocates
         </p>
       </div>
