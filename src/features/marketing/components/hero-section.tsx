@@ -1,8 +1,10 @@
 "use client"
+
 import { motion } from "motion/react"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, Star } from "lucide-react"
+import { useEffect, useState } from "react"
 
 const supporters = [
   "/figma-home/person-1.png",
@@ -12,6 +14,25 @@ const supporters = [
 ]
 
 export function HeroSection() {
+  const [isLg, setIsLg] = useState(false)
+
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 1024px)")
+    setIsLg(mql.matches)
+    const handler = (e: MediaQueryListEvent) => setIsLg(e.matches)
+    mql.addEventListener("change", handler)
+    return () => mql.removeEventListener("change", handler)
+  }, [])
+
+  const motionProps = isLg
+    ? {
+        initial: { scale: 700 / 1024 },
+        whileInView: { scale: 1 },
+        viewport: { once: true },
+        transition: { duration: 1.2, ease: "easeOut" },
+      }
+    : {}
+
   return (
     <section className="relative isolate bg-white text-ma-text">
       <div className="relative z-10 mx-auto flex flex-col items-center px-4 py-12.5 text-center lg:min-h-[924px] lg:py-[118px] xl:px-25 2xl:px-50">
@@ -85,11 +106,7 @@ export function HeroSection() {
             className="ma-hero-glow pointer-events-none absolute top-1/4 left-1/2 -z-10 h-[500px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-90 lg:top-1/3 lg:left-1/2 lg:h-[950px] lg:w-[954px]"
             aria-hidden="true"
           />
-          <motion.div
-            initial={{ scale: 700 / 1024 }}
-            whileInView={{ scale: 1 }}
-            viewport={{ once: true }}
-          >
+          <motion.div {...motionProps}>
             <div className="relative h-[280px] overflow-hidden rounded-[20px] bg-ma-bg lg:h-[560px]">
               <Image
                 src="/figma-home/hero.jpg"
