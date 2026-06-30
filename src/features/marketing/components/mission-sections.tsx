@@ -1,20 +1,12 @@
-import { ArrowRight, BriefcaseBusiness, Gift } from "lucide-react"
-import Image from "next/image"
+"use client"
 
-const supportCards = [
-  {
-    title: "Get Assistance",
-    description:
-      "Get access to AI workforce training, healthcare guidance, and personalized support designed to help you move forward with confidence.",
-  },
-  {
-    title: "Support Mission",
-    description:
-      "Get access to AI workforce training, healthcare guidance, and personalized support designed to help you move forward with confidence.",
-  },
-]
+import { Gift } from "lucide-react"
+import Image from "next/image"
+import { useState } from "react"
 
 export function MissionBridgeSection() {
+  const [hovered, setHovered] = useState<"first" | "second" | null>(null)
+
   return (
     <section
       id="about"
@@ -48,8 +40,18 @@ export function MissionBridgeSection() {
         </p>
       </div>
 
-      <div className="mt-15 grid gap-5 rounded-2xl bg-[#F5F5F5] p-5 md:grid-cols-[2fr_1fr]">
-        <div className="flex flex-col gap-5 rounded-2xl bg-white p-5 sm:flex-row">
+      <div
+        className="mt-15 grid gap-5 rounded-2xl bg-[#F5F5F5] p-5 transition-[grid-template-columns] duration-500 md:grid-cols-[2fr_1fr]"
+        style={{
+          gridTemplateColumns:
+            hovered === "second" ? "1fr 2fr" : undefined,
+        }}
+      >
+        <div
+          onMouseEnter={() => setHovered("first")}
+          onMouseLeave={() => setHovered(null)}
+          className="flex flex-col gap-5 rounded-2xl bg-white p-5 sm:flex-row"
+        >
           <div className="flex flex-col justify-between gap-2.5 sm:min-h-79.5 sm:gap-0">
             <div className="flex size-12.5 items-center justify-center rounded-full border">
               <Gift />
@@ -66,25 +68,36 @@ export function MissionBridgeSection() {
               </p>
             </div>
           </div>
-          <Image
-            src="https://images.unsplash.com/photo-1513258496099-48168024aec0?w=700&q=80"
-            alt=""
-            className="size-full min-w-[292px] rounded-2xl object-cover"
-            loading="lazy"
-            width={292}
-            height={318}
-          />
+
+          <div
+            className={`overflow-hidden rounded-2xl transition-all duration-500 ${
+              hovered === "second" ? "w-0 min-w-0" : "w-[292px]"
+            }`}
+          >
+            <Image
+              src="https://images.unsplash.com/photo-1513258496099-48168024aec0?w=700&q=80"
+              alt=""
+              className="size-full min-w-[292px] object-cover"
+              loading="lazy"
+              width={292}
+              height={318}
+            />
+          </div>
         </div>
 
-        <div className="hidden gap-5 rounded-2xl bg-white p-5 sm:flex">
-          <div className="flex flex-col justify-between gap-2.5 sm:min-h-79.5">
+        <div
+          onMouseEnter={() => setHovered("second")}
+          onMouseLeave={() => setHovered(null)}
+          className="flex gap-5 rounded-2xl bg-white p-5 sm:flex"
+        >
+          <div className="flex min-w-0 flex-col justify-between gap-2.5 sm:min-h-79.5">
             <div className="flex size-12.5 items-center justify-center rounded-full border">
               <Gift />
             </div>
 
             <div className="flex flex-col items-start gap-4">
               <h3 className="text-xl font-semibold text-ma-text">
-                Support mission{" "}
+                Support mission
               </h3>
               <p className="text-sm text-ma-text/80">
                 Get access to AI workforce training, healthcare guidance, and
@@ -92,6 +105,21 @@ export function MissionBridgeSection() {
                 confidence.
               </p>
             </div>
+          </div>
+
+          <div
+            className={`overflow-hidden rounded-2xl transition-all duration-500 ${
+              hovered === "second" ? "w-[292px]" : "w-0 min-w-0"
+            }`}
+          >
+            <Image
+              src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=700&q=80"
+              alt=""
+              className="size-full min-w-[292px] object-cover"
+              loading="lazy"
+              width={292}
+              height={318}
+            />
           </div>
         </div>
       </div>
