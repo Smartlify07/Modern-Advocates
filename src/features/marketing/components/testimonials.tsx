@@ -70,7 +70,7 @@ export function Testimonials() {
 
       <div
         ref={scrollRef}
-        className="hide-scrollbar relative mt-[86px] flex gap-[30px] overflow-x-auto scroll-smooth px-4 pb-2 xl:px-25 2xl:pl-50"
+        className="relative mt-[86px] flex gap-[30px] overflow-x-hidden px-4 pb-2 xl:px-25 2xl:pl-50"
       >
         {reviews.map((review) => (
           <article
