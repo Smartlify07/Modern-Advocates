@@ -17,7 +17,7 @@ export function Faq() {
     >
       <div className="mx-auto grid gap-12 lg:grid-cols-[425px_1fr] lg:gap-[77px]">
         <div>
-          <h2 className="max-w-[425px] font-sans text-[28px]/[100%] font-extrabold text-primary lg:text-[40px]/[60px]">
+          <h2 className="max-w-[425px] font-sans text-[28px]/[100%] font-extrabold text-primary lg:text-[40px]/[60px] lg:tracking-[-5%]">
             Got questions? we&apos;ve got answers
           </h2>
           <p className="mt-7.5 max-w-[425px] text-base leading-normal text-primary lg:text-[18px]">
