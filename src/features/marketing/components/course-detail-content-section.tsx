@@ -217,12 +217,17 @@ function CourseInformationCard() {
 
         <Button
           asChild
-          variant="outline"
-          className="mt-6 h-[53px] w-full gap-2.5 rounded-[60px] border-[#e5e7eb] bg-white px-5 py-4 text-base font-semibold text-ma-text hover:bg-[#f5f5f5]"
+          className="group relative mt-6"
         >
-          <Link href="/signup">
-            Enroll Now
-            <ArrowRight className="size-5" aria-hidden="true" />
+          <Link
+            href="/signup"
+            className="relative flex h-[53px] w-full items-center justify-center gap-2.5 rounded-[60px] bg-white px-5 py-4 text-base font-semibold text-ma-text before:absolute before:-inset-[2px] before:rounded-[60px] before:bg-gradient-to-r before:from-ma-glow-blue before:to-ma-glow-violet before:-z-10"
+          >
+            <span className="relative z-10 inline-flex items-center gap-2.5">
+              Enroll Now
+              <ArrowRight className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" aria-hidden="true" />
+            </span>
+            <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </Link>
         </Button>
       </div>
