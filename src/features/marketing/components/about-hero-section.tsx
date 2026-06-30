@@ -17,7 +17,7 @@ export function AboutHeroSection() {
             About us
           </p>
 
-          <h1 className="mt-7.5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold text-balance text-primary sm:leading-[70px] lg:text-[60px]">
+          <h1 className="mt-7.5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold tracking-[-5%] text-balance text-primary sm:leading-[70px] lg:text-[60px]">
             This Organization Exists Now Because It Didn&apos;t When I Needed
             It.
           </h1>

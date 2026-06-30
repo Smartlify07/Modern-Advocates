@@ -12,7 +12,7 @@ export function DonationHeroSection() {
             Donation
           </p>
 
-          <h1 className="mt-7.5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold text-balance text-primary sm:leading-[70px] lg:text-[60px]/[70px]">
+          <h1 className="mt-7.5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold text-balance text-primary sm:leading-[70px] lg:text-[60px]/[70px] lg:tracking-[-5%]">
             Your Support Keeps Someone in the Game
           </h1>
 

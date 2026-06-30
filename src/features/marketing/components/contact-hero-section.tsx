@@ -38,7 +38,7 @@ export function ContactHeroSection() {
             <p className="text-base leading-normal font-medium tracking-[0.1em] text-[#6b7280] uppercase">
               Contact
             </p>
-            <h1 className="font-sans text-[28px]/[100%] leading-[1.15] font-extrabold text-balance text-ma-text sm:leading-[70px] lg:text-[55px]">
+            <h1 className="font-sans text-[28px]/[100%] leading-[1.15] font-extrabold text-balance text-ma-text sm:leading-[70px] lg:text-[55px] lg:tracking-[-5%]">
               Reach out today
             </h1>
             <p className="max-w-[444px] text-base leading-normal text-ma-text lg:text-lg">
