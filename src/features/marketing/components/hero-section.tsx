@@ -1,3 +1,4 @@
+"use client"
 import { motion } from "motion/react"
 import Image from "next/image"
 import Link from "next/link"
@@ -63,7 +64,10 @@ export function HeroSection() {
           >
             <span className="relative z-10 inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-nowrap text-white sm:gap-2.5 sm:text-base">
               Book consultation
-              <ArrowRight className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" aria-hidden="true" />
+              <ArrowRight
+                className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]"
+                aria-hidden="true"
+              />
             </span>
             <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </Link>
@@ -76,14 +80,14 @@ export function HeroSection() {
           </Link>
         </div>
 
-        <div className="relative mt-15 w-full max-w-[700px] lg:mt-[100px]">
+        <div className="relative mt-15 w-full max-w-[1024px] lg:mt-[100px]">
           <div
             className="ma-hero-glow pointer-events-none absolute top-1/4 left-1/2 -z-10 h-[500px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-90 lg:top-1/3 lg:left-1/2 lg:h-[950px] lg:w-[954px]"
             aria-hidden="true"
           />
           <motion.div
-            initial={{ width: 0, height: 0 }}
-            whileInView={{ width: "100%", height: "auto" }}
+            initial={{ width: 700 }}
+            whileInView={{ width: "100%" }}
             viewport={{ once: true }}
             className="overflow-hidden"
           >
