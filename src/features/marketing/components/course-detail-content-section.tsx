@@ -215,19 +215,19 @@ function CourseInformationCard() {
           </div>
         ))}
 
-        <Button
-          asChild
-          variant="outline"
-          className="group relative mt-6 bg-transparent"
-        >
-          <Link
-            href="/signup"
-            className="relative isolate flex h-[53px] w-full items-center justify-center gap-2.5 rounded-[60px] border border-[#e5e7eb] bg-white px-5 py-4 text-base font-semibold text-ma-text transition-colors duration-300 before:absolute before:-inset-[2px] before:rounded-[60px] before:bg-gradient-to-r before:from-ma-glow-blue before:to-ma-glow-violet before:z-[-1] before:opacity-0 before:transition-opacity before:duration-300 group-hover:border-transparent group-hover:before:opacity-100"
-          >
-            Enroll Now
-            <ArrowRight className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" aria-hidden="true" />
-          </Link>
-        </Button>
+        <div className="group relative mt-6">
+          <div className="rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet p-[2px] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <Button asChild className="w-full">
+              <Link
+                href="/signup"
+                className="flex h-[53px] w-full items-center justify-center gap-2.5 rounded-[60px] border border-[#e5e7eb] bg-white px-5 py-4 text-base font-semibold text-ma-text transition-colors duration-300 group-hover:border-transparent"
+              >
+                Enroll Now
+                <ArrowRight className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" aria-hidden="true" />
+              </Link>
+            </Button>
+          </div>
+        </div>
       </div>
     </aside>
   )
