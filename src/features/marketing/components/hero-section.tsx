@@ -86,10 +86,9 @@ export function HeroSection() {
             aria-hidden="true"
           />
           <motion.div
-            initial={{ width: 700 }}
-            whileInView={{ width: "100%" }}
+            initial={{ scale: 700 / 1024 }}
+            whileInView={{ scale: 1 }}
             viewport={{ once: true }}
-            className="overflow-hidden"
           >
             <div className="relative h-[280px] overflow-hidden rounded-[20px] bg-ma-bg lg:h-[560px]">
               <Image
