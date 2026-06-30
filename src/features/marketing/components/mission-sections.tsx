@@ -43,8 +43,7 @@ export function MissionBridgeSection() {
       <div
         className="mt-15 grid gap-5 rounded-2xl bg-[#F5F5F5] p-5 transition-[grid-template-columns] duration-500 md:grid-cols-[2fr_1fr]"
         style={{
-          gridTemplateColumns:
-            hovered === "second" ? "1fr 2fr" : undefined,
+          gridTemplateColumns: hovered === "second" ? "1fr 2fr" : undefined,
         }}
       >
         <div
@@ -70,14 +69,14 @@ export function MissionBridgeSection() {
           </div>
 
           <div
-            className={`overflow-hidden rounded-2xl transition-all duration-500 ${
+            className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 ${
               hovered === "second" ? "w-0 min-w-0" : "w-[292px]"
             }`}
           >
             <Image
               src="https://images.unsplash.com/photo-1513258496099-48168024aec0?w=700&q=80"
               alt=""
-              className="size-full min-w-[292px] object-cover"
+              className="size-full object-cover"
               loading="lazy"
               width={292}
               height={318}
@@ -108,14 +107,14 @@ export function MissionBridgeSection() {
           </div>
 
           <div
-            className={`overflow-hidden rounded-2xl transition-all duration-500 ${
+            className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 ${
               hovered === "second" ? "w-[292px]" : "w-0 min-w-0"
             }`}
           >
             <Image
               src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=700&q=80"
               alt=""
-              className="size-full min-w-[292px] object-cover"
+              className="size-full object-cover"
               loading="lazy"
               width={292}
               height={318}
