@@ -10,7 +10,7 @@ export function DonationSupportSection() {
     <section className="bg-white px-4 py-12.5 text-ma-text sm:py-25 lg:px-25 lg:py-20 2xl:px-50">
       <div className="mx-auto grid items-start gap-12 lg:grid-cols-[506px_510px] lg:gap-6">
         <div className="pt-0 lg:pt-2">
-          <h2 className="font-sans text-[28px]/[100%] leading-[1.12] font-extrabold text-balance text-primary lg:text-[60px]/[70px]">
+          <h2 className="font-sans text-[28px]/[100%] leading-[1.12] font-extrabold text-balance text-primary lg:text-[60px]/[70px] lg:tracking-[-5%]">
             Support us and make a difference for the future!
           </h2>
           <p className="mt-[30px] max-w-[506px] text-base leading-normal text-primary lg:text-lg">

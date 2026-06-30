@@ -44,7 +44,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <h1 className="mt-[30px] max-w-[800px] font-sans text-[28px]/[100%] font-extrabold lg:text-[60px] lg:leading-[70px]">
+        <h1 className="mt-[30px] max-w-[800px] font-sans text-[28px]/[100%] font-extrabold lg:text-[60px] lg:leading-[70px] lg:tracking-[-5%]">
           Navigate today&apos;s world with the skills, resources, and support
           you deserve.
         </h1>
