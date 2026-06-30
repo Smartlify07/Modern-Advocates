@@ -79,9 +79,12 @@ export function CourseDetailHeroSection() {
 
             <Button
               asChild
-              className="group relative mt-3 overflow-hidden rounded-[60px]"
+              className="group relative mt-3"
             >
-              <Link href="/signup" className="flex h-[53px] w-full items-center justify-center gap-2.5 rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white">
+              <Link
+                href="/signup"
+                className="relative flex h-[53px] w-full items-center justify-center gap-2.5 rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white before:absolute before:-inset-[2px] before:rounded-[60px] before:bg-gradient-to-r before:from-ma-glow-blue before:to-ma-glow-violet before:-z-10"
+              >
                 <span className="relative z-10 inline-flex items-center gap-2.5">
                   Enroll Now
                   <ArrowRight className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" aria-hidden="true" />
