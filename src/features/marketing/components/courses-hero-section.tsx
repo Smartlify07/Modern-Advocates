@@ -24,7 +24,7 @@ function CourseCard({ course }: { course: Course }) {
   return (
     <Link
       href={`/courses/${course.id}`}
-      className="flex w-full flex-col gap-5 rounded-[24px] border border-[#d9d9d9] bg-white px-2.5 pt-2.5 pb-7.5 sm:max-w-[334px]"
+      className="flex w-full flex-col gap-5 rounded-[24px] border border-[#d9d9d9] bg-white px-2.5 pt-2.5 pb-7.5 transition-colors duration-300 hover:bg-gray-50 sm:max-w-[334px]"
     >
       <div className="relative h-[254px] overflow-hidden rounded-[24px]">
         {course.thumbnailUrl ? (
