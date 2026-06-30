@@ -74,7 +74,7 @@ export function HeroSection() {
 
         <div className="relative mt-15 w-full max-w-[700px] lg:mt-[100px]">
           <div
-            className="ma-hero-glow pointer-events-none absolute top-1/4 left-1/2 -z-10 h-[500px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-90 lg:top-1/5 lg:left-1/2 lg:h-[780px] lg:w-[954px]"
+            className="ma-hero-glow pointer-events-none absolute top-1/4 left-1/2 -z-10 h-[500px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-90 lg:top-1/3 lg:left-1/2 lg:h-[950px] lg:w-[954px]"
             aria-hidden="true"
           />
           <div className="relative h-[280px] overflow-hidden rounded-[20px] bg-ma-bg lg:h-[560px]">
