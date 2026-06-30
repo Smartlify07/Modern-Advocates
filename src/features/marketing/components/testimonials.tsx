@@ -27,8 +27,10 @@ export function Testimonials() {
   const scrollRef = useRef<HTMLDivElement>(null)
 
   function scrollReviews(direction: "previous" | "next") {
-    scrollRef.current?.scrollBy({
-      left: direction === "next" ? 360 : -360,
+    const el = scrollRef.current
+    if (!el) return
+    el.scrollTo({
+      left: direction === "next" ? el.scrollWidth - el.clientWidth : 0,
       behavior: "smooth",
     })
   }
@@ -73,15 +75,17 @@ export function Testimonials() {
         {reviews.map((review) => (
           <article
             key={review.image}
-            className="relative flex h-[500px] w-[330px] shrink-0 flex-col justify-end overflow-hidden rounded-3xl px-[15px] pb-[30px]"
+            className="relative flex h-[500px] w-[330px] shrink-0 flex-col justify-end rounded-3xl px-[15px] pb-[30px]"
           >
-            <Image
-              src={review.image}
-              alt=""
-              fill
-              sizes="330px"
-              className="object-cover"
-            />
+            <div className="absolute inset-0 overflow-hidden rounded-3xl">
+              <Image
+                src={review.image}
+                alt=""
+                fill
+                sizes="330px"
+                className="object-cover"
+              />
+            </div>
             <div
               className="absolute inset-0 bg-gradient-to-b from-transparent from-[30%] to-black"
               aria-hidden="true"
