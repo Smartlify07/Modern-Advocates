@@ -48,11 +48,17 @@ const Navbar = () => {
 
         <Button
           asChild
-          className="group relative hidden overflow-hidden md:inline-flex"
+          className="group relative hidden overflow-hidden rounded-[60px] md:inline-flex"
         >
-          <Link href="/contact" className="flex h-13 w-[157px] items-center justify-center gap-[6px] rounded-[60px] px-5 py-4">
+          <Link
+            href="/contact"
+            className="flex h-13 w-[157px] items-center justify-center gap-[6px] rounded-[60px] px-5 py-4 text-base font-semibold"
+          >
             <span className="relative z-10">Consultation</span>
-            <ArrowRight className="relative z-10 size-3.5 transition-transform duration-300 group-hover:rotate-[-30deg]" aria-hidden="true" />
+            <ArrowRight
+              className="relative z-10 size-5 transition-transform duration-300 group-hover:rotate-[-30deg]"
+              aria-hidden="true"
+            />
             <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </Link>
         </Button>
@@ -97,11 +103,18 @@ const Navbar = () => {
           ))}
           <Button
             asChild
-            className="group relative mt-2 overflow-hidden"
+            className="group relative mt-2 overflow-hidden rounded-[60px]"
           >
-            <Link href="/contact" onClick={() => setMobileOpen(false)} className="flex h-13 w-full items-center justify-center gap-[6px] rounded-[60px] px-5 py-4">
+            <Link
+              href="/contact"
+              onClick={() => setMobileOpen(false)}
+              className="flex h-13 w-full items-center justify-center gap-[6px] rounded-[60px] px-5 py-4"
+            >
               <span className="relative z-10">Consultation</span>
-              <ArrowRight className="relative z-10 size-3.5 transition-transform duration-300 group-hover:rotate-[30deg]" aria-hidden="true" />
+              <ArrowRight
+                className="relative z-10 size-3.5 transition-transform duration-300 group-hover:rotate-[30deg]"
+                aria-hidden="true"
+              />
               <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             </Link>
           </Button>
