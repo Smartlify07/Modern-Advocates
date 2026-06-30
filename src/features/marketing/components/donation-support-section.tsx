@@ -122,10 +122,13 @@ export function DonationSupportSection() {
 
           <Button
             type="button"
-            className="h-[53px] w-full gap-2.5 rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white hover:bg-ma-text/90"
+            className="group relative h-[53px] w-full overflow-hidden rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white"
           >
-            Donate Now
-            <ArrowRight className="size-5" aria-hidden="true" />
+            <span className="relative z-10 inline-flex items-center gap-2.5">
+              Donate Now
+              <ArrowRight className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" aria-hidden="true" />
+            </span>
+            <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </Button>
         </form>
       </div>

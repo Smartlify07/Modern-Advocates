@@ -80,11 +80,14 @@ export function Footer() {
               />
               <button
                 type="submit"
-                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-[60px] bg-ma-text px-[15px] py-3 text-[12.31px] font-semibold text-white transition-transform duration-300 hover:scale-[1.5]"
+                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-[60px] bg-ma-text px-[15px] py-3 text-[12.31px] font-semibold text-white transition-transform duration-300 hover:scale-[1.1]"
               >
                 <span className="relative z-10 inline-flex items-center gap-2">
                   Join
-                  <ArrowRight className="size-[15px] transition-transform duration-300 group-hover:rotate-[-30deg]" aria-hidden="true" />
+                  <ArrowRight
+                    className="size-[15px] transition-transform duration-300 group-hover:rotate-[-30deg]"
+                    aria-hidden="true"
+                  />
                 </span>
                 <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               </button>

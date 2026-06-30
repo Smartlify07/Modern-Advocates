@@ -17,10 +17,13 @@ export function CtaSection() {
           <div className="mt-12.5 flex flex-col items-center justify-center gap-5 sm:flex-row lg:mt-13">
             <Link
               href="/contact"
-              className="group inline-flex items-center justify-center gap-2.5 rounded-[60px] bg-[linear-gradient(90deg,#4f7cf7_0%,#7b5cff_68.269%)] px-5 py-4 text-center text-base font-semibold text-white transition-opacity hover:opacity-90"
+              className="group inline-flex items-center justify-center gap-2.5 rounded-[60px] bg-[linear-gradient(90deg,#4f7cf7_0%,#7b5cff_68.269%)] px-5 py-4 text-center text-base font-semibold text-white transition-opacity"
             >
               Book a free consultation
-              <ArrowRight className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" aria-hidden="true" />
+              <ArrowRight
+                className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]"
+                aria-hidden="true"
+              />
             </Link>
           </div>
         </div>

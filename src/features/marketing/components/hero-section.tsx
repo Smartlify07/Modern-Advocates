@@ -88,7 +88,8 @@ export function HeroSection() {
           <motion.div
             initial={{ scale: 700 / 1024 }}
             whileInView={{ scale: 1 }}
-            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            // viewport={{ once: true }}
           >
             <div className="relative h-[280px] overflow-hidden rounded-[20px] bg-ma-bg lg:h-[560px]">
               <Image
