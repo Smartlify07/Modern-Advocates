@@ -1,3 +1,4 @@
+import { motion } from "motion/react"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, Star } from "lucide-react"
@@ -80,16 +81,23 @@ export function HeroSection() {
             className="ma-hero-glow pointer-events-none absolute top-1/4 left-1/2 -z-10 h-[500px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-90 lg:top-1/3 lg:left-1/2 lg:h-[950px] lg:w-[954px]"
             aria-hidden="true"
           />
-          <div className="relative h-[280px] overflow-hidden rounded-[20px] bg-ma-bg lg:h-[560px]">
-            <Image
-              src="/figma-home/hero.jpg"
-              alt="Two students smiling in a city setting"
-              fill
-              priority
-              sizes="(min-width: 768px) 700px, calc(100vw - 48px)"
-              className="object-cover"
-            />
-          </div>
+          <motion.div
+            initial={{ width: 0, height: 0 }}
+            whileInView={{ width: "100%", height: "auto" }}
+            viewport={{ once: true }}
+            className="overflow-hidden"
+          >
+            <div className="relative h-[280px] overflow-hidden rounded-[20px] bg-ma-bg lg:h-[560px]">
+              <Image
+                src="/figma-home/hero.jpg"
+                alt="Two students smiling in a city setting"
+                fill
+                priority
+                sizes="(min-width: 768px) 700px, calc(100vw - 48px)"
+                className="object-cover"
+              />
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
