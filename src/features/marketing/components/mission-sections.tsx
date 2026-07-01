@@ -77,7 +77,7 @@ export function MissionBridgeSection() {
                 <h3 className="text-xl font-semibold text-ma-text">
                   Get Assistance
                 </h3>
-                <p className="text-sm text-ma-text/80">
+                <p className="text-sm text-balance text-ma-text/80">
                   Get access to AI workforce training, healthcare guidance, and
                   personalized support designed to help you move forward with
                   confidence.{" "}
@@ -115,7 +115,7 @@ export function MissionBridgeSection() {
                 <h3 className="text-xl font-semibold text-ma-text">
                   Support mission
                 </h3>
-                <p className="text-sm text-ma-text/80">
+                <p className="text-sm text-balance text-ma-text/80">
                   Get access to AI workforce training, healthcare guidance, and
                   personalized support designed to help you move forward with
                   confidence.
@@ -137,21 +137,6 @@ export function MissionBridgeSection() {
                 height={318}
               />
             </div>
-          </div>
-
-          <div
-            className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 max-lg:hidden ${
-              hovered === "second" ? "lg:w-[292px]" : "w-0 min-w-0"
-            }`}
-          >
-            <Image
-              src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=700&q=80"
-              alt=""
-              className="size-full object-cover"
-              loading="lazy"
-              width={292}
-              height={318}
-            />
           </div>
         </div>
       </div>

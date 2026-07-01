@@ -1,7 +1,6 @@
 import Navbar from "@/features/marketing/components/navbar"
-import { CtaSection } from "@/features/marketing/components/cta-section"
+import { ConditionalLayoutSections } from "@/features/marketing/components/conditional-layout-sections"
 import { Footer } from "@/features/marketing/components/footer"
-import { Faq } from "@/features/marketing/components/faq"
 
 export default function MarketingLayout({
   children,
@@ -12,8 +11,7 @@ export default function MarketingLayout({
     <div className="bg-white">
       <Navbar />
       {children}
-      <Faq />
-      <CtaSection />
+      <ConditionalLayoutSections />
 
       <Footer />
     </div>
