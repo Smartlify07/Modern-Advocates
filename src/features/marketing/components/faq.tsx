@@ -44,59 +44,56 @@ export function Faq() {
   }
 
   return (
-    <section
-      id="faq"
-      className="bg-white py-12.5 lg:py-25"
-    >
+    <section id="faq" className="bg-white py-12.5 lg:py-25">
       <div className="mx-auto max-w-360 px-4 lg:px-25 2xl:px-50">
         <div className="grid gap-12 lg:grid-cols-[425px_1fr] lg:gap-[77px]">
-        <div>
-          <h2 className="max-w-[425px] font-sans text-[28px]/[100%] font-extrabold text-primary lg:text-[40px]/[60px] lg:tracking-[-5%]">
-            Got questions? we&apos;ve got answers
-          </h2>
-          <p className="mt-7.5 max-w-[425px] text-base leading-normal text-primary lg:text-[18px]">
-            We&apos;ve compiled answers to frequently asked questions to help
-            you get started quickly and confidently.
-          </p>
-        </div>
+          <div>
+            <h2 className="max-w-[425px] font-sans text-[28px]/[100%] font-extrabold text-primary lg:text-[40px]/[60px] lg:tracking-[-5%]">
+              Got questions? we&apos;ve got answers
+            </h2>
+            <p className="mt-7.5 max-w-[425px] text-base leading-normal text-primary lg:text-[18px]">
+              We&apos;ve compiled answers to frequently asked questions to help
+              you get started quickly and confidently.
+            </p>
+          </div>
 
-        <div className="flex flex-col gap-[29px]">
-          {faqs.map((faq, i) => (
-            <div
-              key={i}
-              className="rounded-3xl border border-[#d9d9d9] bg-white p-5 transition-colors hover:border-ma-text/35 lg:py-7.5"
-            >
-              <button
-                type="button"
-                onClick={() => toggle(i)}
-                className="flex w-full items-start gap-4 text-left text-primary"
-              >
-                <Plus
-                  className={`size-[30px] shrink-0 transition-transform duration-600 ${
-                    openIndex === i ? "rotate-90" : ""
-                  }`}
-                  strokeWidth={2.5}
-                  aria-hidden="true"
-                />
-                <span className="min-w-0 flex-1 text-lg leading-normal font-bold lg:text-[22px]">
-                  {faq.question}
-                </span>
-              </button>
-
+          <div className="flex flex-col gap-[29px]">
+            {faqs.map((faq, i) => (
               <div
-                className={`overflow-hidden transition-all duration-300 ${
-                  openIndex === i
-                    ? "max-h-[500px] opacity-100"
-                    : "max-h-0 opacity-0"
-                }`}
+                key={i}
+                className="rounded-3xl border border-[#d9d9d9] bg-white p-5 transition-colors hover:border-ma-text/35 lg:py-7.5"
               >
-                <p className="pt-4 text-sm leading-normal text-ma-text/80 lg:text-base">
-                  {faq.answer}
-                </p>
+                <button
+                  type="button"
+                  onClick={() => toggle(i)}
+                  className="flex w-full items-start gap-4 text-left text-primary"
+                >
+                  <Plus
+                    className={`size-[30px] shrink-0 transition-transform duration-600 ${
+                      openIndex === i ? "rotate-90" : ""
+                    }`}
+                    strokeWidth={2.5}
+                    aria-hidden="true"
+                  />
+                  <span className="min-w-0 flex-1 text-lg leading-normal font-bold lg:text-[22px]">
+                    {faq.question}
+                  </span>
+                </button>
+
+                <div
+                  className={`overflow-hidden transition-all duration-300 ${
+                    openIndex === i
+                      ? "max-h-[500px] opacity-100"
+                      : "max-h-0 opacity-0"
+                  }`}
+                >
+                  <p className="pt-4 text-sm leading-normal text-ma-text/80 lg:text-base">
+                    {faq.answer}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

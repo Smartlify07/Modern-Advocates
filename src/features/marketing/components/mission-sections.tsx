@@ -138,6 +138,21 @@ export function MissionBridgeSection() {
               />
             </div>
           </div>
+
+          <div
+            className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 max-lg:hidden ${
+              hovered === "second" ? "lg:w-[292px]" : "w-0 min-w-0"
+            }`}
+          >
+            <Image
+              src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=700&q=80"
+              alt=""
+              className="size-full object-cover"
+              loading="lazy"
+              width={292}
+              height={318}
+            />
+          </div>
         </div>
       </div>
     </section>

@@ -44,8 +44,8 @@ export function Testimonials() {
               What they say about us?
             </h2>
             <p className="mt-6 max-w-[650px] text-[18px] leading-normal text-primary">
-              Real stories from customers who have experienced measurable results
-              and meaningful progress with our support.
+              Real stories from customers who have experienced measurable
+              results and meaningful progress with our support.
             </p>
           </div>
 
@@ -73,37 +73,37 @@ export function Testimonials() {
           ref={scrollRef}
           className="relative mt-21.5 flex gap-7.5 overflow-x-hidden pb-2"
         >
-        {reviews.map((review) => (
-          <article
-            key={review.image}
-            className="relative flex h-[500px] w-[330px] shrink-0 flex-col justify-end overflow-hidden rounded-3xl px-[15px] pb-[30px]"
-          >
-            <Image
-              src={review.image}
-              alt=""
-              fill
-              sizes="330px"
-              className="object-cover"
-            />
-            <div
-              className="absolute inset-0 bg-gradient-to-b from-transparent from-[30%] to-black"
-              aria-hidden="true"
-            />
+          {reviews.map((review) => (
+            <article
+              key={review.image}
+              className="relative flex h-[500px] w-[330px] shrink-0 flex-col justify-end overflow-hidden rounded-3xl px-[15px] pb-[30px]"
+            >
+              <Image
+                src={review.image}
+                alt=""
+                fill
+                sizes="330px"
+                className="object-cover"
+              />
+              <div
+                className="absolute inset-0 bg-gradient-to-b from-transparent from-[30%] to-black"
+                aria-hidden="true"
+              />
 
-            <div className="relative z-10 h-[166px] w-[300px] text-white">
-              <p className="font-heading text-[100px] leading-[60px] font-extrabold">
-                &ldquo;
-              </p>
-              <p className="mt-[-14px] text-[18px] leading-normal font-semibold">
-                ModernAdvocates helped me see a clear path forward. The guidance
-                and training resources gave
-              </p>
-              <p className="mt-5 text-[18px] leading-normal font-semibold">
-                -{review.name}
-              </p>
-            </div>
-          </article>
-        ))}
+              <div className="relative z-10 h-[166px] w-[300px] text-white">
+                <p className="font-heading text-[100px] leading-[60px] font-extrabold">
+                  &ldquo;
+                </p>
+                <p className="mt-[-14px] text-[18px] leading-normal font-semibold">
+                  ModernAdvocates helped me see a clear path forward. The
+                  guidance and training resources gave
+                </p>
+                <p className="mt-5 text-[18px] leading-normal font-semibold">
+                  -{review.name}
+                </p>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>
