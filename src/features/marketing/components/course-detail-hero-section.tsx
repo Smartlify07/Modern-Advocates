@@ -79,11 +79,14 @@ export function CourseDetailHeroSection() {
 
             <Button
               asChild
-              className="mt-3 h-[53px] w-full gap-2.5 rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white hover:bg-ma-text/90"
+              className="group relative mt-3 overflow-hidden rounded-[60px]"
             >
-              <Link href="/signup">
-                Enroll Now
-                <ArrowRight className="size-5" aria-hidden="true" />
+              <Link href="/signup" className="flex h-[53px] w-full items-center justify-center gap-2.5 rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white">
+                <span className="relative z-10 inline-flex items-center gap-2.5">
+                  Enroll Now
+                  <ArrowRight className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" aria-hidden="true" />
+                </span>
+                <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               </Link>
             </Button>
           </div>

@@ -1,3 +1,5 @@
+"use client"
+import { motion } from "motion/react"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, Star } from "lucide-react"
@@ -58,10 +60,16 @@ export function HeroSection() {
         <div className="mt-10 flex items-center gap-5">
           <Link
             href="/contact"
-            className="inline-flex items-center justify-center gap-1.5 rounded-[60px] bg-ma-text px-5 py-4 text-xs font-semibold text-nowrap text-white transition-colors hover:bg-ma-text/90 sm:gap-2.5 sm:text-base"
+            className="group relative inline-flex items-center justify-center overflow-hidden rounded-[60px] bg-ma-text px-5 py-4 sm:gap-2.5 sm:text-base"
           >
-            Book consultation
-            <ArrowRight className="size-5" aria-hidden="true" />
+            <span className="relative z-10 inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-nowrap text-white sm:gap-2.5 sm:text-base">
+              Book consultation
+              <ArrowRight
+                className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]"
+                aria-hidden="true"
+              />
+            </span>
+            <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </Link>
           <Link
             href="/donation"
@@ -72,21 +80,28 @@ export function HeroSection() {
           </Link>
         </div>
 
-        <div className="relative mt-15 w-full max-w-[700px] lg:mt-[100px]">
+        <div className="relative mt-15 w-full max-w-[1024px] lg:mt-[100px]">
           <div
             className="ma-hero-glow pointer-events-none absolute top-1/4 left-1/2 -z-10 h-[500px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-90 lg:top-1/3 lg:left-1/2 lg:h-[950px] lg:w-[954px]"
             aria-hidden="true"
           />
-          <div className="relative h-[280px] overflow-hidden rounded-[20px] bg-ma-bg lg:h-[560px]">
-            <Image
-              src="/figma-home/hero.jpg"
-              alt="Two students smiling in a city setting"
-              fill
-              priority
-              sizes="(min-width: 768px) 700px, calc(100vw - 48px)"
-              className="object-cover"
-            />
-          </div>
+          <motion.div
+            initial={{ scale: 700 / 1024 }}
+            whileInView={{ scale: 1 }}
+            transition={{ duration: 0.8 }}
+            // viewport={{ once: true }}
+          >
+            <div className="relative h-[280px] overflow-hidden rounded-[20px] bg-ma-bg lg:h-[560px]">
+              <Image
+                src="/figma-home/hero.jpg"
+                alt="Two students smiling in a city setting"
+                fill
+                priority
+                sizes="(min-width: 768px) 700px, calc(100vw - 48px)"
+                className="object-cover"
+              />
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>

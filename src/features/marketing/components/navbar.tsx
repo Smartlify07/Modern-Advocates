@@ -39,7 +39,7 @@ const Navbar = () => {
             <Link
               key={item.href}
               href={item.href}
-              className="p-2.5 text-base transition-colors hover:text-secondary-foreground"
+              className="p-2.5 text-base transition-colors duration-300 hover:text-[#6B7280]"
             >
               {item.label}
             </Link>
@@ -48,11 +48,18 @@ const Navbar = () => {
 
         <Button
           asChild
-          className="hidden h-13 w-[157px] gap-[6px] rounded-[60px] px-5 py-4 md:inline-flex"
+          className="group relative hidden overflow-hidden rounded-[60px] md:inline-flex"
         >
-          <Link href="/contact">
-            Consultation
-            <ArrowRight className="size-3.5" aria-hidden="true" />
+          <Link
+            href="/contact"
+            className="flex h-13 w-[157px] items-center justify-center gap-[6px] rounded-[60px] px-5 py-4 text-base font-semibold"
+          >
+            <span className="relative z-10">Consultation</span>
+            <ArrowRight
+              className="relative z-10 size-5 transition-transform duration-300 group-hover:rotate-[-30deg]"
+              aria-hidden="true"
+            />
+            <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </Link>
         </Button>
 
@@ -96,11 +103,19 @@ const Navbar = () => {
           ))}
           <Button
             asChild
-            className="mt-2 h-13 w-full gap-[6px] rounded-[60px] px-5 py-4"
+            className="group relative mt-2 overflow-hidden rounded-[60px]"
           >
-            <Link href="/contact" onClick={() => setMobileOpen(false)}>
-              Consultation
-              <ArrowRight className="size-3.5" aria-hidden="true" />
+            <Link
+              href="/contact"
+              onClick={() => setMobileOpen(false)}
+              className="flex h-13 w-full items-center justify-center gap-[6px] rounded-[60px] px-5 py-4"
+            >
+              <span className="relative z-10">Consultation</span>
+              <ArrowRight
+                className="relative z-10 size-3.5 transition-transform duration-300 group-hover:rotate-[30deg]"
+                aria-hidden="true"
+              />
+              <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             </Link>
           </Button>
         </nav>

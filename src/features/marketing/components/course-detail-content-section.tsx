@@ -1,9 +1,10 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 import {
   ArrowRight,
   ChevronDown,
-  ChevronUp,
   Clock,
   Languages,
   Layers,
@@ -11,6 +12,7 @@ import {
   Star,
   User,
 } from "lucide-react"
+import { useState } from "react"
 
 import { Button } from "@/shared/ui/button"
 
@@ -28,17 +30,105 @@ const modules = [
       "Beginner-friendly digital business models",
     ],
   },
-  { title: "Week 2: AI Productivity & Prompting" },
-  { title: "Week 3: Business Validation & Fast Monetization Planning" },
-  { title: "Week 4: Branding & Digital Presence" },
-  { title: "Week 5: Product & Service Creation" },
-  { title: "Week 6: Marketing & Public Launch" },
-  { title: "Week 7: Client Acquisition & Sales Systems" },
-  { title: "Week 8: Revenue Optimization & Sustainability" },
-  { title: "Week 9: Automation & Efficiency" },
-  { title: "Week 10: Portfolio & Authority Building" },
-  { title: "Week 11: Scaling Small Businesses" },
-  { title: "Week 12: Demo Day & Graduation" },
+  {
+    title: "Week 2: AI Productivity & Prompting",
+    topics: [
+      "Crafting effective AI prompts",
+      "Automating daily workflows with AI",
+      "AI tools for task management",
+      "Integrating AI into existing tools",
+    ],
+  },
+  {
+    title: "Week 3: Business Validation & Fast Monetization Planning",
+    topics: [
+      "Identifying market problems & opportunities",
+      "Lean validation techniques",
+      "Fast monetization strategies",
+      "Building a minimum viable offer",
+    ],
+  },
+  {
+    title: "Week 4: Branding & Digital Presence",
+    topics: [
+      "Defining your brand identity",
+      "Building a simple website",
+      "Social media positioning",
+      "Content creation fundamentals",
+    ],
+  },
+  {
+    title: "Week 5: Product & Service Creation",
+    topics: [
+      "Designing digital products",
+      "Service packaging and pricing",
+      "AI-assisted product development",
+      "Testing and iterating your offer",
+    ],
+  },
+  {
+    title: "Week 6: Marketing & Public Launch",
+    topics: [
+      "Launch campaign planning",
+      "Organic marketing channels",
+      "Paid advertising basics",
+      "Building launch momentum",
+    ],
+  },
+  {
+    title: "Week 7: Client Acquisition & Sales Systems",
+    topics: [
+      "Sales funnel fundamentals",
+      "Lead generation strategies",
+      "CRM and follow-up systems",
+      "Closing techniques for beginners",
+    ],
+  },
+  {
+    title: "Week 8: Revenue Optimization & Sustainability",
+    topics: [
+      "Pricing strategy refinement",
+      "Upselling and cross-selling",
+      "Customer retention tactics",
+      "Financial management basics",
+    ],
+  },
+  {
+    title: "Week 9: Automation & Efficiency",
+    topics: [
+      "Workflow automation tools",
+      "AI chatbots for customer support",
+      "Email marketing automation",
+      "Analytics and performance tracking",
+    ],
+  },
+  {
+    title: "Week 10: Portfolio & Authority Building",
+    topics: [
+      "Creating a professional portfolio",
+      "Publishing thought leadership content",
+      "Speaking and networking opportunities",
+      "Building social proof",
+    ],
+  },
+  {
+    title: "Week 11: Scaling Small Businesses",
+    topics: [
+      "Hiring and delegation basics",
+      "Systems and SOPs for growth",
+      "Expanding product lines",
+      "Partnership and collaboration strategies",
+    ],
+  },
+  {
+    title: "Week 12: Demo Day & Graduation",
+    topics: [
+      "Presenting your business pitch",
+      "Demo day preparation",
+      "Graduation and next steps",
+      "Community and alumni network",
+    ],
+  },
 ]
 
 const reviews = [
@@ -66,51 +156,62 @@ const courseInformation = [
 function CourseModule({
   title,
   topics,
-  open = false,
+  open: defaultOpen = false,
 }: {
   title: string
   topics?: string[]
   open?: boolean
 }) {
+  const [open, setOpen] = useState(defaultOpen)
+
   return (
-    <details
-      open={open}
-      className="group rounded-2xl border border-[#d9d9d9] bg-white px-5 pt-[17px] pb-5 open:bg-[#f5f5f5]"
+    <div
+      className={`rounded-2xl border border-[#d9d9d9] px-5 pt-[17px] pb-5 transition-colors ${
+        open ? "bg-[#f5f5f5]" : "bg-white"
+      }`}
     >
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 [&::-webkit-details-marker]:hidden">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="flex w-full cursor-pointer items-center justify-between gap-4 text-left"
+      >
         <h3 className="text-sm/[100%] leading-normal font-bold text-ma-text sm:text-base">
           {title}
         </h3>
         <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-[15px] border border-[#d9d9d9] bg-white">
           <ChevronDown
-            className="size-3.5 group-open:hidden"
-            aria-hidden="true"
-          />
-          <ChevronUp
-            className="hidden size-3.5 group-open:block"
+            className={`size-3.5 transition-transform duration-600 ${
+              open ? "rotate-180" : ""
+            }`}
             aria-hidden="true"
           />
         </span>
-      </summary>
+      </button>
 
-      {topics ? (
-        <div className="mt-4 text-sm leading-normal text-ma-text sm:text-[15px]">
-          <p>Topics:</p>
-          <ul className="list-disc pl-5">
-            {topics.map((topic) => (
-              <li key={topic}>{topic}</li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-    </details>
+      <div
+        className={`overflow-hidden transition-all duration-300 ${
+          open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        {topics ? (
+          <div className="mt-4 text-sm leading-normal text-ma-text sm:text-[15px]">
+            <p>Topics:</p>
+            <ul className="list-disc pl-5">
+              {topics.map((topic) => (
+                <li key={topic}>{topic}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </div>
+    </div>
   )
 }
 
 function TutorCard() {
   return (
-    <article className="flex gap-5 rounded-2xl bg-[#f5f5f5] p-4 sm:flex-row lg:flex-col">
-      <div className="relative h-[190px] min-w-[106px] shrink-0 overflow-hidden rounded-[10px] sm:w-[190px] lg:w-full">
+    <article className="flex gap-5 rounded-2xl bg-[#f5f5f5] p-4">
+      <div className="relative h-[190px] min-w-[106px] shrink-0 overflow-hidden rounded-[10px] sm:w-[190px]">
         <Image
           src="/figma-courses/tutor-maxwell.png"
           alt="Mr. Maxwell"
@@ -157,7 +258,7 @@ function ReviewCard({ review }: { review: (typeof reviews)[number] }) {
     <article className="flex flex-col gap-[22px] rounded-2xl border border-[#d9d9d9] p-5">
       <p className="text-[15px] leading-normal text-ma-text">{review.text}</p>
 
-      <div className="flex gap-4 sm:flex-row sm:items-end lg:flex-col">
+      <div className="flex gap-4 sm:flex-row sm:items-end">
         <div className="flex flex-1 items-end gap-2.5">
           <Image
             src={review.image}
@@ -215,16 +316,20 @@ function CourseInformationCard() {
           </div>
         ))}
 
-        <Button
-          asChild
-          variant="outline"
-          className="mt-6 h-[53px] w-full gap-2.5 rounded-[60px] border-[#e5e7eb] bg-white px-5 py-4 text-base font-semibold text-ma-text hover:bg-[#f5f5f5]"
-        >
-          <Link href="/signup">
-            Enroll Now
-            <ArrowRight className="size-5" aria-hidden="true" />
-          </Link>
-        </Button>
+        <div className="group relative mt-6">
+          <Button asChild className="w-full rounded-[60px]" variant={"outline"}>
+            <Link
+              href="/signup"
+              className="flex h-[53px] w-full items-center justify-center gap-2.5 rounded-[60px] border border-[#e5e7eb] bg-white px-5 py-4 text-base font-semibold text-primary transition-colors duration-300 group-hover:border-transparent group-hover:bg-transparent"
+            >
+              Enroll Now
+              <ArrowRight
+                className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]"
+                aria-hidden="true"
+              />
+            </Link>
+          </Button>
+        </div>
       </div>
     </aside>
   )
