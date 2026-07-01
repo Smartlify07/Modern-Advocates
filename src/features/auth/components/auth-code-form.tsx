@@ -108,9 +108,10 @@ export function AuthCodeForm({
 
           <Button
             type="submit"
-            className="h-[53px] w-full rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white hover:bg-ma-text/90"
+            className="group relative h-[53px] w-full overflow-hidden rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white"
           >
-            {actionLabel}
+            <span className="relative z-10">{actionLabel}</span>
+            <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </Button>
 
           <FieldSeparator className="my-0 w-full [&_[data-slot=field-separator-content]]:bg-white">
