@@ -7,7 +7,7 @@ import { Button } from "@/shared/ui/button"
 export function CourseDetailHeroSection() {
   return (
     <section className="bg-[#f5f5f5] py-10 text-ma-text sm:py-[90px] lg:py-16">
-      <div className="mx-auto grid gap-5 rounded-[24px] px-4 lg:grid-cols-2 lg:px-25 2xl:px-50">
+      <div className="mx-auto grid max-w-360 gap-5 rounded-[24px] px-4 lg:grid-cols-2 lg:px-25 2xl:px-50">
         <div className="relative min-h-[360px] overflow-hidden rounded-[24px] sm:min-h-[428px]">
           <Image
             src="/figma-courses/foundational-ai-skills.png"
@@ -81,10 +81,16 @@ export function CourseDetailHeroSection() {
               asChild
               className="group relative mt-3 overflow-hidden rounded-[60px]"
             >
-              <Link href="/signup" className="flex h-[53px] w-full items-center justify-center gap-2.5 rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white">
+              <Link
+                href="/signup"
+                className="flex h-[53px] w-full items-center justify-center gap-2.5 rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white"
+              >
                 <span className="relative z-10 inline-flex items-center gap-2.5">
                   Enroll Now
-                  <ArrowRight className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" aria-hidden="true" />
+                  <ArrowRight
+                    className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]"
+                    aria-hidden="true"
+                  />
                 </span>
                 <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               </Link>

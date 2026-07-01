@@ -12,7 +12,7 @@ const quickLinks = [
 export function Footer() {
   return (
     <footer className="overflow-hidden bg-white text-ma-text">
-      <div className="relative mx-auto min-h-125 px-4 pt-12.5 lg:px-25 lg:pt-17.5 2xl:px-50">
+      <div className="relative mx-auto min-h-125 max-w-360 px-4 pt-12.5 lg:px-25 lg:pt-17.5 2xl:px-50">
         <div className="grid gap-10 md:grid-cols-[254px_180px_1fr] md:gap-[100px] lg:gap-[120px]">
           <section>
             <h2 className="font-sans text-lg font-extrabold lg:text-2xl">

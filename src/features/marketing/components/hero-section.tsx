@@ -14,7 +14,7 @@ const supporters = [
 export function HeroSection() {
   return (
     <section className="relative isolate bg-white text-ma-text">
-      <div className="relative z-10 mx-auto flex flex-col items-center px-4 py-12.5 text-center lg:min-h-[924px] lg:py-[118px] xl:px-25 2xl:px-50">
+      <div className="relative z-10 mx-auto flex max-w-360 flex-col items-center px-4 py-12.5 text-center lg:min-h-[924px] lg:py-[118px] xl:px-25 2xl:px-50">
         <div className="flex items-center justify-center gap-4">
           <div className="flex -space-x-2">
             {supporters.map((src, index) => (
@@ -80,7 +80,7 @@ export function HeroSection() {
           </Link>
         </div>
 
-        <div className="relative mt-15 w-full max-w-[1024px] lg:mt-[100px]">
+        <div className="relative mt-15 w-full lg:mt-[100px]">
           <div
             className="ma-hero-glow pointer-events-none absolute top-1/4 left-1/2 -z-10 h-[500px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-90 lg:top-1/3 lg:left-1/2 lg:h-[950px] lg:w-[954px]"
             aria-hidden="true"
@@ -97,7 +97,7 @@ export function HeroSection() {
                 alt="Two students smiling in a city setting"
                 fill
                 priority
-                sizes="(min-width: 768px) 700px, calc(100vw - 48px)"
+                sizes="(min-width: 768px) 700px, calc(100vw - 0px)"
                 className="object-cover"
               />
             </div>
