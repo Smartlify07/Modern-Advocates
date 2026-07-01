@@ -6,7 +6,6 @@ import {
 import { FeaturedCourses } from "@/features/marketing/components/featured-courses"
 import { HowItWorks } from "@/features/marketing/components/how-it-works"
 import { Testimonials } from "@/features/marketing/components/testimonials"
-import { Faq } from "@/features/marketing/components/faq"
 import SupportSection from "@/features/marketing/components/how-can-we-support"
 
 export default function Page() {

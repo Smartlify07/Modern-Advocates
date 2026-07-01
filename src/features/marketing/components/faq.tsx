@@ -70,7 +70,7 @@ export function Faq() {
                 >
                   <Plus
                     className={`size-[30px] shrink-0 transition-transform duration-600 ${
-                      openIndex === i ? "rotate-90" : ""
+                      openIndex === i ? "rotate-45" : ""
                     }`}
                     strokeWidth={2.5}
                     aria-hidden="true"
