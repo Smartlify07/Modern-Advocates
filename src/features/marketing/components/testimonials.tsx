@@ -37,41 +37,42 @@ export function Testimonials() {
 
   return (
     <section className="overflow-hidden bg-white py-12.5 lg:py-25">
-      <div className="mx-auto flex w-full flex-col gap-8 px-4 sm:flex-row sm:items-end sm:justify-between xl:px-25 2xl:px-50">
-        <div>
-          <h2 className="font-sans text-[28px]/[100%] font-extrabold text-primary lg:text-[40px] lg:leading-15">
-            What they say about us?
-          </h2>
-          <p className="mt-6 max-w-[650px] text-[18px] leading-normal text-primary">
-            Real stories from customers who have experienced measurable results
-            and meaningful progress with our support.
-          </p>
+      <div className="mx-auto max-w-360 px-4 xl:px-25 2xl:px-50">
+        <div className="flex w-full flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 className="font-sans text-[28px]/[100%] font-extrabold text-primary lg:text-[40px] lg:leading-15">
+              What they say about us?
+            </h2>
+            <p className="mt-6 max-w-[650px] text-[18px] leading-normal text-primary">
+              Real stories from customers who have experienced measurable results
+              and meaningful progress with our support.
+            </p>
+          </div>
+
+          <div className="flex gap-[18px] sm:pb-2">
+            <button
+              type="button"
+              aria-label="Previous review"
+              onClick={() => scrollReviews("previous")}
+              className="flex size-[50px] items-center justify-center rounded-2xl bg-[#f5f5f5] text-black transition-colors hover:bg-[#ececec]"
+            >
+              <ArrowLeft className="size-6" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              aria-label="Next review"
+              onClick={() => scrollReviews("next")}
+              className="flex size-[50px] items-center justify-center rounded-2xl bg-[#f5f5f5] text-black transition-colors hover:bg-[#ececec]"
+            >
+              <ArrowRight className="size-6" aria-hidden="true" />
+            </button>
+          </div>
         </div>
 
-        <div className="flex gap-[18px] sm:pb-2">
-          <button
-            type="button"
-            aria-label="Previous review"
-            onClick={() => scrollReviews("previous")}
-            className="flex size-[50px] items-center justify-center rounded-2xl bg-[#f5f5f5] text-black transition-colors hover:bg-[#ececec]"
-          >
-            <ArrowLeft className="size-6" aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            aria-label="Next review"
-            onClick={() => scrollReviews("next")}
-            className="flex size-[50px] items-center justify-center rounded-2xl bg-[#f5f5f5] text-black transition-colors hover:bg-[#ececec]"
-          >
-            <ArrowRight className="size-6" aria-hidden="true" />
-          </button>
-        </div>
-      </div>
-
-      <div
-        ref={scrollRef}
-        className="relative mx-auto mt-[86px] flex gap-[30px] overflow-x-hidden px-4 pb-2 lg:max-w-[calc(100vw-200px)] lg:px-0"
-      >
+        <div
+          ref={scrollRef}
+          className="relative mt-21.5 flex gap-7.5 overflow-x-hidden pb-2"
+        >
         {reviews.map((review) => (
           <article
             key={review.image}
@@ -103,6 +104,7 @@ export function Testimonials() {
             </div>
           </article>
         ))}
+        </div>
       </div>
     </section>
   )

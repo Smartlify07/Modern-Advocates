@@ -4,9 +4,9 @@ export function DonationHeroSection() {
   return (
     <section
       id="donation"
-      className="bg-white px-4 pt-18 pb-20 text-ma-text sm:pt-25 sm:pb-25 lg:px-25 2xl:px-50"
+      className="bg-white pt-18 pb-20 text-ma-text sm:pt-25 sm:pb-25"
     >
-      <div className="mx-auto">
+      <div className="mx-auto max-w-360 px-4 lg:px-25 2xl:px-50">
         <div className="mx-auto max-w-[800px] text-center">
           <p className="text-base leading-normal font-medium tracking-[10%] text-[#6B7280] uppercase">
             Donation

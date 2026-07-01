@@ -32,7 +32,7 @@ export function ContactHeroSection() {
       id="contact"
       className="bg-white py-12.5 text-ma-text sm:py-25 lg:py-20"
     >
-      <div className="mx-auto grid items-start gap-14 px-4 lg:grid-cols-[444px_1fr] lg:gap-[88px] lg:px-25 2xl:px-50">
+      <div className="mx-auto grid max-w-360 items-start gap-14 px-4 lg:grid-cols-[444px_1fr] lg:gap-[88px] lg:px-25 2xl:px-50">
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-5 lg:gap-[30px]">
             <p className="text-base leading-normal font-medium tracking-[0.1em] text-[#6b7280] uppercase">
@@ -171,7 +171,10 @@ export function ContactHeroSection() {
             >
               <span className="relative z-10 inline-flex items-center gap-2.5">
                 Send your message
-                <ArrowRight className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" aria-hidden="true" />
+                <ArrowRight
+                  className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]"
+                  aria-hidden="true"
+                />
               </span>
               <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             </Button>

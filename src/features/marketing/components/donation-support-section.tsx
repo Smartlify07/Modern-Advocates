@@ -7,8 +7,8 @@ const donationTypes = ["Fixed Donation", "Tier Donation", "Monthly Pay"]
 
 export function DonationSupportSection() {
   return (
-    <section className="bg-white px-4 py-12.5 text-ma-text sm:py-25 lg:px-25 lg:py-20 2xl:px-50">
-      <div className="mx-auto grid items-start gap-12 lg:grid-cols-[506px_510px] lg:gap-6">
+    <section className="bg-white py-12.5 text-ma-text sm:py-25">
+      <div className="mx-auto grid max-w-360 items-start gap-12 px-4 lg:grid-cols-2 lg:gap-6 lg:px-25 lg:py-20 2xl:px-50">
         <div className="pt-0 lg:pt-2">
           <h2 className="font-sans text-[28px]/[100%] leading-[1.12] font-extrabold text-balance text-primary lg:text-[60px]/[70px] lg:tracking-[-5%]">
             Support us and make a difference for the future!
@@ -19,7 +19,7 @@ export function DonationSupportSection() {
           </p>
         </div>
 
-        <form className="flex w-full max-w-[510px] flex-col gap-[30px] rounded-[24px] border border-[#d9d9d9] bg-[#f5f5f5] px-4 pt-[30px] pb-7 sm:px-[30px] lg:px-7">
+        <form className="flex w-full flex-col gap-[30px] rounded-[24px] border border-[#d9d9d9] bg-[#f5f5f5] px-4 pt-[30px] pb-7 sm:px-[30px] lg:px-7">
           <div className="border-b border-[#d9d9d9] pb-2.5">
             <h3 className="text-2xl leading-normal font-bold text-black">
               Make Your Donation
@@ -126,7 +126,10 @@ export function DonationSupportSection() {
           >
             <span className="relative z-10 inline-flex items-center gap-2.5">
               Donate Now
-              <ArrowRight className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" aria-hidden="true" />
+              <ArrowRight
+                className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]"
+                aria-hidden="true"
+              />
             </span>
             <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </Button>

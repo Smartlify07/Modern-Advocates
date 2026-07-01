@@ -11,7 +11,7 @@ const supporters = [
 export function AboutHeroSection() {
   return (
     <section className="bg-white pt-18 pb-20 text-ma-text sm:pt-24 sm:pb-25">
-      <div className="mx-auto px-4 lg:px-25 2xl:px-50">
+      <div className="mx-auto max-w-360 px-4 lg:px-25 2xl:px-50">
         <div className="mx-auto max-w-200 text-center">
           <p className="text-base leading-normal font-medium tracking-[10%] text-[#6b7280] uppercase">
             About us

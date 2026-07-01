@@ -46,9 +46,10 @@ export function Faq() {
   return (
     <section
       id="faq"
-      className="bg-white px-4 py-12.5 lg:px-25 lg:py-25 2xl:px-50"
+      className="bg-white py-12.5 lg:py-25"
     >
-      <div className="mx-auto grid gap-12 lg:grid-cols-[425px_1fr] lg:gap-[77px]">
+      <div className="mx-auto max-w-360 px-4 lg:px-25 2xl:px-50">
+        <div className="grid gap-12 lg:grid-cols-[425px_1fr] lg:gap-[77px]">
         <div>
           <h2 className="max-w-[425px] font-sans text-[28px]/[100%] font-extrabold text-primary lg:text-[40px]/[60px] lg:tracking-[-5%]">
             Got questions? we&apos;ve got answers
@@ -72,7 +73,7 @@ export function Faq() {
               >
                 <Plus
                   className={`size-[30px] shrink-0 transition-transform duration-600 ${
-                    openIndex === i ? "rotate-[360deg]" : ""
+                    openIndex === i ? "rotate-90" : ""
                   }`}
                   strokeWidth={2.5}
                   aria-hidden="true"
@@ -84,7 +85,9 @@ export function Faq() {
 
               <div
                 className={`overflow-hidden transition-all duration-300 ${
-                  openIndex === i ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                  openIndex === i
+                    ? "max-h-[500px] opacity-100"
+                    : "max-h-0 opacity-0"
                 }`}
               >
                 <p className="pt-4 text-sm leading-normal text-ma-text/80 lg:text-base">
@@ -93,6 +96,7 @@ export function Faq() {
               </div>
             </div>
           ))}
+        </div>
         </div>
       </div>
     </section>
