@@ -2,10 +2,29 @@
 
 import { Gift } from "lucide-react"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 export function MissionBridgeSection() {
   const [hovered, setHovered] = useState<"first" | "second" | null>(null)
+  const [isLargeScreen, setIsLargeScreen] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)")
+    setIsLargeScreen(mq.matches)
+    const handler = (e: MediaQueryListEvent) => setIsLargeScreen(e.matches)
+    mq.addEventListener("change", handler)
+    return () => mq.removeEventListener("change", handler)
+  }, [])
+
+  function onHover(card: "first" | "second") {
+    if (!isLargeScreen) return
+    setHovered(card)
+  }
+
+  function onLeave() {
+    if (!isLargeScreen) return
+    setHovered(null)
+  }
 
   return (
     <section
@@ -47,8 +66,8 @@ export function MissionBridgeSection() {
         }}
       >
         <div
-          onMouseEnter={() => setHovered("first")}
-          onMouseLeave={() => setHovered(null)}
+          onMouseEnter={() => onHover("first")}
+          onMouseLeave={onLeave}
           className="flex flex-col gap-5 rounded-2xl bg-white p-5 sm:flex-row"
         >
           <div className="flex flex-col justify-between gap-2.5 sm:min-h-79.5 sm:gap-0">
@@ -69,7 +88,7 @@ export function MissionBridgeSection() {
           </div>
 
           <div
-            className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 ${
+            className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 max-lg:hidden ${
               hovered === "second" ? "w-0 min-w-0" : "w-[292px]"
             }`}
           >
@@ -85,8 +104,8 @@ export function MissionBridgeSection() {
         </div>
 
         <div
-          onMouseEnter={() => setHovered("second")}
-          onMouseLeave={() => setHovered(null)}
+          onMouseEnter={() => onHover("second")}
+          onMouseLeave={onLeave}
           className="flex gap-5 rounded-2xl bg-white p-5 sm:flex"
         >
           <div className="flex min-w-0 flex-col justify-between gap-2.5 sm:min-h-79.5">
@@ -107,8 +126,8 @@ export function MissionBridgeSection() {
           </div>
 
           <div
-            className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 ${
-              hovered === "second" ? "w-[292px]" : "w-0 min-w-0"
+            className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 max-lg:hidden ${
+              hovered === "second" ? "lg:w-[292px]" : "w-0 min-w-0"
             }`}
           >
             <Image
