@@ -28,6 +28,7 @@ const codeSchema = z.object({
 type AuthCodeFormProps = React.ComponentProps<"div"> & {
   email: string
   mode: "login" | "signup"
+  error?: string | null
   onDifferentAccount?: () => void
   onResendCode?: () => void
   onSubmitCode?: (code: string) => void | Promise<void>
@@ -37,6 +38,7 @@ export function AuthCodeForm({
   className,
   email,
   mode,
+  error,
   onDifferentAccount,
   onResendCode,
   onSubmitCode,
@@ -105,6 +107,10 @@ export function AuthCodeForm({
               </Field>
             )}
           />
+
+          {error && (
+            <p className="text-sm text-red-500">{error}</p>
+          )}
 
           <Button
             type="submit"
