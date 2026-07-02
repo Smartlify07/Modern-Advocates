@@ -46,12 +46,12 @@ export function HeroSection() {
           </div>
         </div>
 
-        <h1 className="mt-[30px] max-w-[800px] font-sans text-[28px]/[100%] font-extrabold lg:text-[60px] lg:leading-[70px] lg:tracking-[-5%]">
+        <h1 className="mt-[30px] max-w-[800px] font-sans text-[26px]/[100%] font-extrabold lg:text-[60px] lg:leading-[70px] lg:tracking-[-5%]">
           Navigate today&apos;s world with the skills, resources, and support
           you deserve.
         </h1>
 
-        <p className="mt-6 max-w-[750px] text-base/[100%] text-ma-text lg:mt-10">
+        <p className="mt-6 max-w-[750px] text-ma-text lg:mt-10 lg:text-base/[100%]">
           ModernAdvocates Inc. helps low-to-moderate income individuals access
           AI workforce training and healthcare resources - so a diagnosis or a
           job displacement does not define your future.
@@ -65,7 +65,7 @@ export function HeroSection() {
             <span className="relative z-10 inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-nowrap text-white sm:gap-2.5 sm:text-base">
               Book consultation
               <ArrowRight
-                className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]"
+                className="hidden size-5 transition-transform duration-300 group-hover:-rotate-30 md:inline"
                 aria-hidden="true"
               />
             </span>
@@ -73,10 +73,13 @@ export function HeroSection() {
           </Link>
           <Link
             href="/donation"
-            className="inline-flex items-center justify-center gap-1.5 rounded-[60px] bg-white px-5 py-4 text-xs font-semibold text-nowrap text-ma-text transition-colors hover:bg-ma-bg sm:gap-2.5 sm:text-base"
+            className="group inline-flex items-center justify-center gap-1.5 rounded-[60px] bg-white px-5 py-4 text-xs font-semibold text-nowrap text-ma-text transition-colors hover:bg-ma-bg sm:gap-2.5 sm:text-base"
           >
             Support our mission
-            <ArrowRight className="size-5" aria-hidden="true" />
+            <ArrowRight
+              className="hidden size-5 transition-transform duration-300 group-hover:-rotate-30 md:inline"
+              aria-hidden="true"
+            />
           </Link>
         </div>
 

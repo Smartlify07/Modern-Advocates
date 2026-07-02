@@ -7,7 +7,6 @@ export default function DonationPage() {
     <main className="min-h-svh overflow-hidden bg-white text-ma-text">
       <DonationHeroSection />
       <DonationSupportSection />
-      <DonationCtaSection />
     </main>
   )
 }

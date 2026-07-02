@@ -8,7 +8,7 @@ export function ConditionalLayoutSections() {
   const pathname = usePathname()
 
   const showFaq = pathname === "/" || pathname === "/about"
-  const showCta = !["/donation", "/login", "/signup"].includes(pathname)
+  const showCta = !["/login", "/signup"].includes(pathname)
 
   return (
     <>
