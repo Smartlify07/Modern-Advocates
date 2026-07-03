@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useRef } from "react"
+import { useRef, useState, useEffect } from "react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 
 const reviews = [
@@ -23,18 +23,35 @@ const reviews = [
   },
 ]
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)")
+    setIsMobile(mq.matches)
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mq.addEventListener("change", handler)
+    return () => mq.removeEventListener("change", handler)
+  }, [])
+  return isMobile
+}
+
 export function Testimonials() {
   const scrollRef = useRef<HTMLDivElement>(null)
-
-  const SCROLL_STEP = 330 + 30
+  const isMobile = useIsMobile()
+  const SCROLL_STEP = 360
 
   function scrollReviews(direction: "previous" | "next") {
     const el = scrollRef.current
     if (!el) return
-    el.scrollTo({
-      left: direction === "next" ? el.scrollLeft + SCROLL_STEP : el.scrollLeft - SCROLL_STEP,
-      behavior: "smooth",
-    })
+    const target =
+      direction === "next"
+        ? isMobile
+          ? el.scrollLeft + SCROLL_STEP
+          : el.scrollWidth - el.clientWidth
+        : isMobile
+          ? el.scrollLeft - SCROLL_STEP
+          : 0
+    el.scrollTo({ left: target, behavior: "smooth" })
   }
 
   return (
