@@ -1,14 +1,24 @@
+"use client"
+
 import { ArrowRight } from "lucide-react"
+import { useState } from "react"
 
 import { Button } from "@/shared/ui/button"
 import { Input } from "@/shared/ui/input"
 
 const donationTypes = ["Fixed Donation", "Tier Donation", "Monthly Pay"]
+const donationAmounts = [100, 200, 1000]
 
 export function DonationSupportSection() {
+  const [donationType, setDonationType] = useState(donationTypes[0])
+  const [selectedAmount, setSelectedAmount] = useState<number | null>(null)
+
+  const showAmountSelector =
+    donationType === "Tier Donation" || donationType === "Monthly Pay"
+
   return (
-    <section className="bg-white py-12.5 text-ma-text sm:py-25">
-      <div className="mx-auto grid max-w-360 items-start gap-12 px-4 lg:grid-cols-2 lg:gap-6 lg:px-25 lg:py-20 2xl:px-50">
+    <section className="bg-white py-12.5 text-ma-text lg:py-25">
+      <div className="mx-auto grid max-w-360 items-start gap-12 px-4 lg:grid-cols-2 lg:gap-6 lg:px-25 2xl:px-50">
         <div className="pt-0 lg:pt-2">
           <h2 className="font-sans text-[28px]/[100%] leading-[1.12] font-extrabold text-balance text-primary lg:text-[60px]/[70px] lg:tracking-[-5%]">
             Support us and make a difference for the future!
@@ -32,7 +42,7 @@ export function DonationSupportSection() {
             </legend>
 
             <div className="grid gap-3 sm:grid-cols-3">
-              {donationTypes.map((type, index) => (
+              {donationTypes.map((type) => (
                 <label
                   key={type}
                   className="flex min-w-0 items-start gap-2 text-base leading-normal text-[#6b7280]"
@@ -41,7 +51,8 @@ export function DonationSupportSection() {
                     type="radio"
                     name="donationType"
                     value={type}
-                    defaultChecked={index === 0}
+                    checked={donationType === type}
+                    onChange={() => setDonationType(type)}
                     className="mt-0.5 size-5 shrink-0 accent-[#6d63ff]"
                   />
                   <span>{type}</span>
@@ -50,24 +61,62 @@ export function DonationSupportSection() {
             </div>
           </div>
 
-          <div className="relative">
-            <label htmlFor="donation-amount" className="sr-only">
-              Donation amount
-            </label>
-            <Input
-              id="donation-amount"
-              name="amount"
-              inputMode="decimal"
-              placeholder="Enter Amount"
-              className="h-10 rounded-[6px] border-[#e5e7eb] bg-white px-4 py-2.5 pr-10 text-base placeholder:text-[#6b7280]"
-            />
-            <span
-              className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-xl leading-none font-bold text-ma-text"
-              aria-hidden="true"
-            >
-              $
-            </span>
-          </div>
+          {showAmountSelector ? (
+            <div className="flex flex-col gap-4">
+              <label className="text-xl leading-normal font-semibold text-black">
+                Select Donation Amount
+              </label>
+              <div className="flex flex-col gap-2">
+                {donationAmounts.map((amount) => (
+                  <label
+                    key={amount}
+                    className={`relative cursor-pointer rounded-[6px] ${
+                      selectedAmount === amount
+                        ? "bg-linear-[90deg] from-[#4F7CF7] from-[0%] to-[#7B5CFF] to-[68.27%] p-[1.1px] pb-[1.3px]"
+                        : "border border-[#e5e7eb]"
+                    }`}
+                  >
+                    <div
+                      className={`flex items-center justify-between rounded-[5px] bg-white px-4 py-2.5 text-base/[100%] font-medium ${
+                        selectedAmount === amount
+                          ? "text-ma-text"
+                          : "text-ma-text"
+                      }`}
+                    >
+                      <span>${amount}</span>
+                      <input
+                        type="radio"
+                        name="donationAmount"
+                        value={amount}
+                        checked={selectedAmount === amount}
+                        onChange={() => setSelectedAmount(amount)}
+                        className="size-5 accent-[#6d63ff]"
+                      />
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="relative">
+              <label htmlFor="donation-amount" className="sr-only">
+                Donation amount
+              </label>
+              <Input
+                id="donation-amount"
+                name="amount"
+                inputMode="decimal"
+                placeholder="Enter Amount"
+                className="h-10 rounded-[6px] border-[#e5e7eb] bg-white px-4 py-2.5 pr-10 text-base placeholder:text-[#6b7280]"
+              />
+              <span
+                className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-xl leading-none font-bold text-ma-text"
+                aria-hidden="true"
+              >
+                $
+              </span>
+            </div>
+          )}
 
           <div className="flex flex-col gap-4">
             <h3 className="text-xl leading-normal font-semibold text-black">

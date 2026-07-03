@@ -9,7 +9,7 @@ const SupportSection = () => {
     <section id="about" className="bg-white py-12.5 sm:py-25">
       <div className="mx-auto max-w-360 px-4 xl:px-25 2xl:px-50">
         <div className="mx-auto text-center">
-          <h2 className="mx-auto max-w-160 text-center font-sans text-[28px] font-extrabold tracking-[0%] text-ma-text sm:text-5xl sm:text-[40px]/[60px]">
+          <h2 className="mx-auto max-w-160 text-center font-sans text-[26px]/[100%] font-extrabold tracking-[0%] text-ma-text sm:text-[40px]/[60px]">
             How can we support your healthcare journey?{" "}
           </h2>
         </div>
@@ -24,25 +24,25 @@ const SupportSection = () => {
         <div className="mx-auto mt-10 grid gap-4 rounded-2xl bg-[#f5f5f5] p-4 lg:mt-15.5">
           <div className="grid gap-4 lg:grid-cols-2">
             <SupportCard
-              title="Card Title"
+              title="AI Education"
               description="We create distinctive brand identities that communicate your values clearly and build strong connections with your audience."
             />
             <SupportCard
-              title="Card Title"
+              title="Health Advocacy"
               description="We create distinctive brand identities that communicate your values clearly and build strong connections with your audience."
             />{" "}
           </div>
           <div className="grid gap-4 lg:grid-cols-3">
             <SupportCard
-              title="Card Title"
+              title="Community"
               description="We create distinctive brand identities that communicate your values clearly and build strong connections with your audience."
             />
             <SupportCard
-              title="Card Title"
+              title="Endometriosis Specialist"
               description="We create distinctive brand identities that communicate your values clearly and build strong connections with your audience."
             />
             <SupportCard
-              title="Card Title"
+              title="Future Vision"
               description="We create distinctive brand identities that communicate your values clearly and build strong connections with your audience."
             />
           </div>

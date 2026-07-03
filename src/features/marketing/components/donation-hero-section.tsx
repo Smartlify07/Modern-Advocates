@@ -2,21 +2,18 @@ import Image from "next/image"
 
 export function DonationHeroSection() {
   return (
-    <section
-      id="donation"
-      className="bg-white pt-18 pb-20 text-ma-text sm:pt-25 sm:pb-25"
-    >
+    <section id="donation" className="bg-white py-12.5 text-ma-text lg:py-25">
       <div className="mx-auto max-w-360 px-4 lg:px-25 2xl:px-50">
         <div className="mx-auto max-w-[800px] text-center">
           <p className="text-base leading-normal font-medium tracking-[10%] text-[#6B7280] uppercase">
             Donation
           </p>
 
-          <h1 className="mt-7.5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold text-balance text-primary sm:leading-[70px] lg:text-[60px]/[70px] lg:tracking-[-5%]">
+          <h1 className="mt-5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold text-balance text-primary sm:leading-[70px] lg:mt-7.5 lg:text-[60px]/[70px] lg:tracking-[-5%]">
             Your Support Keeps Someone in the Game
           </h1>
 
-          <p className="mt-10 text-lg leading-normal text-ma-text">
+          <p className="mt-5 text-base leading-normal text-ma-text lg:mt-10 lg:text-lg">
             When AI changes the rules, not everyone gets the manual.
             ModernAdvocates Inc. makes sure the people who need it most
             don&apos;t get left behind.
@@ -35,7 +32,7 @@ export function DonationHeroSection() {
             />
           </div>
 
-          <article className="flex flex-col rounded-[24px] bg-[#f5f5f5] p-7.5 sm:p-[30px] lg:min-h-[550px] lg:p-7">
+          <article className="flex flex-col rounded-[24px] bg-[#f5f5f5] px-4 py-7.5 lg:min-h-[550px] lg:p-7">
             <div>
               <h2 className="text-[30px] leading-normal font-semibold text-ma-text sm:text-4xl lg:text-[32px]">
                 Melanie Reyes

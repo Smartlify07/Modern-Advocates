@@ -1,12 +1,10 @@
 import { Card, CardDescription, CardTitle } from "@/shared/ui/card"
 import { cn } from "@/shared/utils"
 import { Gift } from "lucide-react"
-import Image from "next/image"
-import React from "react"
 
 const AboutOurValuesSection = () => {
   return (
-    <section id="about" className="bg-white py-12.5 sm:py-24 lg:py-25">
+    <section id="about" className="bg-white py-12.5 lg:py-25">
       <div className="mx-auto max-w-360 px-4 xl:px-25 2xl:px-50">
         <p className="mb-5 text-center text-sm leading-normal font-medium tracking-[10%] text-[#6b7280] uppercase sm:text-base">
           OUR VALUES{" "}
@@ -27,25 +25,25 @@ const AboutOurValuesSection = () => {
         <div className="mx-auto mt-15.5 grid gap-4 rounded-2xl bg-[#f5f5f5] p-4">
           <div className="grid gap-4 lg:grid-cols-2">
             <SupportCard
-              title="Card Title"
+              title="AI Education"
               description="We create distinctive brand identities that communicate your values clearly and build strong connections with your audience."
             />
             <SupportCard
-              title="Card Title"
+              title="Health Advocacy"
               description="We create distinctive brand identities that communicate your values clearly and build strong connections with your audience."
             />{" "}
           </div>
           <div className="grid gap-4 lg:grid-cols-3">
             <SupportCard
-              title="Card Title"
+              title="Community"
               description="We create distinctive brand identities that communicate your values clearly and build strong connections with your audience."
             />
             <SupportCard
-              title="Card Title"
+              title="Endometriosis Specialist"
               description="We create distinctive brand identities that communicate your values clearly and build strong connections with your audience."
             />
             <SupportCard
-              title="Card Title"
+              title="Future Vision"
               description="We create distinctive brand identities that communicate your values clearly and build strong connections with your audience."
             />
           </div>
