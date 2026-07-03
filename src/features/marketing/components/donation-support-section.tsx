@@ -13,11 +13,12 @@ export function DonationSupportSection() {
   const [donationType, setDonationType] = useState(donationTypes[0])
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null)
 
-  const showAmountSelector = donationType === "Tier Donation" || donationType === "Monthly Pay"
+  const showAmountSelector =
+    donationType === "Tier Donation" || donationType === "Monthly Pay"
 
   return (
-    <section className="bg-white py-12.5 text-ma-text sm:py-25">
-      <div className="mx-auto grid max-w-360 items-start gap-12 px-4 lg:grid-cols-2 lg:gap-6 lg:px-25 lg:py-20 2xl:px-50">
+    <section className="bg-white py-12.5 text-ma-text lg:py-25">
+      <div className="mx-auto grid max-w-360 items-start gap-12 px-4 lg:grid-cols-2 lg:gap-6 lg:px-25 2xl:px-50">
         <div className="pt-0 lg:pt-2">
           <h2 className="font-sans text-[28px]/[100%] leading-[1.12] font-extrabold text-balance text-primary lg:text-[60px]/[70px] lg:tracking-[-5%]">
             Support us and make a difference for the future!
@@ -65,25 +66,33 @@ export function DonationSupportSection() {
               <label className="text-xl leading-normal font-semibold text-black">
                 Select Donation Amount
               </label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="flex flex-col gap-2">
                 {donationAmounts.map((amount) => (
                   <label
                     key={amount}
-                    className={`flex cursor-pointer items-center justify-center rounded-[6px] border px-4 py-2.5 text-base font-semibold transition-colors ${
+                    className={`relative cursor-pointer rounded-[6px] ${
                       selectedAmount === amount
-                        ? "border-ma-text bg-ma-text text-white"
-                        : "border-[#e5e7eb] bg-white text-ma-text hover:border-ma-text"
+                        ? "bg-linear-[90deg] from-[#4F7CF7] from-[0%] to-[#7B5CFF] to-[68.27%] p-[1.1px] pb-[1.3px]"
+                        : "border border-[#e5e7eb]"
                     }`}
                   >
-                    <input
-                      type="radio"
-                      name="donationAmount"
-                      value={amount}
-                      checked={selectedAmount === amount}
-                      onChange={() => setSelectedAmount(amount)}
-                      className="sr-only"
-                    />
-                    ${amount}
+                    <div
+                      className={`flex items-center justify-between rounded-[5px] bg-white px-4 py-2.5 text-base/[100%] font-medium ${
+                        selectedAmount === amount
+                          ? "text-ma-text"
+                          : "text-ma-text"
+                      }`}
+                    >
+                      <span>${amount}</span>
+                      <input
+                        type="radio"
+                        name="donationAmount"
+                        value={amount}
+                        checked={selectedAmount === amount}
+                        onChange={() => setSelectedAmount(amount)}
+                        className="size-5 accent-[#6d63ff]"
+                      />
+                    </div>
                   </label>
                 ))}
               </div>

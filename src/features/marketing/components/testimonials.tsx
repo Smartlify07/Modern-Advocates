@@ -26,11 +26,13 @@ const reviews = [
 export function Testimonials() {
   const scrollRef = useRef<HTMLDivElement>(null)
 
+  const SCROLL_STEP = 330 + 30
+
   function scrollReviews(direction: "previous" | "next") {
     const el = scrollRef.current
     if (!el) return
     el.scrollTo({
-      left: direction === "next" ? el.scrollWidth - el.clientWidth : 0,
+      left: direction === "next" ? el.scrollLeft + SCROLL_STEP : el.scrollLeft - SCROLL_STEP,
       behavior: "smooth",
     })
   }
@@ -71,7 +73,7 @@ export function Testimonials() {
 
         <div
           ref={scrollRef}
-          className="relative mt-21.5 flex gap-7.5 overflow-x-hidden pb-2"
+          className="relative mt-21.5 flex gap-7.5 overflow-x-auto pb-2 scroll-smooth [mask-image:linear-gradient(to_right,black_0%,black_calc(100%-100px),transparent_100%)] [&::-webkit-scrollbar]:hidden"
         >
           {reviews.map((review) => (
             <article

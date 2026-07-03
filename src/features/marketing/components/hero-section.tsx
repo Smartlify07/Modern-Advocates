@@ -51,7 +51,7 @@ export function HeroSection() {
           you deserve.
         </h1>
 
-        <p className="mt-6 max-w-[750px] text-ma-text lg:mt-10 lg:text-base/[100%]">
+        <p className="mt-6 max-w-[750px] text-base text-ma-text lg:mt-10">
           ModernAdvocates Inc. helps low-to-moderate income individuals access
           AI workforce training and healthcare resources - so a diagnosis or a
           job displacement does not define your future.
@@ -71,30 +71,38 @@ export function HeroSection() {
             </span>
             <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </Link>
-          <Link
-            href="/donation"
-            className="group inline-flex items-center justify-center gap-1.5 rounded-[60px] bg-white px-5 py-4 text-xs font-semibold text-nowrap text-ma-text transition-colors hover:bg-ma-bg sm:gap-2.5 sm:text-base"
-          >
-            Support our mission
-            <ArrowRight
-              className="hidden size-5 transition-transform duration-300 group-hover:-rotate-30 md:inline"
-              aria-hidden="true"
-            />
-          </Link>
+          <div className="group relative">
+            <div className="pointer-events-none absolute -inset-[1px] rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <Link
+              href="/donation"
+              className="relative inline-flex items-center justify-center gap-1.5 rounded-[60px] bg-white px-5 py-4 text-xs font-semibold text-nowrap text-ma-text transition-colors sm:gap-2.5 sm:text-base"
+            >
+              Support our mission
+              <ArrowRight
+                className="hidden size-5 transition-transform duration-300 group-hover:-rotate-30 md:inline"
+                aria-hidden="true"
+              />
+            </Link>
+          </div>
         </div>
 
         <div className="relative mt-15 w-full lg:mt-[100px]">
           <div
-            className="ma-hero-glow pointer-events-none absolute top-1/4 left-1/2 -z-10 h-[500px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-90 lg:top-1/3 lg:left-1/2 lg:h-[950px] lg:w-[954px]"
+            className="pointer-events-none absolute top-1/2 left-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 lg:top-1/3"
             aria-hidden="true"
-          />
+          >
+            <div className="flex gap-[5%]">
+              <div className="size-[616px] shrink-0 translate-x-[30%] rounded-full bg-ma-glow-blue blur-3xl max-lg:size-[308px]" />
+              <div className="size-[616px] shrink-0 -translate-x-[50%] rounded-full bg-ma-glow-violet blur-3xl max-lg:size-[308px]" />
+            </div>
+          </div>
           <motion.div
             initial={{ scale: 700 / 1024 }}
             whileInView={{ scale: 1 }}
             transition={{ duration: 0.8 }}
             // viewport={{ once: true }}
           >
-            <div className="relative h-[280px] overflow-hidden rounded-[20px] bg-ma-bg lg:h-[560px]">
+            <div className="relative h-[280px] overflow-hidden rounded-[20px] bg-ma-bg lg:h-[693px]">
               <Image
                 src="/figma-home/hero.jpg"
                 alt="Two students smiling in a city setting"

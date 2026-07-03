@@ -58,7 +58,7 @@ export function MissionBridgeSection() {
         </div>
 
         <div
-          className="mt-15 grid h-[400px] max-h-[400px] gap-5 rounded-2xl bg-[#F5F5F5] p-5 transition-[grid-template-columns] duration-500 lg:grid-cols-[2fr_1fr]"
+          className="mt-15 flex gap-5 overflow-x-auto rounded-2xl bg-[#F5F5F5] p-5 transition-[grid-template-columns] duration-500 lg:grid lg:h-[400px] lg:max-h-[400px] lg:grid-cols-[2fr_1fr] lg:overflow-visible"
           style={{
             gridTemplateColumns: hovered === "second" ? "1fr 2fr" : undefined,
           }}
@@ -66,7 +66,7 @@ export function MissionBridgeSection() {
           <div
             onMouseEnter={() => onHover("first")}
             onMouseLeave={onLeave}
-            className="flex flex-col gap-5 rounded-2xl bg-white p-5 sm:flex-row"
+            className="flex max-w-full shrink-0 flex-col gap-5 rounded-2xl bg-white p-5 sm:flex-row lg:max-w-none"
           >
             <div className="flex flex-col justify-between gap-2.5 sm:min-h-79.5 sm:gap-0">
               <div className="flex size-12.5 items-center justify-center rounded-full border">
@@ -86,7 +86,7 @@ export function MissionBridgeSection() {
             </div>
 
             <div
-              className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 max-lg:hidden ${
+              className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 max-lg:w-full max-lg:max-w-[292px] ${
                 hovered === "second" ? "w-0 min-w-0" : "lg:w-[292px]"
               }`}
             >
@@ -104,7 +104,7 @@ export function MissionBridgeSection() {
           <div
             onMouseEnter={() => onHover("second")}
             onMouseLeave={onLeave}
-            className="flex gap-5 rounded-2xl bg-white p-5 md:flex"
+            className="flex max-w-full shrink-0 flex-col gap-5 rounded-2xl bg-white p-5 sm:flex-row lg:max-w-none"
           >
             <div className="flex min-w-0 flex-col justify-between gap-2.5 md:min-h-79.5">
               <div className="flex size-12.5 items-center justify-center rounded-full border">
@@ -124,7 +124,7 @@ export function MissionBridgeSection() {
             </div>
 
             <div
-              className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 max-lg:hidden ${
+              className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 max-lg:w-full max-lg:max-w-[292px] ${
                 hovered === "second" ? "lg:w-[292px]" : "w-0 min-w-0"
               }`}
             >

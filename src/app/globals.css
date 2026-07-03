@@ -150,13 +150,5 @@
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
-  .ma-hero-glow {
-    background: radial-gradient(
-      ellipse at center,
-      var(--ma-glow-blue) 0%,
-      var(--ma-glow-violet) 39%,
-      rgb(245 247 250 / 62%) 58%,
-      rgb(255 255 255 / 0%) 76%
-    );
-  }
+
 }
