@@ -46,7 +46,7 @@ export function LoginForm({
     setLoading(true)
     setError(null)
     try {
-      await authClient.sendVerificationOtp({
+      await authClient.emailOtp.sendVerificationOtp({
         email: data.email,
         type: "sign-in",
       })
@@ -61,11 +61,12 @@ export function LoginForm({
   const handleSubmitCode = async (code: string) => {
     if (!loginEmail) return
     setError(null)
-    const { error: verifyError } = await authClient.emailOtp.checkVerificationOtp({
-      email: loginEmail,
-      otp: code,
-      type: "sign-in",
-    })
+    const { error: verifyError } =
+      await authClient.emailOtp.checkVerificationOtp({
+        email: loginEmail,
+        otp: code,
+        type: "sign-in",
+      })
     if (verifyError) {
       setError("Invalid or expired code. Please try again.")
       return
@@ -84,7 +85,7 @@ export function LoginForm({
   const handleResendCode = async () => {
     if (!loginEmail) return
     setError(null)
-    await authClient.sendVerificationOtp({
+    await authClient.emailOtp.sendVerificationOtp({
       email: loginEmail,
       type: "sign-in",
     })
@@ -138,16 +139,16 @@ export function LoginForm({
               )}
             />
 
-            {error && (
-              <p className="text-sm text-red-500">{error}</p>
-            )}
+            {error && <p className="text-sm text-red-500">{error}</p>}
 
             <Button
               type="submit"
               disabled={loading}
               className="group relative h-[53px] w-full overflow-hidden rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white disabled:opacity-60"
             >
-              <span className="relative z-10">{loading ? "Sending..." : "Continue"}</span>
+              <span className="relative z-10">
+                {loading ? "Sending..." : "Continue"}
+              </span>
               <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             </Button>
 
