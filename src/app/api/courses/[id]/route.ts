@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server"
-import { eq, asc } from "drizzle-orm"
+import { eq, asc, sql } from "drizzle-orm"
 
 import { db } from "@/infrastructure/database/client"
+import { user } from "@/infrastructure/database/schema/auth"
 import {
   courses,
   courseModules,
   courseTopics,
+  reviews,
+  enrollments,
 } from "@/infrastructure/database/schema/course"
 import { courseVideos } from "@/infrastructure/database/schema/video"
 import { requireInstructorOrAdmin, requireAdmin } from "@/infrastructure/auth/helpers"
@@ -16,14 +19,36 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await requireInstructorOrAdmin()
-
     const { id } = await params
 
     const course = await db
-      .select()
+      .select({
+        id: courses.id,
+        title: courses.title,
+        content: courses.content,
+        overview: courses.overview,
+        thumbnailUrl: courses.thumbnailUrl,
+        language: courses.language,
+        level: courses.level,
+        price: courses.price,
+        discountedPrice: courses.discountedPrice,
+        duration: courses.duration,
+        status: courses.status,
+        tutorId: courses.tutorId,
+        createdAt: courses.createdAt,
+        updatedAt: courses.updatedAt,
+        tutorName: user.name,
+        tutorImage: user.image,
+        avgRating: sql<number>`COALESCE(AVG(${reviews.rating}), 0)`,
+        reviewCount: sql<number>`COUNT(DISTINCT ${reviews.id})`,
+        enrollmentCount: sql<number>`COUNT(DISTINCT ${enrollments.id})`,
+      })
       .from(courses)
       .where(eq(courses.id, id))
+      .innerJoin(user, eq(courses.tutorId, user.id))
+      .leftJoin(reviews, eq(reviews.courseId, courses.id))
+      .leftJoin(enrollments, eq(enrollments.courseId, courses.id))
+      .groupBy(courses.id, user.name, user.image)
       .then((r) => r[0])
 
     if (!course) {
@@ -73,16 +98,24 @@ export async function GET(
       }),
     )
 
-    return NextResponse.json({ ...course, modules: modulesWithTopics })
+    const courseReviews = await db
+      .select({
+        id: reviews.id,
+        body: reviews.body,
+        rating: reviews.rating,
+        studentName: user.name,
+        studentImage: user.image,
+      })
+      .from(reviews)
+      .where(eq(reviews.courseId, id))
+      .innerJoin(user, eq(reviews.studentId, user.id))
+
+    return NextResponse.json({
+      ...course,
+      modules: modulesWithTopics,
+      reviews: courseReviews,
+    })
   } catch (error) {
-    if (error instanceof Error) {
-      if (error.message === "Unauthorized") {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-      }
-      if (error.message === "Forbidden") {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-      }
-    }
     console.error(error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
