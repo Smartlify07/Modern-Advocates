@@ -73,7 +73,7 @@ export function Testimonials() {
 
         <div
           ref={scrollRef}
-          className="relative mt-21.5 flex gap-7.5 overflow-x-auto pb-2 scroll-smooth [mask-image:linear-gradient(to_right,black_0%,black_calc(100%-100px),transparent_100%)] [&::-webkit-scrollbar]:hidden"
+          className="relative mt-21.5 flex gap-7.5 overflow-x-auto pb-2 scroll-smooth [&::-webkit-scrollbar]:hidden"
         >
           {reviews.map((review) => (
             <article
