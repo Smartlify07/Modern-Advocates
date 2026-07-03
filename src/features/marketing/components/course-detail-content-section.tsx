@@ -16,142 +16,46 @@ import { useState } from "react"
 
 import { Button } from "@/shared/ui/button"
 
-const modules = [
-  {
-    title: "Week 1: AI, Economic Mobility & Entrepreneurship",
-    topics: [
-      "Understanding AI in simple terms",
-      "AI myths vs. practical use",
-      "Wage income vs. asset income",
-      "Entrepreneurship for underserved communities",
-      "Neurodivergent strengths in business ownership",
-      "Real-world examples of AI-assisted businesses",
-      "Low-cost startup opportunities",
-      "Beginner-friendly digital business models",
-    ],
-  },
-  {
-    title: "Week 2: AI Productivity & Prompting",
-    topics: [
-      "Crafting effective AI prompts",
-      "Automating daily workflows with AI",
-      "AI tools for task management",
-      "Integrating AI into existing tools",
-    ],
-  },
-  {
-    title: "Week 3: Business Validation & Fast Monetization Planning",
-    topics: [
-      "Identifying market problems & opportunities",
-      "Lean validation techniques",
-      "Fast monetization strategies",
-      "Building a minimum viable offer",
-    ],
-  },
-  {
-    title: "Week 4: Branding & Digital Presence",
-    topics: [
-      "Defining your brand identity",
-      "Building a simple website",
-      "Social media positioning",
-      "Content creation fundamentals",
-    ],
-  },
-  {
-    title: "Week 5: Product & Service Creation",
-    topics: [
-      "Designing digital products",
-      "Service packaging and pricing",
-      "AI-assisted product development",
-      "Testing and iterating your offer",
-    ],
-  },
-  {
-    title: "Week 6: Marketing & Public Launch",
-    topics: [
-      "Launch campaign planning",
-      "Organic marketing channels",
-      "Paid advertising basics",
-      "Building launch momentum",
-    ],
-  },
-  {
-    title: "Week 7: Client Acquisition & Sales Systems",
-    topics: [
-      "Sales funnel fundamentals",
-      "Lead generation strategies",
-      "CRM and follow-up systems",
-      "Closing techniques for beginners",
-    ],
-  },
-  {
-    title: "Week 8: Revenue Optimization & Sustainability",
-    topics: [
-      "Pricing strategy refinement",
-      "Upselling and cross-selling",
-      "Customer retention tactics",
-      "Financial management basics",
-    ],
-  },
-  {
-    title: "Week 9: Automation & Efficiency",
-    topics: [
-      "Workflow automation tools",
-      "AI chatbots for customer support",
-      "Email marketing automation",
-      "Analytics and performance tracking",
-    ],
-  },
-  {
-    title: "Week 10: Portfolio & Authority Building",
-    topics: [
-      "Creating a professional portfolio",
-      "Publishing thought leadership content",
-      "Speaking and networking opportunities",
-      "Building social proof",
-    ],
-  },
-  {
-    title: "Week 11: Scaling Small Businesses",
-    topics: [
-      "Hiring and delegation basics",
-      "Systems and SOPs for growth",
-      "Expanding product lines",
-      "Partnership and collaboration strategies",
-    ],
-  },
-  {
-    title: "Week 12: Demo Day & Graduation",
-    topics: [
-      "Presenting your business pitch",
-      "Demo day preparation",
-      "Graduation and next steps",
-      "Community and alumni network",
-    ],
-  },
-]
+type TopicData = {
+  id: string
+  title: string
+  format: string
+  content: string | null
+}
 
-const reviews = [
-  {
-    text: "This course completely changed how I understand AI. The instructor broke down even the most complex topics-like neural networks and gradient descent-into simple, digestible lessons. The hands-on exercises helped me finally connect theory with practical implementation.",
-    name: "Jhno Macklonar",
-    role: "Medical doctor",
-    image: "/figma-courses/reviewer-1.png",
-  },
-  {
-    text: "This program reshaped the way I think about machine learning concepts. Topics that once felt intimidating-like model training and optimization-were explained in a clear, step-by-step way. The practical projects made everything click and helped me apply what I learned with confidence.",
-    name: "Jhno Macklonar",
-    role: "Medical doctor",
-    image: "/figma-courses/reviewer-2.png",
-  },
-]
+type ModuleData = {
+  id: string
+  title: string
+  sortOrder: number
+  topics: TopicData[]
+}
 
-const courseInformation = [
-  { label: "Duration:", value: "12 Weeks", icon: Clock },
-  { label: "Lesson:", value: "25 Lessons", icon: PlayCircle },
-  { label: "Level:", value: "Beginner", icon: Layers },
-  { label: "Language:", value: "English", icon: Languages },
-]
+type ReviewData = {
+  id: string
+  body: string | null
+  rating: number
+  studentName: string | null
+  studentImage: string | null
+}
+
+type TutorData = {
+  name: string | null
+  image: string | null
+}
+
+type CourseContentData = {
+  overview: string | null
+  content: string | null
+  language: string
+  level: string
+  duration: number | null
+  tutor: TutorData
+  avgRating: number
+  reviewCount: number
+  enrollmentCount: number
+  modules: ModuleData[]
+  reviews: ReviewData[]
+}
 
 function CourseModule({
   title,
@@ -159,7 +63,7 @@ function CourseModule({
   open: defaultOpen = false,
 }: {
   title: string
-  topics?: string[]
+  topics?: TopicData[]
   open?: boolean
 }) {
   const [open, setOpen] = useState(defaultOpen)
@@ -193,12 +97,12 @@ function CourseModule({
           open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        {topics ? (
+        {topics && topics.length > 0 ? (
           <div className="mt-4 text-sm leading-normal text-ma-text sm:text-[15px]">
             <p>Topics:</p>
             <ul className="list-disc pl-5">
               {topics.map((topic) => (
-                <li key={topic}>{topic}</li>
+                <li key={topic.id}>{topic.title}</li>
               ))}
             </ul>
           </div>
@@ -208,44 +112,61 @@ function CourseModule({
   )
 }
 
-function TutorCard() {
+function TutorCard({
+  tutor,
+  enrollmentCount,
+  avgRating,
+  reviewCount,
+}: {
+  tutor: TutorData
+  enrollmentCount: number
+  avgRating: number
+  reviewCount: number
+}) {
   return (
     <article className="flex gap-5 rounded-2xl bg-[#f5f5f5] p-4">
       <div className="relative h-[190px] min-w-[106px] shrink-0 overflow-hidden rounded-[10px] sm:w-[190px]">
-        <Image
-          src="/figma-courses/tutor-maxwell.png"
-          alt="Mr. Maxwell"
-          fill
-          sizes="190px"
-          className="object-cover"
-        />
+        {tutor.image ? (
+          <Image
+            src={tutor.image}
+            alt={tutor.name ?? "Tutor"}
+            fill
+            sizes="190px"
+            className="object-cover"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center bg-gray-200 text-4xl font-bold text-gray-400">
+            {tutor.name?.[0] ?? "?"}
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col gap-4 sm:gap-[22px]">
         <div className="flex flex-col gap-1 text-ma-text">
-          <h3 className="text-base leading-normal font-bold">Mr. Maxwell</h3>
+          <h3 className="text-base leading-normal font-bold">
+            {tutor.name ?? "Instructor"}
+          </h3>
           <p className="text-xs leading-normal sm:text-[15px]">
-            Software engineer
+            Course Instructor
           </p>
         </div>
 
         <p className="text-xs leading-normal text-ma-text sm:text-[15px]">
-          With 10+ years of experience in ML engineering and applied AI, Mr
-          Henry has worked with tech companies, universities, and startups to
-          build real-world AI systems.
+          Experienced professional with expertise in this field, dedicated to
+          helping students build practical skills and achieve their goals.
         </p>
 
         <div className="flex flex-nowrap items-center gap-4 text-[10px] leading-normal font-medium text-nowrap text-[#6b7280] sm:text-sm lg:flex-wrap">
           <span className="inline-flex items-center gap-1">
             <User className="size-3.5 sm:size-5" aria-hidden="true" />
-            210 students
+            {enrollmentCount} students
           </span>
           <span className="inline-flex items-center gap-1">
             <Star
               className="size-3.5 fill-[#ff9d00] text-[#ff9d00] sm:size-5"
               aria-hidden="true"
             />
-            5.0 (100 reviews)
+            {avgRating.toFixed(1)} ({reviewCount} reviews)
           </span>
         </div>
       </div>
@@ -253,30 +174,39 @@ function TutorCard() {
   )
 }
 
-function ReviewCard({ review }: { review: (typeof reviews)[number] }) {
+function ReviewCard({ review }: { review: ReviewData }) {
   return (
     <article className="flex flex-col gap-[22px] rounded-2xl border border-[#d9d9d9] p-5">
-      <p className="text-[15px] leading-normal text-ma-text">{review.text}</p>
+      <p className="text-[15px] leading-normal text-ma-text">
+        {review.body ?? "No review text provided."}
+      </p>
 
       <div className="flex gap-4 sm:flex-row sm:items-end">
         <div className="flex flex-1 items-end gap-2.5">
-          <Image
-            src={review.image}
-            alt={review.name}
-            width={50}
-            height={50}
-            className="size-[50px] rounded-full object-cover"
-          />
+          <div className="size-[50px] shrink-0 overflow-hidden rounded-full">
+            {review.studentImage ? (
+              <Image
+                src={review.studentImage}
+                alt={review.studentName ?? "Student"}
+                width={50}
+                height={50}
+                className="size-full object-cover"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center bg-gray-200 text-lg font-bold text-gray-400">
+                {review.studentName?.[0] ?? "?"}
+              </div>
+            )}
+          </div>
           <div className="flex flex-col gap-1 text-ma-text">
             <h3 className="text-base leading-normal font-bold text-nowrap">
-              {review.name}
+              {review.studentName ?? "Student"}
             </h3>
-            <p className="text-[15px] leading-normal">{review.role}</p>
           </div>
         </div>
 
-        <div className="flex items-center text-[#ff9d00]" aria-label="5 stars">
-          {Array.from({ length: 5 }).map((_, index) => (
+        <div className="flex items-center text-[#ff9d00]" aria-label={`${review.rating} stars`}>
+          {Array.from({ length: review.rating }).map((_, index) => (
             <Star key={index} className="size-6 fill-current" />
           ))}
         </div>
@@ -285,7 +215,52 @@ function ReviewCard({ review }: { review: (typeof reviews)[number] }) {
   )
 }
 
-function CourseInformationCard() {
+function CourseInformationCard({
+  course,
+}: {
+  course: CourseContentData
+}) {
+  const totalTopics = course.modules.reduce(
+    (sum, m) => sum + m.topics.length,
+    0
+  )
+  const durationHours = course.duration
+    ? Math.round(course.duration / 60)
+    : null
+  const levelCapitalized =
+    course.level.charAt(0).toUpperCase() + course.level.slice(1)
+  const languageDisplay =
+    course.language === "en"
+      ? "English"
+      : course.language === "es"
+        ? "Spanish"
+        : course.language === "fr"
+          ? "French"
+          : course.language
+
+  const infoItems = [
+    {
+      label: "Duration:",
+      value: durationHours ? `${durationHours} Hours` : "Self-paced",
+      icon: Clock,
+    },
+    {
+      label: "Lesson:",
+      value: `${totalTopics} Lessons`,
+      icon: PlayCircle,
+    },
+    {
+      label: "Level:",
+      value: levelCapitalized,
+      icon: Layers,
+    },
+    {
+      label: "Language:",
+      value: languageDisplay,
+      icon: Languages,
+    },
+  ]
+
   return (
     <aside className="w-full rounded-2xl border border-[#d9d9d9] bg-white px-4 pt-4 pr-3.5 pb-[25px] lg:sticky lg:top-8">
       <h2 className="leading/[100%]-normal text-xl font-extrabold text-ma-text sm:text-2xl">
@@ -293,7 +268,7 @@ function CourseInformationCard() {
       </h2>
 
       <div className="mt-6 flex flex-col">
-        {courseInformation.map((item, index) => (
+        {infoItems.map((item, index) => (
           <div key={item.label}>
             <div className="flex items-center justify-between gap-4 py-0">
               <span className="inline-flex items-center gap-2 text-base leading-normal font-medium text-ma-text">
@@ -308,7 +283,7 @@ function CourseInformationCard() {
               </span>
             </div>
 
-            {index < courseInformation.length - 1 ? (
+            {index < infoItems.length - 1 ? (
               <div className="my-4 border-t border-dashed border-[#d9d9d9]" />
             ) : (
               <div className="mt-4 border-t border-dashed border-[#d9d9d9]" />
@@ -335,7 +310,11 @@ function CourseInformationCard() {
   )
 }
 
-export function CourseDetailContentSection() {
+export function CourseDetailContentSection({
+  course,
+}: {
+  course: CourseContentData
+}) {
   return (
     <section className="bg-white py-10 text-ma-text lg:py-20">
       <div className="mx-auto flex max-w-360 flex-col-reverse gap-12 px-4 lg:grid lg:grid-cols-[598px_335px] lg:items-start lg:justify-between lg:px-25 2xl:px-50">
@@ -345,10 +324,7 @@ export function CourseDetailContentSection() {
               Course overview
             </h2>
             <p className="text-base leading-normal text-ma-text">
-              This program is designed to support different learning styles and
-              reduce overwhelm. We use flexible teaching methods, visual tools,
-              AI supports, and step-by-step systems so participants can learn in
-              ways that work best for them.
+              {course.overview ?? course.content ?? "No description available."}
             </p>
           </section>
 
@@ -357,9 +333,9 @@ export function CourseDetailContentSection() {
               Course Module
             </h2>
             <div className="flex flex-col gap-4">
-              {modules.map((module, index) => (
+              {course.modules.map((module, index) => (
                 <CourseModule
-                  key={module.title}
+                  key={module.id}
                   title={module.title}
                   topics={module.topics}
                   open={index === 0}
@@ -372,20 +348,31 @@ export function CourseDetailContentSection() {
             <h2 className="/[100%]leading-normal text-xl font-extrabold text-ma-text sm:text-2xl">
               Meet your tutor
             </h2>
-            <TutorCard />
+            <TutorCard
+              tutor={course.tutor}
+              enrollmentCount={course.enrollmentCount}
+              avgRating={course.avgRating}
+              reviewCount={course.reviewCount}
+            />
           </section>
 
           <section className="flex flex-col gap-5">
             <h2 className="text-xl/[100%] leading-normal font-extrabold text-ma-text sm:text-2xl">
               Student review of this course
             </h2>
-            {reviews.map((review) => (
-              <ReviewCard key={review.text} review={review} />
-            ))}
+            {course.reviews.length > 0 ? (
+              course.reviews.map((review) => (
+                <ReviewCard key={review.id} review={review} />
+              ))
+            ) : (
+              <p className="text-base text-[#6b7280]">
+                No reviews yet. Be the first to review this course!
+              </p>
+            )}
           </section>
         </div>
 
-        <CourseInformationCard />
+        <CourseInformationCard course={course} />
       </div>
     </section>
   )
