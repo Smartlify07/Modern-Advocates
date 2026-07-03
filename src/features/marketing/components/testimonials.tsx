@@ -38,20 +38,29 @@ function useIsMobile() {
 export function Testimonials() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
-  const MOBILE_STEP = 360
 
   function scrollReviews(direction: "previous" | "next") {
     const el = scrollRef.current
     if (!el) return
-    const target =
-      direction === "next"
-        ? isMobile
-          ? el.scrollLeft + MOBILE_STEP
-          : el.scrollWidth - el.clientWidth
-        : isMobile
-          ? el.scrollLeft - MOBILE_STEP
-          : 0
-    el.scrollTo({ left: target, behavior: "smooth" })
+
+    if (!isMobile) {
+      el.scrollTo({
+        left: direction === "next" ? el.scrollWidth - el.clientWidth : 0,
+        behavior: "smooth",
+      })
+      return
+    }
+
+    const cards = el.querySelectorAll<HTMLElement>("article")
+    const firstCard = cards[0]
+    const secondCard = cards[1]
+    const cardStep = secondCard
+      ? secondCard.offsetLeft - firstCard.offsetLeft
+      : firstCard?.offsetWidth || el.clientWidth
+    const currentIndex = Math.round(el.scrollLeft / cardStep)
+    const nextIndex = direction === "next" ? currentIndex + 1 : currentIndex - 1
+    const clampedIndex = Math.max(0, Math.min(nextIndex, cards.length - 1))
+    el.scrollTo({ left: clampedIndex * cardStep, behavior: "smooth" })
   }
 
   return (
@@ -87,10 +96,12 @@ export function Testimonials() {
             </button>
           </div>
         </div>
+      </div>
 
+      <div className="overflow-hidden xl:pl-25 2xl:px-50">
         <div
           ref={scrollRef}
-          className="hide-scrollbar relative mt-21.5 flex gap-7.5 overflow-x-auto pb-2 scroll-smooth"
+          className="hide-scrollbar relative mt-21.5 flex gap-7.5 overflow-x-auto scroll-smooth pb-2 pr-[max(0px,calc(100%_-_1050px))]"
         >
           {reviews.map((review) => (
             <article
