@@ -24,6 +24,10 @@ export async function GET(
   try {
     const { id } = await params
 
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+      return NextResponse.json({ error: "Course not found" }, { status: 404 })
+    }
+
     const course = await db
       .select({
         id: courses.id,
@@ -44,7 +48,7 @@ export async function GET(
         tutorImage: user.image,
       })
       .from(courses)
-      .where(sql`${courses.id} = ${id}::uuid`)
+      .where(sql`${courses.id}::text = ${id}`)
       .innerJoin(user, eq(courses.tutorId, user.id))
       .then((r) => r[0])
 
@@ -55,7 +59,7 @@ export async function GET(
     const modules = await db
       .select()
       .from(courseModules)
-      .where(sql`${courseModules.courseId} = ${id}::uuid`)
+      .where(sql`${courseModules.courseId}::text = ${id}`)
       .orderBy(asc(courseModules.sortOrder))
 
     const modulesWithTopics = await Promise.all(
@@ -112,13 +116,13 @@ export async function GET(
         studentImage: user.image,
       })
       .from(reviews)
-      .where(sql`${reviews.courseId} = ${id}::uuid`)
+      .where(sql`${reviews.courseId}::text = ${id}`)
       .innerJoin(user, eq(reviews.studentId, user.id))
 
     const enrollmentResult = await db
       .select({ count: sql<number>`COUNT(*)` })
       .from(enrollments)
-      .where(sql`${enrollments.courseId} = ${id}::uuid`)
+      .where(sql`${enrollments.courseId}::text = ${id}`)
       .then((r) => r[0])
 
     return NextResponse.json({
