@@ -170,13 +170,8 @@ async function seed() {
     },
   ])
 
-  const courseIds: string[] = []
-  const moduleIds: string[] = []
-  const topicIds: string[] = []
-
   for (let c = 0; c < COURSE_DATA.length; c++) {
     const courseId = randomUUID()
-    courseIds.push(courseId)
     const data = COURSE_DATA[c]
 
     await db.insert(courses).values([
@@ -187,11 +182,11 @@ async function seed() {
         overview: data.overview,
         thumbnailUrl: data.thumbnail,
         language: "en",
-        level: "beginner",
-        price: "550.00",
-        discountedPrice: "100.00",
+        level: "beginner" as const,
+        price: 550.00,
+        discountedPrice: 100.00,
         duration: 720,
-        status: "published",
+        status: "published" as const,
         tutorId,
       },
     ])
@@ -199,8 +194,6 @@ async function seed() {
     const titles = MODULE_TITLES[data.title]
     for (let m = 0; m < 12; m++) {
       const moduleId = randomUUID()
-      moduleIds.push(moduleId)
-
       await db.insert(courseModules).values([
         {
           id: moduleId,
@@ -212,7 +205,6 @@ async function seed() {
 
       for (let t = 0; t < 5; t++) {
         const topicId = randomUUID()
-        topicIds.push(topicId)
 
         await db.insert(courseTopics).values([
           {
