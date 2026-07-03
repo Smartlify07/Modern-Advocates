@@ -36,24 +36,70 @@ export function MissionBridgeSection() {
         </div>
 
         <div className="mt-10 space-y-5 text-base text-ma-text sm:mt-12.5 sm:text-lg">
+          <p>We know what it feels like when life changes overnight.</p>
           <p>
-            Millions of people face delayed diagnoses, fragmented care, and
-            limited access to support. At the same time, AI technology is
-            advancing faster than individuals, caregivers, and systems can
-            safely use it.
+            Our journey with endometriosis taught us that chronic illness
+            affects far more than your health.
           </p>
           <p>
-            ModernAdvocates bridges this gap - by combining Safe AI usage,
-            Human-centered design, and Real-world application.
+            It can impact your education, career, finances, relationships, and
+            sense of security.
           </p>
           <p>
-            We built an integrated ecosystem where artificial intelligence is
-            not just a tool - but a guided, safe, and practical resource for
-            real people navigating real health challenges.
+            One unexpected diagnosis can begin a chain of events that leaves
+            families overwhelmed by lost income, mounting medical expenses, and
+            an uncertain future.
           </p>
-          <p className="underline underline-offset-2">
-            The result is better navigation, earlier intervention, and more
-            informed decision-making.
+          <p>We have lived that reality.</p>
+          <p>We also experienced something extraordinary.</p>
+          <p>
+            Along our journey, compassionate people stepped in to help us when
+            we could not help ourselves.
+          </p>
+          <p>Their generosity changed the direction of our lives.</p>
+          <p>
+            Modern Advocates Inc. was created because we believe every person
+            deserves that same opportunity.
+          </p>
+          <p>
+            Our mission is to help people facing disability, chronic illness,
+            and financial hardship regain a sense of control through education,
+            technology, community, and practical support.
+          </p>
+          <p>We believe that knowledge reduces fear.</p>
+          <p>Technology creates opportunity.</p>
+          <p>Community multiplies hope.</p>
+          <p>
+            Artificial intelligence is more than a new technology—it is a
+            powerful equalizer.
+          </p>
+          <p>
+            Used responsibly, AI can help people organize their healthcare,
+            prepare for medical appointments, learn valuable income-producing
+            skills, build digital assets, and create new opportunities for
+            financial independence.
+          </p>
+          <p>
+            For women living with endometriosis, AI can also help organize
+            symptoms, prepare medical histories, identify qualified specialists,
+            and navigate an often overwhelming healthcare system.
+          </p>
+          <p>But no one should have to face these challenges alone.</p>
+          <p>
+            Our vision is to build a nationwide community where individuals
+            support one another through education, shared knowledge, and
+            innovative funding solutions that make specialized care more
+            accessible.
+          </p>
+          <p>We cannot always choose the challenges life brings.</p>
+          <p>We can choose how we respond.</p>
+          <p>Our goal is simple:</p>
+          <p>To replace fear with knowledge.</p>
+          <p>To replace isolation with community.</p>
+          <p>To replace uncertainty with opportunity.</p>
+          <p>
+            Together, we can build healthier lives, stronger futures, and
+            greater independence.
           </p>
         </div>
 
