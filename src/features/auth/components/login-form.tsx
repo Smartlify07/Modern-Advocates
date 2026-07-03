@@ -1,4 +1,5 @@
 "use client"
+
 import { useState } from "react"
 import { cn } from "@/shared/utils"
 import { Button } from "@/shared/ui/button"
@@ -15,8 +16,10 @@ import { Controller, useForm } from "react-hook-form"
 import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { AuthCodeForm } from "@/features/auth/components/auth-code-form"
 import { AuthGoogleButton } from "@/features/auth/components/auth-google-button"
+import { authClient } from "@/infrastructure/auth/client"
 
 const formSchema = z.object({
   email: z.email({
@@ -28,7 +31,10 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter()
   const [loginEmail, setLoginEmail] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,7 +43,52 @@ export function LoginForm({
   })
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    setLoginEmail(data.email)
+    setLoading(true)
+    setError(null)
+    try {
+      await authClient.emailOtp.sendVerificationOtp({
+        email: data.email,
+        type: "sign-in",
+      })
+      setLoginEmail(data.email)
+    } catch {
+      setError("Failed to send code. Please try again.")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSubmitCode = async (code: string) => {
+    if (!loginEmail) return
+    setError(null)
+    const { error: verifyError } =
+      await authClient.emailOtp.checkVerificationOtp({
+        email: loginEmail,
+        otp: code,
+        type: "sign-in",
+      })
+    if (verifyError) {
+      setError("Invalid or expired code. Please try again.")
+      return
+    }
+    const { data, error: signInError } = await authClient.signIn.emailOtp({
+      email: loginEmail,
+      otp: code,
+    })
+    if (signInError) {
+      setError("Failed to sign in. Please try again.")
+      return
+    }
+    router.push("/dashboard")
+  }
+
+  const handleResendCode = async () => {
+    if (!loginEmail) return
+    setError(null)
+    await authClient.emailOtp.sendVerificationOtp({
+      email: loginEmail,
+      type: "sign-in",
+    })
   }
 
   if (loginEmail) {
@@ -45,7 +96,13 @@ export function LoginForm({
       <AuthCodeForm
         email={loginEmail}
         mode="login"
-        onDifferentAccount={() => setLoginEmail(null)}
+        error={error}
+        onDifferentAccount={() => {
+          setLoginEmail(null)
+          setError(null)
+        }}
+        onSubmitCode={handleSubmitCode}
+        onResendCode={handleResendCode}
         className={className}
         {...props}
       />
@@ -82,11 +139,16 @@ export function LoginForm({
               )}
             />
 
+            {error && <p className="text-sm text-red-500">{error}</p>}
+
             <Button
               type="submit"
-              className="group relative h-[53px] w-full overflow-hidden rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white"
+              disabled={loading}
+              className="group relative h-[53px] w-full overflow-hidden rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white disabled:opacity-60"
             >
-              <span className="relative z-10">Continue</span>
+              <span className="relative z-10">
+                {loading ? "Sending..." : "Continue"}
+              </span>
               <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             </Button>
 
