@@ -73,7 +73,7 @@ export function Testimonials() {
 
         <div
           ref={scrollRef}
-          className="relative mt-21.5 flex gap-7.5 overflow-x-auto pb-2 scroll-smooth [&::-webkit-scrollbar]:hidden"
+          className="hide-scrollbar relative mt-21.5 flex gap-7.5 overflow-x-auto pb-2 scroll-smooth"
         >
           {reviews.map((review) => (
             <article
