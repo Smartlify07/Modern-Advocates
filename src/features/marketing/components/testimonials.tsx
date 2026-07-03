@@ -38,7 +38,7 @@ function useIsMobile() {
 export function Testimonials() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
-  const SCROLL_STEP = 360
+  const MOBILE_STEP = 360
 
   function scrollReviews(direction: "previous" | "next") {
     const el = scrollRef.current
@@ -46,10 +46,10 @@ export function Testimonials() {
     const target =
       direction === "next"
         ? isMobile
-          ? el.scrollLeft + SCROLL_STEP
+          ? el.scrollLeft + MOBILE_STEP
           : el.scrollWidth - el.clientWidth
         : isMobile
-          ? el.scrollLeft - SCROLL_STEP
+          ? el.scrollLeft - MOBILE_STEP
           : 0
     el.scrollTo({ left: target, behavior: "smooth" })
   }
