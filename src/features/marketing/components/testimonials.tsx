@@ -98,10 +98,10 @@ export function Testimonials() {
         </div>
       </div>
 
-      <div className="overflow-hidden xl:pl-25 2xl:px-50">
+      <div className="overflow-hidden px-4 xl:pl-25 2xl:px-50">
         <div
           ref={scrollRef}
-          className="hide-scrollbar relative mt-21.5 flex gap-7.5 overflow-x-auto scroll-smooth pb-2 pr-[max(0px,calc(100%_-_1050px))]"
+          className="hide-scrollbar relative mt-21.5 flex gap-7.5 overflow-x-auto scroll-smooth pr-[max(0px,calc(100%_-_1050px))] pb-2"
         >
           {reviews.map((review) => (
             <article
