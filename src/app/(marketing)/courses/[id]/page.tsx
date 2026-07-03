@@ -10,6 +10,7 @@ async function fetchCourse(id: string) {
   const res = await fetch(`${protocol}://${host}/api/courses/${id}`, {
     cache: "no-store",
   })
+
   if (!res.ok) return null
   return res.json()
 }
@@ -23,6 +24,30 @@ export default async function CourseDetailPage({
   const course = await fetchCourse(id)
 
   if (!course) notFound()
+
+  const normalizedReviews = (course.reviews ?? []).map(
+    (r: {
+      id: string
+      body: string | null
+      rating: number
+      studentName: string | null
+      studentImage: string | null
+    }) => ({
+      id: r.id,
+      body: r.body,
+      rating: r.rating,
+      studentName: r.studentName,
+      studentImage: r.studentImage,
+    })
+  )
+
+  const avgRating =
+    normalizedReviews.length > 0
+      ? normalizedReviews.reduce(
+          (sum: number, r: { rating: number }) => sum + r.rating,
+          0
+        ) / normalizedReviews.length
+      : 0
 
   const courseData = {
     id: course.id,
@@ -42,9 +67,9 @@ export default async function CourseDetailPage({
       name: course.tutorName,
       image: course.tutorImage,
     },
-    avgRating: Number(course.avgRating),
-    reviewCount: Number(course.reviewCount),
-    enrollmentCount: Number(course.enrollmentCount),
+    avgRating,
+    reviewCount: normalizedReviews.length,
+    enrollmentCount: Number(course.enrollmentCount ?? 0),
     modules: (course.modules ?? []).map(
       (m: {
         id: string
@@ -78,25 +103,11 @@ export default async function CourseDetailPage({
                 : t.description
                   ? JSON.stringify(t.description)
                   : null,
-          }),
+          })
         ),
-      }),
+      })
     ),
-    reviews: (course.reviews ?? []).map(
-      (r: {
-        id: string
-        body: string | null
-        rating: number
-        studentName: string | null
-        studentImage: string | null
-      }) => ({
-        id: r.id,
-        body: r.body,
-        rating: r.rating,
-        studentName: r.studentName,
-        studentImage: r.studentImage,
-      }),
-    ),
+    reviews: normalizedReviews,
   }
 
   return (

@@ -11,7 +11,10 @@ import {
   enrollments,
 } from "@/infrastructure/database/schema/course"
 import { courseVideos } from "@/infrastructure/database/schema/video"
-import { requireInstructorOrAdmin, requireAdmin } from "@/infrastructure/auth/helpers"
+import {
+  requireInstructorOrAdmin,
+  requireAdmin,
+} from "@/infrastructure/auth/helpers"
 import * as Sentry from "@sentry/nextjs"
 
 export async function GET(
@@ -39,16 +42,10 @@ export async function GET(
         updatedAt: courses.updatedAt,
         tutorName: user.name,
         tutorImage: user.image,
-        avgRating: sql<number>`COALESCE(AVG(${reviews.rating}), 0)`,
-        reviewCount: sql<number>`COUNT(DISTINCT ${reviews.id})`,
-        enrollmentCount: sql<number>`COUNT(DISTINCT ${enrollments.id})`,
       })
       .from(courses)
       .where(eq(courses.id, id))
       .innerJoin(user, eq(courses.tutorId, user.id))
-      .leftJoin(reviews, eq(reviews.courseId, courses.id))
-      .leftJoin(enrollments, eq(enrollments.courseId, courses.id))
-      .groupBy(courses.id, user.name, user.image)
       .then((r) => r[0])
 
     if (!course) {
@@ -81,12 +78,20 @@ export async function GET(
               id: topic.id,
               title: topic.title,
               type: topic.format === "video" ? "video_and_text" : topic.format,
-              description: topic.content ? (() => { try { return JSON.parse(topic.content) } catch { return topic.content } })() : null,
+              description: topic.content
+                ? (() => {
+                    try {
+                      return JSON.parse(topic.content)
+                    } catch {
+                      return topic.content
+                    }
+                  })()
+                : null,
               order: topic.sortOrder,
               videoUrl: video?.id ?? null,
               videoId: video?.id ?? null,
             }
-          }),
+          })
         )
 
         return {
@@ -95,7 +100,7 @@ export async function GET(
           order: mod.sortOrder,
           topics: topicsWithVideos,
         }
-      }),
+      })
     )
 
     const courseReviews = await db
@@ -110,14 +115,24 @@ export async function GET(
       .where(eq(reviews.courseId, id))
       .innerJoin(user, eq(reviews.studentId, user.id))
 
+    const enrollmentResult = await db
+      .select({ count: sql<number>`COUNT(*)` })
+      .from(enrollments)
+      .where(eq(enrollments.courseId, id))
+      .then((r) => r[0])
+
     return NextResponse.json({
       ...course,
       modules: modulesWithTopics,
       reviews: courseReviews,
+      enrollmentCount: enrollmentResult?.count ?? 0,
     })
   } catch (error) {
     console.error(error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
 
@@ -152,7 +167,8 @@ export async function PATCH(
       if (overview !== undefined) updateData.overview = overview
       if (level !== undefined) updateData.level = level
       if (price !== undefined) updateData.price = isFree ? 0 : price
-      if (discountedPrice !== undefined) updateData.discountedPrice = isFree ? null : discountedPrice
+      if (discountedPrice !== undefined)
+        updateData.discountedPrice = isFree ? null : discountedPrice
       if (status !== undefined) updateData.status = status
       if (language !== undefined) updateData.language = language
       if (thumbnailUrl !== undefined) updateData.thumbnailUrl = thumbnailUrl
@@ -181,7 +197,9 @@ export async function PATCH(
 
         for (const modId of existingModuleIds) {
           if (!incomingModuleIds.includes(modId)) {
-            await tx.delete(courseTopics).where(eq(courseTopics.moduleId, modId))
+            await tx
+              .delete(courseTopics)
+              .where(eq(courseTopics.moduleId, modId))
             await tx.delete(courseModules).where(eq(courseModules.id, modId))
           }
         }
@@ -225,8 +243,11 @@ export async function PATCH(
                 .update(courseTopics)
                 .set({
                   title: topic.title,
-                  format: topic.type === "video_and_text" ? "video" : topic.type,
-                  content: topic.description ? JSON.stringify(topic.description) : null,
+                  format:
+                    topic.type === "video_and_text" ? "video" : topic.type,
+                  content: topic.description
+                    ? JSON.stringify(topic.description)
+                    : null,
                   sortOrder: topic.order,
                 })
                 .where(eq(courseTopics.id, topic.id))
@@ -235,7 +256,9 @@ export async function PATCH(
                 moduleId,
                 title: topic.title,
                 format: topic.type === "video_and_text" ? "video" : topic.type,
-                content: topic.description ? JSON.stringify(topic.description) : null,
+                content: topic.description
+                  ? JSON.stringify(topic.description)
+                  : null,
                 sortOrder: topic.order,
               })
             }
@@ -258,7 +281,10 @@ export async function PATCH(
       }
     }
     Sentry.captureException(error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
 
@@ -286,6 +312,9 @@ export async function DELETE(
       const status = error.message === "Unauthorized" ? 401 : 403
       return NextResponse.json({ error: error.message }, { status })
     }
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
