@@ -44,7 +44,7 @@ export async function GET(
         tutorImage: user.image,
       })
       .from(courses)
-      .where(eq(courses.id, id))
+      .where(sql`${courses.id} = ${id}::uuid`)
       .innerJoin(user, eq(courses.tutorId, user.id))
       .then((r) => r[0])
 
@@ -55,7 +55,7 @@ export async function GET(
     const modules = await db
       .select()
       .from(courseModules)
-      .where(eq(courseModules.courseId, id))
+      .where(sql`${courseModules.courseId} = ${id}::uuid`)
       .orderBy(asc(courseModules.sortOrder))
 
     const modulesWithTopics = await Promise.all(
@@ -112,13 +112,13 @@ export async function GET(
         studentImage: user.image,
       })
       .from(reviews)
-      .where(eq(reviews.courseId, id))
+      .where(sql`${reviews.courseId} = ${id}::uuid`)
       .innerJoin(user, eq(reviews.studentId, user.id))
 
     const enrollmentResult = await db
       .select({ count: sql<number>`COUNT(*)` })
       .from(enrollments)
-      .where(eq(enrollments.courseId, id))
+      .where(sql`${enrollments.courseId} = ${id}::uuid`)
       .then((r) => r[0])
 
     return NextResponse.json({
