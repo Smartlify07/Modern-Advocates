@@ -20,7 +20,7 @@ const Navbar = () => {
 
   return (
     <header className="bg-white">
-      <div className="relative z-20 mx-auto max-w-360 px-4 py-5 xl:px-25 2xl:px-50">
+      <div className="relative z-20 mx-auto px-4 py-5 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="flex w-full items-center justify-between">
           <Link href="/" className="flex w-[157px] flex-col gap-1">
             <Image

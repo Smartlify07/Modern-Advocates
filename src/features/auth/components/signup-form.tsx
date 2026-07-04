@@ -69,15 +69,7 @@ export function SignupForm({
   const handleSubmitCode = async (code: string) => {
     if (!signupStep) return
     setError(null)
-    const { error: verifyError } = await authClient.emailOtp.checkVerificationOtp({
-      email: signupStep.email,
-      otp: code,
-      type: "sign-in",
-    })
-    if (verifyError) {
-      setError("Invalid or expired code. Please try again.")
-      return
-    }
+
     const { data, error: signInError } = await authClient.signIn.emailOtp({
       email: signupStep.email,
       otp: code,

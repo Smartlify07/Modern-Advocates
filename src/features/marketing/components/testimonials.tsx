@@ -43,14 +43,6 @@ export function Testimonials() {
     const el = scrollRef.current
     if (!el) return
 
-    if (!isMobile) {
-      el.scrollTo({
-        left: direction === "next" ? el.scrollWidth - el.clientWidth : 0,
-        behavior: "smooth",
-      })
-      return
-    }
-
     const cards = el.querySelectorAll<HTMLElement>("article")
     const firstCard = cards[0]
     const secondCard = cards[1]
@@ -59,13 +51,16 @@ export function Testimonials() {
       : firstCard?.offsetWidth || el.clientWidth
     const currentIndex = Math.round(el.scrollLeft / cardStep)
     const nextIndex = direction === "next" ? currentIndex + 1 : currentIndex - 1
-    const clampedIndex = Math.max(0, Math.min(nextIndex, cards.length - 1))
+    const clampedIndex = Math.max(
+      0,
+      Math.min(nextIndex, cards.length - (isMobile ? 1 : 3))
+    )
     el.scrollTo({ left: clampedIndex * cardStep, behavior: "smooth" })
   }
 
   return (
-    <section className="overflow-hidden bg-white py-12.5 lg:py-25">
-      <div className="mx-auto max-w-360 px-4 xl:px-25 2xl:px-50">
+    <section className="bg-white py-12.5 lg:py-25">
+      <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="flex w-full flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="font-sans text-[28px]/[100%] font-extrabold text-primary lg:text-[40px] lg:leading-15">
@@ -98,43 +93,41 @@ export function Testimonials() {
         </div>
       </div>
 
-      <div className="overflow-hidden px-4 xl:pl-25 2xl:px-50">
-        <div
-          ref={scrollRef}
-          className="hide-scrollbar relative mt-21.5 flex gap-7.5 overflow-x-auto scroll-smooth pr-[max(0px,calc(100%_-_1050px))] pb-2"
-        >
-          {reviews.map((review) => (
-            <article
-              key={review.image}
-              className="relative flex h-[500px] w-[330px] shrink-0 flex-col justify-end overflow-hidden rounded-3xl px-[15px] pb-[30px]"
-            >
-              <Image
-                src={review.image}
-                alt=""
-                fill
-                sizes="330px"
-                className="object-cover"
-              />
-              <div
-                className="absolute inset-0 bg-gradient-to-b from-transparent from-[30%] to-black"
-                aria-hidden="true"
-              />
+      <div
+        ref={scrollRef}
+        className="hide-scrollbar relative mx-auto mt-21.5 flex gap-7.5 overflow-x-auto scroll-smooth px-4 pb-2 lg:w-full lg:max-w-[1050px] lg:overflow-hidden lg:px-0"
+      >
+        {reviews.map((review) => (
+          <article
+            key={review.image}
+            className="relative flex h-[500px] w-[330px] shrink-0 flex-col justify-end overflow-hidden rounded-3xl px-[15px] pb-[30px] lg:w-[calc((100%-60px)/3)]"
+          >
+            <Image
+              src={review.image}
+              alt=""
+              fill
+              sizes="330px"
+              className="object-cover"
+            />
+            <div
+              className="absolute inset-0 bg-gradient-to-b from-transparent from-[30%] to-black"
+              aria-hidden="true"
+            />
 
-              <div className="relative z-10 h-[166px] w-[300px] text-white">
-                <p className="font-heading text-[100px] leading-[60px] font-extrabold">
-                  &ldquo;
-                </p>
-                <p className="mt-[-14px] text-[18px] leading-normal font-semibold">
-                  ModernAdvocates helped me see a clear path forward. The
-                  guidance and training resources gave
-                </p>
-                <p className="mt-5 text-[18px] leading-normal font-semibold">
-                  -{review.name}
-                </p>
-              </div>
-            </article>
-          ))}
-        </div>
+            <div className="relative z-10 h-[166px] w-[300px] text-white">
+              <p className="font-heading text-[100px] leading-[60px] font-extrabold">
+                &ldquo;
+              </p>
+              <p className="mt-[-14px] text-[18px] leading-normal font-semibold">
+                ModernAdvocates helped me see a clear path forward. The guidance
+                and training resources gave
+              </p>
+              <p className="mt-5 text-[18px] leading-normal font-semibold">
+                -{review.name}
+              </p>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   )

@@ -7,7 +7,7 @@ import React from "react"
 const SupportSection = () => {
   return (
     <section id="about" className="bg-white py-12.5 sm:py-25">
-      <div className="mx-auto max-w-360 px-4 xl:px-25 2xl:px-50">
+      <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="mx-auto text-center">
           <h2 className="mx-auto max-w-160 text-center font-sans text-[26px]/[100%] font-extrabold tracking-[0%] text-ma-text sm:text-[40px]/[60px]">
             How can we support your healthcare journey?{" "}

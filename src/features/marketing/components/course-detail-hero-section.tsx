@@ -21,7 +21,7 @@ export function CourseDetailHeroSection({ course }: { course: CourseHeroData }) 
 
   return (
     <section className="bg-[#f5f5f5] py-10 text-ma-text sm:py-[90px] lg:py-16">
-      <div className="mx-auto grid max-w-360 gap-5 rounded-[24px] px-4 lg:grid-cols-2 lg:px-25 2xl:px-50">
+      <div className="mx-auto grid gap-5 rounded-[24px] px-4 lg:max-w-7xl lg:grid-cols-2 lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="relative min-h-[360px] overflow-hidden rounded-[24px] sm:min-h-[428px]">
           {course.thumbnailUrl ? (
             <Image

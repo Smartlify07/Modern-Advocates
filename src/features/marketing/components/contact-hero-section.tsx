@@ -29,7 +29,7 @@ const socialLinks = [
 export function ContactHeroSection() {
   return (
     <section id="contact" className="bg-white py-12.5 text-ma-text lg:py-25">
-      <div className="mx-auto grid max-w-360 items-start gap-14 px-4 lg:grid-cols-[444px_1fr] lg:gap-[88px] lg:px-25 2xl:px-50">
+      <div className="mx-auto grid items-start gap-14 px-4 lg:max-w-7xl lg:grid-cols-[444px_1fr] lg:gap-[88px] lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-5 lg:gap-[30px]">
             <p className="text-base leading-normal font-medium tracking-[0.1em] text-[#6b7280] uppercase">

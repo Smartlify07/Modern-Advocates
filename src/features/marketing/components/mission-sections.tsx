@@ -28,7 +28,7 @@ export function MissionBridgeSection() {
 
   return (
     <section id="about" className="bg-white">
-      <div className="mx-auto max-w-360 px-4 py-12.5 sm:py-25 xl:px-25 2xl:px-50">
+      <div className="mx-auto px-4 py-12.5 sm:py-25 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="mx-auto max-w-xl text-center">
           <h2 className="font-sans text-[28px]/[100%] font-extrabold tracking-[0%] text-ma-text sm:text-[40px]/[60px] sm:tracking-[-0.01em]">
             Bridging the Gap between Technology and Care
@@ -132,7 +132,7 @@ export function MissionBridgeSection() {
             </div>
 
             <div
-              className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 max-lg:w-full max-lg:max-w-[292px] ${
+              className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 max-lg:w-full ${
                 hovered === "second" ? "w-0 min-w-0" : "lg:w-[292px]"
               }`}
             >
@@ -152,13 +152,13 @@ export function MissionBridgeSection() {
             onMouseLeave={onLeave}
             className="flex max-w-full shrink-0 flex-col gap-5 rounded-2xl bg-white p-5 sm:flex-row lg:max-w-none"
           >
-            <div className="flex min-w-0 flex-col justify-between gap-2.5 md:min-h-79.5">
+            <div className="flex min-w-0 flex-col justify-between gap-2.5 sm:gap-0 md:min-h-79.5">
               <div className="flex size-12.5 items-center justify-center rounded-full border">
                 <Gift />
               </div>
 
               <div className="flex flex-col items-start gap-4">
-                <h3 className="text-xl font-semibold text-ma-text">
+                <h3 className="text-xl font-semibold text-balance text-ma-text">
                   Support mission
                 </h3>
                 <p className="text-sm text-balance text-ma-text/80">
@@ -170,14 +170,14 @@ export function MissionBridgeSection() {
             </div>
 
             <div
-              className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 max-lg:w-full max-lg:max-w-[292px] ${
+              className={`shrink-0 overflow-hidden rounded-2xl object-cover transition-all duration-500 max-lg:w-full ${
                 hovered === "second" ? "lg:w-[292px]" : "w-0 min-w-0"
               }`}
             >
               <Image
-                src="/figma-home/get-assistance.png"
+                src="/figma-home/support.png"
                 alt=""
-                className="size-full object-cover"
+                className="size-full lg:h-[318px]"
                 loading="lazy"
                 width={292}
                 height={318}
@@ -193,7 +193,7 @@ export function MissionBridgeSection() {
 export function FounderStorySection() {
   return (
     <section className="bg-white">
-      <div className="mx-auto max-w-360 px-4 py-12.5 lg:py-25 xl:px-25 2xl:px-50">
+      <div className="mx-auto px-4 py-12.5 lg:max-w-7xl lg:px-25 lg:py-25 2xl:max-w-360 2xl:px-50">
         {/* Large screens */}
         <div className="hidden gap-10 lg:grid lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
           <Image

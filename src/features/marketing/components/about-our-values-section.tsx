@@ -5,7 +5,7 @@ import { Gift } from "lucide-react"
 const AboutOurValuesSection = () => {
   return (
     <section id="about" className="bg-white py-12.5 lg:py-25">
-      <div className="mx-auto max-w-360 px-4 xl:px-25 2xl:px-50">
+      <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <p className="mb-5 text-center text-sm leading-normal font-medium tracking-[10%] text-[#6b7280] uppercase sm:text-base">
           OUR VALUES{" "}
         </p>

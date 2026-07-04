@@ -68,7 +68,9 @@ export function LoginForm({
         type: "sign-in",
       })
     if (verifyError) {
-      setError("Invalid or expired code. Please try again.")
+      setError(
+        verifyError.message ?? "Invalid or expired code. Please try again."
+      )
       return
     }
     const { data, error: signInError } = await authClient.signIn.emailOtp({

@@ -89,7 +89,7 @@ export function CoursesHeroSection() {
 
   return (
     <section className="bg-white py-20 pb-20 text-ma-text sm:pt-25 sm:pb-25 lg:pt-18">
-      <div className="mx-auto max-w-360 px-4 lg:px-25 2xl:px-50">
+      <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="mx-auto max-w-200 text-center">
           <p className="text-base leading-normal font-medium tracking-[0.1em] text-[#6b7280] uppercase">
             Courses

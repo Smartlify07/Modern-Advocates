@@ -14,7 +14,7 @@ const supporters = [
 export function HeroSection() {
   return (
     <section className="relative isolate bg-white text-ma-text">
-      <div className="relative z-10 mx-auto flex max-w-360 flex-col items-center px-4 py-12.5 text-center lg:min-h-[924px] lg:py-[118px] xl:px-25 2xl:px-50">
+      <div className="relative z-10 mx-auto flex flex-col items-center px-4 py-12.5 text-center lg:min-h-[924px] lg:max-w-7xl lg:py-[118px] lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="flex items-center justify-center gap-4">
           <div className="flex -space-x-2">
             {supporters.map((src, index) => (
