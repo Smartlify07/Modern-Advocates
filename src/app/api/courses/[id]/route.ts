@@ -24,10 +24,6 @@ export async function GET(
   try {
     const { id } = await params
 
-    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
-      return NextResponse.json({ error: "Course not found" }, { status: 404 })
-    }
-
     const course = await db
       .select({
         id: courses.id,
@@ -48,7 +44,7 @@ export async function GET(
         tutorImage: user.image,
       })
       .from(courses)
-      .where(sql`${courses.id}::text = ${id}`)
+      .where(sql`"courses"."id"::text = ${id}`)
       .innerJoin(user, eq(courses.tutorId, user.id))
       .then((r) => r[0])
 
@@ -67,7 +63,7 @@ export async function GET(
         const topics = await db
           .select()
           .from(courseTopics)
-          .where(eq(courseTopics.moduleId, mod.id))
+          .where(sql`${courseTopics.moduleId}::text = ${mod.id}`)
           .orderBy(asc(courseTopics.sortOrder))
 
         const topicsWithVideos = await Promise.all(
@@ -75,7 +71,7 @@ export async function GET(
             const video = await db
               .select({ id: courseVideos.id })
               .from(courseVideos)
-              .where(eq(courseVideos.topicId, topic.id))
+              .where(sql`${courseVideos.topicId}::text = ${topic.id}`)
               .then((r) => r[0])
 
             return {
@@ -116,8 +112,8 @@ export async function GET(
         studentImage: user.image,
       })
       .from(reviews)
-      .where(sql`${reviews.courseId}::text = ${id}`)
       .innerJoin(user, eq(reviews.studentId, user.id))
+      .where(sql`${reviews.courseId}::text = ${id}`)
 
     const enrollmentResult = await db
       .select({ count: sql<number>`COUNT(*)` })
@@ -192,7 +188,7 @@ export async function PATCH(
         const existingModuleIds = await tx
           .select({ id: courseModules.id })
           .from(courseModules)
-          .where(eq(courseModules.courseId, id))
+      .where(sql`${courseModules.courseId}::text = ${id}`)
           .then((r) => r.map((m) => m.id))
 
         const incomingModuleIds = modulesData

@@ -12,14 +12,10 @@ import {
 } from "drizzle-orm/pg-core"
 import { user } from "./auth"
 
-// ─── Enums ───────────────────────────────────────────────────────────────────
-
 export const level = pgEnum("level", ["beginner", "intermediate", "advanced"])
 export const topicFormat = pgEnum("topic_format", ["text", "video"])
 export const courseStatus = pgEnum("course_status", ["draft", "published", "archived"])
 export const enrollmentStatus = pgEnum("enrollment_status", ["active", "completed", "cancelled"])
-
-// ─── Category ────────────────────────────────────────────────────────────────
 
 export const categories = pgTable("categories", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -28,8 +24,6 @@ export const categories = pgTable("categories", {
   description: text("description"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 })
-
-// ─── Course ──────────────────────────────────────────────────────────────────
 
 export const courses = pgTable(
   "courses",
@@ -61,8 +55,6 @@ export const courses = pgTable(
   }),
 )
 
-// ─── Course Module ───────────────────────────────────────────────────────────
-
 export const courseModules = pgTable(
   "course_modules",
   {
@@ -83,8 +75,6 @@ export const courseModules = pgTable(
     sortOrderIdx: index("course_modules_sort_order_idx").on(table.sortOrder),
   }),
 )
-
-// ─── Course Topic ────────────────────────────────────────────────────────────
 
 export const courseTopics = pgTable(
   "course_topics",
@@ -110,8 +100,6 @@ export const courseTopics = pgTable(
   }),
 )
 
-// ─── Review ──────────────────────────────────────────────────────────────────
-
 export const reviews = pgTable(
   "reviews",
   {
@@ -132,8 +120,6 @@ export const reviews = pgTable(
     uniqueReview: unique("unique_review").on(table.courseId, table.studentId),
   }),
 )
-
-// ─── Enrollment ──────────────────────────────────────────────────────────────
 
 export const enrollments = pgTable(
   "enrollments",
@@ -156,8 +142,6 @@ export const enrollments = pgTable(
   }),
 )
 
-// ─── Course <-> Category (many-to-many) ──────────────────────────────────────
-
 export const courseCategories = pgTable(
   "course_categories",
   {
@@ -172,8 +156,6 @@ export const courseCategories = pgTable(
     pk: primaryKey({ columns: [table.courseId, table.categoryId] }),
   }),
 )
-
-// ─── Topic Completion (progress tracking) ────────────────────────────────────
 
 export const topicCompletions = pgTable(
   "topic_completions",
@@ -193,8 +175,6 @@ export const topicCompletions = pgTable(
     topicIdx: index("topic_completions_topic_idx").on(table.topicId),
   }),
 )
-
-// ─── Inferred Types ──────────────────────────────────────────────────────────
 
 export type InsertUser = typeof user.$inferInsert
 export type SelectUser = typeof user.$inferSelect
