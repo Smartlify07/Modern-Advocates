@@ -129,6 +129,7 @@ export async function GET(
     })
   } catch (error) {
     console.error(error)
+    Sentry.captureException(error)
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -188,7 +189,7 @@ export async function PATCH(
         const existingModuleIds = await tx
           .select({ id: courseModules.id })
           .from(courseModules)
-      .where(sql`${courseModules.courseId}::text = ${id}`)
+          .where(sql`${courseModules.courseId}::text = ${id}`)
           .then((r) => r.map((m) => m.id))
 
         const incomingModuleIds = modulesData
