@@ -9,7 +9,7 @@ const ecosystemItems = [
 export function AboutAiHealthcareSection() {
   return (
     <section className="bg-white py-12.5 text-ma-text sm:py-20">
-      <div className="mx-auto grid max-w-360 items-start gap-10 px-4 lg:grid-cols-[422px_1fr] lg:gap-12.5 lg:px-25 2xl:px-50">
+      <div className="mx-auto grid items-start gap-10 px-4 lg:max-w-7xl lg:grid-cols-[422px_1fr] lg:gap-12.5 lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="relative hidden min-h-[360px] overflow-hidden rounded-[24px] bg-ma-bg sm:min-h-[500px] lg:block">
           <Image
             src="/figma-about/healthcare-ai.png"

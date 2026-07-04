@@ -28,7 +28,7 @@ export function MissionBridgeSection() {
 
   return (
     <section id="about" className="bg-white">
-      <div className="mx-auto max-w-360 px-4 py-12.5 sm:py-25 xl:px-25 2xl:px-50">
+      <div className="mx-auto px-4 py-12.5 sm:py-25 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="mx-auto max-w-xl text-center">
           <h2 className="font-sans text-[28px]/[100%] font-extrabold tracking-[0%] text-ma-text sm:text-[40px]/[60px] sm:tracking-[-0.01em]">
             Bridging the Gap between Technology and Care
@@ -193,7 +193,7 @@ export function MissionBridgeSection() {
 export function FounderStorySection() {
   return (
     <section className="bg-white">
-      <div className="mx-auto max-w-360 px-4 py-12.5 lg:py-25 xl:px-25 2xl:px-50">
+      <div className="mx-auto px-4 py-12.5 lg:max-w-7xl lg:py-25 lg:px-25 2xl:max-w-360 2xl:px-50">
         {/* Large screens */}
         <div className="hidden gap-10 lg:grid lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
           <Image

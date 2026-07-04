@@ -3,7 +3,7 @@ import Image from "next/image"
 export function DonationHeroSection() {
   return (
     <section id="donation" className="bg-white py-12.5 text-ma-text lg:py-25">
-      <div className="mx-auto max-w-360 px-4 lg:px-25 2xl:px-50">
+      <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="mx-auto max-w-[800px] text-center">
           <p className="text-base leading-normal font-medium tracking-[10%] text-[#6B7280] uppercase">
             Donation

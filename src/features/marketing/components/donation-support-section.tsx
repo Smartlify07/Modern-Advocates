@@ -18,7 +18,7 @@ export function DonationSupportSection() {
 
   return (
     <section className="bg-white py-12.5 text-ma-text lg:py-25">
-      <div className="mx-auto grid max-w-360 items-start gap-12 px-4 lg:grid-cols-2 lg:gap-6 lg:px-25 2xl:px-50">
+      <div className="mx-auto grid items-start gap-12 px-4 lg:max-w-7xl lg:grid-cols-2 lg:gap-6 lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="pt-0 lg:pt-2">
           <h2 className="font-sans text-[28px]/[100%] leading-[1.12] font-extrabold text-balance text-primary lg:text-[60px]/[70px] lg:tracking-[-5%]">
             Support us and make a difference for the future!

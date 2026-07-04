@@ -65,7 +65,7 @@ export function Testimonials() {
 
   return (
     <section className="overflow-hidden bg-white py-12.5 lg:py-25">
-      <div className="mx-auto max-w-360 px-4 xl:px-25 2xl:px-50">
+      <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="flex w-full flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="font-sans text-[28px]/[100%] font-extrabold text-primary lg:text-[40px] lg:leading-15">
@@ -98,7 +98,7 @@ export function Testimonials() {
         </div>
       </div>
 
-      <div className="overflow-hidden px-4 xl:pl-25 2xl:px-50">
+      <div className="overflow-hidden px-4 lg:pl-25 2xl:px-50">
         <div
           ref={scrollRef}
           className="hide-scrollbar relative mt-21.5 flex gap-7.5 overflow-x-auto scroll-smooth pr-[max(0px,calc(100%_-_1050px))] pb-2"
