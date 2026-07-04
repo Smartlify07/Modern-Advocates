@@ -17,10 +17,17 @@ export async function sendOTPEmail({ email, otp, type }: SendOTPParams) {
         ? "Verify your email"
         : "Reset your password"
 
-  const res = void resend.emails.send({
-    from: "ModernAdvocates <onboarding@resend.dev>",
-    to: email,
-    subject,
-    html: `<p>Your code is: <strong>${otp}</strong></p><p>This code expires in 5 minutes.</p>`,
-  })
+  try {
+    const res = await resend.emails.send({
+      from: "ModernAdvocates <onboarding@resend.dev>",
+      to: email,
+      subject,
+      html: `<p>Your code is: <strong>${otp}</strong></p><p>This code expires in 5 minutes.</p>`,
+    })
+
+    return res.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
 }

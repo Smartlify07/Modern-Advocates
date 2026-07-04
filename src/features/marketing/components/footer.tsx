@@ -13,7 +13,7 @@ export function Footer() {
   return (
     <footer className="overflow-hidden bg-white text-ma-text">
       <div className="relative mx-auto min-h-125 px-4 pt-12.5 lg:max-w-7xl lg:px-25 lg:pt-17.5 2xl:max-w-360 2xl:px-50">
-        <div className="grid gap-10 text-center md:grid-cols-[0.9fr_0.6fr_1.5fr] md:text-left lg:gap-10 xl:grid-cols-[254px_180px_1fr] xl:gap-[125px]">
+        <div className="grid gap-10 md:grid-cols-[0.9fr_0.6fr_1.5fr] lg:gap-10 xl:grid-cols-[254px_180px_1fr] xl:gap-[125px]">
           <section className="">
             <h2 className="font-sans text-lg font-extrabold lg:text-2xl">
               Get in Touch
@@ -99,7 +99,7 @@ export function Footer() {
           </section>
         </div>
 
-        <p className="pointer-events-none left-1/2 mt-10 translate-x-[20%] bg-gradient-to-b from-ma-text from-[40%] to-ma-text/0 to-[74%] bg-clip-text font-heading text-[40px] leading-none font-extrabold whitespace-nowrap text-transparent select-none lg:absolute lg:top-[370px] lg:left-1/2 lg:-translate-x-[calc(1280px/2-100px)] lg:text-[100px] xl:text-[124px] 2xl:-translate-x-[calc(1280px/2-116px)]">
+        <p className="pointer-events-none mt-10 text-center bg-gradient-to-b from-ma-text from-[40%] to-ma-text/0 to-[74%] bg-clip-text font-heading text-[40px] leading-none font-extrabold whitespace-nowrap text-transparent select-none lg:absolute lg:left-1/2 lg:-translate-x-[calc(1280px/2-100px)] lg:text-[100px] xl:text-[124px] 2xl:-translate-x-[calc(1280px/2-116px)]">
           ModernAdvocates
         </p>
       </div>
