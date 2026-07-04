@@ -15,6 +15,7 @@ import {
 import { useState } from "react"
 
 import { Button } from "@/shared/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 
 type TopicData = {
   id: string
@@ -126,7 +127,7 @@ function TutorCard({
   return (
     <article className="flex gap-5 rounded-2xl bg-[#f5f5f5] p-4">
       <div className="relative h-[190px] min-w-[106px] shrink-0 overflow-hidden rounded-[10px] sm:w-[190px]">
-        {tutor.image ? (
+        {/* {tutor.image ? (
           <Image
             src={tutor.image}
             alt={tutor.name ?? "Tutor"}
@@ -138,7 +139,14 @@ function TutorCard({
           <div className="flex h-full items-center justify-center bg-gray-200 text-4xl font-bold text-gray-400">
             {tutor.name?.[0] ?? "?"}
           </div>
-        )}
+        )} */}
+        <Image
+          src={"/figma-courses/tutor-maxwell.png"}
+          alt={tutor.name ?? "Tutor"}
+          fill
+          sizes="190px"
+          className="object-cover"
+        />
       </div>
 
       <div className="flex flex-col gap-4 sm:gap-[22px]">
@@ -182,30 +190,25 @@ function ReviewCard({ review }: { review: ReviewData }) {
       </p>
 
       <div className="flex gap-4 sm:flex-row sm:items-end">
-        <div className="flex flex-1 items-end gap-2.5">
-          <div className="size-[50px] shrink-0 overflow-hidden rounded-full">
-            {review.studentImage ? (
-              <Image
-                src={review.studentImage}
-                alt={review.studentName ?? "Student"}
-                width={50}
-                height={50}
-                className="size-full object-cover"
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center bg-gray-200 text-lg font-bold text-gray-400">
-                {review.studentName?.[0] ?? "?"}
-              </div>
-            )}
-          </div>
+        <div className="flex flex-1 items-start gap-2.5">
+          <Avatar className="size-12.5">
+            <AvatarImage src={review.studentImage!} alt="@shadcn" />
+            <AvatarFallback>{review.studentName?.[0] ?? "?"}</AvatarFallback>
+          </Avatar>
           <div className="flex flex-col gap-1 text-ma-text">
-            <h3 className="text-base leading-normal font-bold text-nowrap">
+            <h3 className="text-base/[100%] leading-normal font-bold text-nowrap">
               {review.studentName ?? "Student"}
             </h3>
+            <p className="text-[15px]/[100%] font-normal text-primary">
+              Medical Doctor
+            </p>
           </div>
         </div>
 
-        <div className="flex items-center text-[#ff9d00]" aria-label={`${review.rating} stars`}>
+        <div
+          className="flex items-center text-[#ff9d00]"
+          aria-label={`${review.rating} stars`}
+        >
           {Array.from({ length: review.rating }).map((_, index) => (
             <Star key={index} className="size-6 fill-current" />
           ))}
@@ -215,11 +218,7 @@ function ReviewCard({ review }: { review: ReviewData }) {
   )
 }
 
-function CourseInformationCard({
-  course,
-}: {
-  course: CourseContentData
-}) {
+function CourseInformationCard({ course }: { course: CourseContentData }) {
   const totalTopics = course.modules.reduce(
     (sum, m) => sum + m.topics.length,
     0
