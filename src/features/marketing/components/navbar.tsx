@@ -80,7 +80,7 @@ const Navbar = () => {
 
         <div
           className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${
-            mobileOpen ? "mt-4 max-h-96 opacity-100" : "max-h-0 opacity-0"
+            mobileOpen ? "mt-4 max-h-100 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <nav
@@ -92,7 +92,7 @@ const Navbar = () => {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
-                className={`rounded-lg p-3 text-base transition-all duration-300 hover:bg-gray-50 ${
+                className={`rounded-lg p-3 text-base transition-all duration-300 hover:text-[#6B7280] ${
                   mobileOpen
                     ? "translate-y-0 opacity-100"
                     : "translate-y-1 opacity-0"
@@ -113,7 +113,7 @@ const Navbar = () => {
               >
                 <span className="relative z-10">Consultation</span>
                 <ArrowRight
-                  className="relative z-10 size-3.5 transition-transform duration-300 group-hover:rotate-[30deg]"
+                  className="relative z-10 hidden size-3.5 transition-transform duration-300 group-hover:rotate-[30deg] lg:inline"
                   aria-hidden="true"
                 />
                 <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />

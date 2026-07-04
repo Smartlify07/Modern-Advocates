@@ -132,14 +132,14 @@ export function MissionBridgeSection() {
             </div>
 
             <div
-              className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 max-lg:w-full ${
+              className={`shrink-0 overflow-hidden rounded-2xl transition-all duration-500 max-md:w-full ${
                 hovered === "second" ? "w-0 min-w-0" : "lg:w-[292px]"
               }`}
             >
               <Image
                 src="/figma-home/get-assistance.png"
                 alt=""
-                className="size-full object-cover"
+                className="size-full h-[301px] object-cover lg:h-[318px]"
                 loading="lazy"
                 width={292}
                 height={318}
@@ -170,14 +170,14 @@ export function MissionBridgeSection() {
             </div>
 
             <div
-              className={`shrink-0 overflow-hidden rounded-2xl object-cover transition-all duration-500 max-lg:w-full ${
+              className={`shrink-0 overflow-hidden rounded-2xl object-cover transition-all duration-500 max-md:w-full ${
                 hovered === "second" ? "lg:w-[292px]" : "w-0 min-w-0"
               }`}
             >
               <Image
                 src="/figma-home/support.png"
                 alt=""
-                className="size-full lg:h-[318px]"
+                className="size-full h-[301px] object-cover lg:h-[318px]"
                 loading="lazy"
                 width={292}
                 height={318}

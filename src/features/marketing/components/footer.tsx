@@ -99,7 +99,7 @@ export function Footer() {
           </section>
         </div>
 
-        <p className="pointer-events-none mt-10 text-center bg-gradient-to-b from-ma-text from-[40%] to-ma-text/0 to-[74%] bg-clip-text font-heading text-[40px] leading-none font-extrabold whitespace-nowrap text-transparent select-none lg:absolute lg:left-1/2 lg:-translate-x-[calc(1280px/2-100px)] lg:text-[100px] xl:text-[124px] 2xl:-translate-x-[calc(1280px/2-116px)]">
+        <p className="pointer-events-none mt-10 bg-gradient-to-b from-ma-text from-[40%] to-ma-text/0 to-[74%] bg-clip-text text-center font-heading text-[40px] leading-none font-extrabold whitespace-nowrap text-transparent select-none md:text-[100px] lg:absolute lg:top-[72%] lg:left-1/2 lg:-translate-x-[calc(1280px/2-100px)] xl:text-[124px] 2xl:-translate-x-[calc(1280px/2-116px)]">
           ModernAdvocates
         </p>
       </div>
