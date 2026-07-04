@@ -22,7 +22,6 @@ export default async function CourseDetailPage({
 }) {
   const { id } = await params
   const course = await fetchCourse(id)
-
   if (!course) notFound()
 
   const normalizedReviews = (course.reviews ?? []).map(

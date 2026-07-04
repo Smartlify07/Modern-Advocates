@@ -10,11 +10,11 @@
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
-    "db:clean-enums": "tsx lib/db/scripts/clean-enums.ts",
-    "db:migrate": "tsx lib/db/scripts/clean-enums.ts && npx drizzle-kit migrate ",
+    "db:clean-enums": "tsx src/infrastructure/database/scripts/clean-enums.ts",
+    "db:migrate": "tsx src/infrastructure/database/scripts/clean-enums.ts && npx drizzle-kit migrate ",
     "db:generate": "npx drizzle-kit generate ",
     "db:push": "npx drizzle-kit push ",
-    "db:seed": "tsx lib/db/seed.ts"
+    "db:seed": "tsx src/infrastructure/database/seed.ts"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.6.18",

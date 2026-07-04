@@ -44,7 +44,7 @@ export async function GET(
         tutorImage: user.image,
       })
       .from(courses)
-      .where(eq(courses.id, id))
+      .where(sql`"courses"."id"::text = ${id}`)
       .innerJoin(user, eq(courses.tutorId, user.id))
       .then((r) => r[0])
 
@@ -55,7 +55,7 @@ export async function GET(
     const modules = await db
       .select()
       .from(courseModules)
-      .where(eq(courseModules.courseId, id))
+      .where(sql`${courseModules.courseId}::text = ${id}`)
       .orderBy(asc(courseModules.sortOrder))
 
     const modulesWithTopics = await Promise.all(
@@ -63,7 +63,7 @@ export async function GET(
         const topics = await db
           .select()
           .from(courseTopics)
-          .where(eq(courseTopics.moduleId, mod.id))
+          .where(sql`${courseTopics.moduleId}::text = ${mod.id}`)
           .orderBy(asc(courseTopics.sortOrder))
 
         const topicsWithVideos = await Promise.all(
@@ -71,7 +71,7 @@ export async function GET(
             const video = await db
               .select({ id: courseVideos.id })
               .from(courseVideos)
-              .where(eq(courseVideos.topicId, topic.id))
+              .where(sql`${courseVideos.topicId}::text = ${topic.id}`)
               .then((r) => r[0])
 
             return {
@@ -112,13 +112,13 @@ export async function GET(
         studentImage: user.image,
       })
       .from(reviews)
-      .where(eq(reviews.courseId, id))
       .innerJoin(user, eq(reviews.studentId, user.id))
+      .where(sql`${reviews.courseId}::text = ${id}`)
 
     const enrollmentResult = await db
       .select({ count: sql<number>`COUNT(*)` })
       .from(enrollments)
-      .where(eq(enrollments.courseId, id))
+      .where(sql`${enrollments.courseId}::text = ${id}`)
       .then((r) => r[0])
 
     return NextResponse.json({
@@ -129,6 +129,7 @@ export async function GET(
     })
   } catch (error) {
     console.error(error)
+    Sentry.captureException(error)
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -188,7 +189,7 @@ export async function PATCH(
         const existingModuleIds = await tx
           .select({ id: courseModules.id })
           .from(courseModules)
-          .where(eq(courseModules.courseId, id))
+          .where(sql`${courseModules.courseId}::text = ${id}`)
           .then((r) => r.map((m) => m.id))
 
         const incomingModuleIds = modulesData
