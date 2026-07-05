@@ -7,6 +7,7 @@ import {
   courseTopics,
 } from "@/infrastructure/database/schema/course"
 import { requireInstructorOrAdmin } from "@/infrastructure/auth/helpers"
+import { createCourseSchema } from "@/features/courses/schemas"
 import * as Sentry from "@sentry/nextjs"
 
 export async function GET() {
@@ -50,21 +51,27 @@ export async function POST(request: Request) {
     const { user } = await requireInstructorOrAdmin()
 
     const body = await request.json()
+    const parsed = createCourseSchema.safeParse(body)
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Invalid request", details: parsed.error.flatten() },
+        { status: 400 },
+      )
+    }
 
     const {
       title,
-      description,
       overview,
-      categoryId,
       level,
-      price = 0,
+      price,
       discountedPrice,
       isFree,
-      language = "en",
-      status = "draft",
+      language,
+      status,
       thumbnailUrl,
       modules: modulesData = [],
-    } = body
+    } = parsed.data
 
     const course = await db.transaction(async (tx) => {
       const [course] = await tx
