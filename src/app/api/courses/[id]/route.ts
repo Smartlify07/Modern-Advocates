@@ -178,6 +178,7 @@ export async function PATCH(
       if (price !== undefined) updateData.price = isFree ? 0 : price
       if (discountedPrice !== undefined)
         updateData.discountedPrice = isFree ? null : discountedPrice
+      if (isFree !== undefined) updateData.isFree = isFree
       if (status !== undefined) updateData.status = status
       if (language !== undefined) updateData.language = language
       if (thumbnailUrl !== undefined) updateData.thumbnailUrl = thumbnailUrl

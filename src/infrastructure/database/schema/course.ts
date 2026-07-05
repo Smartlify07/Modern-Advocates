@@ -1,7 +1,6 @@
 import {
   pgEnum,
   pgTable,
-  primaryKey,
   unique,
   index,
   uuid,
@@ -9,6 +8,7 @@ import {
   timestamp,
   integer,
   numeric,
+  boolean,
 } from "drizzle-orm/pg-core"
 import { user } from "./auth"
 
@@ -37,6 +37,7 @@ export const courses = pgTable(
     level: level("level").notNull(),
     price: numeric("price", { precision: 10, scale: 2, mode: "number" }).notNull().default(0),
     discountedPrice: numeric("discounted_price", { precision: 10, scale: 2, mode: "number" }),
+    isFree: boolean("is_free").default(false).notNull(),
     duration: integer("duration"),
     status: courseStatus("status").notNull().default("draft"),
     tutorId: text("tutor_id")
@@ -142,21 +143,6 @@ export const enrollments = pgTable(
   }),
 )
 
-export const courseCategories = pgTable(
-  "course_categories",
-  {
-    courseId: uuid("course_id")
-      .notNull()
-      .references(() => courses.id, { onDelete: "cascade" }),
-    categoryId: uuid("category_id")
-      .notNull()
-      .references(() => categories.id, { onDelete: "cascade" }),
-  },
-  (table) => ({
-    pk: primaryKey({ columns: [table.courseId, table.categoryId] }),
-  }),
-)
-
 export const topicCompletions = pgTable(
   "topic_completions",
   {
@@ -196,9 +182,6 @@ export type SelectReview = typeof reviews.$inferSelect
 
 export type InsertEnrollment = typeof enrollments.$inferInsert
 export type SelectEnrollment = typeof enrollments.$inferSelect
-
-export type InsertCourseCategory = typeof courseCategories.$inferInsert
-export type SelectCourseCategory = typeof courseCategories.$inferSelect
 
 export type InsertTopicCompletion = typeof topicCompletions.$inferInsert
 export type SelectTopicCompletion = typeof topicCompletions.$inferSelect
