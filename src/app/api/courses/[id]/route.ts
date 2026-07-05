@@ -15,6 +15,7 @@ import {
   requireInstructorOrAdmin,
   requireAdmin,
 } from "@/infrastructure/auth/helpers"
+import { updateCourseSchema } from "@/features/courses/schemas"
 import * as Sentry from "@sentry/nextjs"
 
 export async function GET(
@@ -145,12 +146,19 @@ export async function PATCH(
     const { user } = await requireInstructorOrAdmin()
     const { id } = await params
     const body = await request.json()
+    const parsed = updateCourseSchema.safeParse(body)
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Invalid request", details: parsed.error.flatten() },
+        { status: 400 },
+      )
+    }
 
     const {
       title,
       description,
       overview,
-      categoryId,
       level,
       price,
       discountedPrice,
@@ -159,7 +167,7 @@ export async function PATCH(
       status,
       thumbnailUrl,
       modules: modulesData,
-    } = body
+    } = parsed.data
 
     await db.transaction(async (tx) => {
       const updateData: Record<string, unknown> = {}
@@ -193,8 +201,8 @@ export async function PATCH(
           .then((r) => r.map((m) => m.id))
 
         const incomingModuleIds = modulesData
-          .filter((m: { id?: string }) => m.id)
-          .map((m: { id: string }) => m.id)
+          .filter((m) => m.id)
+          .map((m) => m.id as string)
 
         for (const modId of existingModuleIds) {
           if (!incomingModuleIds.includes(modId)) {
@@ -229,8 +237,8 @@ export async function PATCH(
             .then((r) => r.map((t) => t.id))
 
           const incomingTopicIds = (mod.topics ?? [])
-            .filter((t: { id?: string }) => t.id)
-            .map((t: { id: string }) => t.id)
+            .filter((t) => t.id)
+            .map((t) => t.id as string)
 
           for (const topicId of existingTopicIds) {
             if (!incomingTopicIds.includes(topicId)) {
