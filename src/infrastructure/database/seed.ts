@@ -107,8 +107,7 @@ async function reset() {
       course_topics,
       reviews,
       enrollments,
-      topic_completions,
-      course_categories
+      topic_completions
     CASCADE
   `)
   console.log("Database cleared")

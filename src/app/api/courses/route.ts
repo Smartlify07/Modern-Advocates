@@ -84,6 +84,7 @@ export async function POST(request: Request) {
           level,
           price: isFree ? 0 : price,
           discountedPrice: isFree ? null : discountedPrice,
+          isFree: isFree ?? false,
           status,
           thumbnailUrl,
           tutorId: user.id,
