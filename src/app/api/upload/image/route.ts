@@ -19,6 +19,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "File must be an image" }, { status: 400 })
     }
 
+    if (file.size > 5 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: "File must be less than 5MB" },
+        { status: 400 },
+      )
+    }
+
     const buffer = Buffer.from(await file.arrayBuffer())
 
     const result = await new Promise<{ secure_url: string }>((resolve, reject) => {
