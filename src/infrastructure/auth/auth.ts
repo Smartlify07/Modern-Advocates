@@ -19,7 +19,7 @@ export const auth = betterAuth({
     admin(),
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
-        sendOTPEmail({ email, otp, type })
+        await sendOTPEmail({ email, otp, type })
       },
     }),
   ],
