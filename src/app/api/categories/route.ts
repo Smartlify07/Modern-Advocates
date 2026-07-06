@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { db } from "@/infrastructure/database/client"
 import { categories } from "@/infrastructure/database/schema/course"
 import { requireAdmin } from "@/infrastructure/auth/helpers"
+import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 
 export async function GET() {
   try {
@@ -11,9 +12,11 @@ export async function GET() {
 
     return NextResponse.json(allCategories)
   } catch (error) {
-    if (error instanceof Error) {
-      const status = error.message === "Unauthorized" ? 401 : 403
-      return NextResponse.json({ error: error.message }, { status })
+    if (error instanceof UnauthorizedError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    if (error instanceof ForbiddenError) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }

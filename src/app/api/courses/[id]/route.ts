@@ -15,6 +15,7 @@ import {
   requireInstructorOrAdmin,
   requireAdmin,
 } from "@/infrastructure/auth/helpers"
+import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import { updateCourseSchema } from "@/features/courses/schemas"
 import * as Sentry from "@sentry/nextjs"
 
@@ -309,16 +310,14 @@ export async function PATCH(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    if (error instanceof Error) {
-      if (error.message === "Unauthorized") {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-      }
-      if (error.message === "Forbidden") {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-      }
-      if (error.message === "Course not found") {
-        return NextResponse.json({ error: "Course not found" }, { status: 404 })
-      }
+    if (error instanceof UnauthorizedError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    if (error instanceof ForbiddenError) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+    }
+    if (error instanceof Error && error.message === "Course not found") {
+      return NextResponse.json({ error: "Course not found" }, { status: 404 })
     }
     Sentry.captureException(error)
     return NextResponse.json(
@@ -348,9 +347,11 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    if (error instanceof Error) {
-      const status = error.message === "Unauthorized" ? 401 : 403
-      return NextResponse.json({ error: error.message }, { status })
+    if (error instanceof UnauthorizedError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    if (error instanceof ForbiddenError) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
     return NextResponse.json(
       { error: "Internal server error" },
