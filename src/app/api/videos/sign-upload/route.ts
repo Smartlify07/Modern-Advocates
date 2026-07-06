@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm"
 import { db } from "@/infrastructure/database/client"
 import { courseVideos } from "@/infrastructure/database/schema/video"
 import { requireInstructorOrAdmin } from "@/infrastructure/auth/helpers"
+import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import { generateUploadSignature } from "@/infrastructure/cloudinary/signatures"
 import {
   createVideoRecord,
@@ -80,13 +81,11 @@ export async function POST(request: Request) {
       videoId,
     })
   } catch (error) {
-    if (error instanceof Error) {
-      if (error.message === "Unauthorized") {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-      }
-      if (error.message === "Forbidden") {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-      }
+    if (error instanceof UnauthorizedError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    if (error instanceof ForbiddenError) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
     Sentry.captureException(error)
     console.error(error)

@@ -3,6 +3,7 @@ import { headers } from "next/headers"
 
 import { auth } from "@/infrastructure/auth/auth"
 import { requireAdmin } from "@/infrastructure/auth/helpers"
+import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 
 export async function POST(request: Request) {
   try {
@@ -22,10 +23,13 @@ export async function POST(request: Request) {
 
     return NextResponse.json(newUser, { status: 201 })
   } catch (error) {
+    if (error instanceof UnauthorizedError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    if (error instanceof ForbiddenError) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+    }
     if (error instanceof Error) {
-      if (error.message === "Unauthorized" || error.message === "Forbidden") {
-        return NextResponse.json({ error: error.message }, { status: error.message === "Unauthorized" ? 401 : 403 })
-      }
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })

@@ -1,5 +1,6 @@
 import { headers } from "next/headers"
 import { auth } from "./auth"
+import { UnauthorizedError, ForbiddenError } from "./errors"
 
 export async function requireAdmin() {
   const session = await auth.api.getSession({
@@ -7,11 +8,11 @@ export async function requireAdmin() {
   })
 
   if (!session) {
-    throw new Error("Unauthorized")
+    throw new UnauthorizedError()
   }
 
   if (session.user.role !== "admin") {
-    throw new Error("Forbidden")
+    throw new ForbiddenError()
   }
 
   return { user: session.user }
@@ -23,11 +24,11 @@ export async function requireInstructorOrAdmin() {
   })
 
   if (!session) {
-    throw new Error("Unauthorized")
+    throw new UnauthorizedError()
   }
 
   if (session.user.role !== "admin" && session.user.role !== "instructor") {
-    throw new Error("Forbidden")
+    throw new ForbiddenError()
   }
 
   return { user: session.user }
@@ -39,7 +40,7 @@ export async function requireSession() {
   })
 
   if (!session) {
-    throw new Error("Unauthorized")
+    throw new UnauthorizedError()
   }
 
   return { user: session.user }

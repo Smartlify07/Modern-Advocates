@@ -3,6 +3,7 @@ import {
   requireInstructorOrAdmin,
   requireSession,
 } from "@/infrastructure/auth/helpers"
+import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import {
   getVideoById,
   verifyCourseAccess,
@@ -48,15 +49,14 @@ export async function GET(
       progress: progress ?? { watchedSeconds: 0, completed: false },
     })
   } catch (error) {
-    if (error instanceof Error) {
-      if (error.message === "Unauthorized") {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-      }
+    if (error instanceof UnauthorizedError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     Sentry.captureException(error)
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },
+
     )
   }
 }
@@ -91,13 +91,11 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    if (error instanceof Error) {
-      if (error.message === "Unauthorized") {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-      }
-      if (error.message === "Forbidden") {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-      }
+    if (error instanceof UnauthorizedError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    if (error instanceof ForbiddenError) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
     Sentry.captureException(error)
     return NextResponse.json(

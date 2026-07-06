@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { requireSession } from "@/infrastructure/auth/helpers"
+import { UnauthorizedError } from "@/infrastructure/auth/errors"
 import {
   getVideoById,
   verifyCourseAccess,
@@ -53,10 +54,8 @@ export async function POST(
 
     return NextResponse.json({ success: true, completed })
   } catch (error) {
-    if (error instanceof Error) {
-      if (error.message === "Unauthorized") {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-      }
+    if (error instanceof UnauthorizedError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     Sentry.captureException(error)
     return NextResponse.json(
