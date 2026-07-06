@@ -19,7 +19,7 @@ export async function sendOTPEmail({ email, otp, type }: SendOTPParams) {
 
   try {
     const res = await resend.emails.send({
-      from: "ModernAdvocates <onboarding@resend.dev>",
+      from: `ModernAdvocates <${process.env.RESEND_FROM_EMAIL ?? "onboarding@resend.dev"}>`,
       to: email,
       subject,
       html: `<p>Your code is: <strong>${otp}</strong></p><p>This code expires in 5 minutes.</p>`,
