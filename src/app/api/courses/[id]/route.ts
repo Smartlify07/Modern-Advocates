@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { eq, asc, sql } from "drizzle-orm"
+import { eq, asc, sql, inArray } from "drizzle-orm"
 
 import { db } from "@/infrastructure/database/client"
 import { user } from "@/infrastructure/database/schema/auth"
@@ -53,56 +53,86 @@ export async function GET(
       return NextResponse.json({ error: "Course not found" }, { status: 404 })
     }
 
-    const modules = await db
-      .select()
-      .from(courseModules)
-      .where(sql`${courseModules.courseId}::text = ${id}`)
-      .orderBy(asc(courseModules.sortOrder))
-
-    const modulesWithTopics = await Promise.all(
-      modules.map(async (mod) => {
-        const topics = await db
-          .select()
-          .from(courseTopics)
-          .where(sql`${courseTopics.moduleId}::text = ${mod.id}`)
-          .orderBy(asc(courseTopics.sortOrder))
-
-        const topicsWithVideos = await Promise.all(
-          topics.map(async (topic) => {
-            const video = await db
-              .select({ id: courseVideos.id })
-              .from(courseVideos)
-              .where(sql`${courseVideos.topicId}::text = ${topic.id}`)
-              .then((r) => r[0])
-
-            return {
-              id: topic.id,
-              title: topic.title,
-              type: topic.format === "video" ? "video_and_text" : topic.format,
-              description: topic.content
-                ? (() => {
-                    try {
-                      return JSON.parse(topic.content)
-                    } catch {
-                      return topic.content
-                    }
-                  })()
-                : null,
-              order: topic.sortOrder,
-              videoUrl: video?.id ?? null,
-              videoId: video?.id ?? null,
-            }
-          })
-        )
-
-        return {
-          id: mod.id,
-          title: mod.title,
-          order: mod.sortOrder,
-          topics: topicsWithVideos,
-        }
+    const moduleTopicRows = await db
+      .select({
+        moduleId: courseModules.id,
+        moduleTitle: courseModules.title,
+        moduleOrder: courseModules.sortOrder,
+        topicId: courseTopics.id,
+        topicTitle: courseTopics.title,
+        topicFormat: courseTopics.format,
+        topicContent: courseTopics.content,
+        topicOrder: courseTopics.sortOrder,
       })
-    )
+      .from(courseModules)
+      .leftJoin(courseTopics, eq(courseTopics.moduleId, courseModules.id))
+      .where(sql`${courseModules.courseId}::text = ${id}`)
+      .orderBy(asc(courseModules.sortOrder), asc(courseTopics.sortOrder))
+
+    const topicIds = moduleTopicRows
+      .map((r) => r.topicId)
+      .filter((id): id is string => id !== null)
+
+    const videoRows = topicIds.length > 0
+      ? await db
+          .select({ topicId: courseVideos.topicId, id: courseVideos.id })
+          .from(courseVideos)
+          .where(inArray(courseVideos.topicId, topicIds))
+      : []
+
+    const videoByTopicId = new Map(videoRows.map((v) => [v.topicId, v.id]))
+
+    function parseContent(content: string | null): unknown {
+      if (!content) return null
+      try {
+        return JSON.parse(content)
+      } catch {
+        return content
+      }
+    }
+
+    const modulesWithTopics = (() => {
+      const map = new Map<string, {
+        id: string
+        title: string
+        order: number
+        topics: Array<{
+          id: string
+          title: string
+          type: string
+          description: unknown
+          order: number
+          videoUrl: string | null
+          videoId: string | null
+        }>
+      }>()
+
+      for (const row of moduleTopicRows) {
+        if (!map.has(row.moduleId)) {
+          map.set(row.moduleId, {
+            id: row.moduleId,
+            title: row.moduleTitle,
+            order: row.moduleOrder,
+            topics: [],
+          })
+        }
+
+        if (row.topicId) {
+          const mod = map.get(row.moduleId)!
+          mod.topics.push({
+            id: row.topicId,
+            title: row.topicTitle!,
+            type: row.topicFormat === "video" ? "video_and_text" : row.topicFormat!,
+            description: parseContent(row.topicContent),
+            order: row.topicOrder!,
+            videoUrl: videoByTopicId.get(row.topicId) ?? null,
+            videoId: videoByTopicId.get(row.topicId) ?? null,
+          })
+        }
+      }
+
+      return [...map.values()]
+    })()
 
     const courseReviews = await db
       .select({
