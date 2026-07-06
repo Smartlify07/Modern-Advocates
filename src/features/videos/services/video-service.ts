@@ -130,12 +130,25 @@ export async function deleteVideo(videoId: string): Promise<void> {
   await db.delete(courseVideos).where(eq(courseVideos.id, videoId))
 }
 
+function extractVideoId(publicId: string): string | null {
+  const videoId = publicId.split("/").pop()
+  return videoId ?? null
+}
+
 export async function processWebhookUploadCompleted(
   publicId: string,
   duration: number | undefined,
 ): Promise<void> {
-  const videoId = publicId.split("/").pop()
+  const videoId = extractVideoId(publicId)
   if (!videoId) return
+
+  const current = await db
+    .select({ status: courseVideos.status })
+    .from(courseVideos)
+    .where(eq(courseVideos.id, videoId))
+    .then((r) => r[0])
+
+  if (!current || current.status !== "uploading") return
 
   await db
     .update(courseVideos)
@@ -145,20 +158,19 @@ export async function processWebhookUploadCompleted(
       status: "processing",
     })
     .where(eq(courseVideos.id, videoId))
-
-  await db
-    .update(courseVideos)
-    .set({
-      playbackUrl: generatePlaybackUrl(publicId),
-      thumbnailUrl: generateThumbnailUrl(publicId),
-      status: "ready",
-    })
-    .where(eq(courseVideos.id, videoId))
 }
 
 export async function processWebhookVideoReady(publicId: string): Promise<void> {
-  const videoId = publicId.split("/").pop()
+  const videoId = extractVideoId(publicId)
   if (!videoId) return
+
+  const current = await db
+    .select({ status: courseVideos.status })
+    .from(courseVideos)
+    .where(eq(courseVideos.id, videoId))
+    .then((r) => r[0])
+
+  if (!current || current.status === "ready" || current.status === "uploading") return
 
   const playbackUrl = generatePlaybackUrl(publicId)
   const thumbnailUrl = generateThumbnailUrl(publicId)
@@ -174,8 +186,16 @@ export async function processWebhookVideoReady(publicId: string): Promise<void> 
 }
 
 export async function processWebhookVideoFailed(publicId: string): Promise<void> {
-  const videoId = publicId.split("/").pop()
+  const videoId = extractVideoId(publicId)
   if (!videoId) return
+
+  const current = await db
+    .select({ status: courseVideos.status })
+    .from(courseVideos)
+    .where(eq(courseVideos.id, videoId))
+    .then((r) => r[0])
+
+  if (!current || current.status === "ready" || current.status === "failed") return
 
   await db
     .update(courseVideos)
