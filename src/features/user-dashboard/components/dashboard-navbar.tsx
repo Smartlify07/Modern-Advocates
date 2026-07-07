@@ -4,7 +4,7 @@ import { useState } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
-import { Menu, X } from "lucide-react"
+import { Bell, Menu, X } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@/shared/ui/avatar"
 import { authClient } from "@/infrastructure/auth/client"
@@ -29,18 +29,20 @@ export default function DashboardNavbar() {
             <Image src="/figma-home/logo.svg" alt="ModernAdvocates Inc." width={58} height={44} priority />
           </Link>
 
-          <nav aria-label="Dashboard navigation" className="hidden items-center gap-2 text-ma-text md:flex">
-            {navItems.map((item) => (
-              <Link key={item.href} href={item.href}
-                className={`p-2.5 text-base transition-colors duration-300 hover:text-[#6B7280] ${pathname === item.href ? "text-[#6B7280]" : ""}`}>
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-
-          <Avatar className="hidden size-12.5 md:flex bg-primary text-white">
-            <AvatarFallback className="bg-primary text-primary-foreground text-base">{firstLetter}</AvatarFallback>
-          </Avatar>
+          <div className="hidden items-center gap-2 text-ma-text md:flex">
+            <nav aria-label="Dashboard navigation" className="flex items-center gap-2">
+              {navItems.map((item) => (
+                <Link key={item.href} href={item.href}
+                  className={`p-2.5 text-base transition-colors duration-300 hover:text-[#6B7280] ${pathname === item.href ? "text-[#6B7280]" : ""}`}>
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+            <Bell className="size-5 text-[#6B7280]" />
+            <Avatar className="ml-2 size-12.5 bg-primary text-white">
+              <AvatarFallback className="bg-primary text-primary-foreground text-base">{firstLetter}</AvatarFallback>
+            </Avatar>
+          </div>
 
           <button type="button" aria-label={mobileOpen ? "Close menu" : "Open menu"}
             onClick={() => setMobileOpen((prev) => !prev)} className="size-10 rounded-[12px] border p-2 md:hidden">

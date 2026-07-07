@@ -13,7 +13,7 @@ export interface CourseFormStore {
   categoryName: string
   syncFormValues: (
     values: { title: string; categoryId: string; description?: string },
-    categories: { id: string; name: string }[],
+    categories: { id: string; name: string }[]
   ) => void
 
   modules: Module[]
@@ -48,7 +48,11 @@ export interface CourseFormStore {
   setCourseId: (id: string | null) => void
   setPublishing: (v: boolean) => void
   setPublishError: (v: string | null) => void
-  saveAsDraft: () => Promise<{ courseId: string; moduleId: string; topicId: string } | null>
+  saveAsDraft: () => Promise<{
+    courseId: string
+    moduleId: string
+    topicId: string
+  } | null>
   loadFromCourse: (course: {
     id: string
     title: string
@@ -88,7 +92,7 @@ export const useCourseFormStore = create<CourseFormStore>((set, get) => ({
       title: values.title,
       categoryId: values.categoryId,
       description: values.description ?? "",
-      categoryName: categories.find((c) => c.id === values.categoryId)?.name ?? "",
+      categoryName: "",
     }),
 
   modules: [],
@@ -98,7 +102,12 @@ export const useCourseFormStore = create<CourseFormStore>((set, get) => ({
     set((state) => ({
       modules: [
         ...state.modules,
-        { id: `module_${nextModuleId++}`, title: "", topics: [], order: state.modules.length },
+        {
+          id: `module_${nextModuleId++}`,
+          title: "",
+          topics: [],
+          order: state.modules.length,
+        },
       ],
     })),
   updateModule: (id, updated) =>
@@ -126,7 +135,10 @@ export const useCourseFormStore = create<CourseFormStore>((set, get) => ({
   setThumbnail: (file) =>
     set((state) => {
       if (state.thumbnailPreview) URL.revokeObjectURL(state.thumbnailPreview)
-      return { thumbnail: file, thumbnailPreview: file ? URL.createObjectURL(file) : null }
+      return {
+        thumbnail: file,
+        thumbnailPreview: file ? URL.createObjectURL(file) : null,
+      }
     }),
 
   courseId: null,
@@ -137,7 +149,11 @@ export const useCourseFormStore = create<CourseFormStore>((set, get) => ({
   setPublishing: (v) => set({ isPublishing: v }),
   setPublishError: (v) => set({ publishError: v }),
 
-  saveAsDraft: async (): Promise<{ courseId: string; moduleId: string; topicId: string } | null> => {
+  saveAsDraft: async (): Promise<{
+    courseId: string
+    moduleId: string
+    topicId: string
+  } | null> => {
     const state = get()
     if (state.courseId) {
       const firstModule = state.modules[0]
@@ -155,9 +171,11 @@ export const useCourseFormStore = create<CourseFormStore>((set, get) => ({
         description: state.description,
         level: state.level || "beginner",
         price: parseFloat(state.price) || 0,
-        discountedPrice: state.isFree ? null : state.discount > 0
-          ? (parseFloat(state.price) || 0) * (1 - state.discount / 100)
-          : null,
+        discountedPrice: state.isFree
+          ? null
+          : state.discount > 0
+            ? (parseFloat(state.price) || 0) * (1 - state.discount / 100)
+            : null,
         isFree: state.isFree,
         status: "draft",
         modules: state.modules.map((mod, mi) => ({
