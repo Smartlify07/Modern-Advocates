@@ -52,7 +52,9 @@ function DescriptionField({ control }: { control: Props["form"]["control"] }) {
           <FieldDescription>
             A brief overview of the course content and objectives.
           </FieldDescription>
-          {fieldState.error && <FieldError>{fieldState.error?.message}</FieldError>}
+          {fieldState.error && (
+            <FieldError>{fieldState.error?.message}</FieldError>
+          )}
         </Field>
       )}
     />
@@ -68,7 +70,9 @@ export function BasicInfoSection({ form, categories, onSubmit }: Props) {
       <div className="grid grid-cols-2 gap-6">
         <div className="flex flex-col gap-6">
           <Card className="ring-0">
-            <CardHeader><CardTitle>Basic Information</CardTitle></CardHeader>
+            <CardHeader>
+              <CardTitle>Basic Information</CardTitle>
+            </CardHeader>
             <CardContent>
               <FieldGroup>
                 <Controller
@@ -77,31 +81,49 @@ export function BasicInfoSection({ form, categories, onSubmit }: Props) {
                   render={({ fieldState, field }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor={field.name}>Course Title</FieldLabel>
-                      <Input {...field} id={field.name} aria-invalid={fieldState.invalid} placeholder="e.g. Introduction to Criminal Law" />
-                      {fieldState.error && <FieldError>{fieldState.error?.message}</FieldError>}
+                      <Input
+                        {...field}
+                        id={field.name}
+                        aria-invalid={fieldState.invalid}
+                        placeholder="e.g. Introduction to Criminal Law"
+                      />
+                      {fieldState.error && (
+                        <FieldError>{fieldState.error?.message}</FieldError>
+                      )}
                     </Field>
                   )}
                 />
-                <Controller
+                {/* <Controller
                   control={form.control}
                   name="categoryId"
                   render={({ fieldState, field }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor={field.name}>Category</FieldLabel>
-                      <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger id={field.name} aria-invalid={fieldState.invalid} className="w-full">
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger
+                          id={field.name}
+                          aria-invalid={fieldState.invalid}
+                          className="w-full"
+                        >
                           <SelectValue placeholder="Select a category" />
                         </SelectTrigger>
                         <SelectContent>
                           {(categories ?? []).map((cat) => (
-                            <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                            <SelectItem key={cat.id} value={cat.id}>
+                              {cat.name}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
-                      {fieldState.error && <FieldError>{fieldState.error?.message}</FieldError>}
+                      {fieldState.error && (
+                        <FieldError>{fieldState.error?.message}</FieldError>
+                      )}
                     </Field>
                   )}
-                />
+                /> */}
                 <DescriptionField control={form.control} />
               </FieldGroup>
             </CardContent>
