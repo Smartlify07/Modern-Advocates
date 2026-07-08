@@ -40,7 +40,10 @@ export function CheckoutContent() {
       <CheckoutForm />
 
       <div>
-        <OrderSummaryCard onPay={handlePay} processing={paymentState === "processing"} />
+        <OrderSummaryCard
+          onPay={handlePay}
+          processing={paymentState === "processing"}
+        />
         <p className="mt-4 text-xs text-[#6b7280]">
           Course ID: {courseId ?? "N/A"}
         </p>
@@ -52,7 +55,6 @@ export function CheckoutContent() {
         ) : (
           <PaymentFailedContent onRetry={handleRetry} />
         )}
-        <TransactionDetails />
       </PaymentReceiptModal>
     </div>
   )
