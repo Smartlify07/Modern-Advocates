@@ -12,7 +12,7 @@ export function PaymentSuccessContent() {
         </div>
 
         <div className="mt-3 text-center">
-          <h2 className="text- ma-text text-xl font-normal tracking-[-1.5%] text-[#6B7280]">
+          <h2 className="text-xl font-normal tracking-[-1.5%] text-[#6B7280] text-ma-text">
             Payment Success!
           </h2>
           <p className="mt-3 text-[30px] font-semibold text-ma-text">

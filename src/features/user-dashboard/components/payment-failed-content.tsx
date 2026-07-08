@@ -12,7 +12,7 @@ export function PaymentFailedContent({ onRetry }: { onRetry?: () => void }) {
 
       <div className="text-center">
         <h2 className="text-2xl font-semibold text-ma-text">Payment Failed</h2>
-        <p className="mt-3 text-base text-[#6b7280]">
+        <p className="mt-3 text-base tracking-[-1.5%] text-[#6b7280]">
           Transaction could not be processed
         </p>
       </div>

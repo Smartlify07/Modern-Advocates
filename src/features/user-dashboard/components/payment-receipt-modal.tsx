@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogClose,
   DialogHeader,
+  DialogTitle,
 } from "@/shared/ui/dialog"
 
 export function PaymentReceiptModal({
@@ -21,7 +22,9 @@ export function PaymentReceiptModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="p-0 sm:max-w-[600px]" showCloseButton={false}>
         <DialogHeader className="flex flex-row items-center justify-between border-b border-b-[#E9EAF0] px-7.5 py-4">
-          <h2 className="text-base/[100%] font-medium text-ma-text">Receipt</h2>
+          <DialogTitle className="font-sans text-base/[100%] font-medium text-ma-text">
+            Receipt
+          </DialogTitle>
           <DialogClose asChild>
             <button
               type="button"
