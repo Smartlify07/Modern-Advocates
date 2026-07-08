@@ -13,13 +13,14 @@ export type Course = {
   discountedPrice: number | null
 }
 
-export function CourseCard({ course }: { course: Course }) {
+export function CourseCard({ course, href }: { course: Course; href?: string }) {
   const displayPrice = course.discountedPrice ?? course.price
   const originalPrice = course.discountedPrice ? course.price : null
+  const linkHref = href ?? `/courses/${course.id}`
 
   return (
     <Link
-      href={`/courses/${course.id}`}
+      href={linkHref}
       className="flex w-full flex-col gap-5 rounded-[24px] border border-[#d9d9d9] bg-white px-2.5 pt-2.5 pb-7.5 transition-colors duration-300 hover:bg-gray-50 sm:max-w-[334px]"
     >
       <div className="relative h-[254px] overflow-hidden rounded-[24px]">
