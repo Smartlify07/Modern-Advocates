@@ -11,7 +11,7 @@ import { authClient } from "@/infrastructure/auth/client"
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard" },
-  { label: "My Learning", href: "/dashboard/courses" },
+  { label: "My Learning", href: "/my-learning" },
 ]
 
 export default function DashboardNavbar() {
