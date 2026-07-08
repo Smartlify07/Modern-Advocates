@@ -46,7 +46,7 @@ export async function GET(
         tutorImage: user.image,
       })
       .from(courses)
-      .where(sql`"courses"."id"::text = ${id}`)
+      .where(eq(courses.id, id))
       .innerJoin(user, eq(courses.tutorId, user.id))
       .then((r) => r[0])
 
@@ -67,7 +67,7 @@ export async function GET(
       })
       .from(courseModules)
       .leftJoin(courseTopics, eq(courseTopics.moduleId, courseModules.id))
-      .where(sql`${courseModules.courseId}::text = ${id}`)
+      .where(eq(courseModules.courseId, id))
       .orderBy(asc(courseModules.sortOrder), asc(courseTopics.sortOrder))
 
     const topicIds = moduleTopicRows
@@ -145,12 +145,12 @@ export async function GET(
       })
       .from(reviews)
       .innerJoin(user, eq(reviews.studentId, user.id))
-      .where(sql`${reviews.courseId}::text = ${id}`)
+      .where(eq(reviews.courseId, id))
 
     const enrollmentResult = await db
       .select({ count: sql<number>`COUNT(*)` })
       .from(enrollments)
-      .where(sql`${enrollments.courseId}::text = ${id}`)
+      .where(eq(enrollments.courseId, id))
       .then((r) => r[0])
 
     return NextResponse.json({
@@ -229,7 +229,7 @@ export async function PATCH(
         const existingModuleIds = await tx
           .select({ id: courseModules.id })
           .from(courseModules)
-          .where(sql`${courseModules.courseId}::text = ${id}`)
+          .where(eq(courseModules.courseId, id))
           .then((r) => r.map((m) => m.id))
 
         const incomingModuleIds = modulesData
