@@ -46,7 +46,7 @@ export function VideoPlayer({
 
   if (!playbackUrl) {
     return (
-      <div className="aspect-video rounded-lg bg-muted">
+      <div className="aspect-video bg-muted">
         <Skeleton className="h-full w-full" />
       </div>
     )
