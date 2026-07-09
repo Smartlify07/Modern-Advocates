@@ -4,7 +4,7 @@ const topicSchema = z.object({
   id: z.string(),
   title: z.string().min(1).max(255),
   type: z.enum(["text", "video", "video_and_text"]),
-  description: z.any().optional(),
+  description: z.unknown().optional(),
   order: z.number().int().min(0),
 })
 

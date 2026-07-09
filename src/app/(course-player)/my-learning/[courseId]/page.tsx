@@ -1,13 +1,43 @@
-import { headers } from "next/headers"
 import { notFound } from "next/navigation"
 
 import { CoursePlayerContent } from "@/features/user-dashboard/components/course-player-content"
 import { CourseModuleSidebar } from "@/features/user-dashboard/components/course-module-sidebar"
 
-async function fetchCourse(id: string) {
-  const host = (await headers()).get("host") ?? "localhost:3000"
-  const protocol = process.env.NODE_ENV === "development" ? "http" : "https"
-  const res = await fetch(`${protocol}://${host}/api/courses/${id}`, {
+type CourseApiResponse = {
+  id: string
+  title: string
+  overview: string | null
+  thumbnailUrl: string | null
+  language: string
+  level: string
+  duration: number | null
+  avgRating: number | null
+  reviewCount: number | null
+  enrollmentCount: number | null
+  tutorName: string | null
+  tutorImage: string | null
+  modules: Array<{
+    id: string
+    title: string
+    order: number
+    topics: Array<{
+      id: string
+      title: string
+      type: string
+      description: unknown
+    }>
+  }>
+  reviews: Array<{
+    id: string
+    body: string | null
+    rating: number
+    studentName: string | null
+    studentImage: string | null
+  }>
+}
+
+async function fetchCourse(id: string): Promise<CourseApiResponse | null> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/courses/${id}`, {
     cache: "no-store",
   })
   if (!res.ok) return null
@@ -35,11 +65,11 @@ export default async function CoursePlayerPage({
     reviewCount: Number(course.reviewCount ?? 0),
     enrollmentCount: Number(course.enrollmentCount ?? 0),
     tutor: { name: course.tutorName, image: course.tutorImage },
-    modules: (course.modules ?? []).map((m: any) => ({
+    modules: (course.modules ?? []).map((m) => ({
       id: m.id,
       title: m.title,
       sortOrder: m.order ?? 0,
-      topics: (m.topics ?? []).map((t: any) => ({
+      topics: (m.topics ?? []).map((t) => ({
         id: t.id,
         title: t.title,
         format: t.type === "video_and_text" ? "video" : (t.type ?? "video"),
@@ -51,7 +81,7 @@ export default async function CoursePlayerPage({
               : null,
       })),
     })),
-    reviews: (course.reviews ?? []).map((r: any) => ({
+    reviews: (course.reviews ?? []).map((r) => ({
       id: r.id,
       body: r.body,
       rating: r.rating,
