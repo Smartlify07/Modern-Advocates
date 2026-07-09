@@ -26,7 +26,6 @@ import {
   UsersIcon,
   SettingsIcon,
 } from "lucide-react"
-import { authClient } from "@/infrastructure/auth/client"
 import type { NavItem } from "@/features/platform/components/app-sidebar"
 
 const adminNavItems: NavItem[] = [
@@ -34,12 +33,6 @@ const adminNavItems: NavItem[] = [
   { title: "Courses", url: "/admin/courses", icon: BookOpenIcon },
   { title: "Users", url: "/admin/users", icon: UsersIcon },
   { title: "Settings", url: "/admin/settings", icon: SettingsIcon },
-]
-
-const userNavItems: NavItem[] = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboardIcon },
-  { title: "Courses", url: "/dashboard/courses", icon: BookOpenIcon },
-  { title: "Settings", url: "/dashboard/settings", icon: SettingsIcon },
 ]
 
 const breadcrumbLabels: Record<string, string> = {
@@ -56,11 +49,9 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
-  const { data: session } = authClient.useSession()
 
   const segments = pathname.split("/").filter(Boolean)
-  const navItems =
-    session?.user?.role === "admin" ? adminNavItems : userNavItems
+  const navItems = adminNavItems
 
   return (
     <TooltipProvider>
