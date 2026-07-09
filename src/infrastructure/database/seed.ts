@@ -155,26 +155,26 @@ async function seed() {
   await db.insert(account).values([
     {
       id: randomUUID(),
-      accountId: "maxwell.anthony@modernadvocates.com",
-      providerId: "email",
+      accountId: tutorId,
+      providerId: "credential",
       userId: tutorId,
     },
     {
       id: randomUUID(),
-      accountId: "emily.rodriguez@example.com",
-      providerId: "email",
+      accountId: student1Id,
+      providerId: "credential",
       userId: student1Id,
     },
     {
       id: randomUUID(),
-      accountId: "james.thompson@example.com",
-      providerId: "email",
+      accountId: student2Id,
+      providerId: "credential",
       userId: student2Id,
     },
     {
       id: randomUUID(),
-      accountId: "sophia.williams@example.com",
-      providerId: "email",
+      accountId: student3Id,
+      providerId: "credential",
       userId: student3Id,
     },
   ])
