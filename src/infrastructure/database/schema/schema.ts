@@ -5,6 +5,7 @@ import {
   courseModules,
   courseTopics,
   reviews,
+  orders,
   enrollments,
   topicCompletions,
 } from "./course"
@@ -28,6 +29,7 @@ export const schema = {
   courseModules,
   courseTopics,
   reviews,
+  orders,
   enrollments,
   topicCompletions,
   courseVideos,
