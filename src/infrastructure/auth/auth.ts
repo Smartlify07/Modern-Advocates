@@ -19,6 +19,8 @@ export const auth = betterAuth({
     admin(),
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
+        if (process.env.NODE_ENV !== "production")
+          console.log(`[DEV] OTP for ${email}: ${otp}`)
         await sendOTPEmail({ email, otp, type })
       },
     }),

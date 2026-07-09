@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto"
 import { sql } from "drizzle-orm"
 import { db } from "./client"
-import { user } from "./schema/auth"
+import { user, account } from "./schema/auth"
 import {
   categories,
   courses,
@@ -130,21 +130,52 @@ async function seed() {
       id: tutorId,
       name: "Maxwell Anthony",
       email: "maxwell.anthony@modernadvocates.com",
+      emailVerified: true,
     },
     {
       id: student1Id,
       name: "Emily Rodriguez",
       email: "emily.rodriguez@example.com",
+      emailVerified: true,
     },
     {
       id: student2Id,
       name: "James Thompson",
       email: "james.thompson@example.com",
+      emailVerified: true,
     },
     {
       id: student3Id,
       name: "Sophia Williams",
       email: "sophia.williams@example.com",
+      emailVerified: true,
+    },
+  ])
+
+  await db.insert(account).values([
+    {
+      id: randomUUID(),
+      accountId: "maxwell.anthony@modernadvocates.com",
+      providerId: "email",
+      userId: tutorId,
+    },
+    {
+      id: randomUUID(),
+      accountId: "emily.rodriguez@example.com",
+      providerId: "email",
+      userId: student1Id,
+    },
+    {
+      id: randomUUID(),
+      accountId: "james.thompson@example.com",
+      providerId: "email",
+      userId: student2Id,
+    },
+    {
+      id: randomUUID(),
+      accountId: "sophia.williams@example.com",
+      providerId: "email",
+      userId: student3Id,
     },
   ])
 
