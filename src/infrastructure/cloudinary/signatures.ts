@@ -32,7 +32,7 @@ export function generateUploadSignature({
     public_id: videoId,
     eager: "sp_hd",
     eager_async: "1",
-    // notification_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/cloudinary`,
+    notification_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/cloudinary`,
   }
 
   const signature = cloudinary.utils.api_sign_request(
