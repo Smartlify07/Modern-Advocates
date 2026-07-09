@@ -21,8 +21,8 @@ async function cleanEnums() {
     try {
       await pool.query(`DROP TYPE IF EXISTS "${name}"`)
       console.log(`  ✓ Dropped orphaned enum "${name}"`)
-    } catch (e: any) {
-      if (e?.code === "2BP01") {
+    } catch (e: unknown) {
+      if ((e as { code?: string })?.code === "2BP01") {
         console.log(`  ∼ Skipped "${name}" — in use by tables`)
       } else {
         throw e
