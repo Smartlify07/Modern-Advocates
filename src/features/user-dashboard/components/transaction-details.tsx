@@ -1,12 +1,26 @@
-const details = [
-  { label: "Reference Number", value: "000085752257" },
-  { label: "Date", value: "Mar 22, 2023" },
-  { label: "Time", value: "07:15 AM" },
-  { label: "Payment Method", value: "Credit Card" },
-  { label: "Amount", value: "$ 100.00" },
-]
+type TransactionDetailsProps = {
+  referenceNumber: string
+  date: string
+  time: string
+  paymentMethod: string
+  amount: string
+}
 
-export function TransactionDetails() {
+export function TransactionDetails({
+  referenceNumber,
+  date,
+  time,
+  paymentMethod,
+  amount,
+}: TransactionDetailsProps) {
+  const details = [
+    { label: "Reference Number", value: referenceNumber },
+    { label: "Date", value: date },
+    { label: "Time", value: time },
+    { label: "Payment Method", value: paymentMethod },
+    { label: "Amount", value: amount },
+  ]
+
   return (
     <div className="flex w-full shrink-0 flex-col gap-6">
       {details.map((row) => (
