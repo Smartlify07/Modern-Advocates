@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { eq } from "drizzle-orm"
+import { eq, and } from "drizzle-orm"
 
 import { db } from "@/infrastructure/database/client"
 import { orders, enrollments } from "@/infrastructure/database/schema/course"
@@ -36,38 +36,68 @@ export async function POST(
       )
     }
 
-    const existing = await db
+    let existing = await db
       .select()
       .from(enrollments)
       .where(eq(enrollments.orderId, id))
       .then((r) => r[0])
 
-    if (existing && existing.status === "active") {
+    if (!existing) {
+      existing = await db
+        .select()
+        .from(enrollments)
+        .where(
+          and(
+            eq(enrollments.studentId, currentUser.id),
+            eq(enrollments.courseId, order.courseId),
+          ),
+        )
+        .then((r) => r[0])
+    }
+
+    if (existing) {
+      switch (existing.status) {
+        case "active":
+          return NextResponse.json({ error: "Already enrolled" }, { status: 409 })
+        case "failed":
+        case "pending": {
+          const [updated] = await db
+            .update(enrollments)
+            .set({ status: "active" })
+            .where(eq(enrollments.id, existing.id))
+            .returning()
+          if (!updated) throw new Error("Enrollment record vanished during update")
+          return NextResponse.json({ enrollment: updated })
+        }
+        case "revoked":
+          return NextResponse.json(
+            { error: "Enrollment was revoked and cannot be retried" },
+            { status: 400 },
+          )
+        default:
+          return NextResponse.json(
+            { error: "Enrollment is in an unexpected state" },
+            { status: 500 },
+          )
+      }
+    }
+
+    const [created] = await db
+      .insert(enrollments)
+      .values({
+        orderId: id,
+        studentId: currentUser.id,
+        courseId: order.courseId,
+        status: "active",
+      })
+      .onConflictDoNothing()
+      .returning()
+
+    if (!created) {
       return NextResponse.json({ error: "Already enrolled" }, { status: 409 })
     }
 
-    let enrollment
-    if (existing && existing.status === "failed") {
-      const [updated] = await db
-        .update(enrollments)
-        .set({ status: "active" })
-        .where(eq(enrollments.id, existing.id))
-        .returning()
-      enrollment = updated
-    } else {
-      const [created] = await db
-        .insert(enrollments)
-        .values({
-          orderId: id,
-          studentId: currentUser.id,
-          courseId: order.courseId,
-          status: "active",
-        })
-        .returning()
-      enrollment = created
-    }
-
-    return NextResponse.json({ enrollment })
+    return NextResponse.json({ enrollment: created })
   } catch (error) {
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: error.message }, { status: error.status })
