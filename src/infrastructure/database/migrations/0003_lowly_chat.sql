@@ -1,0 +1,1 @@
+ALTER TABLE "orders" ADD CONSTRAINT "unique_order" UNIQUE("student_id","course_id");

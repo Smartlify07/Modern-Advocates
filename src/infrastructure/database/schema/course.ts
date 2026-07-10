@@ -149,6 +149,7 @@ export const orders = pgTable(
   (table) => ({
     studentIdIdx: index("orders_student_id_idx").on(table.studentId),
     courseIdIdx: index("orders_course_id_idx").on(table.courseId),
+    uniqueOrder: unique("unique_order").on(table.studentId, table.courseId),
   }),
 )
 
