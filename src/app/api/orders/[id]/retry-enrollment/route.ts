@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { eq, and } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 
 import { db } from "@/infrastructure/database/client"
 import { orders, enrollments } from "@/infrastructure/database/schema/course"
@@ -36,24 +36,11 @@ export async function POST(
       )
     }
 
-    let existing = await db
+    const existing = await db
       .select()
       .from(enrollments)
       .where(eq(enrollments.orderId, id))
       .then((r) => r[0])
-
-    if (!existing) {
-      existing = await db
-        .select()
-        .from(enrollments)
-        .where(
-          and(
-            eq(enrollments.studentId, currentUser.id),
-            eq(enrollments.courseId, order.courseId),
-          ),
-        )
-        .then((r) => r[0])
-    }
 
     if (existing) {
       switch (existing.status) {

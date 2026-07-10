@@ -12,10 +12,13 @@ export async function POST(request: Request) {
   try {
     const { user: currentUser } = await requireSession()
 
-    const { courseId } = await request.json()
+    const { courseId, orderId } = await request.json()
 
     if (!courseId || typeof courseId !== "string") {
       return NextResponse.json({ error: "courseId is required" }, { status: 400 })
+    }
+    if (!orderId || typeof orderId !== "string") {
+      return NextResponse.json({ error: "orderId is required" }, { status: 400 })
     }
 
     const [enrollment] = await db
@@ -23,6 +26,7 @@ export async function POST(request: Request) {
       .values({
         courseId,
         studentId: currentUser.id,
+        orderId,
       })
       .onConflictDoNothing()
       .returning()
