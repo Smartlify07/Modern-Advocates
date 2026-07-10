@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { eq } from "drizzle-orm"
+import { eq, and, desc } from "drizzle-orm"
 
 import { db } from "@/infrastructure/database/client"
 import { orders, enrollments, courses } from "@/infrastructure/database/schema/course"
@@ -27,9 +27,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Course not found" }, { status: 404 })
     }
 
+    const existingEnrollment = await db
+      .select({ id: enrollments.id })
+      .from(enrollments)
+      .where(
+        and(
+          eq(enrollments.studentId, currentUser.id),
+          eq(enrollments.courseId, courseId),
+          eq(enrollments.status, "active"),
+        ),
+      )
+      .then((r) => r[0])
+
+    if (existingEnrollment) {
+      return NextResponse.json({ error: "Already enrolled" }, { status: 409 })
+    }
+
     const amount = course.discountedPrice ?? course.price
 
-    const [order] = await db
+    const [inserted] = await db
       .insert(orders)
       .values({
         studentId: currentUser.id,
@@ -38,7 +54,33 @@ export async function POST(request: Request) {
         paymentStatus: "paid",
         source: "purchase",
       })
+      .onConflictDoNothing()
       .returning()
+
+    let order = inserted ?? await db
+      .select()
+      .from(orders)
+      .where(
+        and(
+          eq(orders.studentId, currentUser.id),
+          eq(orders.courseId, courseId),
+        ),
+      )
+      .orderBy(desc(orders.createdAt))
+      .then((r) => r[0])
+
+    if (!order) {
+      return NextResponse.json({ error: "Failed to create order" }, { status: 500 })
+    }
+
+    if (order.paymentStatus !== "paid") {
+      const [updated] = await db
+        .update(orders)
+        .set({ paymentStatus: "paid", updatedAt: new Date() })
+        .where(eq(orders.id, order.id))
+        .returning()
+      order = updated
+    }
 
     let enrollment = null
     try {

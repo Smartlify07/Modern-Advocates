@@ -36,6 +36,9 @@ export async function POST(request: Request) {
     if (order.paymentStatus !== "paid") {
       return NextResponse.json({ error: "Order is not paid" }, { status: 400 })
     }
+    if (order.courseId !== courseId) {
+      return NextResponse.json({ error: "Order does not match the requested course" }, { status: 400 })
+    }
 
     const [enrollment] = await db
       .insert(enrollments)
@@ -43,6 +46,7 @@ export async function POST(request: Request) {
         courseId,
         studentId: currentUser.id,
         orderId,
+        status: "active",
       })
       .onConflictDoNothing()
       .returning()
