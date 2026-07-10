@@ -15,7 +15,9 @@ import { user } from "./auth"
 export const level = pgEnum("level", ["beginner", "intermediate", "advanced"])
 export const topicFormat = pgEnum("topic_format", ["text", "video"])
 export const courseStatus = pgEnum("course_status", ["draft", "published", "archived"])
-export const enrollmentStatus = pgEnum("enrollment_status", ["active", "completed", "cancelled"])
+export const enrollmentStatus = pgEnum("enrollment_status", ["pending", "active", "revoked", "failed"])
+export const paymentStatus = pgEnum("payment_status", ["pending", "paid", "failed", "refunded"])
+export const orderSource = pgEnum("order_source", ["purchase", "admin", "scholarship", "coupon", "gift"])
 
 export const categories = pgTable("categories", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -122,19 +124,49 @@ export const reviews = pgTable(
   }),
 )
 
+export const orders = pgTable(
+  "orders",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    studentId: text("student_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "restrict" }),
+    courseId: uuid("course_id")
+      .notNull()
+      .references(() => courses.id, { onDelete: "restrict" }),
+    amount: numeric("amount", { precision: 10, scale: 2, mode: "number" }).notNull(),
+    currency: text("currency").notNull().default("USD"),
+    paymentProvider: text("payment_provider"),
+    paymentReference: text("payment_reference"),
+    paymentStatus: paymentStatus("payment_status").notNull().default("pending"),
+    source: orderSource("source").notNull().default("purchase"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at")
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => ({
+    studentIdIdx: index("orders_student_id_idx").on(table.studentId),
+    courseIdIdx: index("orders_course_id_idx").on(table.courseId),
+  }),
+)
+
 export const enrollments = pgTable(
   "enrollments",
   {
     id: uuid("id").defaultRandom().primaryKey(),
+    orderId: uuid("order_id").references(() => orders.id, { onDelete: "set null" }),
     courseId: uuid("course_id")
       .notNull()
       .references(() => courses.id, { onDelete: "cascade" }),
     studentId: text("student_id")
       .notNull()
       .references(() => user.id, { onDelete: "restrict" }),
-    status: enrollmentStatus("status").notNull().default("active"),
+    status: enrollmentStatus("status").notNull().default("pending"),
     enrolledAt: timestamp("enrolled_at").notNull().defaultNow(),
     completedAt: timestamp("completed_at"),
+    expiresAt: timestamp("expires_at"),
   },
   (table) => ({
     courseIdIdx: index("enrollments_course_id_idx").on(table.courseId),
@@ -179,6 +211,9 @@ export type SelectCourseTopic = typeof courseTopics.$inferSelect
 
 export type InsertReview = typeof reviews.$inferInsert
 export type SelectReview = typeof reviews.$inferSelect
+
+export type InsertOrder = typeof orders.$inferInsert
+export type SelectOrder = typeof orders.$inferSelect
 
 export type InsertEnrollment = typeof enrollments.$inferInsert
 export type SelectEnrollment = typeof enrollments.$inferSelect

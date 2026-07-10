@@ -7,7 +7,7 @@ import { CourseCard, type Course } from "@/features/courses/components/course-ca
 export default function MyLearningPage() {
   const { data: courses, isLoading } = useQuery<Course[]>({
     queryKey: ["my-learning"],
-    queryFn: () => fetch("/api/courses/featured").then((r) => r.json()),
+    queryFn: () => fetch("/api/enrollments").then((r) => r.json()),
     refetchOnWindowFocus: false,
   })
 

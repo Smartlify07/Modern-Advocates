@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
 
 import { CheckoutForm } from "@/features/user-dashboard/components/checkout-form"
 import { OrderSummaryCard } from "@/features/user-dashboard/components/order-summary-card"
@@ -12,6 +12,7 @@ import { TransactionDetails } from "@/features/user-dashboard/components/transac
 
 export function CheckoutContent() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const courseId = searchParams.get("courseId")
 
   const [paymentState, setPaymentState] = useState<
@@ -21,12 +22,25 @@ export function CheckoutContent() {
 
   const handlePay = useCallback(() => {
     setPaymentState("processing")
-    setTimeout(() => {
+    setTimeout(async () => {
       const ok = Math.random() > 0.5
-      setPaymentState(ok ? "success" : "failed")
-      setModalOpen(true)
+      if (ok) {
+        try {
+          await fetch("/api/enrollments", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ courseId }),
+          })
+        } catch {
+          // enrollment failure is non-blocking — redirect anyway
+        }
+        router.push("/my-learning")
+      } else {
+        setPaymentState("failed")
+        setModalOpen(true)
+      }
     }, 1500)
-  }, [])
+  }, [courseId, router])
 
   const handleRetry = useCallback(() => {
     setModalOpen(false)
