@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { eq, sql } from "drizzle-orm"
 
 import { db } from "@/infrastructure/database/client"
-import { courses, enrollments, reviews } from "@/infrastructure/database/schema/course"
+import { courses, orders, enrollments, reviews } from "@/infrastructure/database/schema/course"
 import { user } from "@/infrastructure/database/schema/auth"
 import { requireSession } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError } from "@/infrastructure/auth/errors"
@@ -19,6 +19,22 @@ export async function POST(request: Request) {
     }
     if (!orderId || typeof orderId !== "string") {
       return NextResponse.json({ error: "orderId is required" }, { status: 400 })
+    }
+
+    const order = await db
+      .select()
+      .from(orders)
+      .where(eq(orders.id, orderId))
+      .then((r) => r[0])
+
+    if (!order) {
+      return NextResponse.json({ error: "Order not found" }, { status: 404 })
+    }
+    if (order.studentId !== currentUser.id) {
+      return NextResponse.json({ error: "Order does not belong to user" }, { status: 400 })
+    }
+    if (order.paymentStatus !== "paid") {
+      return NextResponse.json({ error: "Order is not paid" }, { status: 400 })
     }
 
     const [enrollment] = await db
