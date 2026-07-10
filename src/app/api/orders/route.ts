@@ -57,14 +57,13 @@ export async function POST(request: Request) {
       .onConflictDoNothing()
       .returning()
 
-    const order = inserted ?? await db
+    let order = inserted ?? await db
       .select()
       .from(orders)
       .where(
         and(
           eq(orders.studentId, currentUser.id),
           eq(orders.courseId, courseId),
-          eq(orders.paymentStatus, "paid"),
         ),
       )
       .orderBy(desc(orders.createdAt))
@@ -72,6 +71,15 @@ export async function POST(request: Request) {
 
     if (!order) {
       return NextResponse.json({ error: "Failed to create order" }, { status: 500 })
+    }
+
+    if (order.paymentStatus !== "paid") {
+      const [updated] = await db
+        .update(orders)
+        .set({ paymentStatus: "paid", updatedAt: new Date() })
+        .where(eq(orders.id, order.id))
+        .returning()
+      order = updated
     }
 
     let enrollment = null
