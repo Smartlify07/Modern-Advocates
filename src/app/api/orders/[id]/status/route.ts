@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { eq } from "drizzle-orm"
+import { validate as isValidUUID } from "uuid"
 
 import { db } from "@/infrastructure/database/client"
 import { orders, enrollments } from "@/infrastructure/database/schema/course"
@@ -14,6 +15,10 @@ export async function GET(
   try {
     const { user: currentUser } = await requireSession()
     const { id } = await params
+
+    if (!isValidUUID(id)) {
+      return NextResponse.json({ error: "Invalid order ID" }, { status: 400 })
+    }
 
     const order = await db
       .select()
