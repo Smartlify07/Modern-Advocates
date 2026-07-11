@@ -79,6 +79,7 @@ export async function GET() {
         price: courses.price,
         discountedPrice: courses.discountedPrice,
         duration: courses.duration,
+        progress: enrollments.progress,
         tutorName: user.name,
         avgRating: sql<number>`COALESCE(AVG(${reviews.rating}), 0)`,
         reviewCount: sql<number>`COUNT(${reviews.id})`,
@@ -89,6 +90,7 @@ export async function GET() {
       .leftJoin(reviews, eq(reviews.courseId, courses.id))
       .where(eq(enrollments.studentId, currentUser.id))
       .groupBy(
+        enrollments.progress,
         courses.id,
         courses.title,
         courses.overview,
