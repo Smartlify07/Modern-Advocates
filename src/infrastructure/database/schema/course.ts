@@ -165,6 +165,7 @@ export const enrollments = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "restrict" }),
     status: enrollmentStatus("status").notNull().default("pending"),
+    progress: integer("progress").notNull().default(0),
     enrolledAt: timestamp("enrolled_at").notNull().defaultNow(),
     completedAt: timestamp("completed_at"),
     expiresAt: timestamp("expires_at"),
