@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { eq, and } from "drizzle-orm"
 
 import { db } from "@/infrastructure/database/client"
-import { enrollments } from "@/infrastructure/database/schema/course"
+import { enrollments, topicCompletions } from "@/infrastructure/database/schema/course"
 import { requireSession } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError } from "@/infrastructure/auth/errors"
 import * as Sentry from "@sentry/nextjs"
@@ -30,7 +30,14 @@ export async function GET(
       return NextResponse.json({ error: "Enrollment not found" }, { status: 404 })
     }
 
-    return NextResponse.json(enrollment)
+    const rows = await db
+      .select({ topicId: topicCompletions.topicId })
+      .from(topicCompletions)
+      .where(eq(topicCompletions.enrollmentId, enrollment.id))
+
+    const completedTopicIds = rows.map((r) => r.topicId)
+
+    return NextResponse.json({ ...enrollment, completedTopicIds })
   } catch (error) {
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: error.message }, { status: error.status })

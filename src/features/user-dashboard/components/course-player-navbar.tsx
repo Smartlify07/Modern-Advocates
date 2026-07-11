@@ -2,18 +2,31 @@
 
 import Link from "next/link"
 import Image from "next/image"
+import { useParams } from "next/navigation"
+import { useQuery } from "@tanstack/react-query"
 import { Trophy } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@/shared/ui/avatar"
-import { Badge } from "@/shared/ui/badge"
 import { authClient } from "@/infrastructure/auth/client"
 
 export default function CoursePlayerNavbar() {
+  const params = useParams()
+  const courseId = params.courseId as string
+
   const { data: session } = authClient.useSession()
   const user = session?.user
   const firstLetter = user?.name?.charAt(0)?.toUpperCase() ?? "U"
 
-  const progress = 65
+  const { data: enrollment } = useQuery({
+    queryKey: ["enrollment-progress", courseId],
+    queryFn: () =>
+      fetch(`/api/enrollments/by-course/${courseId}`).then(
+        (r) => r.json() as Promise<{ id: string; progress: number }>
+      ),
+    enabled: !!courseId,
+  })
+
+  const progress = enrollment?.progress ?? 0
   const size = 33
   const strokeWidth = 2.5
   const radius = (size - strokeWidth) / 2
