@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { eq, and, sql, count } from "drizzle-orm"
+import { eq, and, count } from "drizzle-orm"
 
 import { db } from "@/infrastructure/database/client"
 import {
@@ -21,7 +21,7 @@ export async function POST(
     const { eId, tId } = await params
 
     const enrollment = await db
-      .select({ courseId: enrollments.courseId, progress: enrollments.progress })
+      .select({ courseId: enrollments.courseId })
       .from(enrollments)
       .where(
         and(eq(enrollments.id, eId), eq(enrollments.studentId, currentUser.id)),
@@ -32,55 +32,85 @@ export async function POST(
       return NextResponse.json({ error: "Enrollment not found" }, { status: 404 })
     }
 
-    const existing = await db
-      .select({ id: topicCompletions.id })
-      .from(topicCompletions)
+    const topic = await db
+      .select({ id: courseTopics.id })
+      .from(courseTopics)
+      .innerJoin(courseModules, eq(courseTopics.moduleId, courseModules.id))
       .where(
         and(
-          eq(topicCompletions.enrollmentId, eId),
-          eq(topicCompletions.topicId, tId),
+          eq(courseTopics.id, tId),
+          eq(courseModules.courseId, enrollment.courseId),
         ),
       )
       .then((r) => r[0] ?? null)
 
-    if (existing) {
-      await db
-        .delete(topicCompletions)
-        .where(eq(topicCompletions.id, existing.id))
-    } else {
-      await db.insert(topicCompletions).values({
-        enrollmentId: eId,
-        topicId: tId,
-      })
+    if (!topic) {
+      return NextResponse.json({ error: "Topic not found in this course" }, { status: 404 })
     }
 
-    const completed = !existing
+    const result = await db.transaction(async (tx) => {
+      await tx
+        .select({ id: enrollments.id })
+        .from(enrollments)
+        .where(eq(enrollments.id, eId))
+        .for("update")
 
-    const [{ totalTopics }] = await db
-      .select({ totalTopics: count() })
-      .from(courseTopics)
-      .innerJoin(
-        courseModules,
-        eq(courseTopics.moduleId, courseModules.id),
-      )
-      .where(eq(courseModules.courseId, enrollment.courseId))
+      const existing = await tx
+        .select({ id: topicCompletions.id })
+        .from(topicCompletions)
+        .where(
+          and(
+            eq(topicCompletions.enrollmentId, eId),
+            eq(topicCompletions.topicId, tId),
+          ),
+        )
+        .then((r) => r[0] ?? null)
 
-    const [{ completedTopics }] = await db
-      .select({ completedTopics: count() })
-      .from(topicCompletions)
-      .where(eq(topicCompletions.enrollmentId, eId))
+      if (existing) {
+        await tx
+          .delete(topicCompletions)
+          .where(eq(topicCompletions.id, existing.id))
+      } else {
+        await tx.insert(topicCompletions).values({
+          enrollmentId: eId,
+          topicId: tId,
+        })
+      }
 
-    const progress =
-      totalTopics > 0
-        ? Math.round((completedTopics / totalTopics) * 100)
-        : 0
+      const completed = !existing
 
-    await db
-      .update(enrollments)
-      .set({ progress })
-      .where(eq(enrollments.id, eId))
+      const [{ totalTopics }] = await tx
+        .select({ totalTopics: count() })
+        .from(courseTopics)
+        .innerJoin(courseModules, eq(courseTopics.moduleId, courseModules.id))
+        .where(eq(courseModules.courseId, enrollment.courseId))
 
-    return NextResponse.json({ completed, progress })
+      const [{ completedTopics }] = await tx
+        .select({ completedTopics: count() })
+        .from(topicCompletions)
+        .innerJoin(courseTopics, eq(topicCompletions.topicId, courseTopics.id))
+        .innerJoin(courseModules, eq(courseTopics.moduleId, courseModules.id))
+        .where(
+          and(
+            eq(topicCompletions.enrollmentId, eId),
+            eq(courseModules.courseId, enrollment.courseId),
+          ),
+        )
+
+      const progress =
+        totalTopics > 0
+          ? Math.round((completedTopics / totalTopics) * 100)
+          : 0
+
+      await tx
+        .update(enrollments)
+        .set({ progress })
+        .where(eq(enrollments.id, eId))
+
+      return { completed, progress }
+    })
+
+    return NextResponse.json(result)
   } catch (error) {
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: error.message }, { status: error.status })
