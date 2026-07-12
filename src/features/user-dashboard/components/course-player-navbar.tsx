@@ -8,6 +8,7 @@ import { Trophy } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@/shared/ui/avatar"
 import { authClient } from "@/infrastructure/auth/client"
+import { ReviewDialog } from "@/features/courses/components/review-dialog"
 
 export default function CoursePlayerNavbar() {
   const params = useParams()
@@ -48,12 +49,7 @@ export default function CoursePlayerNavbar() {
         </Link>
 
         <div className="flex items-center gap-4">
-          <Link
-            href="#"
-            className="hidden bg-[#E7EBEF] px-3 py-1.5 text-sm text-[#448AFF] md:block"
-          >
-            Leave review
-          </Link>
+          <ReviewDialog />
           <Link
             href="#"
             className="hidden items-center gap-1.5 text-sm text-[#6b7280] hover:text-ma-text md:flex"

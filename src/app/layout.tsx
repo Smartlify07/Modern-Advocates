@@ -3,6 +3,7 @@ import { Providers } from "@/providers"
 
 import "./globals.css"
 import { ThemeProvider } from "@/providers/theme-provider"
+import { Toaster } from "@/shared/ui/sonner"
 import { cn } from "@/shared/utils"
 
 const playfairDisplayHeading = Playfair_Display({
@@ -36,6 +37,7 @@ export default function RootLayout({
     >
       <body>
         <Providers>{children}</Providers>
+        <Toaster />
       </body>
     </html>
   )
