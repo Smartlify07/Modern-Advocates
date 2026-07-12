@@ -35,7 +35,6 @@ export function ReviewDialog() {
 
   const [open, setOpen] = useState(false)
   const [rating, setRating] = useState(4)
-  const [hoveredStar, setHoveredStar] = useState(0)
   const [feedback, setFeedback] = useState("")
 
   const { mutate, isPending } = useMutation({
@@ -125,18 +124,20 @@ export function ReviewDialog() {
             <span className="text-sm text-muted-foreground">
               {rating} ({ratingLabels[rating]})
             </span>
-            <div className="flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map((star) => (
+            <div className="flex flex-row-reverse justify-center gap-1">
+              {[5, 4, 3, 2, 1].map((star) => (
                 <button
                   key={star}
                   type="button"
                   onClick={() => setRating(star)}
-                  className="cursor-pointer"
+                  className="cursor-pointer
+                    [&:hover_svg]:fill-[#FFA62F] [&:hover_svg]:text-[#FFA62F]
+                    [&:hover~button_svg]:fill-[#FFA62F] [&:hover~button_svg]:text-[#FFA62F]"
                 >
                   <Star
                     className={cn(
-                      "size-12 transition-colors",
-                      (hoveredStar || rating) >= star
+                      "size-12 transition-[fill,color]",
+                      rating >= star
                         ? "fill-[#FFA62F] text-[#FFA62F]"
                         : "text-muted-foreground"
                     )}
