@@ -27,7 +27,6 @@ export async function GET() {
     .innerJoin(user, eq(courses.tutorId, user.id))
     .leftJoin(reviews, eq(reviews.courseId, courses.id))
     .groupBy(courses.id, courses.title, courses.overview, courses.thumbnailUrl, courses.level, courses.price, courses.discountedPrice, courses.duration, user.name)
-    .limit(6)
 
   return NextResponse.json(featured)
 }

@@ -1,5 +1,6 @@
 "use client"
 
+import { useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { Avatar, AvatarFallback } from "@/shared/ui/avatar"
@@ -8,6 +9,7 @@ import {
   type Course,
 } from "@/features/courses/components/course-card"
 import { authClient } from "@/infrastructure/auth/client"
+import { cn } from "@/shared/utils"
 
 export default function UserDashboardPage() {
   const { data: session } = authClient.useSession()
@@ -23,7 +25,13 @@ export default function UserDashboardPage() {
         .slice(0, 2)
     : "U"
 
-  const { data: courses, isLoading, isError, error, refetch } = useQuery<Course[]>({
+  const {
+    data: courses,
+    isLoading: coursesLoading,
+    isError: coursesError,
+    error: coursesErrorObj,
+    refetch,
+  } = useQuery<Course[]>({
     queryKey: ["user-courses"],
     queryFn: async () => {
       const res = await fetch("/api/courses/featured")
@@ -32,6 +40,26 @@ export default function UserDashboardPage() {
     },
     refetchOnWindowFocus: false,
   })
+
+  const { data: enrollments, isLoading: enrollmentsLoading } = useQuery<
+    Course[]
+  >({
+    queryKey: ["user-enrollments"],
+    queryFn: async () => {
+      const res = await fetch("/api/enrollments")
+      if (!res.ok) throw new Error("Failed to fetch enrollments")
+      return res.json()
+    },
+    refetchOnWindowFocus: false,
+  })
+
+  const isLoading = coursesLoading || enrollmentsLoading
+  const isError = coursesError
+
+  const enrollmentMap = useMemo(() => {
+    if (!enrollments) return new Map<string, number>()
+    return new Map(enrollments.map((e) => [e.id, e.progress ?? 0]))
+  }, [enrollments])
 
   return (
     <div className="mx-auto px-4 py-8 lg:max-w-7xl lg:px-25 lg:py-19.25 2xl:max-w-360 2xl:px-50">
@@ -76,9 +104,13 @@ export default function UserDashboardPage() {
         </div>
       ) : isError ? (
         <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
-          <h2 className="text-2xl font-bold text-ma-text">Failed to load courses</h2>
-          <p className="text-muted-foreground max-w-md">
-            {error instanceof Error ? error.message : "Something went wrong"}
+          <h2 className="text-2xl font-bold text-ma-text">
+            Failed to load courses
+          </h2>
+          <p className="max-w-md text-muted-foreground">
+            {coursesErrorObj instanceof Error
+              ? coursesErrorObj.message
+              : "Something went wrong"}
           </p>
           <button
             onClick={() => refetch()}
@@ -89,17 +121,57 @@ export default function UserDashboardPage() {
         </div>
       ) : (
         <div className="grid justify-items-center gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {courses?.map((course) => (
-            <CourseCard.Root key={course.id} href={`/courses/${course.id}`}>
-              <CourseCard.Thumbnail src={course.thumbnailUrl} alt={course.title} />
-              <CourseCard.Content>
-                <CourseCard.Title>{course.title}</CourseCard.Title>
-                <CourseCard.Tutor name={course.tutorName} />
-                <CourseCard.Rating avg={course.avgRating} count={course.reviewCount} />
-                <CourseCard.Price price={course.price} discountedPrice={course.discountedPrice} />
-              </CourseCard.Content>
-            </CourseCard.Root>
-          ))}
+          {courses?.map((course) => {
+            const enrolledProgress = enrollmentMap.get(course.id)
+            const isEnrolled = enrolledProgress !== undefined
+
+            return (
+              <CourseCard.Root
+                key={course.id}
+                href={
+                  isEnrolled
+                    ? `/my-learning/${course.id}`
+                    : `/courses/${course.id}`
+                }
+              >
+                <CourseCard.Thumbnail
+                  src={course.thumbnailUrl}
+                  alt={course.title}
+                />
+                <CourseCard.Content
+                  className={cn(
+                    "justify-start",
+                    isEnrolled ? "gap-3.5" : "gap-10"
+                  )}
+                >
+                  <div className="flex flex-col gap-2">
+                    <CourseCard.Title>{course.title}</CourseCard.Title>
+                    <CourseCard.Tutor name={course.tutorName} />
+                  </div>
+                  {isEnrolled ? (
+                    <div className="flex flex-col gap-5">
+                      <CourseCard.Rating
+                        avg={course.avgRating}
+                        count={course.reviewCount}
+                      />
+                      <CourseCard.ContinueButton />
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-5">
+                      <CourseCard.Rating
+                        avg={course.avgRating}
+                        count={course.reviewCount}
+                      />
+                      <CourseCard.Price
+                        price={course.price}
+                        discountedPrice={course.discountedPrice}
+                      />
+                    </div>
+                  )}
+                </CourseCard.Content>
+              </CourseCard.Root>
+            )
+          })}
         </div>
       )}
 

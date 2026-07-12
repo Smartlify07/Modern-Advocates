@@ -26,42 +26,75 @@ export default function DashboardNavbar() {
       <div className="relative z-20 mx-auto px-4 py-5 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="flex w-full items-center justify-between">
           <Link href="/" className="flex w-[157px] flex-col gap-1">
-            <Image src="/figma-home/logo.svg" alt="ModernAdvocates Inc." width={58} height={44} priority />
+            <Image
+              src="/figma-home/logo.svg"
+              alt="ModernAdvocates Inc."
+              width={58}
+              height={44}
+              priority
+            />
           </Link>
 
           <div className="hidden items-center gap-2 text-ma-text md:flex">
-            <nav aria-label="Dashboard navigation" className="flex items-center gap-2">
+            <nav
+              aria-label="Dashboard navigation"
+              className="flex items-center gap-2"
+            >
               {navItems.map((item) => (
-                <Link key={item.href} href={item.href}
-                  className={`p-2.5 text-base transition-colors duration-300 hover:text-[#6B7280] ${pathname === item.href ? "text-[#6B7280]" : ""}`}>
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`p-2.5 text-base transition-colors duration-300 hover:text-[#6B7280] ${pathname === item.href ? "text-primary" : ""}`}
+                >
                   {item.label}
                 </Link>
               ))}
             </nav>
             <Bell className="size-5 text-[#6B7280]" />
             <Avatar className="ml-2 size-12.5 bg-primary text-white">
-              <AvatarFallback className="bg-primary text-primary-foreground text-base">{firstLetter}</AvatarFallback>
+              <AvatarFallback className="bg-primary text-base text-primary-foreground">
+                {firstLetter}
+              </AvatarFallback>
             </Avatar>
           </div>
 
-          <button type="button" aria-label={mobileOpen ? "Close menu" : "Open menu"}
-            onClick={() => setMobileOpen((prev) => !prev)} className="size-10 rounded-[12px] border p-2 md:hidden">
-            {mobileOpen ? <X className="size-6 text-[#6B7280]" /> : <Menu className="size-6 text-[#6B7280]" />}
+          <button
+            type="button"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            onClick={() => setMobileOpen((prev) => !prev)}
+            className="size-10 rounded-[12px] border p-2 md:hidden"
+          >
+            {mobileOpen ? (
+              <X className="size-6 text-[#6B7280]" />
+            ) : (
+              <Menu className="size-6 text-[#6B7280]" />
+            )}
           </button>
         </div>
 
-        <div className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${mobileOpen ? "mt-4 max-h-100 opacity-100" : "max-h-0 opacity-0"}`}>
-          <nav aria-label="Mobile navigation" className="flex flex-col gap-1 border-t border-gray-100 pt-4">
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${mobileOpen ? "mt-4 max-h-100 opacity-100" : "max-h-0 opacity-0"}`}
+        >
+          <nav
+            aria-label="Mobile navigation"
+            className="flex flex-col gap-1 border-t border-gray-100 pt-4"
+          >
             {navItems.map((item, i) => (
-              <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileOpen(false)}
                 className={`rounded-lg p-3 text-base transition-all duration-300 hover:text-[#6B7280] ${mobileOpen ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"}`}
-                style={{ transitionDelay: mobileOpen ? `${i * 50}ms` : "0ms" }}>
+                style={{ transitionDelay: mobileOpen ? `${i * 50}ms` : "0ms" }}
+              >
                 {item.label}
               </Link>
             ))}
             <div className="mt-2 flex justify-center">
               <Avatar className="size-12.5 bg-primary text-white">
-                <AvatarFallback className="bg-primary text-primary-foreground text-base">{firstLetter}</AvatarFallback>
+                <AvatarFallback className="bg-primary text-base text-primary-foreground">
+                  {firstLetter}
+                </AvatarFallback>
               </Avatar>
             </div>
           </nav>

@@ -7,6 +7,7 @@ import {
   CourseCard,
   type Course,
 } from "@/features/courses/components/course-card"
+import { cn } from "@/shared/utils"
 
 export default function MyLearningPage() {
   const {
@@ -99,14 +100,19 @@ export default function MyLearningPage() {
               src={course.thumbnailUrl}
               alt={course.title}
             />
-            <CourseCard.Content>
-              <CourseCard.Title>{course.title}</CourseCard.Title>
-              <CourseCard.Tutor name={course.tutorName} />
-              <CourseCard.Rating
-                avg={course.avgRating}
-                count={course.reviewCount}
-              />
-              <CourseCard.Progress value={course.progress ?? 0} />
+            <CourseCard.Content className={cn("justify-start gap-10")}>
+              <div className="flex flex-col gap-2">
+                <CourseCard.Title>{course.title}</CourseCard.Title>
+                <CourseCard.Tutor name={course.tutorName} />
+              </div>
+
+              <div className="flex flex-col gap-5">
+                <CourseCard.Rating
+                  avg={course.avgRating}
+                  count={course.reviewCount}
+                />
+                <CourseCard.Progress value={course.progress ?? 0} />
+              </div>
             </CourseCard.Content>
           </CourseCard.Root>
         ))}
