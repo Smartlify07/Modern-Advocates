@@ -2,7 +2,12 @@ import { NextResponse } from "next/server"
 import { eq, sql } from "drizzle-orm"
 
 import { db } from "@/infrastructure/database/client"
-import { courses, orders, enrollments, reviews } from "@/infrastructure/database/schema/course"
+import {
+  courses,
+  orders,
+  enrollments,
+  reviews,
+} from "@/infrastructure/database/schema/course"
 import { user } from "@/infrastructure/database/schema/auth"
 import { requireSession } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError } from "@/infrastructure/auth/errors"
@@ -15,10 +20,16 @@ export async function POST(request: Request) {
     const { courseId, orderId } = await request.json()
 
     if (!courseId || typeof courseId !== "string") {
-      return NextResponse.json({ error: "courseId is required" }, { status: 400 })
+      return NextResponse.json(
+        { error: "courseId is required" },
+        { status: 400 }
+      )
     }
     if (!orderId || typeof orderId !== "string") {
-      return NextResponse.json({ error: "orderId is required" }, { status: 400 })
+      return NextResponse.json(
+        { error: "orderId is required" },
+        { status: 400 }
+      )
     }
 
     const order = await db
@@ -31,13 +42,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 })
     }
     if (order.studentId !== currentUser.id) {
-      return NextResponse.json({ error: "Order does not belong to user" }, { status: 400 })
+      return NextResponse.json(
+        { error: "Order does not belong to user" },
+        { status: 400 }
+      )
     }
     if (order.paymentStatus !== "paid") {
       return NextResponse.json({ error: "Order is not paid" }, { status: 400 })
     }
     if (order.courseId !== courseId) {
-      return NextResponse.json({ error: "Order does not match the requested course" }, { status: 400 })
+      return NextResponse.json(
+        { error: "Order does not match the requested course" },
+        { status: 400 }
+      )
     }
 
     const [enrollment] = await db
@@ -58,10 +75,16 @@ export async function POST(request: Request) {
     return NextResponse.json(enrollment, { status: 201 })
   } catch (error) {
     if (error instanceof UnauthorizedError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
     Sentry.captureException(error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
 
@@ -99,15 +122,22 @@ export async function GET() {
         courses.price,
         courses.discountedPrice,
         courses.duration,
-        user.name,
+        user.name
       )
 
     return NextResponse.json(enrolled)
   } catch (error) {
     if (error instanceof UnauthorizedError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
+    console.error(error)
     Sentry.captureException(error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }

@@ -52,7 +52,15 @@ export function CoursesHeroSection() {
                 </div>
               ))
             : courses?.map((course) => (
-                <CourseCard key={course.id} course={course} />
+                <CourseCard.Root key={course.id} href={`/courses/${course.id}`}>
+                  <CourseCard.Thumbnail src={course.thumbnailUrl} alt={course.title} />
+                  <CourseCard.Content>
+                    <CourseCard.Title>{course.title}</CourseCard.Title>
+                    <CourseCard.Tutor name={course.tutorName} />
+                    <CourseCard.Rating avg={course.avgRating} count={course.reviewCount} />
+                    <CourseCard.Price price={course.price} discountedPrice={course.discountedPrice} />
+                  </CourseCard.Content>
+                </CourseCard.Root>
               ))}
         </div>
 
