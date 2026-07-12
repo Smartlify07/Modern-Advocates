@@ -2,7 +2,10 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { Skeleton } from "@/shared/ui/skeleton"
-import { CourseCard, type Course } from "@/features/courses/components/course-card"
+import {
+  CourseCard,
+  type Course,
+} from "@/features/courses/components/course-card"
 
 export function CoursesHeroSection() {
   const { data: courses, isLoading } = useQuery<Course[]>({
@@ -53,12 +56,25 @@ export function CoursesHeroSection() {
               ))
             : courses?.map((course) => (
                 <CourseCard.Root key={course.id} href={`/courses/${course.id}`}>
-                  <CourseCard.Thumbnail src={course.thumbnailUrl} alt={course.title} />
-                  <CourseCard.Content>
-                    <CourseCard.Title>{course.title}</CourseCard.Title>
-                    <CourseCard.Tutor name={course.tutorName} />
-                    <CourseCard.Rating avg={course.avgRating} count={course.reviewCount} />
-                    <CourseCard.Price price={course.price} discountedPrice={course.discountedPrice} />
+                  <CourseCard.Thumbnail
+                    src={course.thumbnailUrl}
+                    alt={course.title}
+                  />
+                  <CourseCard.Content className="gap-10">
+                    <div className="flex flex-col gap-2">
+                      <CourseCard.Title>{course.title}</CourseCard.Title>
+                      <CourseCard.Tutor name={course.tutorName} />
+                    </div>
+                    <div className="flex flex-col gap-5">
+                      <CourseCard.Rating
+                        avg={course.avgRating}
+                        count={course.reviewCount}
+                      />
+                      <CourseCard.Price
+                        price={course.price}
+                        discountedPrice={course.discountedPrice}
+                      />
+                    </div>
                   </CourseCard.Content>
                 </CourseCard.Root>
               ))}
