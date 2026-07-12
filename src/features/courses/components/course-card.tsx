@@ -45,12 +45,7 @@ function Content({
   className?: string
 }) {
   return (
-    <div
-      className={cn(
-        "flex flex-1 flex-col justify-between gap-10 px-2.5",
-        className
-      )}
-    >
+    <div className={cn("flex flex-1 flex-col px-2.5", className)}>
       {children}
     </div>
   )

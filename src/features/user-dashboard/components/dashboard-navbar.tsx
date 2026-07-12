@@ -44,18 +44,20 @@ export default function DashboardNavbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`p-2.5 text-base text-[#6b7280] transition-colors duration-300 hover:text-[#6B7280] ${pathname === item.href || pathname.startsWith(item.href + "/") ? "text-primary" : ""}`}
+                  className={`p-2.5 text-base transition-colors duration-300 hover:text-[#6B7280] ${pathname === item.href || pathname.startsWith(item.href + "/") ? "text-primary" : ""}`}
                 >
                   {item.label}
                 </Link>
               ))}
             </nav>
-            <Bell className="size-5 text-[#6B7280]" />
-            <Avatar className="ml-2 size-12.5 bg-primary text-white">
-              <AvatarFallback className="bg-primary text-base text-primary-foreground">
-                {firstLetter}
-              </AvatarFallback>
-            </Avatar>
+            <div className="flex items-center gap-4">
+              <Bell className="size-5 text-[#6B7280]" />
+              <Avatar className="size-12.5 bg-primary text-white">
+                <AvatarFallback className="bg-primary text-base text-primary-foreground">
+                  {firstLetter}
+                </AvatarFallback>
+              </Avatar>
+            </div>
           </div>
 
           <button

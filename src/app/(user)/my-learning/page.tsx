@@ -90,8 +90,10 @@ export default function MyLearningPage() {
   }
 
   return (
-    <div className="mx-auto px-4 py-8 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
-      <h1 className="mb-10 text-2xl font-bold text-ma-text">My Learning</h1>
+    <div className="mx-auto px-4 py-12.5 lg:max-w-7xl lg:px-25 lg:py-19.25 2xl:max-w-360 2xl:px-50">
+      <h1 className="mb-10 text-2xl font-bold text-ma-text lg:text-[32px]">
+        My Learning
+      </h1>
 
       <div className="grid justify-items-center gap-5 md:grid-cols-2 lg:grid-cols-3">
         {courses?.map((course) => (
