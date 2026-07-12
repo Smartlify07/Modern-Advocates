@@ -12,12 +12,35 @@ type Topic = {
   content?: string | null
 }
 type Module = { id: string; title: string; sortOrder: number; topics: Topic[] }
+type Tutor = { name: string | null; image: string | null }
+type CourseData = {
+  id: string
+  title: string
+  overview: string | null
+  thumbnailUrl: string | null
+  duration: number | null
+  level: string
+  language: string
+  avgRating: number
+  reviewCount: number
+  enrollmentCount: number
+  tutor: Tutor
+  modules: Module[]
+  reviews: Array<{
+    id: string
+    body: string | null
+    rating: number
+    studentName: string | null
+    studentImage: string | null
+  }>
+}
 
-export function CourseModuleSidebar({ modules }: { modules: Module[] }) {
+export function CourseModuleSidebar({ course }: { course: CourseData }) {
   const params = useParams()
   const courseId = params.courseId as string
   const queryClient = useQueryClient()
   const queryKey = ["enrollment-progress", courseId]
+  const modules = course.modules
 
   const [completed, setCompleted] = useState<Set<string>>(new Set())
   const [openWeeks, setOpenWeeks] = useState<Set<string>>(
