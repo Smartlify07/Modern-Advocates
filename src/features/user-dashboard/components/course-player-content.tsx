@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
 import { VideoPlayer } from "@/features/videos/components/video-player"
 import { TutorCard } from "@/features/marketing/components/tutor-card"
 import { ReviewCard } from "@/features/marketing/components/review-card"
@@ -42,52 +41,12 @@ type CourseData = {
 export function CoursePlayerContent({ course }: { course: CourseData }) {
   const [tab, setTab] = useState<"overview" | "reviews">("overview")
 
-  const { data: courseData } = useQuery<CourseData>({
-    queryKey: ["course", course.id],
-    queryFn: async () => {
-      const r = await fetch(`/api/courses/${course.id}`)
-      const json = await r.json()
-      return {
-        id: json.id,
-        title: json.title,
-        overview: json.overview,
-        thumbnailUrl: json.thumbnailUrl,
-        language: json.language,
-        level: json.level,
-        duration: json.duration ? Number(json.duration) : null,
-        avgRating: Number(json.avgRating ?? 0),
-        reviewCount: Number(json.reviewCount ?? 0),
-        enrollmentCount: Number(json.enrollmentCount ?? 0),
-        tutor: { name: json.tutorName, image: json.tutorImage },
-        modules: (json.modules ?? []).map((m: any) => ({
-          id: m.id,
-          title: m.title,
-          sortOrder: m.order ?? 0,
-          topics: (m.topics ?? []).map((t: any) => ({
-            id: t.id,
-            title: t.title,
-            format: t.type === "video_and_text" ? "video" : (t.type ?? "video"),
-            content: typeof t.description === "string" ? t.description : t.description ? JSON.stringify(t.description) : null,
-          })),
-        })),
-        reviews: (json.reviews ?? []).map((r: any) => ({
-          id: r.id,
-          body: r.body,
-          rating: r.rating,
-          studentName: r.studentName,
-          studentImage: r.studentImage,
-        })),
-      }
-    },
-    initialData: course,
-  })
-
   return (
     <div className="flex flex-col gap-6">
       <VideoPlayer
         playbackUrl={null}
-        thumbnailUrl={courseData.thumbnailUrl}
-        videoId={courseData.id}
+        thumbnailUrl={course.thumbnailUrl}
+        videoId={course.id}
       />
 
       <div className="mx-3 flex gap-6 border-b border-[#e5e7eb]">
@@ -110,32 +69,32 @@ export function CoursePlayerContent({ course }: { course: CourseData }) {
           <>
             <div>
               <h1 className="text-2xl font-bold text-primary">
-                {courseData.title}
+                {course.title}
               </h1>
               <p className="mt-4 text-base leading-relaxed text-primary">
-                {courseData.overview ?? "No description available."}
+                {course.overview ?? "No description available."}
               </p>
             </div>
 
-            <CourseInformationCard course={courseData} />
+            <CourseInformationCard course={course} />
 
             <div className="flex flex-col gap-5">
               <h2 className="text-2xl font-bold text-ma-text">
                 Meet your tutor
               </h2>
               <TutorCard
-                tutor={courseData.tutor}
-                enrollmentCount={courseData.enrollmentCount}
-                avgRating={courseData.avgRating}
-                reviewCount={courseData.reviewCount}
+                tutor={course.tutor}
+                enrollmentCount={course.enrollmentCount}
+                avgRating={course.avgRating}
+                reviewCount={course.reviewCount}
               />
             </div>
           </>
         ) : (
           <div className="flex flex-col gap-5">
             <h2 className="text-2xl font-bold text-ma-text">Student Reviews</h2>
-            {courseData.reviews.length > 0 ? (
-              courseData.reviews.map((r) => <ReviewCard key={r.id} review={r} />)
+            {course.reviews.length > 0 ? (
+              course.reviews.map((r) => <ReviewCard key={r.id} review={r} />)
             ) : (
               <p className="text-base text-[#6b7280]">No reviews yet.</p>
             )}
