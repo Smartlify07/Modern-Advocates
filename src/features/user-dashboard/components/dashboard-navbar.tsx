@@ -44,7 +44,7 @@ export default function DashboardNavbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`p-2.5 text-base transition-colors duration-300 hover:text-[#6B7280] ${pathname === item.href || pathname.startsWith(item.href + "/") ? "text-primary" : ""}`}
+                  className={`p-2.5 text-base text-[#6b7280] transition-colors duration-300 hover:text-[#6B7280] ${pathname === item.href || pathname.startsWith(item.href + "/") ? "text-primary" : ""}`}
                 >
                   {item.label}
                 </Link>
