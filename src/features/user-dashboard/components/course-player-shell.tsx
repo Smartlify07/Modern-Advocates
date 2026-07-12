@@ -5,8 +5,29 @@ import { Skeleton } from "@/shared/ui/skeleton"
 import { CoursePlayerContent } from "@/features/user-dashboard/components/course-player-content"
 import { CourseModuleSidebar } from "@/features/user-dashboard/components/course-module-sidebar"
 
+type ApiTopic = {
+  id: string
+  title: string
+  type: string
+  description: unknown
+  order: number
+}
+type ApiModule = {
+  id: string
+  title: string
+  order: number
+  topics: ApiTopic[]
+}
+type ApiReview = {
+  id: string
+  body: string | null
+  rating: number
+  studentName: string | null
+  studentImage: string | null
+}
+
 export function CoursePlayerShell({ courseId }: { courseId: string }) {
-  const { data: course, isLoading } = useQuery({
+  const { data: course, isLoading, isError, error } = useQuery({
     queryKey: ["course", courseId],
     queryFn: async () => {
       const r = await fetch(`/api/courses/${courseId}`)
@@ -24,11 +45,11 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
         reviewCount: Number(json.reviewCount ?? 0),
         enrollmentCount: Number(json.enrollmentCount ?? 0),
         tutor: { name: json.tutorName, image: json.tutorImage },
-        modules: (json.modules ?? []).map((m: any) => ({
+        modules: (json.modules ?? []).map((m: ApiModule) => ({
           id: m.id,
           title: m.title,
           sortOrder: m.order ?? 0,
-          topics: (m.topics ?? []).map((t: any) => ({
+          topics: (m.topics ?? []).map((t: ApiTopic) => ({
             id: t.id,
             title: t.title,
             format: t.type === "video_and_text" ? "video" : (t.type ?? "video"),
@@ -40,7 +61,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
                   : null,
           })),
         })),
-        reviews: (json.reviews ?? []).map((r: any) => ({
+        reviews: (json.reviews ?? []).map((r: ApiReview) => ({
           id: r.id,
           body: r.body,
           rating: r.rating,
@@ -72,6 +93,16 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
             ))}
           </div>
         </div>
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className="mx-auto flex items-center justify-center py-20">
+        <p className="text-destructive">
+          {error instanceof Error ? error.message : "Failed to load course."}
+        </p>
       </div>
     )
   }
