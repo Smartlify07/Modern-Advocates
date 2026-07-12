@@ -79,19 +79,107 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
         <div className="grid gap-0 md:grid-cols-[2.2fr_0.8fr]">
           <div className="flex flex-col gap-6">
             <Skeleton className="aspect-video w-full rounded-xl" />
-            <div className="space-y-3 px-4">
-              <Skeleton className="h-8 w-3/4" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-1/2" />
+
+            <div className="mx-3 flex gap-6 border-b border-[#e5e7eb] pb-2">
+              <Skeleton className="h-5 w-16" />
+              <Skeleton className="h-5 w-16" />
+            </div>
+
+            <div className="mt-10 flex min-h-125 flex-col gap-7.5 px-4 lg:ml-[calc(max(100px,(100vw-1080px)/2))] lg:w-[600px] lg:px-0">
+              <div>
+                <Skeleton className="h-8 w-3/4" />
+                <div className="mt-4 space-y-3">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+              </div>
+
+              <div className="w-full rounded-2xl border border-[#d9d9d9] bg-white px-4 pt-4 pr-3.5 pb-[25px]">
+                <Skeleton className="h-7 w-48" />
+                <div className="mt-6 flex flex-col">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i}>
+                      <div className="flex items-center justify-between gap-4 py-0">
+                        <div className="inline-flex items-center gap-2">
+                          <Skeleton className="size-5 shrink-0" />
+                          <Skeleton className="h-4 w-20" />
+                        </div>
+                        <Skeleton className="h-4 w-24" />
+                      </div>
+                      <div
+                        className={
+                          i < 4
+                            ? "my-4 border-t border-dashed border-[#d9d9d9]"
+                            : "mt-4 border-t border-dashed border-[#d9d9d9]"
+                        }
+                      />
+                    </div>
+                  ))}
+                  <div className="mt-6">
+                    <Skeleton className="h-[53px] w-full rounded-[60px]" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-5">
+                <Skeleton className="h-8 w-48" />
+                <div className="flex gap-5 rounded-2xl bg-[#f5f5f5] p-4">
+                  <Skeleton className="h-[190px] w-[106px] shrink-0 rounded-[10px] sm:w-[190px]" />
+                  <div className="flex w-full flex-col gap-4 sm:gap-[22px]">
+                    <div className="flex flex-col gap-1">
+                      <Skeleton className="h-5 w-40" />
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-3/4" />
+                    </div>
+                    <div className="flex flex-nowrap items-center gap-4">
+                      <Skeleton className="h-4 w-28" />
+                      <Skeleton className="h-4 w-28" />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="space-y-4 border border-[#d9d9d9] bg-white px-2 py-5">
-            <Skeleton className="h-6 w-40" />
-            {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className="h-16 w-full" />
-            ))}
-          </div>
+
+          <aside className="border border-[#d9d9d9] bg-white px-2 py-5">
+            <Skeleton className="h-8 w-44" />
+            <div className="mt-5 flex flex-col gap-3">
+              {[1, 2, 3].map((mod) => (
+                <div key={mod} className="border-b border-b-[#e5e7eb] last:border-b-0">
+                  <div className="flex w-full items-center justify-between px-5 py-3">
+                    <div className="flex-1">
+                      <Skeleton className="h-5 w-44" />
+                      <div className="mt-2">
+                        <Skeleton className="h-4 w-36" />
+                      </div>
+                    </div>
+                    <Skeleton className="size-4 shrink-0" />
+                  </div>
+                  <div className="flex flex-col gap-1 border-t border-[#e5e7eb] py-2">
+                    {[1, 2, 3].map((topic) => (
+                      <div
+                        key={topic}
+                        className="flex items-center gap-3 rounded-lg px-5 py-2"
+                      >
+                        <Skeleton className="size-5 shrink-0" />
+                        <div className="flex w-full flex-col gap-1">
+                          <Skeleton className="h-5 w-40" />
+                          <div className="flex items-center gap-2">
+                            <Skeleton className="size-4 shrink-0" />
+                            <Skeleton className="h-3 w-10" />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </aside>
         </div>
       </div>
     )
