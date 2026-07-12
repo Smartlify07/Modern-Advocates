@@ -41,9 +41,13 @@ export default function UserDashboardPage() {
     refetchOnWindowFocus: false,
   })
 
-  const { data: enrollments, isLoading: enrollmentsLoading } = useQuery<
-    Course[]
-  >({
+  const {
+    data: enrollments,
+    isLoading: enrollmentsLoading,
+    isError: enrollmentsError,
+    error: enrollmentsErrorObj,
+    refetch: refetchEnrollments,
+  } = useQuery<Course[]>({
     queryKey: ["user-enrollments"],
     queryFn: async () => {
       const res = await fetch("/api/enrollments")
@@ -54,7 +58,8 @@ export default function UserDashboardPage() {
   })
 
   const isLoading = coursesLoading || enrollmentsLoading
-  const isError = coursesError
+  const isError = coursesError || enrollmentsError
+  const errorObj = coursesErrorObj ?? enrollmentsErrorObj
 
   const enrollmentMap = useMemo(() => {
     if (!enrollments) return new Map<string, number>()
@@ -108,12 +113,15 @@ export default function UserDashboardPage() {
             Failed to load courses
           </h2>
           <p className="max-w-md text-muted-foreground">
-            {coursesErrorObj instanceof Error
-              ? coursesErrorObj.message
+            {errorObj instanceof Error
+              ? errorObj.message
               : "Something went wrong"}
           </p>
           <button
-            onClick={() => refetch()}
+            onClick={() => {
+              refetch()
+              refetchEnrollments()
+            }}
             className="rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-white hover:bg-primary/90"
           >
             Try Again

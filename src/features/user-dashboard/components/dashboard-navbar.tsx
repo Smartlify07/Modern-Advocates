@@ -44,7 +44,7 @@ export default function DashboardNavbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`p-2.5 text-base transition-colors duration-300 hover:text-[#6B7280] ${pathname === item.href ? "text-primary" : ""}`}
+                  className={`p-2.5 text-base transition-colors duration-300 hover:text-[#6B7280] ${pathname === item.href || pathname.startsWith(item.href + "/") ? "text-primary" : ""}`}
                 >
                   {item.label}
                 </Link>
@@ -84,7 +84,7 @@ export default function DashboardNavbar() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
-                className={`rounded-lg p-3 text-base transition-all duration-300 hover:text-[#6B7280] ${mobileOpen ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"}`}
+                className={`rounded-lg p-3 text-base transition-all duration-300 hover:text-[#6B7280] ${mobileOpen ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"} ${pathname === item.href || pathname.startsWith(item.href + "/") ? "text-primary" : ""}`}
                 style={{ transitionDelay: mobileOpen ? `${i * 50}ms` : "0ms" }}
               >
                 {item.label}
