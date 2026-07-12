@@ -27,10 +27,11 @@ export function CourseModuleSidebar({ modules }: { modules: Module[] }) {
 
   const { data: enrollment } = useQuery({
     queryKey,
-    queryFn: () =>
-      fetch(`/api/enrollments/by-course/${courseId}`).then(
-        (r) => r.json() as Promise<{ id: string; progress: number; completedTopicIds: string[] }>,
-      ),
+    queryFn: async () => {
+      const r = await fetch(`/api/enrollments/by-course/${courseId}`)
+      if (!r.ok) throw new Error(`Failed to fetch enrollment (${r.status})`)
+      return r.json() as Promise<{ id: string; progress: number; completedTopicIds: string[] }>
+    },
     enabled: !!courseId,
   })
 
@@ -44,16 +45,19 @@ export function CourseModuleSidebar({ modules }: { modules: Module[] }) {
   const totalTopics = modules.reduce((sum, mod) => sum + mod.topics.length, 0)
 
   const toggleMutation = useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       enrollmentId,
       topicId,
     }: {
       enrollmentId: string
       topicId: string
-    }) =>
-      fetch(`/api/enrollments/${enrollmentId}/topics/${topicId}`, {
+    }) => {
+      const r = await fetch(`/api/enrollments/${enrollmentId}/topics/${topicId}`, {
         method: "POST",
-      }).then((r) => r.json() as Promise<{ completed: boolean; progress: number }>),
+      })
+      if (!r.ok) throw new Error(`Failed to toggle topic (${r.status})`)
+      return r.json() as Promise<{ completed: boolean; progress: number }>
+    },
     onMutate: async ({ topicId }) => {
       await queryClient.cancelQueries({ queryKey })
 

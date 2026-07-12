@@ -19,10 +19,11 @@ export default function CoursePlayerNavbar() {
 
   const { data: enrollment } = useQuery({
     queryKey: ["enrollment-progress", courseId],
-    queryFn: () =>
-      fetch(`/api/enrollments/by-course/${courseId}`).then(
-        (r) => r.json() as Promise<{ id: string; progress: number }>
-      ),
+    queryFn: async () => {
+      const r = await fetch(`/api/enrollments/by-course/${courseId}`)
+      if (!r.ok) throw new Error(`Failed to fetch enrollment (${r.status})`)
+      return r.json() as Promise<{ id: string; progress: number }>
+    },
     enabled: !!courseId,
   })
 
