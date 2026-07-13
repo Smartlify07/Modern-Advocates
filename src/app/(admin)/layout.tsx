@@ -25,6 +25,7 @@ import {
   BookOpenIcon,
   UsersIcon,
   SettingsIcon,
+  CreditCardIcon,
 } from "lucide-react"
 import type { NavItem } from "@/features/platform/components/app-sidebar"
 
@@ -32,6 +33,7 @@ const adminNavItems: NavItem[] = [
   { title: "Dashboard", url: "/admin/dashboard", icon: LayoutDashboardIcon },
   { title: "Courses", url: "/admin/courses", icon: BookOpenIcon },
   { title: "Users", url: "/admin/users", icon: UsersIcon },
+  { title: "Transactions", url: "/admin/transactions", icon: CreditCardIcon },
   { title: "Settings", url: "/admin/settings", icon: SettingsIcon },
 ]
 
@@ -40,6 +42,7 @@ const breadcrumbLabels: Record<string, string> = {
   dashboard: "Dashboard",
   courses: "Courses",
   users: "Users",
+  transactions: "Transactions",
   settings: "Settings",
 }
 

@@ -138,6 +138,7 @@ export const orders = pgTable(
     currency: text("currency").notNull().default("USD"),
     paymentProvider: text("payment_provider"),
     paymentReference: text("payment_reference"),
+    stripePaymentIntentId: text("stripe_payment_intent_id"),
     paymentStatus: paymentStatus("payment_status").notNull().default("pending"),
     source: orderSource("source").notNull().default("purchase"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
