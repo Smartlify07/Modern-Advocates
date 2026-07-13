@@ -19,7 +19,9 @@ export const CheckoutForm = forwardRef<CheckoutFormHandle, { onReadyChange?: (re
 
     useImperativeHandle(ref, () => ({
       submitPayment: async () => {
-        if (!stripe || !elements) return
+        if (!stripe || !elements) {
+          throw new Error("Payment system is not ready yet. Please wait a moment and try again.")
+        }
         setError(null)
 
         const { error: stripeError } = await stripe.confirmPayment({

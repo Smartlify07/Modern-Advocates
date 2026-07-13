@@ -32,8 +32,6 @@ type PaymentState =
   | "enrollment_complete"
   | "payment_failed"
 
-const stripePromise = getStripeClient()
-
 export function CheckoutContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -49,6 +47,14 @@ export function CheckoutContent() {
   const [paymentReady, setPaymentReady] = useState(false)
   const [formKey, setFormKey] = useState(0)
   const checkoutFormRef = useRef<CheckoutFormHandle>(null)
+  const stripePromiseRef = useRef<ReturnType<typeof getStripeClient> | null>(null)
+
+  function getStripePromise() {
+    if (!stripePromiseRef.current) {
+      stripePromiseRef.current = getStripeClient()
+    }
+    return stripePromiseRef.current
+  }
 
   const { data: course } = useQuery<OrderSummaryCourseData>({
     queryKey: ["course", courseId],
@@ -179,19 +185,42 @@ export function CheckoutContent() {
 
   if (course.isFree) {
     return (
-      <div className="mt-8 grid gap-8 md:grid-cols-2 lg:gap-12">
-        <div />
-        <div>
-          <OrderSummaryCard course={course} processing={false} disabled />
+      <>
+        <div className="mt-8 grid gap-8 md:grid-cols-2 lg:gap-12">
+          <div />
+          <div>
+            <OrderSummaryCard course={course} processing={false} disabled />
+          </div>
         </div>
-      </div>
+
+        <PaymentReceiptModal open={modalOpen} onOpenChange={handleModalChange}>
+          {paymentState === "payment_failed" ? (
+            <PaymentFailedContent
+              mode="enrollment"
+              title={errorMessage?.title}
+              description={errorMessage?.description}
+              onRetry={handleRetry}
+            />
+          ) : (
+            <PaymentSuccessContent
+              amount="Free"
+              polling={false}
+              onRedirect={
+                paymentState === "enrollment_complete"
+                  ? () => router.push("/my-learning")
+                  : undefined
+              }
+            />
+          )}
+        </PaymentReceiptModal>
+      </>
     )
   }
 
   return (
     <>
       {clientSecret && orderId ? (
-        <Elements stripe={stripePromise} options={{ clientSecret }}>
+        <Elements stripe={getStripePromise()} options={{ clientSecret }}>
           <div className="mt-8 grid gap-8 md:grid-cols-2 lg:gap-12">
             <CheckoutForm key={formKey} ref={checkoutFormRef} onReadyChange={setPaymentReady} />
             <div>
