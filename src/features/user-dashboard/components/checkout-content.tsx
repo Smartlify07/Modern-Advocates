@@ -146,6 +146,9 @@ export function CheckoutContent() {
   }, [courseId, initPayment])
 
   const handleModalChange = useCallback((open: boolean) => {
+    if (!open) {
+      setPaymentState((prev) => (prev === "payment_failed" ? "ready" : prev))
+    }
     setModalOpen(open)
   }, [])
 
