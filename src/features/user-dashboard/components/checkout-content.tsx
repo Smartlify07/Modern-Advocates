@@ -125,7 +125,6 @@ export function CheckoutContent() {
         code?: string
         message?: string
       } | null
-      console.log(stripeErr)
       const formatted = formatStripeError({
         type: stripeErr?.type,
         code: stripeErr?.code,
@@ -146,16 +145,9 @@ export function CheckoutContent() {
     }
   }, [courseId, initPayment])
 
-  const handleModalChange = useCallback(
-    (open: boolean) => {
-      if (!open && paymentState === "payment_failed") {
-        handleRetry()
-        return
-      }
-      setModalOpen(open)
-    },
-    [paymentState, handleRetry]
-  )
+  const handleModalChange = useCallback((open: boolean) => {
+    setModalOpen(open)
+  }, [])
 
   const displayPrice = course
     ? (course.discountedPrice ?? course.price).toFixed(2)
