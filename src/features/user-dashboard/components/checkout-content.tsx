@@ -43,52 +43,67 @@ export function CheckoutContent() {
   const [modalOpen, setModalOpen] = useState(false)
   const [orderId, setOrderId] = useState<string | null>(null)
   const [clientSecret, setClientSecret] = useState<string | null>(null)
-  const [errorMessage, setErrorMessage] = useState<FormattedStripeError | null>(null)
+  const [errorMessage, setErrorMessage] = useState<FormattedStripeError | null>(
+    null
+  )
+  const [paymentReady, setPaymentReady] = useState(false)
   const [formKey, setFormKey] = useState(0)
   const checkoutFormRef = useRef<CheckoutFormHandle>(null)
 
   const { data: course } = useQuery<OrderSummaryCourseData>({
     queryKey: ["course", courseId],
     queryFn: () =>
-      fetch(`/api/courses/${courseId}`).then((r) => {
-        if (!r.ok) throw new Error("Failed to fetch course")
-        return r.json()
-      }).then((c) => ({
-        title: c.title,
-        price: c.price,
-        discountedPrice: c.discountedPrice,
-        thumbnailUrl: c.thumbnailUrl,
-        isFree: c.isFree ?? false,
-      })),
+      fetch(`/api/courses/${courseId}`)
+        .then((r) => {
+          if (!r.ok) throw new Error("Failed to fetch course")
+          return r.json()
+        })
+        .then((c) => ({
+          title: c.title,
+          price: c.price,
+          discountedPrice: c.discountedPrice,
+          thumbnailUrl: c.thumbnailUrl,
+          isFree: c.isFree ?? false,
+        })),
     enabled: !!courseId,
   })
 
   const initPayment = useCallback((courseId: string) => {
-    createPaymentIntent(courseId).then(({ orderId, clientSecret }) => {
-      setOrderId(orderId)
-      setClientSecret(clientSecret)
-      setPaymentState("ready")
-    }).catch(() => {
-      setPaymentState("payment_failed")
-      setErrorMessage({ title: "Service Error", description: "Could not initialize payment." })
-      setModalOpen(true)
-    })
+    createPaymentIntent(courseId)
+      .then(({ orderId, clientSecret }) => {
+        setOrderId(orderId)
+        setClientSecret(clientSecret)
+        setPaymentState("ready")
+      })
+      .catch(() => {
+        setPaymentState("payment_failed")
+        setErrorMessage({
+          title: "Service Error",
+          description: "Could not initialize payment.",
+        })
+        setModalOpen(true)
+      })
   }, [])
 
   useEffect(() => {
     if (!course || !courseId) return
     if (course.isFree) {
-      createOrder(courseId).then(({ enrollment }) => {
-        if (enrollment?.status === "active") {
-          setPaymentState("enrollment_complete")
+      createOrder(courseId)
+        .then(({ enrollment }) => {
+          if (enrollment?.status === "active") {
+            setPaymentState("enrollment_complete")
+            setModalOpen(true)
+            setTimeout(() => router.push("/my-learning"), 1000)
+          }
+        })
+        .catch(() => {
+          setPaymentState("payment_failed")
+          setErrorMessage({
+            title: "Enrollment Failed",
+            description: "Could not process free enrollment.",
+          })
           setModalOpen(true)
-          setTimeout(() => router.push("/my-learning"), 1000)
-        }
-      }).catch(() => {
-        setPaymentState("payment_failed")
-        setErrorMessage({ title: "Enrollment Failed", description: "Could not process free enrollment." })
-        setModalOpen(true)
-      })
+        })
       return
     }
     initPayment(courseId)
@@ -105,7 +120,12 @@ export function CheckoutContent() {
       setTimeout(() => router.push("/my-learning"), 1000)
     } catch (err: unknown) {
       setPaymentState("payment_failed")
-      const stripeErr = err as { type?: string; code?: string; message?: string } | null
+      const stripeErr = err as {
+        type?: string
+        code?: string
+        message?: string
+      } | null
+      console.log(stripeErr)
       const formatted = formatStripeError({
         type: stripeErr?.type,
         code: stripeErr?.code,
@@ -118,6 +138,7 @@ export function CheckoutContent() {
 
   const handleRetry = useCallback(() => {
     setModalOpen(false)
+    setPaymentReady(false)
     setFormKey((k) => k + 1)
     setPaymentState("loading")
     if (courseId) {
@@ -125,13 +146,16 @@ export function CheckoutContent() {
     }
   }, [courseId, initPayment])
 
-  const handleModalChange = useCallback((open: boolean) => {
-    if (!open && paymentState === "payment_failed") {
-      handleRetry()
-      return
-    }
-    setModalOpen(open)
-  }, [paymentState, handleRetry])
+  const handleModalChange = useCallback(
+    (open: boolean) => {
+      if (!open && paymentState === "payment_failed") {
+        handleRetry()
+        return
+      }
+      setModalOpen(open)
+    },
+    [paymentState, handleRetry]
+  )
 
   const displayPrice = course
     ? (course.discountedPrice ?? course.price).toFixed(2)
@@ -163,11 +187,7 @@ export function CheckoutContent() {
       <div className="mt-8 grid gap-8 md:grid-cols-2 lg:gap-12">
         <div />
         <div>
-          <OrderSummaryCard
-            course={course}
-            processing={false}
-            disabled
-          />
+          <OrderSummaryCard course={course} processing={false} disabled />
         </div>
       </div>
     )
@@ -178,13 +198,13 @@ export function CheckoutContent() {
       {clientSecret && orderId ? (
         <Elements stripe={stripePromise} options={{ clientSecret }}>
           <div className="mt-8 grid gap-8 md:grid-cols-2 lg:gap-12">
-            <CheckoutForm key={formKey} ref={checkoutFormRef} />
+            <CheckoutForm key={formKey} ref={checkoutFormRef} onReadyChange={setPaymentReady} />
             <div>
               <OrderSummaryCard
                 course={course}
                 onPay={handlePay}
                 processing={paymentState === "processing"}
-                disabled={paymentState !== "ready"}
+                disabled={paymentState !== "ready" || !paymentReady}
               />
               <p className="mt-4 text-xs text-[#6b7280]">
                 Course ID: {courseId}
@@ -198,18 +218,19 @@ export function CheckoutContent() {
             <p className="text-sm text-[#6b7280]">Preparing payment...</p>
           </div>
           <div>
-            <OrderSummaryCard
-              course={course}
-              processing={false}
-              disabled
-            />
+            <OrderSummaryCard course={course} processing={false} disabled />
           </div>
         </div>
       )}
 
       <PaymentReceiptModal open={modalOpen} onOpenChange={handleModalChange}>
         {paymentState === "payment_failed" ? (
-          <PaymentFailedContent mode="payment" title={errorMessage?.title} description={errorMessage?.description} onRetry={handleRetry} />
+          <PaymentFailedContent
+            mode="payment"
+            title={errorMessage?.title}
+            description={errorMessage?.description}
+            onRetry={handleRetry}
+          />
         ) : (
           <PaymentSuccessContent
             amount={`$ ${displayPrice} USD`}

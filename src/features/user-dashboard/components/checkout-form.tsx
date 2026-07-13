@@ -10,8 +10,8 @@ export interface CheckoutFormHandle {
   submitPayment: () => Promise<void>
 }
 
-export const CheckoutForm = forwardRef<CheckoutFormHandle>(
-  function CheckoutForm(_props, ref) {
+export const CheckoutForm = forwardRef<CheckoutFormHandle, { onReadyChange?: (ready: boolean) => void }>(
+  function CheckoutForm({ onReadyChange }, ref) {
     const stripe = useStripe()
     const elements = useElements()
     const { data: session } = authClient.useSession()
@@ -60,7 +60,7 @@ export const CheckoutForm = forwardRef<CheckoutFormHandle>(
         <div className="flex flex-col gap-4">
           <h3 className="text-base font-bold text-ma-text">Payment Method</h3>
           <div className="rounded-xl border border-[#e5e7eb] bg-white p-4">
-            <PaymentElement />
+            <PaymentElement onChange={(e) => onReadyChange?.(e.complete)} />
           </div>
         </div>
 
