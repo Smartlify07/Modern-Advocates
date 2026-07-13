@@ -184,7 +184,20 @@ export function CheckoutContent() {
             </div>
           </div>
         </Elements>
-      ) : null}
+      ) : (
+        <div className="mt-8 grid gap-8 md:grid-cols-2 lg:gap-12">
+          <div className="flex h-80 items-center justify-center rounded-2xl bg-[#f9f9f9]">
+            <p className="text-sm text-[#6b7280]">Preparing payment...</p>
+          </div>
+          <div>
+            <OrderSummaryCard
+              course={course}
+              processing={false}
+              disabled
+            />
+          </div>
+        </div>
+      )}
 
       <PaymentReceiptModal open={modalOpen} onOpenChange={handleModalChange}>
         {paymentState === "payment_failed" ? (
