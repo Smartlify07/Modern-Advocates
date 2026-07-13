@@ -22,6 +22,8 @@ import { PaymentReceiptModal } from "@/features/user-dashboard/components/paymen
 import { PaymentSuccessContent } from "@/features/user-dashboard/components/payment-success-content"
 import { PaymentFailedContent } from "@/features/user-dashboard/components/payment-failed-content"
 import { getStripeClient } from "@/infrastructure/payment/stripe-client"
+import { formatStripeError } from "@/features/orders/services/stripe-errors"
+import type { FormattedStripeError } from "@/features/orders/services/stripe-errors"
 
 type PaymentState =
   | "loading"
@@ -41,7 +43,7 @@ export function CheckoutContent() {
   const [modalOpen, setModalOpen] = useState(false)
   const [orderId, setOrderId] = useState<string | null>(null)
   const [clientSecret, setClientSecret] = useState<string | null>(null)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [errorMessage, setErrorMessage] = useState<FormattedStripeError | null>(null)
   const [formKey, setFormKey] = useState(0)
   const checkoutFormRef = useRef<CheckoutFormHandle>(null)
 
@@ -68,7 +70,7 @@ export function CheckoutContent() {
       setPaymentState("ready")
     }).catch(() => {
       setPaymentState("payment_failed")
-      setErrorMessage("Could not initialize payment")
+      setErrorMessage({ title: "Service Error", description: "Could not initialize payment." })
       setModalOpen(true)
     })
   }, [])
@@ -84,7 +86,7 @@ export function CheckoutContent() {
         }
       }).catch(() => {
         setPaymentState("payment_failed")
-        setErrorMessage("Could not process free enrollment")
+        setErrorMessage({ title: "Enrollment Failed", description: "Could not process free enrollment." })
         setModalOpen(true)
       })
       return
@@ -103,7 +105,13 @@ export function CheckoutContent() {
       setTimeout(() => router.push("/my-learning"), 1000)
     } catch (err: unknown) {
       setPaymentState("payment_failed")
-      setErrorMessage(err instanceof Error ? err.message : "Payment could not be processed")
+      const stripeErr = err as { type?: string; code?: string; message?: string } | null
+      const formatted = formatStripeError({
+        type: stripeErr?.type,
+        code: stripeErr?.code,
+        message: stripeErr?.message,
+      })
+      setErrorMessage(formatted)
       setModalOpen(true)
     }
   }, [orderId, router])
@@ -201,7 +209,7 @@ export function CheckoutContent() {
 
       <PaymentReceiptModal open={modalOpen} onOpenChange={handleModalChange}>
         {paymentState === "payment_failed" ? (
-          <PaymentFailedContent mode="payment" message={errorMessage} onRetry={handleRetry} />
+          <PaymentFailedContent mode="payment" title={errorMessage?.title} description={errorMessage?.description} onRetry={handleRetry} />
         ) : (
           <PaymentSuccessContent
             amount={`$ ${displayPrice} USD`}

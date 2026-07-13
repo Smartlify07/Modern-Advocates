@@ -31,9 +31,8 @@ export const CheckoutForm = forwardRef<CheckoutFormHandle>(
         })
 
         if (stripeError) {
-          const msg = stripeError.message ?? "Payment failed"
-          setError(msg)
-          throw new Error(msg)
+          setError(stripeError.message ?? "Payment failed")
+          throw stripeError
         }
       },
     }))
