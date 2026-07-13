@@ -3,9 +3,17 @@
 import { useState, useCallback, useEffect, useRef } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
+import { Elements } from "@stripe/react-stripe-js"
 
-import { createOrder, getOrderStatus, retryEnrollment } from "@/shared/api/orders"
-import { CheckoutForm } from "@/features/user-dashboard/components/checkout-form"
+import {
+  createOrder,
+  createPaymentIntent,
+  confirmPaymentOnServer,
+} from "@/shared/api/orders"
+import {
+  CheckoutForm,
+  type CheckoutFormHandle,
+} from "@/features/user-dashboard/components/checkout-form"
 import {
   OrderSummaryCard,
   type OrderSummaryCourseData,
@@ -13,28 +21,27 @@ import {
 import { PaymentReceiptModal } from "@/features/user-dashboard/components/payment-receipt-modal"
 import { PaymentSuccessContent } from "@/features/user-dashboard/components/payment-success-content"
 import { PaymentFailedContent } from "@/features/user-dashboard/components/payment-failed-content"
+import { getStripeClient } from "@/infrastructure/payment/stripe-client"
 
 type PaymentState =
-  | "idle"
+  | "loading"
+  | "ready"
   | "processing"
-  | "success"
   | "enrollment_complete"
   | "payment_failed"
-  | "enrollment_failed"
 
-const POLL_INTERVAL_MS = 3000
-const MAX_POLL_ATTEMPTS = 10
+const stripePromise = getStripeClient()
 
 export function CheckoutContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const courseId = searchParams.get("courseId")
 
-  const [paymentState, setPaymentState] = useState<PaymentState>("idle")
+  const [paymentState, setPaymentState] = useState<PaymentState>("loading")
   const [modalOpen, setModalOpen] = useState(false)
   const [orderId, setOrderId] = useState<string | null>(null)
-  const pollCountRef = useRef(0)
-  const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const [clientSecret, setClientSecret] = useState<string | null>(null)
+  const checkoutFormRef = useRef<CheckoutFormHandle>(null)
 
   const { data: course } = useQuery<OrderSummaryCourseData>({
     queryKey: ["course", courseId],
@@ -47,109 +54,75 @@ export function CheckoutContent() {
         price: c.price,
         discountedPrice: c.discountedPrice,
         thumbnailUrl: c.thumbnailUrl,
+        isFree: c.isFree ?? false,
       })),
     enabled: !!courseId,
   })
 
-  const clearPolling = useCallback(() => {
-    if (pollIntervalRef.current) {
-      clearInterval(pollIntervalRef.current)
-      pollIntervalRef.current = null
+  useEffect(() => {
+    if (!course || !courseId) return
+    if (course.isFree) {
+      createOrder(courseId).then(({ enrollment }) => {
+        if (enrollment?.status === "active") {
+          setPaymentState("enrollment_complete")
+          setModalOpen(true)
+          setTimeout(() => router.push("/my-learning"), 1000)
+        }
+      }).catch(() => {
+        setPaymentState("payment_failed")
+        setModalOpen(true)
+      })
+      return
     }
-    pollCountRef.current = 0
-  }, [])
-
-  const startPolling = useCallback(
-    (id: string) => {
-      pollCountRef.current = 0
-      pollIntervalRef.current = setInterval(async () => {
-        pollCountRef.current++
-        if (pollCountRef.current > MAX_POLL_ATTEMPTS) {
-          clearPolling()
-          setPaymentState("enrollment_failed")
-          return
-        }
-        try {
-          const { enrollment } = await getOrderStatus(id)
-          if (enrollment?.status === "active") {
-            clearPolling()
-            setPaymentState("enrollment_complete")
-            setTimeout(() => router.push("/my-learning"), 1000)
-          } else if (enrollment?.status === "failed") {
-            clearPolling()
-            setPaymentState("enrollment_failed")
-          }
-        } catch {
-          // keep polling on transient errors
-        }
-      }, POLL_INTERVAL_MS)
-    },
-    [clearPolling, router],
-  )
+    createPaymentIntent(courseId).then(({ orderId, clientSecret }) => {
+      setOrderId(orderId)
+      setClientSecret(clientSecret)
+      setPaymentState("ready")
+    }).catch(() => {
+      setPaymentState("payment_failed")
+      setModalOpen(true)
+    })
+  }, [course, courseId, router])
 
   const handlePay = useCallback(async () => {
-    if (!courseId) return
+    if (!checkoutFormRef.current || !orderId) return
     setPaymentState("processing")
-
-    await new Promise((r) => setTimeout(r, 1200))
-
     try {
-      const { order: createdOrder, enrollment } = await createOrder(courseId)
-      setOrderId(createdOrder.id)
-
-      if (enrollment?.status === "active") {
-        setPaymentState("enrollment_complete")
-        setModalOpen(true)
-        setTimeout(() => router.push("/my-learning"), 1000)
-        return
-      }
-
-      setPaymentState("success")
+      await checkoutFormRef.current.submitPayment()
+      await confirmPaymentOnServer(orderId)
+      setPaymentState("enrollment_complete")
       setModalOpen(true)
-      startPolling(createdOrder.id)
+      setTimeout(() => router.push("/my-learning"), 1000)
     } catch {
       setPaymentState("payment_failed")
       setModalOpen(true)
     }
-  }, [courseId, router, startPolling])
+  }, [orderId, router])
 
-  const handleRetryPayment = useCallback(() => {
+  const handleRetry = useCallback(() => {
     setModalOpen(false)
-    clearPolling()
+    setPaymentState("loading")
+    setClientSecret(null)
     setOrderId(null)
-    setTimeout(() => setPaymentState("idle"), 300)
-  }, [clearPolling])
-
-  const handleRetryEnrollment = useCallback(async () => {
-    if (!orderId) return
-    try {
-      await retryEnrollment(orderId)
-      setPaymentState("success")
-      startPolling(orderId)
-    } catch {
-      setPaymentState("enrollment_failed")
+    if (courseId) {
+      createPaymentIntent(courseId).then(({ orderId, clientSecret }) => {
+        setOrderId(orderId)
+        setClientSecret(clientSecret)
+        setPaymentState("ready")
+      }).catch(() => {
+        setPaymentState("payment_failed")
+        setModalOpen(true)
+      })
     }
-  }, [orderId, startPolling])
+  }, [courseId])
 
-  useEffect(() => {
-    return () => clearPolling()
-  }, [clearPolling])
-
-  const handleModalChange = useCallback(
-    (open: boolean) => {
-      if (!open && (paymentState === "payment_failed" || paymentState === "enrollment_failed")) {
-        if (paymentState === "payment_failed") handleRetryPayment()
-        else {
-          setModalOpen(false)
-          clearPolling()
-          setTimeout(() => setPaymentState("idle"), 300)
-        }
-        return
-      }
-      setModalOpen(open)
-    },
-    [paymentState, handleRetryPayment, clearPolling],
-  )
+  const handleModalChange = useCallback((open: boolean) => {
+    if (!open && paymentState === "payment_failed") {
+      handleRetry()
+      return
+    }
+    setModalOpen(open)
+  }, [paymentState, handleRetry])
 
   const displayPrice = course
     ? (course.discountedPrice ?? course.price).toFixed(2)
@@ -163,36 +136,62 @@ export function CheckoutContent() {
     )
   }
 
-  return (
-    <div className="mt-8 grid gap-8 md:grid-cols-2 lg:gap-12">
-      <CheckoutForm />
+  if (!course) {
+    return (
+      <div className="mt-8 grid gap-8 md:grid-cols-2 lg:gap-12">
+        <div className="flex h-80 items-center justify-center rounded-2xl bg-[#f9f9f9]">
+          <p className="text-sm text-[#6b7280]">Loading...</p>
+        </div>
+        <div className="flex h-80 items-center justify-center rounded-2xl bg-[#f9f9f9]">
+          <p className="text-sm text-[#6b7280]">Loading course details...</p>
+        </div>
+      </div>
+    )
+  }
 
-      <div>
-        {course ? (
+  if (course.isFree) {
+    return (
+      <div className="mt-8 grid gap-8 md:grid-cols-2 lg:gap-12">
+        <div />
+        <div>
           <OrderSummaryCard
             course={course}
-            onPay={handlePay}
-            processing={paymentState === "processing"}
+            processing={false}
+            disabled
           />
-        ) : (
-          <div className="flex h-64 items-center justify-center rounded-2xl bg-[#f9f9f9]">
-            <p className="text-sm text-[#6b7280]">Loading course details...</p>
-          </div>
-        )}
-        <p className="mt-4 text-xs text-[#6b7280]">
-          Course ID: {courseId ?? "N/A"}
-        </p>
+        </div>
       </div>
+    )
+  }
+
+  return (
+    <>
+      {clientSecret && orderId ? (
+        <Elements stripe={stripePromise} options={{ clientSecret }}>
+          <div className="mt-8 grid gap-8 md:grid-cols-2 lg:gap-12">
+            <CheckoutForm ref={checkoutFormRef} />
+            <div>
+              <OrderSummaryCard
+                course={course}
+                onPay={handlePay}
+                processing={paymentState === "processing"}
+                disabled={paymentState !== "ready"}
+              />
+              <p className="mt-4 text-xs text-[#6b7280]">
+                Course ID: {courseId}
+              </p>
+            </div>
+          </div>
+        </Elements>
+      ) : null}
 
       <PaymentReceiptModal open={modalOpen} onOpenChange={handleModalChange}>
         {paymentState === "payment_failed" ? (
-          <PaymentFailedContent mode="payment" onRetry={handleRetryPayment} />
-        ) : paymentState === "enrollment_failed" ? (
-          <PaymentFailedContent mode="enrollment" onRetry={handleRetryEnrollment} />
+          <PaymentFailedContent mode="payment" onRetry={handleRetry} />
         ) : (
           <PaymentSuccessContent
             amount={`$ ${displayPrice} USD`}
-            polling={paymentState === "success"}
+            polling={false}
             onRedirect={
               paymentState === "enrollment_complete"
                 ? () => router.push("/my-learning")
@@ -201,6 +200,6 @@ export function CheckoutContent() {
           />
         )}
       </PaymentReceiptModal>
-    </div>
+    </>
   )
 }

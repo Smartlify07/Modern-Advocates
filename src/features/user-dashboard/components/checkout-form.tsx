@@ -1,98 +1,73 @@
 "use client"
 
-import { useState } from "react"
-import { CreditCard, Wallet, Landmark, Check } from "lucide-react"
+import { forwardRef, useImperativeHandle, useState } from "react"
+import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js"
+import { User, Mail } from "lucide-react"
 
-import { Input } from "@/shared/ui/input"
-import { Label } from "@/shared/ui/label"
+import { authClient } from "@/infrastructure/auth/client"
 
-const paymentMethods = [
-  { id: "credit-card", label: "Credit Card", icon: CreditCard },
-  { id: "paypal", label: "PayPal", icon: Wallet },
-  { id: "bank-transfer", label: "Bank Transfer", icon: Landmark },
-]
-
-export function CheckoutForm() {
-  const [method, setMethod] = useState("credit-card")
-
-  return (
-    <div className="flex flex-col gap-6">
-      <p className="text-sm font-bold tracking-[0.1em] text-[#6b7280] uppercase">
-        Checkout
-      </p>
-
-      <div className="flex flex-col gap-4">
-        <h3 className="text-base font-bold text-ma-text">Billing Information</h3>
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="name">Full Name</Label>
-            <Input id="name" defaultValue="Prince Ugboaja" />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" defaultValue="example@gmail.com" />
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-4">
-        <h3 className="text-base font-bold text-ma-text">Payment Method</h3>
-        <div className="grid grid-cols-3 gap-3">
-          {paymentMethods.map((pm) => {
-            const selected = method === pm.id
-            const Icon = pm.icon
-            return (
-              <button
-                key={pm.id}
-                type="button"
-                onClick={() => setMethod(pm.id)}
-                className={`flex flex-col items-center gap-2 rounded-xl border p-4 text-sm transition-colors ${
-                  selected
-                    ? "border-ma-text bg-white"
-                    : "border-[#e5e7eb] bg-white hover:border-gray-300"
-                }`}
-              >
-                <Icon
-                  className={`size-6 ${selected ? "text-ma-text" : "text-[#6b7280]"}`}
-                />
-                <span
-                  className={`font-medium ${selected ? "text-ma-text" : "text-[#6b7280]"}`}
-                >
-                  {pm.label}
-                </span>
-                {selected && (
-                  <span className="flex size-4 items-center justify-center rounded-full bg-ma-text">
-                    <Check className="size-3 text-white" />
-                  </span>
-                )}
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
-      {method === "credit-card" && (
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="card-name">Name on the card</Label>
-            <Input id="card-name" placeholder="Name on the card" />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="card-number">Card number</Label>
-            <Input id="card-number" placeholder="1234567890123456" />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="expiry">MM / YY</Label>
-              <Input id="expiry" placeholder="MM / YY" />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="cvv">CVV</Label>
-              <Input id="cvv" placeholder="CVV" />
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  )
+export interface CheckoutFormHandle {
+  submitPayment: () => Promise<void>
 }
+
+export const CheckoutForm = forwardRef<CheckoutFormHandle>(
+  function CheckoutForm(_props, ref) {
+    const stripe = useStripe()
+    const elements = useElements()
+    const { data: session } = authClient.useSession()
+    const [error, setError] = useState<string | null>(null)
+
+    useImperativeHandle(ref, () => ({
+      submitPayment: async () => {
+        if (!stripe || !elements) return
+        setError(null)
+
+        const { error: stripeError } = await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: `${window.location.origin}/my-learning`,
+          },
+          redirect: "if_required",
+        })
+
+        if (stripeError) {
+          setError(stripeError.message ?? "Payment failed")
+          throw stripeError
+        }
+      },
+    }))
+
+    return (
+      <div className="flex flex-col gap-6">
+        <p className="text-sm font-bold tracking-[0.1em] text-[#6b7280] uppercase">
+          Checkout
+        </p>
+
+        <div className="flex flex-col gap-4">
+          <h3 className="text-base font-bold text-ma-text">Billing Information</h3>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-3 rounded-xl border border-[#e5e7eb] bg-white p-3">
+              <User className="size-5 text-[#6b7280]" />
+              <span className="text-sm text-ma-text">{session?.user.name ?? "—"}</span>
+            </div>
+            <div className="flex items-center gap-3 rounded-xl border border-[#e5e7eb] bg-white p-3">
+              <Mail className="size-5 text-[#6b7280]" />
+              <span className="text-sm text-ma-text">{session?.user.email ?? "—"}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <h3 className="text-base font-bold text-ma-text">Payment Method</h3>
+          <div className="rounded-xl border border-[#e5e7eb] bg-white p-4">
+            <PaymentElement />
+          </div>
+        </div>
+
+        {error && (
+          <p className="text-sm text-red-600">{error}</p>
+        )}
+      </div>
+    )
+  },
+)
