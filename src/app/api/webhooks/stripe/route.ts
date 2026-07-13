@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { eq } from "drizzle-orm"
+import type Stripe from "stripe"
 
 import { db } from "@/infrastructure/database/client"
 import { orders } from "@/infrastructure/database/schema/course"
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
 
     switch (event.type) {
       case "payment_intent.succeeded": {
-        const paymentIntent = event.data.object
+        const paymentIntent = event.data.object as Stripe.PaymentIntent
         const stripePaymentIntentId = paymentIntent.id
 
         const order = await db
@@ -46,7 +47,7 @@ export async function POST(request: Request) {
           Sentry.captureMessage("Order not found for completed PaymentIntent", {
             extra: { stripePaymentIntentId },
           })
-          return NextResponse.json({ error: "Order not found" }, { status: 404 })
+          return NextResponse.json({ received: true })
         }
 
         if (order.paymentStatus === "paid") {
@@ -58,7 +59,7 @@ export async function POST(request: Request) {
       }
 
       case "payment_intent.payment_failed": {
-        const paymentIntent = event.data.object
+        const paymentIntent = event.data.object as Stripe.PaymentIntent
         const stripePaymentIntentId = paymentIntent.id
         const lastError = paymentIntent.last_payment_error?.message ?? "Unknown error"
 

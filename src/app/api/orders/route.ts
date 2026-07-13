@@ -88,9 +88,35 @@ export async function POST(request: Request) {
 
     const amount = course.discountedPrice ?? course.price
 
+    if (course.isFree) {
+      const [inserted] = await db
+        .insert(orders)
+        .values({
+          studentId: currentUser.id,
+          courseId,
+          amount,
+          paymentStatus: "pending",
+          source: "purchase",
+        })
+        .onConflictDoNothing()
+        .returning()
+
+      const order = inserted ?? existingOrder!
+
+      if (!order) {
+        return NextResponse.json(
+          { error: "Failed to create order" },
+          { status: 500 }
+        )
+      }
+
+      const result = await completeOrder(order.id)
+      return NextResponse.json(result, { status: 201 })
+    }
+
     const stripe = getStripe()
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: course.isFree ? 0 : Math.round(amount * 100),
+      amount: Math.round(amount * 100),
       currency: "usd",
       metadata: {
         courseId,
@@ -119,11 +145,6 @@ export async function POST(request: Request) {
         { error: "Failed to create order" },
         { status: 500 }
       )
-    }
-
-    if (course.isFree) {
-      const result = await completeOrder(order.id)
-      return NextResponse.json(result, { status: 201 })
     }
 
     return NextResponse.json({

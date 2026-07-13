@@ -9,7 +9,7 @@ export interface OrderResult {
 }
 
 export async function completeOrder(orderId: string): Promise<OrderResult> {
-  const order = await db
+  let order = await db
     .select()
     .from(orders)
     .where(eq(orders.id, orderId))
@@ -26,17 +26,21 @@ export async function completeOrder(orderId: string): Promise<OrderResult> {
       .where(eq(enrollments.orderId, orderId))
       .then((r) => r[0] ?? null)
 
-    return { order, enrollment: existing }
-  }
+    if (existing) {
+      return { order, enrollment: existing }
+    }
+  } else {
+    const [updated] = await db
+      .update(orders)
+      .set({ paymentStatus: "paid" })
+      .where(eq(orders.id, orderId))
+      .returning()
 
-  const [updated] = await db
-    .update(orders)
-    .set({ paymentStatus: "paid" })
-    .where(eq(orders.id, orderId))
-    .returning()
+    if (!updated) {
+      throw new Error(`Failed to update order: ${orderId}`)
+    }
 
-  if (!updated) {
-    throw new Error(`Failed to update order: ${orderId}`)
+    order = updated
   }
 
   let enrollment: typeof enrollments.$inferSelect | null = null
@@ -45,8 +49,8 @@ export async function completeOrder(orderId: string): Promise<OrderResult> {
       .insert(enrollments)
       .values({
         orderId,
-        studentId: updated.studentId,
-        courseId: updated.courseId,
+        studentId: order.studentId,
+        courseId: order.courseId,
         status: "active",
       })
       .onConflictDoNothing()
@@ -66,5 +70,5 @@ export async function completeOrder(orderId: string): Promise<OrderResult> {
       .then((r) => r[0] ?? null)
   }
 
-  return { order: updated, enrollment }
+  return { order, enrollment }
 }
