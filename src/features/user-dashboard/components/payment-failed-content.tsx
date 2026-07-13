@@ -3,9 +3,11 @@ import { TransactionDetails } from "./transaction-details"
 
 export function PaymentFailedContent({
   mode,
+  message,
   onRetry,
 }: {
   mode: "payment" | "enrollment"
+  message?: string | null
   onRetry?: () => void
 }) {
   return (
@@ -21,9 +23,9 @@ export function PaymentFailedContent({
           {mode === "payment" ? "Payment Failed" : "Enrollment Failed"}
         </h2>
         <p className="mt-3 text-base tracking-[-1.5%] text-[#6b7280]">
-          {mode === "payment"
+          {message ?? (mode === "payment"
             ? "Transaction could not be processed"
-            : "Could not complete enrollment"}
+            : "Could not complete enrollment")}
         </p>
       </div>
 

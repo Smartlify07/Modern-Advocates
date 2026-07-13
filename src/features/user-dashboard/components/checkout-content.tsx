@@ -41,6 +41,8 @@ export function CheckoutContent() {
   const [modalOpen, setModalOpen] = useState(false)
   const [orderId, setOrderId] = useState<string | null>(null)
   const [clientSecret, setClientSecret] = useState<string | null>(null)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [formKey, setFormKey] = useState(0)
   const checkoutFormRef = useRef<CheckoutFormHandle>(null)
 
   const { data: course } = useQuery<OrderSummaryCourseData>({
@@ -59,6 +61,18 @@ export function CheckoutContent() {
     enabled: !!courseId,
   })
 
+  const initPayment = useCallback((courseId: string) => {
+    createPaymentIntent(courseId).then(({ orderId, clientSecret }) => {
+      setOrderId(orderId)
+      setClientSecret(clientSecret)
+      setPaymentState("ready")
+    }).catch(() => {
+      setPaymentState("payment_failed")
+      setErrorMessage("Could not initialize payment")
+      setModalOpen(true)
+    })
+  }, [])
+
   useEffect(() => {
     if (!course || !courseId) return
     if (course.isFree) {
@@ -70,19 +84,13 @@ export function CheckoutContent() {
         }
       }).catch(() => {
         setPaymentState("payment_failed")
+        setErrorMessage("Could not process free enrollment")
         setModalOpen(true)
       })
       return
     }
-    createPaymentIntent(courseId).then(({ orderId, clientSecret }) => {
-      setOrderId(orderId)
-      setClientSecret(clientSecret)
-      setPaymentState("ready")
-    }).catch(() => {
-      setPaymentState("payment_failed")
-      setModalOpen(true)
-    })
-  }, [course, courseId, router])
+    initPayment(courseId)
+  }, [course, courseId, router, initPayment])
 
   const handlePay = useCallback(async () => {
     if (!checkoutFormRef.current || !orderId) return
@@ -93,28 +101,21 @@ export function CheckoutContent() {
       setPaymentState("enrollment_complete")
       setModalOpen(true)
       setTimeout(() => router.push("/my-learning"), 1000)
-    } catch {
+    } catch (err: unknown) {
       setPaymentState("payment_failed")
+      setErrorMessage(err instanceof Error ? err.message : "Payment could not be processed")
       setModalOpen(true)
     }
   }, [orderId, router])
 
   const handleRetry = useCallback(() => {
     setModalOpen(false)
+    setFormKey((k) => k + 1)
     setPaymentState("loading")
-    setClientSecret(null)
-    setOrderId(null)
     if (courseId) {
-      createPaymentIntent(courseId).then(({ orderId, clientSecret }) => {
-        setOrderId(orderId)
-        setClientSecret(clientSecret)
-        setPaymentState("ready")
-      }).catch(() => {
-        setPaymentState("payment_failed")
-        setModalOpen(true)
-      })
+      initPayment(courseId)
     }
-  }, [courseId])
+  }, [courseId, initPayment])
 
   const handleModalChange = useCallback((open: boolean) => {
     if (!open && paymentState === "payment_failed") {
@@ -169,7 +170,7 @@ export function CheckoutContent() {
       {clientSecret && orderId ? (
         <Elements stripe={stripePromise} options={{ clientSecret }}>
           <div className="mt-8 grid gap-8 md:grid-cols-2 lg:gap-12">
-            <CheckoutForm ref={checkoutFormRef} />
+            <CheckoutForm key={formKey} ref={checkoutFormRef} />
             <div>
               <OrderSummaryCard
                 course={course}
@@ -187,7 +188,7 @@ export function CheckoutContent() {
 
       <PaymentReceiptModal open={modalOpen} onOpenChange={handleModalChange}>
         {paymentState === "payment_failed" ? (
-          <PaymentFailedContent mode="payment" onRetry={handleRetry} />
+          <PaymentFailedContent mode="payment" message={errorMessage} onRetry={handleRetry} />
         ) : (
           <PaymentSuccessContent
             amount={`$ ${displayPrice} USD`}
