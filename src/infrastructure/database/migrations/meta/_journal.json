@@ -36,6 +36,13 @@
       "when": 1783729572506,
       "tag": "0004_stale_paibok",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1783958845548,
+      "tag": "0005_hot_quentin_quire",
+      "breakpoints": true
     }
   ]
 }
