@@ -12,9 +12,11 @@ export function useCheckoutPayment() {
   const [errorMessage, setErrorMessage] = useState<FormattedStripeError | null>(null)
   const [paymentReady, setPaymentReady] = useState(false)
   const [formKey, setFormKey] = useState(0)
+  const [paymentSubmitted, setPaymentSubmitted] = useState(false)
 
   const initPayment = useCallback(async (courseId: string) => {
     setPaymentState("loading")
+    setPaymentSubmitted(false)
     try {
       const res = await createPaymentIntent(courseId)
       setOrderId(res.orderId)
@@ -34,6 +36,15 @@ export function useCheckoutPayment() {
       if (enrollment?.status === "active") {
         setPaymentState("enrollment_complete")
         setModalOpen(true)
+      } else {
+        setPaymentState("payment_failed")
+        setErrorMessage({
+          title: "Enrollment Failed",
+          description: enrollment?.status === "pending"
+            ? "Enrollment is pending. Please try again."
+            : "Could not complete enrollment for this course.",
+        })
+        setModalOpen(true)
       }
     } catch {
       setPaymentState("payment_failed")
@@ -46,15 +57,29 @@ export function useCheckoutPayment() {
     async (formRef: React.RefObject<CheckoutFormHandle | null>) => {
       if (!formRef.current || !orderId) return
       setPaymentState("processing")
+
       try {
         await formRef.current.submitPayment()
+        setPaymentSubmitted(true)
+      } catch (err: unknown) {
+        setPaymentState("payment_failed")
+        setPaymentSubmitted(false)
+        const e = err as { type?: string; code?: string; message?: string } | null
+        setErrorMessage(formatStripeError({ type: e?.type, code: e?.code, message: e?.message }))
+        setModalOpen(true)
+        return
+      }
+
+      try {
         await confirmPaymentOnServer(orderId)
         setPaymentState("enrollment_complete")
         setModalOpen(true)
-      } catch (err: unknown) {
-        setPaymentState("payment_failed")
-        const e = err as { type?: string; code?: string; message?: string } | null
-        setErrorMessage(formatStripeError({ type: e?.type, code: e?.code, message: e?.message }))
+      } catch {
+        setPaymentState("confirmation_needed")
+        setErrorMessage({
+          title: "Confirmation Pending",
+          description: "Your payment was received but we couldn't confirm your enrollment. Please retry.",
+        })
         setModalOpen(true)
       }
     },
@@ -62,18 +87,36 @@ export function useCheckoutPayment() {
   )
 
   const handleRetry = useCallback(
-    (courseId: string) => {
+    async (courseId: string) => {
       setModalOpen(false)
       setPaymentReady(false)
-      setFormKey((k) => k + 1)
-      initPayment(courseId)
+
+      if (paymentSubmitted) {
+        setPaymentState("processing")
+        try {
+          await confirmPaymentOnServer(orderId!)
+          setPaymentState("enrollment_complete")
+          setPaymentSubmitted(false)
+          setModalOpen(true)
+        } catch {
+          setPaymentState("confirmation_needed")
+          setErrorMessage({
+            title: "Confirmation Pending",
+            description: "Your payment was received but we couldn't confirm your enrollment. Please retry.",
+          })
+          setModalOpen(true)
+        }
+      } else {
+        setFormKey((k) => k + 1)
+        initPayment(courseId)
+      }
     },
-    [initPayment],
+    [paymentSubmitted, orderId, initPayment],
   )
 
   const handleModalChange = useCallback((open: boolean) => {
     if (!open) {
-      setPaymentState((prev) => (prev === "payment_failed" ? "ready" : prev))
+      setPaymentState((prev) => (prev === "payment_failed" || prev === "confirmation_needed" ? "ready" : prev))
     }
     setModalOpen(open)
   }, [])

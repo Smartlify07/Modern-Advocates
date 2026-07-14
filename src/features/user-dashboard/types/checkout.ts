@@ -5,6 +5,7 @@ export type PaymentState =
   | "ready"
   | "processing"
   | "enrollment_complete"
+  | "confirmation_needed"
   | "payment_failed"
 
 export interface CheckoutFormHandle {
