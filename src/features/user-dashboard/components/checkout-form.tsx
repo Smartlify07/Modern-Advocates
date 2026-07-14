@@ -5,10 +5,7 @@ import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js"
 import { User, Mail } from "lucide-react"
 
 import { authClient } from "@/infrastructure/auth/client"
-
-export interface CheckoutFormHandle {
-  submitPayment: () => Promise<void>
-}
+import type { CheckoutFormHandle } from "@/features/user-dashboard/types/checkout"
 
 export const CheckoutForm = forwardRef<CheckoutFormHandle, { onReadyChange?: (ready: boolean) => void }>(
   function CheckoutForm({ onReadyChange }, ref) {
