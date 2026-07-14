@@ -8,16 +8,21 @@ export type OrderSummaryCourseData = {
   price: number
   discountedPrice: number | null
   thumbnailUrl: string | null
+  isFree?: boolean
 }
 
 export function OrderSummaryCard({
   course,
   onPay,
+  onError,
   processing,
+  disabled,
 }: {
   course: OrderSummaryCourseData
-  onPay: () => void
+  onPay?: () => void
+  onError?: (msg: string) => void
   processing: boolean
+  disabled?: boolean
 }) {
   const displayPrice = course.discountedPrice ?? course.price
   const originalPrice = course.discountedPrice ? course.price : null
@@ -69,7 +74,7 @@ export function OrderSummaryCard({
       <button
         type="button"
         onClick={onPay}
-        disabled={processing}
+        disabled={processing || disabled}
         className="flex w-full items-center justify-center gap-2 rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
       >
         {processing ? (

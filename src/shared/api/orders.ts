@@ -24,8 +24,10 @@ export type Enrollment = {
 }
 
 export type CreateOrderResponse = { order: Order; enrollment: Enrollment | null }
+export type CreatePaymentIntentResponse = { orderId: string; clientSecret: string }
 export type OrderStatusResponse = { order: Order; enrollment: Enrollment | null }
 export type RetryEnrollmentResponse = { enrollment: Enrollment }
+export type ConfirmPaymentResponse = { order: Order; enrollment: Enrollment | null }
 
 export async function createOrder(courseId: string): Promise<CreateOrderResponse> {
   const res = await fetch("/api/orders", {
@@ -36,6 +38,30 @@ export async function createOrder(courseId: string): Promise<CreateOrderResponse
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
     throw new Error(body.error ?? "Failed to create order")
+  }
+  return res.json()
+}
+
+export async function createPaymentIntent(courseId: string): Promise<CreatePaymentIntentResponse> {
+  const res = await fetch("/api/orders", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ courseId }),
+  })
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error ?? "Failed to create payment")
+  }
+  return res.json()
+}
+
+export async function confirmPaymentOnServer(orderId: string): Promise<ConfirmPaymentResponse> {
+  const res = await fetch(`/api/orders/${orderId}/confirm-payment`, {
+    method: "POST",
+  })
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error ?? "Failed to confirm payment")
   }
   return res.json()
 }
