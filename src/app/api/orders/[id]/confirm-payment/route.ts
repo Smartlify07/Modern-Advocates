@@ -43,13 +43,19 @@ export async function POST(
     if (order.stripePaymentIntentId) {
       const stripe = getStripe()
       const paymentIntent = await stripe.paymentIntents.retrieve(
-        order.stripePaymentIntentId,
+        order.stripePaymentIntentId
+      )
+      console.log(
+        "Debugging...",
+        `Stripe:${stripe}`,
+        `PaymentIntent: ${paymentIntent}`,
+        `Order: ${order}`
       )
 
       if (paymentIntent.status !== "succeeded") {
         return NextResponse.json(
           { error: `Payment not confirmed (status: ${paymentIntent.status})` },
-          { status: 400 },
+          { status: 400 }
         )
       }
     }
@@ -59,12 +65,21 @@ export async function POST(
     return NextResponse.json(result)
   } catch (error) {
     if (error instanceof UnauthorizedError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
     if (error instanceof ForbiddenError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      )
     }
     Sentry.captureException(error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
