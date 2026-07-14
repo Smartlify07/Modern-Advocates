@@ -46,7 +46,7 @@ export function FreeCheckoutView({
             polling={false}
             onRedirect={
               paymentState === "enrollment_complete"
-                ? () => router.push("/my-learning")
+                ? () => router.replace("/my-learning")
                 : undefined
             }
           />

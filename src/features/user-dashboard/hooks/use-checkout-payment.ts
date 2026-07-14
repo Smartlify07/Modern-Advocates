@@ -13,35 +13,33 @@ export function useCheckoutPayment() {
   const [paymentReady, setPaymentReady] = useState(false)
   const [formKey, setFormKey] = useState(0)
 
-  const initPayment = useCallback((courseId: string) => {
+  const initPayment = useCallback(async (courseId: string) => {
     setPaymentState("loading")
-    createPaymentIntent(courseId)
-      .then((res) => {
-        setOrderId(res.orderId)
-        setClientSecret(res.clientSecret)
-        setPaymentState("ready")
-      })
-      .catch(() => {
-        setPaymentState("payment_failed")
-        setErrorMessage({ title: "Service Error", description: "Could not initialize payment." })
-        setModalOpen(true)
-      })
+    try {
+      const res = await createPaymentIntent(courseId)
+      setOrderId(res.orderId)
+      setClientSecret(res.clientSecret)
+      setPaymentState("ready")
+    } catch {
+      setPaymentState("payment_failed")
+      setErrorMessage({ title: "Service Error", description: "Could not initialize payment." })
+      setModalOpen(true)
+    }
   }, [])
 
-  const handleFreeCourse = useCallback((courseId: string) => {
+  const handleFreeCourse = useCallback(async (courseId: string) => {
     setPaymentState("loading")
-    createOrder(courseId)
-      .then(({ enrollment }) => {
-        if (enrollment?.status === "active") {
-          setPaymentState("enrollment_complete")
-          setModalOpen(true)
-        }
-      })
-      .catch(() => {
-        setPaymentState("payment_failed")
-        setErrorMessage({ title: "Enrollment Failed", description: "Could not process free enrollment." })
+    try {
+      const { enrollment } = await createOrder(courseId)
+      if (enrollment?.status === "active") {
+        setPaymentState("enrollment_complete")
         setModalOpen(true)
-      })
+      }
+    } catch {
+      setPaymentState("payment_failed")
+      setErrorMessage({ title: "Enrollment Failed", description: "Could not process free enrollment." })
+      setModalOpen(true)
+    }
   }, [])
 
   const handlePay = useCallback(
