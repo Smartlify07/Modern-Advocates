@@ -49,9 +49,12 @@ export async function POST(
       if (paymentIntent.status !== "succeeded") {
         console.log(
           "Debugging...",
-          `Stripe:${stripe}`,
-          `PaymentIntent: ${paymentIntent}`,
-          `Order: ${order}`
+          `Stripe`,
+          stripe,
+          `PaymentIntent`,
+          paymentIntent,
+          `Order:`,
+          order
         )
 
         return NextResponse.json(
