@@ -3,13 +3,7 @@
 import { ArrowRight, Loader2 } from "lucide-react"
 import Image from "next/image"
 
-export type OrderSummaryCourseData = {
-  title: string
-  price: number
-  discountedPrice: number | null
-  thumbnailUrl: string | null
-  isFree?: boolean
-}
+import type { OrderSummaryCourseData } from "@/features/user-dashboard/types/checkout"
 
 export function OrderSummaryCard({
   course,
