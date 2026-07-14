@@ -45,12 +45,6 @@ export async function POST(
       const paymentIntent = await stripe.paymentIntents.retrieve(
         order.stripePaymentIntentId
       )
-      console.log(
-        "Debugging...",
-        `Stripe:${stripe}`,
-        `PaymentIntent: ${paymentIntent}`,
-        `Order: ${order}`
-      )
 
       if (paymentIntent.status !== "succeeded") {
         return NextResponse.json(
