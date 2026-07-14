@@ -45,14 +45,15 @@ export async function POST(
       const paymentIntent = await stripe.paymentIntents.retrieve(
         order.stripePaymentIntentId
       )
-      console.log(
-        "Debugging...",
-        `Stripe:${stripe}`,
-        `PaymentIntent: ${paymentIntent}`,
-        `Order: ${order}`
-      )
 
       if (paymentIntent.status !== "succeeded") {
+        console.log(
+          "Debugging...",
+          `Stripe:${stripe}`,
+          `PaymentIntent: ${paymentIntent}`,
+          `Order: ${order}`
+        )
+
         return NextResponse.json(
           { error: `Payment not confirmed (status: ${paymentIntent.status})` },
           { status: 400 }
