@@ -47,16 +47,6 @@ export async function POST(
       )
 
       if (paymentIntent.status !== "succeeded") {
-        console.log(
-          "Debugging...",
-          `Stripe`,
-          stripe,
-          `PaymentIntent`,
-          paymentIntent,
-          `Order:`,
-          order
-        )
-
         return NextResponse.json(
           { error: `Payment not confirmed (status: ${paymentIntent.status})` },
           { status: 400 }

@@ -148,6 +148,20 @@ export async function POST(request: Request) {
       )
     }
 
+    if (!inserted && order.stripePaymentIntentId !== paymentIntent.id) {
+      const [updated] = await db
+        .update(orders)
+        .set({ stripePaymentIntentId: paymentIntent.id })
+        .where(eq(orders.id, order.id))
+        .returning()
+      if (updated) {
+        return NextResponse.json({
+          orderId: updated.id,
+          clientSecret: paymentIntent.client_secret,
+        })
+      }
+    }
+
     return NextResponse.json({
       orderId: order.id,
       clientSecret: paymentIntent.client_secret,
