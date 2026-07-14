@@ -2,6 +2,7 @@ import { Suspense } from "react"
 import { redirect } from "next/navigation"
 import { headers } from "next/headers"
 import { eq, and } from "drizzle-orm"
+import { validate as isValidUUID } from "uuid"
 import { auth } from "@/infrastructure/auth/auth"
 import { db } from "@/infrastructure/database/client"
 import { enrollments } from "@/infrastructure/database/schema/course"
@@ -13,9 +14,10 @@ export default async function CheckoutPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   const raw = await searchParams
-  const courseId = typeof raw.courseId === "string" ? raw.courseId : undefined
+  const rawCourseId = raw.courseId
+  const courseId = Array.isArray(rawCourseId) ? rawCourseId[0] : (typeof rawCourseId === "string" ? rawCourseId : undefined)
 
-  if (courseId) {
+  if (courseId && isValidUUID(courseId)) {
     const session = await auth.api.getSession({ headers: await headers() })
 
     if (session) {
