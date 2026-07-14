@@ -31,7 +31,7 @@ export default async function CheckoutPage({
         )
         .then((r) => r[0])
 
-      if (existing) redirect("/my-learning")
+      if (existing) redirect(`/my-learning/${courseId}`)
     }
   }
 
