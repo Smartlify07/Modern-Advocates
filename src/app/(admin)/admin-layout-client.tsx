@@ -1,103 +1,87 @@
 "use client"
 
-import { Fragment } from "react"
-import { usePathname } from "next/navigation"
-import Link from "next/link"
-
 import { AppSidebar } from "@/features/platform/components/app-sidebar"
+import type { NavSection } from "@/features/platform/components/app-sidebar"
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/shared/ui/sidebar"
 import { TooltipProvider } from "@/shared/ui/tooltip"
-import { Separator } from "@/shared/ui/separator"
+import { Input } from "@/shared/ui/input"
+import { Button } from "@/shared/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/shared/ui/breadcrumb"
-import {
+  BellIcon,
+  SearchIcon,
   LayoutDashboardIcon,
   BookOpenIcon,
   UsersIcon,
-  SettingsIcon,
-  CreditCardIcon,
+  PackageIcon,
+  BriefcaseIcon,
+  UserCircle,
+  UserCircle2,
 } from "lucide-react"
-import type { NavItem } from "@/features/platform/components/app-sidebar"
 
-const adminNavItems: NavItem[] = [
-  { title: "Dashboard", url: "/admin", icon: LayoutDashboardIcon },
-  { title: "Courses", url: "/admin/courses", icon: BookOpenIcon },
-  { title: "Users", url: "/admin/users", icon: UsersIcon },
-  { title: "Transactions", url: "/admin/transactions", icon: CreditCardIcon },
-  { title: "Settings", url: "/admin/settings", icon: SettingsIcon },
+const adminNavSections: NavSection[] = [
+  {
+    label: "Main",
+    items: [
+      { title: "Home", url: "/admin/dashboard", icon: LayoutDashboardIcon },
+      { title: "Courses", url: "/admin/courses", icon: BookOpenIcon },
+      { title: "Users", url: "/admin/users", icon: UsersIcon },
+      { title: "Products", url: "/admin/products", icon: PackageIcon },
+    ],
+  },
+  {
+    label: "Business",
+    items: [
+      { title: "Analytics", url: "/admin/analytics", icon: BriefcaseIcon },
+      { title: "Finance", url: "/admin/finance", icon: BriefcaseIcon },
+      { title: "Reports", url: "/admin/reports", icon: BriefcaseIcon },
+    ],
+  },
 ]
-
-const breadcrumbLabels: Record<string, string> = {
-  admin: "Admin",
-  dashboard: "Dashboard",
-  courses: "Courses",
-  users: "Users",
-  transactions: "Transactions",
-  settings: "Settings",
-}
 
 export default function AdminLayoutClient({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const pathname = usePathname()
-
-  const segments = pathname.split("/").filter(Boolean)
-
   return (
     <TooltipProvider>
       <SidebarProvider>
-        <AppSidebar navItems={adminNavItems} />
+        <AppSidebar navSections={adminNavSections} />
         <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b">
-            <div className="flex items-center gap-2 px-4">
-              <SidebarTrigger className="-ms-1" />
-              <Separator
-                orientation="vertical"
-                className="me-2 data-vertical:h-4 data-vertical:self-auto"
-              />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  {segments.map((segment, index) => {
-                    const href = "/" + segments.slice(0, index + 1).join("/")
-                    const label =
-                      breadcrumbLabels[segment] ??
-                      segment.charAt(0).toUpperCase() + segment.slice(1)
-                    const isLast = index === segments.length - 1
-
-                    return (
-                      <Fragment key={href}>
-                        {index > 0 && (
-                          <BreadcrumbSeparator className="hidden md:block" />
-                        )}
-                        <BreadcrumbItem>
-                          {isLast ? (
-                            <BreadcrumbPage>{label}</BreadcrumbPage>
-                          ) : (
-                            <BreadcrumbLink asChild>
-                              <Link href={href}>{label}</Link>
-                            </BreadcrumbLink>
-                          )}
-                        </BreadcrumbItem>
-                      </Fragment>
-                    )
-                  })}
-                </BreadcrumbList>
-              </Breadcrumb>
+          <header className="border-b px-7.5 py-4">
+            <div className="mx-auto flex shrink-0 items-center justify-between gap-2 lg:max-w-7xl 2xl:max-w-360">
+              <div className="flex items-center gap-4">
+                <div className="relative w-[417px]">
+                  <SearchIcon
+                    strokeWidth={1.5}
+                    className="absolute start-4 top-1/2 size-5.5 -translate-y-1/2 text-muted-foreground"
+                  />
+                  <Input
+                    placeholder="Search for anything..."
+                    className="h-[44px] rounded-button-medium bg-[#f5f5f5] px-14 text-sm placeholder:text-sm"
+                  />
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Button variant="ghost" size="icon" className="relative">
+                  <BellIcon
+                    stroke="#6B7280"
+                    strokeWidth={1.5}
+                    className="size-5"
+                  />
+                  <span className="absolute end-1.5 top-1.5 size-2 rounded-full bg-[#D8727D]" />
+                </Button>
+                <UserCircle2 stroke="#6B7280" strokeWidth={1.5} />
+                <h2 className="text-primary">Admin</h2>
+              </div>
             </div>
           </header>
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+          <div className="">{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </TooltipProvider>
