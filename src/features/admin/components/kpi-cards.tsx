@@ -12,8 +12,20 @@ import { StatCard } from "./stat-card"
 const kpiData = [
   { title: "Users", value: 2340, change: "+12.5%", icon: UsersIcon },
   { title: "Courses", value: 145, change: "+8.2%", icon: BookAudio },
-  { title: "Donation", value: 12800, prefix: "$", change: "+23.1%", icon: GiftIcon },
-  { title: "Sales", value: 45200, prefix: "$", change: "+15.3%", icon: ShoppingBag },
+  {
+    title: "Donation",
+    value: 128000,
+    prefix: "$",
+    change: "+23.1%",
+    icon: GiftIcon,
+  },
+  {
+    title: "Sales",
+    value: 45200,
+    prefix: "$",
+    change: "+15.3%",
+    icon: ShoppingBag,
+  },
 ]
 
 export function KpiCards() {

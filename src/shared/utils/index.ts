@@ -13,7 +13,7 @@ export function formatCompactValue(value: number, prefix?: string): string {
     const formatted = (value / divisor)
       .toFixed(suffix === "k" ? 0 : 1)
       .replace(/\.0$/, "")
-    return `${formatted}${suffix}`
+    return `${prefix ?? ""}${formatted}${suffix}`
   }
   return `${prefix ?? ""}${value.toLocaleString()}`
 }
