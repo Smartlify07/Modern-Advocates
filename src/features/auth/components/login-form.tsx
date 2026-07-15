@@ -81,7 +81,7 @@ export function LoginForm({
       setError("Failed to sign in. Please try again.")
       return
     }
-    router.push("/dashboard")
+    router.push(data?.user?.role === "admin" ? "/admin" : "/dashboard")
   }
 
   const handleResendCode = async () => {

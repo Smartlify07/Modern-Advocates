@@ -116,6 +116,7 @@ async function reset() {
 async function seed() {
   await reset()
 
+  const adminId = randomUUID()
   const tutorId = randomUUID()
   const student1Id = randomUUID()
   const student2Id = randomUUID()
@@ -126,6 +127,13 @@ async function seed() {
   const catRevenueGenerationId = randomUUID()
 
   await db.insert(user).values([
+    {
+      id: adminId,
+      name: "Admin User",
+      email: "admin@modernadvocates.com",
+      emailVerified: true,
+      role: "admin",
+    },
     {
       id: tutorId,
       name: "Maxwell Anthony",
@@ -153,6 +161,12 @@ async function seed() {
   ])
 
   await db.insert(account).values([
+    {
+      id: randomUUID(),
+      accountId: adminId,
+      providerId: "credential",
+      userId: adminId,
+    },
     {
       id: randomUUID(),
       accountId: tutorId,
@@ -264,7 +278,7 @@ async function seed() {
   }
 
   console.log(
-    `Seed complete — 4 users, 3 categories, 3 courses, 36 modules, 180 topics, 9 reviews`
+    `Seed complete — 5 users, 3 categories, 3 courses, 36 modules, 180 topics, 9 reviews`
   )
 }
 
