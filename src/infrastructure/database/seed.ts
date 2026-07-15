@@ -130,7 +130,7 @@ async function seed() {
     {
       id: adminId,
       name: "Admin User",
-      email: "admin@modernadvocates.com",
+      email: "testmodadvincadmin@gmail.com",
       emailVerified: true,
       role: "admin",
     },
