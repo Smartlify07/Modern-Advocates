@@ -1,5 +1,7 @@
 "use client"
 
+import { useState, useCallback } from "react"
+import { toast } from "sonner"
 import { Button } from "@/shared/ui/button"
 import { CardTitle } from "@/shared/ui/card"
 import { Skeleton } from "@/shared/ui/skeleton"
@@ -13,6 +15,9 @@ import {
 } from "@/shared/ui/table"
 import { KpiCards } from "@/features/admin/components/kpi-cards"
 import { UserTable } from "@/features/admin/components/user-table"
+import { SuspendUserDialog } from "@/features/admin/users/components/suspend-user-dialog"
+import { ActivateUserDialog } from "@/features/admin/users/components/activate-user-dialog"
+import { DeleteUserDialog } from "@/features/admin/users/components/delete-user-dialog"
 import { useUsers, useSuspendUser, useActivateUser, useDeleteUser } from "@/features/admin/users/hooks/use-users"
 import type { User as UserType } from "@/features/admin/users/types"
 import { AlertCircleIcon, RefreshCwIcon } from "lucide-react"
@@ -60,15 +65,31 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
 }
 
 export default function AdminDashboardPage() {
+  const [suspendOpen, setSuspendOpen] = useState(false)
+  const [activateOpen, setActivateOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<UserType | null>(null)
+
   const { data, isLoading, isError, error, refetch } = useUsers({ page: 1, pageSize: 5 })
 
   const suspendMutation = useSuspendUser()
   const activateMutation = useActivateUser()
   const deleteMutation = useDeleteUser()
 
-  const handleSuspend = (user: UserType) => suspendMutation.mutate(user.id)
-  const handleActivate = (user: UserType) => activateMutation.mutate(user.id)
-  const handleDelete = (user: UserType) => deleteMutation.mutate(user.id)
+  const handleSuspend = useCallback((user: UserType) => {
+    setSelectedUser(user)
+    setSuspendOpen(true)
+  }, [])
+
+  const handleActivate = useCallback((user: UserType) => {
+    setSelectedUser(user)
+    setActivateOpen(true)
+  }, [])
+
+  const handleDelete = useCallback((user: UserType) => {
+    setSelectedUser(user)
+    setDeleteOpen(true)
+  }, [])
 
   return (
     <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
@@ -100,6 +121,36 @@ export default function AdminDashboardPage() {
           />
         )}
       </div>
+
+      <SuspendUserDialog
+        open={suspendOpen}
+        onOpenChange={setSuspendOpen}
+        user={selectedUser}
+        onConfirm={(u) =>
+          suspendMutation.mutateAsync(u.id).then(() => setSuspendOpen(false)).catch(() => { toast.error("Failed to suspend user"); setSuspendOpen(false) })
+        }
+        isPending={suspendMutation.isPending}
+      />
+
+      <ActivateUserDialog
+        open={activateOpen}
+        onOpenChange={setActivateOpen}
+        user={selectedUser}
+        onConfirm={(u) =>
+          activateMutation.mutateAsync(u.id).then(() => setActivateOpen(false)).catch(() => { toast.error("Failed to activate user"); setActivateOpen(false) })
+        }
+        isPending={activateMutation.isPending}
+      />
+
+      <DeleteUserDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        user={selectedUser}
+        onConfirm={(u) =>
+          deleteMutation.mutateAsync(u.id).then(() => setDeleteOpen(false)).catch(() => { toast.error("Failed to delete user"); setDeleteOpen(false) })
+        }
+        isPending={deleteMutation.isPending}
+      />
     </div>
   )
 }
