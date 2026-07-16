@@ -19,7 +19,6 @@ import {
 import { cn } from "@/shared/utils"
 import {
   MoreHorizontalIcon,
-  EyeIcon,
   BanIcon,
   UserCheckIcon,
   Trash2Icon,
