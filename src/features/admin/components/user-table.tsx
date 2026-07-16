@@ -21,79 +21,36 @@ import {
   MoreHorizontalIcon,
   EyeIcon,
   BanIcon,
+  UserCheckIcon,
   Trash2Icon,
   User,
 } from "lucide-react"
+import type { User as UserType } from "@/features/admin/users/types"
 
-interface User {
-  name: string
-  email: string
-  course: string
-  status: "Active" | "Inactive"
-  lastLogin: string
-  avatar: string
+interface UserTableProps {
+  users: UserType[]
+  onSuspend: (user: UserType) => void
+  onActivate: (user: UserType) => void
+  onDelete: (user: UserType) => void
 }
 
-const users: User[] = [
-  {
-    name: "Jerome Bell",
-    email: "jerome.bell@example.com",
-    course: "UI/UX Design",
-    status: "Active",
-    lastLogin: "2 hours ago",
-    avatar: "JB",
-  },
-  {
-    name: "Marvin McKinney",
-    email: "marvin.m@example.com",
-    course: "Web Development",
-    status: "Active",
-    lastLogin: "1 day ago",
-    avatar: "MM",
-  },
-  {
-    name: "Eleanor Pena",
-    email: "eleanor.pena@example.com",
-    course: "Data Science",
-    status: "Inactive",
-    lastLogin: "3 days ago",
-    avatar: "EP",
-  },
-  {
-    name: "Dianne Russell",
-    email: "dianne.r@example.com",
-    course: "Digital Marketing",
-    status: "Active",
-    lastLogin: "5 hours ago",
-    avatar: "DR",
-  },
-  {
-    name: "Cody Fisher",
-    email: "cody.fisher@example.com",
-    course: "Mobile Development",
-    status: "Active",
-    lastLogin: "1 week ago",
-    avatar: "CF",
-  },
-]
-
-export function UserTable() {
+export function UserTable({ users, onSuspend, onActivate, onDelete }: UserTableProps) {
   return (
     <div className="rounded-t-2xl">
       <Table>
         <TableHeader className="rounded-t-2xl">
           <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
             <TableHead className="w-[220px]">User</TableHead>
-            <TableHead className="]">Email</TableHead>
+            <TableHead>Email</TableHead>
             <TableHead className="text-center">Course Enrolled</TableHead>
-            <TableHead className="">Status</TableHead>
-            <TableHead className="">Last Login</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Last Login</TableHead>
             <TableHead className="text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {users.map((user) => (
-            <TableRow className="hover:bg-[#F5F7FA]" key={user.email}>
+            <TableRow className="hover:bg-[#F5F7FA]" key={user.id}>
               <TableCell>
                 <span className="font-normal">{user.name}</span>
               </TableCell>
@@ -101,20 +58,19 @@ export function UserTable() {
                 {user.email}
               </TableCell>
               <TableCell className="text-center">
-                {user.course.length}
+                {user.courseEnrolled}
               </TableCell>
               <TableCell>
                 <Badge
                   variant="secondary"
                   className={cn(
-                    `${
-                      user.status === "Active"
-                        ? "bg-green-700/10 text-green-700"
-                        : "bg-destructive/10 text-destructive"
-                    } rounded-[8px] font-normal`
+                    user.status === "active"
+                      ? "bg-green-700/10 text-green-700"
+                      : "bg-amber-100 text-amber-800",
+                    "rounded-[8px] font-normal"
                   )}
                 >
-                  {user.status}
+                  {user.status === "active" ? "Active" : "Suspended"}
                 </Badge>
               </TableCell>
               <TableCell className="text-muted-foreground">
@@ -137,15 +93,29 @@ export function UserTable() {
                         <User strokeWidth={1.5} className="size-4" />
                         View user
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="gap-2.5 p-2">
-                        <BanIcon strokeWidth={1.5} className="size-4" />
-                        Suspend user
-                      </DropdownMenuItem>
+                      {user.status === "active" ? (
+                        <DropdownMenuItem
+                          className="gap-2.5 p-2"
+                          onSelect={() => onSuspend(user)}
+                        >
+                          <BanIcon strokeWidth={1.5} className="size-4" />
+                          Suspend user
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem
+                          className="gap-2.5 p-2"
+                          onSelect={() => onActivate(user)}
+                        >
+                          <UserCheckIcon strokeWidth={1.5} className="size-4" />
+                          Reactivate user
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuGroup>
                     <Separator className="my-1.5" />
                     <DropdownMenuItem
                       className="gap-2.5 p-2"
                       variant="destructive"
+                      onSelect={() => onDelete(user)}
                     >
                       <Trash2Icon strokeWidth={1.5} className="size-4" />
                       Delete user
