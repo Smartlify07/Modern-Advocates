@@ -19,19 +19,27 @@ interface DeleteUserDialogProps {
   isPending: boolean
 }
 
-export function DeleteUserDialog({ open, onOpenChange, user, onConfirm, isPending }: DeleteUserDialogProps) {
+export function DeleteUserDialog({
+  open,
+  onOpenChange,
+  user,
+  onConfirm,
+  isPending,
+}: DeleteUserDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="px-7.5 py-4 sm:max-w-xl [&>button]:end-7.5">
+      <DialogContent className="px-7.5 py-4 sm:max-w-xl [&>button]:end-7.5 [&>button]:top-4">
         <DialogHeader className="-mx-7.5 border-b px-7.5 pb-4">
           <DialogTitle className="text-base">Delete User</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col items-center gap-3 py-8">
-          <div className="flex size-12 items-center justify-center rounded-full bg-destructive/10">
-            <Trash2Icon className="size-6 text-destructive" />
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex size-20 items-center justify-center rounded-full bg-destructive/10">
+            <div className="flex size-10 items-center justify-center rounded-full bg-destructive">
+              <Trash2Icon className="size-5 text-white" />
+            </div>
           </div>
-          <p className="text-base font-semibold">Delete this user?</p>
-          <p className="max-w-sm text-center text-sm text-muted-foreground">
+          <p className="text-[30px] font-semibold">Delete this user?</p>
+          <p className="text-left align-middle text-sm tracking-[-1.5%] text-muted-foreground">
             This action is permanent and cannot be undone. The user will be
             removed from the system and all their data including enrollments,
             course progress, certificates, and purchase history will be
@@ -50,10 +58,16 @@ export function DeleteUserDialog({ open, onOpenChange, user, onConfirm, isPendin
           <Button
             variant="destructive"
             className="h-[53px] flex-1 rounded-button-medium px-6 py-4"
-            onClick={() => { if (user && !isPending) onConfirm(user) }}
+            onClick={() => {
+              if (user && !isPending) onConfirm(user)
+            }}
             disabled={isPending}
           >
-            {isPending ? <Loader2Icon className="size-5 animate-spin" /> : "Delete User"}
+            {isPending ? (
+              <Loader2Icon className="size-5 animate-spin" />
+            ) : (
+              "Delete User"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
