@@ -3,6 +3,14 @@
 import { Button } from "@/shared/ui/button"
 import { CardTitle } from "@/shared/ui/card"
 import { Skeleton } from "@/shared/ui/skeleton"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/shared/ui/table"
 import { KpiCards } from "@/features/admin/components/kpi-cards"
 import { UserTable } from "@/features/admin/components/user-table"
 import { useUsers, useSuspendUser, useActivateUser, useDeleteUser } from "@/features/admin/users/hooks/use-users"
@@ -11,18 +19,30 @@ import { AlertCircleIcon, RefreshCwIcon } from "lucide-react"
 
 function TableSkeleton() {
   return (
-    <div className="space-y-3">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="flex items-center gap-4">
-          <Skeleton className="h-10 w-10 rounded-full" />
-          <div className="flex-1 space-y-2">
-            <Skeleton className="h-4 w-40" />
-            <Skeleton className="h-3 w-60" />
-          </div>
-          <Skeleton className="h-8 w-20" />
-        </div>
-      ))}
-    </div>
+    <Table>
+      <TableHeader className="rounded-t-2xl">
+        <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
+          <TableHead className="w-[220px]">User</TableHead>
+          <TableHead>Email</TableHead>
+          <TableHead className="text-center">Course Enrolled</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Last Login</TableHead>
+          <TableHead className="text-center">Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {Array.from({ length: 5 }).map((_, i) => (
+          <TableRow key={i}>
+            <TableCell><Skeleton className="h-6 w-32" /></TableCell>
+            <TableCell><Skeleton className="h-6 w-44" /></TableCell>
+            <TableCell className="text-center"><Skeleton className="mx-auto h-6 w-12" /></TableCell>
+            <TableCell><Skeleton className="h-6 w-16" /></TableCell>
+            <TableCell><Skeleton className="h-6 w-24" /></TableCell>
+            <TableCell className="text-center"><Skeleton className="mx-auto h-6 w-6 rounded-full" /></TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   )
 }
 
