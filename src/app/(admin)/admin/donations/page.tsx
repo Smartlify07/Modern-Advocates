@@ -45,7 +45,11 @@ export default function AdminDonationsPage() {
 
   const { data: donations = [], isLoading } = useQuery<Donation[]>({
     queryKey: ["admin-donations"],
-    queryFn: () => fetch("/api/admin/donations").then((r) => r.json()),
+    queryFn: async () => {
+      const res = await fetch("/api/admin/donations")
+      if (!res.ok) throw new Error("Failed to fetch donations")
+      return res.json() as Promise<Donation[]>
+    },
     refetchOnWindowFocus: false,
   })
 
