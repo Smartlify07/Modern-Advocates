@@ -1,7 +1,9 @@
 "use client"
 
-import { Lock } from "lucide-react"
+import { useState } from "react"
+import { LoaderCircle, Lock } from "lucide-react"
 import Link from "next/link"
+import { toast } from "sonner"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -44,6 +46,7 @@ export function AuthCodeForm({
   onSubmitCode,
   ...props
 }: AuthCodeFormProps) {
+  const [pending, setPending] = useState(false)
   const form = useForm<z.infer<typeof codeSchema>>({
     resolver: zodResolver(codeSchema),
     defaultValues: {
@@ -59,7 +62,14 @@ export function AuthCodeForm({
       : "Sign up with a different account"
 
   const onSubmit = async (data: z.infer<typeof codeSchema>) => {
-    await onSubmitCode?.(data.code)
+    setPending(true)
+    try {
+      await onSubmitCode?.(data.code)
+    } catch {
+      toast.error(`Failed to ${actionLabel.toLowerCase()}. Please try again.`)
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
@@ -114,9 +124,13 @@ export function AuthCodeForm({
 
           <Button
             type="submit"
-            className="group relative h-[53px] w-full overflow-hidden rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white"
+            disabled={pending}
+            className="group relative h-[53px] w-full overflow-hidden rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white disabled:opacity-60"
           >
-            <span className="relative z-10">{actionLabel}</span>
+            <span className="relative z-10 inline-flex items-center gap-2">
+              {pending && <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />}
+              {actionLabel}
+            </span>
             <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </Button>
 
