@@ -11,7 +11,10 @@ export const auth = betterAuth({
     schema,
   }),
   baseURL: {
-    allowedHosts: ["localhost:*", "modern-advocates.vercel.app"],
+    allowedHosts: [
+      "localhost:*",
+      "modern-advocates.vercel.app",
+    ],
   },
   emailAndPassword: { enabled: true },
 
