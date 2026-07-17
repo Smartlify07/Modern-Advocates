@@ -19,7 +19,7 @@ export const auth = betterAuth({
   emailAndPassword: { enabled: true },
 
   plugins: [
-    admin(),
+    admin({}),
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
         if (process.env.NODE_ENV !== "production")

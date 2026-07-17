@@ -27,7 +27,7 @@ const adminNavSections: NavSection[] = [
   {
     label: "Main",
     items: [
-      { title: "Home", url: "/admin/dashboard", icon: LayoutDashboardIcon },
+      { title: "Home", url: "/admin", icon: LayoutDashboardIcon },
       { title: "Courses", url: "/admin/courses", icon: BookOpenIcon },
       { title: "Users", url: "/admin/users", icon: UsersIcon },
       { title: "Products", url: "/admin/products", icon: PackageIcon },
