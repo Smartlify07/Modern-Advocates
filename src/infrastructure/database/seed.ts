@@ -9,6 +9,7 @@ import {
   courseTopics,
   reviews,
 } from "./schema/course"
+import { donations } from "./schema/donation"
 
 const MODULE_TITLES: Record<string, string[]> = {
   "Build Foundational AI Skills": [
@@ -107,7 +108,8 @@ async function reset() {
       course_topics,
       reviews,
       enrollments,
-      topic_completions
+      topic_completions,
+      donations
     CASCADE
   `)
   console.log("Database cleared")
@@ -277,8 +279,16 @@ async function seed() {
     }
   }
 
+  await db.insert(donations).values([
+    { id: randomUUID(), donorName: "Alice Johnson", donorEmail: "alice@example.com", amount: 800, donationType: "fixed" },
+    { id: randomUUID(), donorName: "Bob Smith", donorEmail: "bob@example.com", amount: 1300, donationType: "monthly" },
+    { id: randomUUID(), donorName: "Carol White", donorEmail: "carol@example.com", amount: 500, donationType: "tier" },
+    { id: randomUUID(), donorName: "David Brown", donorEmail: "david@example.com", amount: 200, donationType: "fixed" },
+    { id: randomUUID(), donorName: "Eve Davis", donorEmail: "eve@example.com", amount: 2500, donationType: "monthly" },
+  ])
+
   console.log(
-    `Seed complete — 5 users, 3 categories, 3 courses, 36 modules, 180 topics, 9 reviews`
+    `Seed complete — 5 users, 3 categories, 3 courses, 36 modules, 180 topics, 9 reviews, 5 donations`
   )
 }
 
