@@ -15,6 +15,7 @@ import {
   courseVideosRelations,
   videoProgressRelations,
 } from "./video"
+import { donations, donationType } from "./donation"
 
 export const schema = {
   user,
@@ -36,4 +37,6 @@ export const schema = {
   videoProgress,
   courseVideosRelations,
   videoProgressRelations,
+  donations,
+  donationType,
 }

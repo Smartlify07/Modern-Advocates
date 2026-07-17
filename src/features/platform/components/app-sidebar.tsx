@@ -1,14 +1,16 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 import { NavUser } from "@/features/platform/components/nav-user"
-import { TeamSwitcher } from "@/features/platform/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarGroup,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -16,7 +18,6 @@ import {
 } from "@/shared/ui/sidebar"
 import {
   GalleryVerticalEnd,
-  GalleryVerticalEndIcon,
   type LucideIcon,
 } from "lucide-react"
 
@@ -26,10 +27,17 @@ export type NavItem = {
   icon: LucideIcon
 }
 
+export type NavSection = {
+  label: string
+  items: NavItem[]
+}
+
 export function AppSidebar({
-  navItems,
+  navSections,
   ...props
-}: React.ComponentProps<typeof Sidebar> & { navItems: NavItem[] }) {
+}: React.ComponentProps<typeof Sidebar> & { navSections: NavSection[] }) {
+  const pathname = usePathname()
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -49,18 +57,35 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent className="p-2">
-        <SidebarMenu>
-          {navItems.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild tooltip={item.title}>
-                <Link href={item.url}>
-                  <item.icon className="size-4" />
-                  <span>{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
+        {navSections.map((section) => (
+          <SidebarGroup key={section.label}>
+            <SidebarGroupLabel>{section.label}</SidebarGroupLabel>
+            <SidebarMenu>
+              {section.items.map((item) => {
+                const isActive = pathname === item.url
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      isActive={isActive}
+                      className={
+                        isActive
+                          ? "bg-purple-50 text-purple-700 hover:bg-purple-100 hover:text-purple-700!"
+                          : ""
+                      }
+                    >
+                      <Link href={item.url}>
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )
+              })}
+            </SidebarMenu>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

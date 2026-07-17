@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
-import { desc } from "drizzle-orm"
+import { desc, eq } from "drizzle-orm"
 import { db } from "@/infrastructure/database/client"
+import { user } from "@/infrastructure/database/schema/auth"
 import {
   courses,
   courseModules,
@@ -13,7 +14,7 @@ import * as Sentry from "@sentry/nextjs"
 
 export async function GET() {
   try {
-    const { user } = await requireInstructorOrAdmin()
+    const { user: sessionUser } = await requireInstructorOrAdmin()
 
     const list = await db
       .select({
@@ -22,15 +23,20 @@ export async function GET() {
         level: courses.level,
         status: courses.status,
         price: courses.price,
+        discountedPrice: courses.discountedPrice,
+        isFree: courses.isFree,
+        thumbnailUrl: courses.thumbnailUrl,
         tutorId: courses.tutorId,
+        tutorName: user.name,
         createdAt: courses.createdAt,
       })
       .from(courses)
+      .innerJoin(user, eq(courses.tutorId, user.id))
       .orderBy(desc(courses.createdAt))
 
-    const filtered = user.role === "admin"
+    const filtered = sessionUser.role === "admin"
       ? list
-      : list.filter((c) => c.status === "published" || c.tutorId === user.id)
+      : list.filter((c) => c.status === "published" || c.tutorId === sessionUser.id)
 
     return NextResponse.json(filtered)
   } catch (error) {

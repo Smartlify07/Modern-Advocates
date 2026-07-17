@@ -11,12 +11,22 @@ export const auth = betterAuth({
     schema,
   }),
   baseURL: {
-    allowedHosts: ["localhost:3000", "modern-advocates.vercel.app"],
+    allowedHosts: [
+      "localhost:*",
+      "modern-advocates.vercel.app",
+    ],
   },
   emailAndPassword: { enabled: true },
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      enabled: true,
+    },
+  },
 
   plugins: [
-    admin(),
+    admin({}),
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
         if (process.env.NODE_ENV !== "production")

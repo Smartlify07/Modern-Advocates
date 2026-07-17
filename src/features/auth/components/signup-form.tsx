@@ -1,7 +1,9 @@
 "use client"
 
 import { useState } from "react"
+import { LoaderCircle } from "lucide-react"
 import Link from "next/link"
+import { toast } from "sonner"
 import { Controller, useForm } from "react-hook-form"
 import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -60,7 +62,9 @@ export function SignupForm({
       })
       setSignupStep({ name: data.name, email: data.email })
     } catch {
-      setError("Failed to send code. Please try again.")
+      const msg = "Failed to send code. Please try again."
+      setError(msg)
+      toast.error(msg)
     } finally {
       setLoading(false)
     }
@@ -76,7 +80,9 @@ export function SignupForm({
       name: signupStep.name,
     })
     if (signInError) {
-      setError("Failed to sign in. Please try again.")
+      const msg = "Failed to sign in. Please try again."
+      setError(msg)
+      toast.error(msg)
       return
     }
     router.push(data?.user?.role === "admin" ? "/admin" : "/dashboard")
@@ -85,10 +91,16 @@ export function SignupForm({
   const handleResendCode = async () => {
     if (!signupStep) return
     setError(null)
-    await authClient.emailOtp.sendVerificationOtp({
-      email: signupStep.email,
-      type: "sign-in",
-    })
+    try {
+      await authClient.emailOtp.sendVerificationOtp({
+        email: signupStep.email,
+        type: "sign-in",
+      })
+    } catch {
+      const msg = "Failed to resend code. Please try again."
+      setError(msg)
+      toast.error(msg)
+    }
   }
 
   if (signupStep) {
@@ -169,8 +181,9 @@ export function SignupForm({
               disabled={loading}
               className="group relative h-[53px] w-full overflow-hidden rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white disabled:opacity-60"
             >
-              <span className="relative z-10">
-                {loading ? "Sending..." : "Continue"}
+              <span className="relative z-10 inline-flex items-center gap-2">
+                {loading && <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />}
+                Continue
               </span>
               <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             </Button>
