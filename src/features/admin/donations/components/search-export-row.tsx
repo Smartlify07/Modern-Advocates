@@ -2,7 +2,11 @@ import { Input } from "@/shared/ui/input"
 import { Button } from "@/shared/ui/button"
 import { SearchIcon, UploadIcon, ChevronDownIcon } from "lucide-react"
 import {
-  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
 } from "@/shared/ui/dropdown-menu"
 
 interface SearchExportRowProps {
@@ -25,7 +29,8 @@ export function SearchExportRow({
   onSearchChange,
   onTypeFilterChange,
 }: SearchExportRowProps) {
-  const activeLabel = filterOptions.find((o) => o.value === typeFilter)?.label ?? "All Donations"
+  const activeLabel =
+    filterOptions.find((o) => o.value === typeFilter)?.label ?? "All Donations"
 
   return (
     <div className="flex items-center justify-between">
@@ -43,19 +48,23 @@ export function SearchExportRow({
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="h-[44px] gap-2.5 rounded-[8px]"
+              className="h-[44px] w-[176px] justify-between rounded-[8px] bg-white"
             >
               {activeLabel}
               <ChevronDownIcon className="size-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            <DropdownMenuRadioGroup value={typeFilter} onValueChange={onTypeFilterChange}>
+          <DropdownMenuContent className="rounded-[8px]" align="start">
+            <DropdownMenuRadioGroup
+              className="space-y-1"
+              value={typeFilter}
+              onValueChange={onTypeFilterChange}
+            >
               {filterOptions.map((opt) => (
                 <DropdownMenuRadioItem
                   key={opt.value}
                   value={opt.value}
-                  className="data-[state=checked]:bg-ma-admin-primary data-[state=checked]:text-primary-foreground"
+                  className="rounded-[8px] p-2 data-[state=checked]:bg-ma-admin-primary data-[state=checked]:text-primary-foreground [&_svg]:hidden"
                 >
                   {opt.label}
                 </DropdownMenuRadioItem>
