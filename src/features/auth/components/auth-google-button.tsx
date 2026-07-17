@@ -38,7 +38,7 @@ export function AuthGoogleButton({ label }: { label: string }) {
   const handleSignIn = async () => {
     setPending(true)
     try {
-      await authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" })
+      await authClient.signIn.social({ provider: "google", callbackURL: "/auth/callback" })
     } catch {
       toast.error("Failed to sign in with Google. Please try again.")
     } finally {
