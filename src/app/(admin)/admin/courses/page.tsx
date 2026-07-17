@@ -13,7 +13,13 @@ export default function AdminCoursesPage() {
   const [search, setSearch] = useState("")
   const [filter, setFilter] = useState<Filter>("All Courses")
 
-  const { data: courses = [], isLoading } = useQuery<Course[]>({
+  const {
+    data: courses = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery<Course[]>({
     queryKey: ["admin-courses"],
     queryFn: () => fetch("/api/courses").then((r) => r.json()),
     refetchOnWindowFocus: false,
@@ -48,7 +54,13 @@ export default function AdminCoursesPage() {
         filter={filter}
         onFilterChange={setFilter}
       />
-      <CoursesList courses={filtered} isLoading={isLoading} />
+      <CoursesList
+        courses={filtered}
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        refetch={refetch}
+      />
     </div>
   )
 }
