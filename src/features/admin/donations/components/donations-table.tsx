@@ -1,0 +1,46 @@
+"use client"
+
+import { Badge } from "@/shared/ui/badge"
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from "@/shared/ui/table"
+import type { Donation } from "@/features/admin/donations/types"
+import { donationTypeLabels } from "@/features/admin/donations/types"
+
+interface DonationsTableProps { donations: Donation[] }
+
+export function DonationsTable({ donations }: DonationsTableProps) {
+  return (
+    <div className="rounded-t-2xl">
+      <Table>
+        <TableHeader className="rounded-t-2xl">
+          <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#F5F5F5]">
+            <TableHead>Name</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Amount</TableHead>
+            <TableHead>Donation Type</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {donations.map((d) => (
+            <TableRow className="hover:bg-[#F5F7FA]" key={d.id}>
+              <TableCell className="font-normal">{d.donorName}</TableCell>
+              <TableCell className="text-muted-foreground">{d.donorEmail}</TableCell>
+              <TableCell className="font-medium tabular-nums">
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                }).format(d.amount)}
+              </TableCell>
+              <TableCell>
+                <Badge variant="secondary" className="rounded-[8px] bg-ma-admin-primary/10 font-normal text-ma-admin-primary">
+                  {donationTypeLabels[d.donationType]}
+                </Badge>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  )
+}
