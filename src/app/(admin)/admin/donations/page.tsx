@@ -13,6 +13,31 @@ import type { Donation } from "@/features/admin/donations/types"
 
 const ITEMS_PER_PAGE = 10
 
+function TableSkeleton() {
+  return (
+    <Table>
+      <TableHeader className="rounded-t-2xl">
+        <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
+          <TableHead>Name</TableHead>
+          <TableHead>Email</TableHead>
+          <TableHead>Amount</TableHead>
+          <TableHead>Donation Type</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {Array.from({ length: 5 }).map((_, i) => (
+          <TableRow key={i}>
+            <TableCell><Skeleton className="h-6 w-32" /></TableCell>
+            <TableCell><Skeleton className="h-6 w-44" /></TableCell>
+            <TableCell><Skeleton className="h-6 w-20" /></TableCell>
+            <TableCell><Skeleton className="h-6 w-28" /></TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  )
+}
+
 export default function AdminDonationsPage() {
   const [search, setSearch] = useState("")
   const [typeFilter, setTypeFilter] = useState("all")
@@ -58,28 +83,7 @@ export default function AdminDonationsPage() {
       />
 
       {isLoading ? (
-        <div className="rounded-t-2xl">
-          <Table>
-            <TableHeader className="rounded-t-2xl">
-              <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#F5F5F5]">
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Donation Type</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <TableRow key={i} className="hover:bg-[#F5F7FA]">
-                  <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-48" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                  <TableCell><Skeleton className="h-6 w-28 rounded-[8px]" /></TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+        <TableSkeleton />
       ) : filtered.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-2 py-20">
           {donations.length === 0 ? (
