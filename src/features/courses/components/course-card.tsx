@@ -51,9 +51,20 @@ function Content({
   )
 }
 
-function Title({ children }: { children: React.ReactNode }) {
+function Title({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
   return (
-    <h2 className="text-2xl leading-normal font-bold text-ma-text">
+    <h2
+      className={cn(
+        "text-2xl leading-normal font-bold text-ma-text",
+        className
+      )}
+    >
       {children}
     </h2>
   )

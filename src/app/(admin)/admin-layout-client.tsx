@@ -1,48 +1,15 @@
 "use client"
 
-import { AppSidebar } from "@/features/platform/components/app-sidebar"
-import type { NavSection } from "@/features/platform/components/app-sidebar"
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/shared/ui/sidebar"
+import { SidebarNavigation } from "@/features/platform/components/sidebar-navigation"
+import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar"
 import { TooltipProvider } from "@/shared/ui/tooltip"
 import { Input } from "@/shared/ui/input"
 import { Button } from "@/shared/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import {
   BellIcon,
   SearchIcon,
-  LayoutDashboardIcon,
-  BookOpenIcon,
-  UsersIcon,
-  PackageIcon,
-  BriefcaseIcon,
-  UserCircle,
   UserCircle2,
 } from "lucide-react"
-
-const adminNavSections: NavSection[] = [
-  {
-    label: "Main",
-    items: [
-      { title: "Home", url: "/admin", icon: LayoutDashboardIcon },
-      { title: "Courses", url: "/admin/courses", icon: BookOpenIcon },
-      { title: "Users", url: "/admin/users", icon: UsersIcon },
-      { title: "Products", url: "/admin/products", icon: PackageIcon },
-    ],
-  },
-  {
-    label: "Business",
-    items: [
-      { title: "Analytics", url: "/admin/analytics", icon: BriefcaseIcon },
-      { title: "Finance", url: "/admin/finance", icon: BriefcaseIcon },
-      { title: "Reports", url: "/admin/reports", icon: BriefcaseIcon },
-    ],
-  },
-]
-
 export default function AdminLayoutClient({
   children,
 }: {
@@ -51,7 +18,7 @@ export default function AdminLayoutClient({
   return (
     <TooltipProvider>
       <SidebarProvider>
-        <AppSidebar navSections={adminNavSections} />
+        <SidebarNavigation />
         <SidebarInset>
           <header className="border-b px-7.5 py-4">
             <div className="mx-auto flex shrink-0 items-center justify-between gap-2 lg:max-w-7xl 2xl:max-w-360">
