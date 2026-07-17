@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import {
   LayoutGrid,
   PlayCircle,
@@ -13,7 +13,6 @@ import {
   LogOut,
 } from "lucide-react"
 import { cn } from "@/shared/utils"
-import { authClient } from "@/infrastructure/auth/client"
 import {
   Sidebar,
   SidebarContent,
@@ -45,14 +44,15 @@ export function SidebarNavigation({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname()
+  const router = useRouter()
 
   const isActive = (url: string) => {
     if (url === "/admin") return pathname === "/admin"
     return pathname === url || pathname.startsWith(url + "/")
   }
 
-  const handleLogout = async () => {
-    await authClient.signOut()
+  const handleLogout = () => {
+    router.push("/auth/signout")
   }
 
   return (
@@ -142,13 +142,13 @@ export function SidebarNavigation({
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
+      <SidebarFooter className='px-4'>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
               tooltip="Log out"
-              className="text-red-500 hover:bg-red-50 hover:text-red-500!"
+              className="text-red-500 hover:bg-red-50 h-10 text-lg hover:text-red-500!"
             >
               <button onClick={handleLogout} type="button">
                 <LogOut className="size-4" />
