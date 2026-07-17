@@ -10,8 +10,11 @@ export default function SignOutPage() {
 
   useEffect(() => {
     const signOut = async () => {
-      await authClient.signOut()
-      router.push("/login")
+      try {
+        await authClient.signOut()
+      } finally {
+        router.push("/login")
+      }
     }
     signOut()
   }, [router])

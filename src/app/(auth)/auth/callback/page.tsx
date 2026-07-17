@@ -10,8 +10,12 @@ export default function AuthCallbackPage() {
   const { data: session, isPending } = authClient.useSession()
 
   useEffect(() => {
-    if (isPending || !session) return
-    router.push(session.user.role === "admin" ? "/admin" : "/dashboard")
+    if (isPending) return
+    if (!session) {
+      router.replace("/login")
+      return
+    }
+    router.replace(session.user.role === "admin" ? "/admin" : "/dashboard")
   }, [session, isPending, router])
 
   return (
