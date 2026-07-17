@@ -21,6 +21,7 @@ import {
   BriefcaseIcon,
   UserCircle,
   UserCircle2,
+  HeartIcon,
 } from "lucide-react"
 
 const adminNavSections: NavSection[] = [
@@ -30,6 +31,7 @@ const adminNavSections: NavSection[] = [
       { title: "Home", url: "/admin", icon: LayoutDashboardIcon },
       { title: "Courses", url: "/admin/courses", icon: BookOpenIcon },
       { title: "Users", url: "/admin/users", icon: UsersIcon },
+      { title: "Donations", url: "/admin/donations", icon: HeartIcon },
       { title: "Products", url: "/admin/products", icon: PackageIcon },
     ],
   },
