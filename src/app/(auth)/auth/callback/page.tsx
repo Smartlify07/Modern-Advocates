@@ -19,9 +19,11 @@ export default function AuthCallbackPage() {
   }, [session, isPending, router])
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 pt-40">
+    <div className="my-auto flex min-h-0 flex-col items-center justify-center gap-4 justify-self-center">
       <LoaderCircle className="size-8 animate-spin text-ma-admin-primary" />
-      <p className="text-2xl font-semibold text-primary">Signing you in...</p>
+      <p className="text-2xl font-semibold tracking-tight text-primary">
+        Signing you in
+      </p>
     </div>
   )
 }

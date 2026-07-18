@@ -20,9 +20,11 @@ export default function SignOutPage() {
   }, [router])
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 pt-40">
+    <div className="my-auto flex flex-col items-center justify-center gap-4 justify-self-center-safe">
       <LoaderCircle className="size-8 animate-spin text-ma-admin-primary" />
-      <p className="text-2xl font-semibold text-primary">Logging out...</p>
+      <p className="text-2xl font-semibold tracking-tight text-primary">
+        Logging out
+      </p>
     </div>
   )
 }
