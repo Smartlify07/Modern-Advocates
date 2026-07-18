@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 import {
   Dialog,
   DialogContent,
@@ -19,19 +21,34 @@ interface AddMemberDialogProps {
 }
 
 export function AddMemberDialog({ open, onOpenChange }: AddMemberDialogProps) {
-  const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
-  const [managerChecked, setManagerChecked] = useState(false)
-  const [editorChecked, setEditorChecked] = useState(true)
+  const [role, setRole] = useState<"Manager" | "Editor">("Editor")
+  const queryClient = useQueryClient()
 
-  const handleSubmit = () => {
-    if (!fullName.trim() || !email.trim()) return
-    onOpenChange(false)
-    setFullName("")
-    setEmail("")
-    setManagerChecked(false)
-    setEditorChecked(true)
-  }
+  const { mutate, isPending } = useMutation({
+    mutationFn: async () => {
+      const r = await fetch("/api/admin/team", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), role }),
+      })
+      if (!r.ok) {
+        const { error } = await r.json()
+        throw new Error(error ?? "Failed to add team member")
+      }
+      return r.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-team"] })
+      onOpenChange(false)
+      setEmail("")
+      setRole("Editor")
+      toast.success("Team member added")
+    },
+    onError: (err) => {
+      toast.error(err.message)
+    },
+  })
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -47,12 +64,6 @@ export function AddMemberDialog({ open, onOpenChange }: AddMemberDialogProps) {
             </span>
           </p>
           <Input
-            placeholder="Full Name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            className="h-[53px] p-5"
-          />
-          <Input
             placeholder="Email"
             type="email"
             value={email}
@@ -63,14 +74,14 @@ export function AddMemberDialog({ open, onOpenChange }: AddMemberDialogProps) {
             <span className="text-lg font-medium">Assign Role</span>
             <div className="flex items-center gap-6">
               <TeamCheckbox
-                checked={managerChecked}
-                onCheckedChange={setManagerChecked}
+                checked={role === "Manager"}
+                onCheckedChange={(c) => c && setRole("Manager")}
                 id="add-manager"
                 label="Manager"
               />
               <TeamCheckbox
-                checked={editorChecked}
-                onCheckedChange={setEditorChecked}
+                checked={role === "Editor"}
+                onCheckedChange={(c) => c && setRole("Editor")}
                 id="add-editor"
                 label="Editor"
               />
@@ -87,8 +98,10 @@ export function AddMemberDialog({ open, onOpenChange }: AddMemberDialogProps) {
           </Button>
           <Button
             className="h-[53px] flex-1 rounded-button-medium bg-ma-admin-primary px-6 py-4 text-white hover:bg-ma-admin-primary/80"
-            onClick={handleSubmit}
+            onClick={() => mutate()}
+            disabled={isPending || !email.trim()}
           >
+            {isPending ? <Loader2Icon className="size-4 animate-spin" /> : null}
             Add Member
           </Button>
         </DialogFooter>

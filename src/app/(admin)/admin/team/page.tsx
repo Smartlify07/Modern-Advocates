@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useCallback } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { TeamTable } from "@/features/admin/team/components/team-table"
 import { TeamFilterBar } from "@/features/admin/team/components/team-filter-bar"
@@ -9,9 +9,15 @@ import { AddMemberDialog } from "@/features/admin/team/components/add-member-dia
 import { EditPermissionDialog } from "@/features/admin/team/components/edit-permission-dialog"
 import { PaginationBar } from "@/features/admin/team/components/pagination-bar"
 import type { TeamMember } from "@/features/admin/team/types"
-import { mockMembers } from "@/features/admin/team/types"
 
 const PAGE_SIZE = 10
+
+interface ListTeamMembersResponse {
+  members: TeamMember[]
+  total: number
+  page: number
+  pageSize: number
+}
 
 export default function AdminTeamsPage() {
   const [search, setSearch] = useState("")
@@ -21,46 +27,55 @@ export default function AdminTeamsPage() {
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
 
-  const { data: members = mockMembers, isLoading } = useQuery<TeamMember[]>({
-    queryKey: ["admin-team"],
-    queryFn: () => fetch("/api/admin/team").then((r) => r.json()),
+  const { data, isLoading } = useQuery<ListTeamMembersResponse>({
+    queryKey: ["admin-team", search, typeFilter, page],
+    queryFn: () => {
+      const params = new URLSearchParams()
+      if (search) params.set("search", search)
+      if (typeFilter !== "all") params.set("role", typeFilter)
+      params.set("page", String(page))
+      params.set("pageSize", String(PAGE_SIZE))
+      return fetch(`/api/admin/team?${params}`).then((r) => {
+        if (!r.ok) throw new Error("Failed to fetch team members")
+        return r.json()
+      })
+    },
     refetchOnWindowFocus: false,
   })
 
-  const filtered = useMemo(() => {
-    let result = members
-    if (search) {
-      const q = search.toLowerCase()
-      result = result.filter((m) => m.name.toLowerCase().includes(q) || m.email.toLowerCase().includes(q))
-    }
-    if (typeFilter !== "all") result = result.filter((m) => m.role === typeFilter)
-    return result
-  }, [members, search, typeFilter])
+  const handleSearchChange = useCallback((v: string) => {
+    setSearch(v)
+    setPage(1)
+  }, [])
 
-  if (page > Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))) setPage(1)
+  const handleTypeFilterChange = useCallback((v: string) => {
+    setTypeFilter(v)
+    setPage(1)
+  }, [])
 
-  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+  const members = data?.members ?? []
+  const total = data?.total ?? 0
 
   return (
     <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
       <TeamFilterBar
         search={search}
-        onSearchChange={(v) => { setSearch(v); setPage(1) }}
+        onSearchChange={handleSearchChange}
         typeFilter={typeFilter}
-        onTypeFilterChange={(v) => { setTypeFilter(v); setPage(1) }}
+        onTypeFilterChange={handleTypeFilterChange}
         onAddMember={() => setAddDialogOpen(true)}
       />
 
       <div className="flex flex-col gap-8">
         {isLoading ? (
           <TableSkeleton />
-        ) : filtered.length === 0 ? (
+        ) : members.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-2 py-20">
             <p className="text-lg font-medium">
-              {members.length === 0 ? "No team members yet" : "No team members found"}
+              {total === 0 ? "No team members yet" : "No team members found"}
             </p>
             <p className="text-sm text-muted-foreground">
-              {members.length === 0
+              {total === 0
                 ? "Team members will appear here once added."
                 : "There are no team members matching your criteria."}
             </p>
@@ -68,10 +83,10 @@ export default function AdminTeamsPage() {
         ) : (
           <>
             <TeamTable
-              members={paginated}
+              members={members}
               onEdit={(m) => { setSelectedMember(m); setEditDialogOpen(true) }}
             />
-            <PaginationBar page={page} total={filtered.length} pageSize={PAGE_SIZE} onPageChange={setPage} />
+            <PaginationBar page={page} total={total} pageSize={PAGE_SIZE} onPageChange={setPage} />
           </>
         )}
       </div>

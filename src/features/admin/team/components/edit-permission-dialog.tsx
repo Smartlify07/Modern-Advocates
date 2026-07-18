@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 import {
   Dialog,
   DialogContent,
@@ -10,6 +12,7 @@ import {
 } from "@/shared/ui/dialog"
 import { Button } from "@/shared/ui/button"
 import { Input } from "@/shared/ui/input"
+import { Loader2Icon } from "lucide-react"
 import { TeamCheckbox } from "./team-checkbox"
 import type { TeamMember } from "../types"
 
@@ -24,10 +27,58 @@ export function EditPermissionDialog({
   onOpenChange,
   member,
 }: EditPermissionDialogProps) {
-  const [managerChecked, setManagerChecked] = useState(false)
-  const [editorChecked, setEditorChecked] = useState(false)
+  const [role, setRole] = useState<"Manager" | "Editor">(
+    member?.role === "Manager" ? "Manager" : "Editor"
+  )
   const [removeChecked, setRemoveChecked] = useState(false)
+  const queryClient = useQueryClient()
+
+  const updateMutation = useMutation({
+    mutationFn: async () => {
+      const r = await fetch(`/api/admin/team/${member!.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role }),
+      })
+      if (!r.ok) {
+        const { error } = await r.json()
+        throw new Error(error ?? "Failed to update role")
+      }
+      return r.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-team"] })
+      onOpenChange(false)
+      toast.success("Role updated")
+    },
+    onError: (err) => {
+      toast.error(err.message)
+    },
+  })
+
+  const removeMutation = useMutation({
+    mutationFn: async () => {
+      const r = await fetch(`/api/admin/team/${member!.id}`, {
+        method: "DELETE",
+      })
+      if (!r.ok) {
+        const { error } = await r.json()
+        throw new Error(error ?? "Failed to remove member")
+      }
+      return r.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-team"] })
+      onOpenChange(false)
+      toast.success("Team member removed")
+    },
+    onError: (err) => {
+      toast.error(err.message)
+    },
+  })
+
   const isRemove = removeChecked
+  const isPending = updateMutation.isPending || removeMutation.isPending
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -50,15 +101,19 @@ export function EditPermissionDialog({
             <span className="text-sm font-semibold">Assign Role</span>
             <div className="flex items-center gap-6">
               <TeamCheckbox
-                checked={managerChecked}
-                onCheckedChange={(c) => !isRemove && setManagerChecked(c)}
+                checked={role === "Manager"}
+                onCheckedChange={(c) => {
+                  if (!isRemove && c) setRole("Manager")
+                }}
                 id="edit-manager"
                 label="Manager"
                 disabled={isRemove}
               />
               <TeamCheckbox
-                checked={editorChecked}
-                onCheckedChange={(c) => !isRemove && setEditorChecked(c)}
+                checked={role === "Editor"}
+                onCheckedChange={(c) => {
+                  if (!isRemove && c) setRole("Editor")
+                }}
                 id="edit-editor"
                 label="Editor"
                 disabled={isRemove}
@@ -67,10 +122,6 @@ export function EditPermissionDialog({
                 checked={removeChecked}
                 onCheckedChange={(c) => {
                   setRemoveChecked(c)
-                  if (c) {
-                    setManagerChecked(false)
-                    setEditorChecked(false)
-                  }
                 }}
                 id="remove-member"
                 label="Remove member"
@@ -91,15 +142,19 @@ export function EditPermissionDialog({
             <Button
               variant="destructive"
               className="h-[53px] flex-1 rounded-button-medium px-6 py-4"
-              onClick={() => onOpenChange(false)}
+              onClick={() => removeMutation.mutate()}
+              disabled={isPending}
             >
+              {removeMutation.isPending ? <Loader2Icon className="size-4 animate-spin" /> : null}
               Remove
             </Button>
           ) : (
             <Button
               className="h-[53px] flex-1 rounded-button-medium bg-ma-admin-primary px-6 py-4 text-white hover:bg-ma-admin-primary/80"
-              onClick={() => onOpenChange(false)}
+              onClick={() => updateMutation.mutate()}
+              disabled={isPending}
             >
+              {updateMutation.isPending ? <Loader2Icon className="size-4 animate-spin" /> : null}
               Update
             </Button>
           )}

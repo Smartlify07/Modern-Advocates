@@ -46,7 +46,7 @@ export function TeamTable({ members, onEdit }: TeamTableProps) {
               </TableCell>
               <TableCell className="text-muted-foreground">{m.lastLogin}</TableCell>
               <TableCell>
-                {m.role === "Admin" && m.id === "1" ? (
+                {m.role === "Admin" ? (
                   <span className="text-muted-foreground/50">—</span>
                 ) : (
                   <button
