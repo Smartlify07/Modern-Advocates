@@ -24,6 +24,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from "@/shared/ui/sidebar"
 import { Separator } from "@/shared/ui/separator"
 
@@ -45,6 +46,7 @@ export function SidebarNavigation({
 }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname()
   const router = useRouter()
+  const sidebar = useSidebar()
 
   const isActive = (url: string) => {
     if (url === "/admin") return pathname === "/admin"
@@ -77,7 +79,9 @@ export function SidebarNavigation({
       </SidebarHeader>
 
       <SidebarContent className="gap-6">
-        <SidebarGroup className="px-4">
+        <SidebarGroup
+          className={cn(sidebar.state === "collapsed" ? "px-2" : "px-4")}
+        >
           <SidebarMenu className="space-y-2">
             {mainNavItems.map((item) => {
               const active = isActive(item.url)
@@ -108,7 +112,9 @@ export function SidebarNavigation({
           <Separator className="mt-4" />
         </SidebarGroup>
 
-        <SidebarGroup className="gap-5 px-4">
+        <SidebarGroup
+          className={cn(sidebar.state === "collapsed" ? "px-2" : "gap-5 px-4")}
+        >
           <SidebarGroupLabel className="text-base font-semibold text-primary uppercase">
             Business
           </SidebarGroupLabel>
@@ -142,13 +148,15 @@ export function SidebarNavigation({
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className='px-4'>
+      <SidebarFooter
+        className={cn(sidebar.state === "collapsed" ? "px-2" : "px-4")}
+      >
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
               tooltip="Log out"
-              className="text-red-500 hover:bg-red-50 h-10 text-lg hover:text-red-500!"
+              className="h-10 text-lg text-red-500 hover:bg-red-50 hover:text-red-500!"
             >
               <button onClick={handleLogout} type="button">
                 <LogOut className="size-4" />

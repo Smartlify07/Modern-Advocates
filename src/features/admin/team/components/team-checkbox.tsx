@@ -29,12 +29,15 @@ export function TeamCheckbox({
         disabled={disabled}
         id={id}
         className={cn(
-          "data-checked:border-ma-admin-primary data-checked:bg-ma-admin-primary data-checked:text-white",
           destructive &&
-            "data-checked:border-red-600 data-checked:bg-red-600"
+            "data-checked:border-red-600 data-checked:bg-red-600 data-checked:text-white",
+          "data-checked:border-ma-admin-primary data-checked:bg-ma-admin-primary"
         )}
       />
-      <Label htmlFor={id} className={cn(disabled && "opacity-50", "text-lg font-normal")}>
+      <Label
+        htmlFor={id}
+        className={cn(disabled && "opacity-50", "text-lg font-normal")}
+      >
         {label}
       </Label>
     </div>
