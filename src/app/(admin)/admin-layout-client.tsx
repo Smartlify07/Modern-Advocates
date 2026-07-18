@@ -5,15 +5,13 @@ import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar"
 import { TooltipProvider } from "@/shared/ui/tooltip"
 import { Input } from "@/shared/ui/input"
 import { Button } from "@/shared/ui/button"
-import {
-  BellIcon,
-  SearchIcon,
-  UserCircle2,
-} from "lucide-react"
+import { BellIcon, SearchIcon, UserCircle2 } from "lucide-react"
 export default function AdminLayoutClient({
   children,
+  userName,
 }: {
   children: React.ReactNode
+  userName: string
 }) {
   return (
     <TooltipProvider>
@@ -44,11 +42,11 @@ export default function AdminLayoutClient({
                   <span className="absolute end-1.5 top-1.5 size-2 rounded-full bg-[#D8727D]" />
                 </Button>
                 <UserCircle2 stroke="#6B7280" strokeWidth={1.5} />
-                <h2 className="text-primary">Admin</h2>
+                <h2 className="text-primary">{userName}</h2>
               </div>
             </div>
           </header>
-          <div className="">{children}</div>
+          <div className="bg-white">{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </TooltipProvider>

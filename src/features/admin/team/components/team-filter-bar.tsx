@@ -11,53 +11,55 @@ import {
 } from "@/shared/ui/select"
 import { SearchIcon, UploadIcon, PlusIcon } from "lucide-react"
 
-interface ControlsRowProps {
+interface TeamFilterBarProps {
   search: string
   onSearchChange: (value: string) => void
-  statusFilter: string
-  onStatusFilterChange: (value: string) => void
-  onAddUser: () => void
+  typeFilter: string
+  onTypeFilterChange: (value: string) => void
+  onAddMember: () => void
 }
 
-export function ControlsRow({
+export function TeamFilterBar({
   search,
   onSearchChange,
-  statusFilter,
-  onStatusFilterChange,
-  onAddUser,
-}: ControlsRowProps) {
+  typeFilter,
+  onTypeFilterChange,
+  onAddMember,
+}: TeamFilterBarProps) {
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-4xl/[100%] font-semibold tracking-[-3%]">Users</h1>
+      <h1 className="text-4xl/[100%] font-semibold tracking-[-3%]">Team</h1>
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+        <div className="flex gap-4">
           <div className="relative">
             <SearchIcon className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search users..."
+              placeholder="Search team member..."
               className="h-[44px] w-[300px] rounded-[8px] pl-9"
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
             />
           </div>
-          <Select value={statusFilter} onValueChange={onStatusFilterChange}>
-            <SelectTrigger className="rounded-[8px] data-[size=default]:h-11">
-              <SelectValue placeholder="All users" />
+          <Select value={typeFilter} onValueChange={onTypeFilterChange}>
+            <SelectTrigger className="w-[176px] rounded-[8px] data-[size=default]:h-11">
+              <SelectValue placeholder="All Types" />
             </SelectTrigger>
-            <SelectContent className="p-2">
+            <SelectContent className="w-full p-2">
               <SelectItem value="all" className="rounded-[8px] p-2">
-                All users
+                All Types
               </SelectItem>
-              <SelectItem value="active" className="rounded-[8px] p-2">
-                Active
+              <SelectItem value="Admin" className="rounded-[8px] p-2">
+                Admin
               </SelectItem>
-              <SelectItem value="suspended" className="rounded-[8px] p-2">
-                Suspended
+              <SelectItem value="Manager" className="rounded-[8px] p-2">
+                Manager
+              </SelectItem>
+              <SelectItem value="Editor" className="rounded-[8px] p-2">
+                Editor
               </SelectItem>
             </SelectContent>
           </Select>
         </div>
-
         <div className="flex items-center gap-4">
           <Button
             variant="outline"
@@ -67,10 +69,11 @@ export function ControlsRow({
             <UploadIcon className="size-4" />
           </Button>
           <Button
-            className="h-[44px] min-w-[186px] gap-2.5 rounded-[8px] bg-ma-admin-primary text-white hover:bg-[#6A4AE0]"
-            onClick={onAddUser}
+            className="h-[44px] gap-2.5 rounded-[8px] bg-ma-admin-primary text-white hover:bg-[#6A4AE0]"
+            onClick={onAddMember}
           >
-            Add User
+            <PlusIcon className="size-4" />
+            Add Member
           </Button>
         </div>
       </div>

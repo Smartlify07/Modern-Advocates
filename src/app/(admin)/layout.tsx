@@ -20,5 +20,5 @@ export default async function AdminLayout({
     redirect("/dashboard")
   }
 
-  return <AdminLayoutClient>{children}</AdminLayoutClient>
+  return <AdminLayoutClient userName={session.user.name}>{children}</AdminLayoutClient>
 }
