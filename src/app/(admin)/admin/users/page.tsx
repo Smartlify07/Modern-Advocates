@@ -22,6 +22,7 @@ import { DeleteUserDialog } from "@/features/admin/users/components/delete-user-
 import { useUsers, useCreateUser, useSuspendUser, useActivateUser, useDeleteUser } from "@/features/admin/users/hooks/use-users"
 import type { User } from "@/features/admin/users/types"
 import { AlertCircleIcon, RefreshCwIcon } from "lucide-react"
+import { authClient } from "@/infrastructure/auth/client"
 
 const PAGE_SIZE = 10
 
@@ -68,6 +69,8 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
 }
 
 export default function AdminUsersPage() {
+  const { data: session, isPending: sessionPending } = authClient.useSession()
+  const role = session?.user?.role
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [page, setPage] = useState(1)
@@ -116,10 +119,11 @@ export default function AdminUsersPage() {
         statusFilter={statusFilter}
         onStatusFilterChange={handleStatusFilterChange}
         onAddUser={() => setAddOpen(true)}
+        role={sessionPending ? "loading" : role}
       />
 
       <div className="flex flex-col gap-8">
-        {isLoading ? (
+        {sessionPending || isLoading ? (
           <TableSkeleton />
         ) : isError ? (
           <ErrorState
@@ -133,6 +137,7 @@ export default function AdminUsersPage() {
               onSuspend={handleSuspend}
               onActivate={handleActivate}
               onDelete={handleDelete}
+              userRole={role}
             />
             {data && (
               <PaginationBar

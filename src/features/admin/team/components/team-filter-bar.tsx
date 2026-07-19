@@ -17,6 +17,7 @@ interface TeamFilterBarProps {
   typeFilter: string
   onTypeFilterChange: (value: string) => void
   onAddMember: () => void
+  role?: string | null
 }
 
 export function TeamFilterBar({
@@ -25,6 +26,7 @@ export function TeamFilterBar({
   typeFilter,
   onTypeFilterChange,
   onAddMember,
+  role,
 }: TeamFilterBarProps) {
   return (
     <div className="flex flex-col gap-4">
@@ -68,13 +70,15 @@ export function TeamFilterBar({
             Export
             <UploadIcon className="size-4" />
           </Button>
-          <Button
-            className="h-[44px] gap-2.5 rounded-[8px] bg-ma-admin-primary text-white hover:bg-[#6A4AE0]"
-            onClick={onAddMember}
-          >
-            <PlusIcon className="size-4" />
-            Add Member
-          </Button>
+          {(role === "admin" || role === "manager") && (
+            <Button
+              className="h-[44px] gap-2.5 rounded-[8px] bg-ma-admin-primary text-white hover:bg-[#6A4AE0]"
+              onClick={onAddMember}
+            >
+              <PlusIcon className="size-4" />
+              Add Member
+            </Button>
+          )}
         </div>
       </div>
     </div>

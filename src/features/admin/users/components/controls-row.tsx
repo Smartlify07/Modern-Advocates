@@ -17,6 +17,7 @@ interface ControlsRowProps {
   statusFilter: string
   onStatusFilterChange: (value: string) => void
   onAddUser: () => void
+  role?: string | null
 }
 
 export function ControlsRow({
@@ -25,6 +26,7 @@ export function ControlsRow({
   statusFilter,
   onStatusFilterChange,
   onAddUser,
+  role,
 }: ControlsRowProps) {
   return (
     <div className="flex flex-col gap-4">
@@ -66,12 +68,14 @@ export function ControlsRow({
             Export
             <UploadIcon className="size-4" />
           </Button>
-          <Button
-            className="h-[44px] min-w-[186px] gap-2.5 rounded-[8px] bg-ma-admin-primary text-white hover:bg-[#6A4AE0]"
-            onClick={onAddUser}
-          >
-            Add User
-          </Button>
+          {(role === "admin" || role === "manager") && (
+            <Button
+              className="h-[44px] min-w-[186px] gap-2.5 rounded-[8px] bg-ma-admin-primary text-white hover:bg-[#6A4AE0]"
+              onClick={onAddUser}
+            >
+              Add User
+            </Button>
+          )}
         </div>
       </div>
     </div>

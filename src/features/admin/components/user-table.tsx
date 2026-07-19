@@ -31,9 +31,11 @@ interface UserTableProps {
   onSuspend: (user: UserType) => void
   onActivate: (user: UserType) => void
   onDelete: (user: UserType) => void
+  userRole?: string | null
 }
 
-export function UserTable({ users, onSuspend, onActivate, onDelete }: UserTableProps) {
+export function UserTable({ users, onSuspend, onActivate, onDelete, userRole }: UserTableProps) {
+  const isEditor = !userRole || (userRole !== "admin" && userRole !== "manager")
   return (
     <div className="rounded-t-2xl">
       <Table>
@@ -76,51 +78,55 @@ export function UserTable({ users, onSuspend, onActivate, onDelete }: UserTableP
                 {user.lastLogin}
               </TableCell>
               <TableCell className="text-center">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      className="ring- size-6 rounded-full border border-[#141B34]"
-                    >
-                      <MoreHorizontalIcon className="size-3" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-40">
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem className="gap-2.5 p-2">
-                        <User strokeWidth={1.5} className="size-4" />
-                        View user
+                {isEditor ? (
+                  <span className="text-muted-foreground/50">—</span>
+                ) : (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        className="ring- size-6 rounded-full border border-[#141B34]"
+                      >
+                        <MoreHorizontalIcon className="size-3" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem className="gap-2.5 p-2">
+                          <User strokeWidth={1.5} className="size-4" />
+                          View user
+                        </DropdownMenuItem>
+                        {user.status === "active" ? (
+                          <DropdownMenuItem
+                            className="gap-2.5 p-2"
+                            onSelect={() => onSuspend(user)}
+                          >
+                            <BanIcon strokeWidth={1.5} className="size-4" />
+                            Suspend user
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem
+                            className="gap-2.5 p-2"
+                            onSelect={() => onActivate(user)}
+                          >
+                            <UserCheckIcon strokeWidth={1.5} className="size-4" />
+                            Reactivate user
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuGroup>
+                      <Separator className="my-1.5" />
+                      <DropdownMenuItem
+                        className="gap-2.5 p-2"
+                        variant="destructive"
+                        onSelect={() => onDelete(user)}
+                      >
+                        <Trash2Icon strokeWidth={1.5} className="size-4" />
+                        Delete user
                       </DropdownMenuItem>
-                      {user.status === "active" ? (
-                        <DropdownMenuItem
-                          className="gap-2.5 p-2"
-                          onSelect={() => onSuspend(user)}
-                        >
-                          <BanIcon strokeWidth={1.5} className="size-4" />
-                          Suspend user
-                        </DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem
-                          className="gap-2.5 p-2"
-                          onSelect={() => onActivate(user)}
-                        >
-                          <UserCheckIcon strokeWidth={1.5} className="size-4" />
-                          Reactivate user
-                        </DropdownMenuItem>
-                      )}
-                    </DropdownMenuGroup>
-                    <Separator className="my-1.5" />
-                    <DropdownMenuItem
-                      className="gap-2.5 p-2"
-                      variant="destructive"
-                      onSelect={() => onDelete(user)}
-                    >
-                      <Trash2Icon strokeWidth={1.5} className="size-4" />
-                      Delete user
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </TableCell>
             </TableRow>
           ))}
