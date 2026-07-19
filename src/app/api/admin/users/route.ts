@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireAdmin } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
-import { listUsers, createUser } from "@/features/admin/users/services/user-service"
+import {
+  listUsers,
+  createUser,
+} from "@/features/admin/users/services/user-service"
 import * as Sentry from "@sentry/nextjs"
 import type { ListUsersParams } from "@/features/admin/users/services/user-service"
 
@@ -27,7 +30,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
     Sentry.captureException(error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    console.error(error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
 
@@ -37,10 +44,16 @@ export async function POST(request: Request) {
 
     const body = await request.json()
     if (!body.name?.trim() || !body.email?.trim()) {
-      return NextResponse.json({ error: "Name and email are required" }, { status: 400 })
+      return NextResponse.json(
+        { error: "Name and email are required" },
+        { status: 400 }
+      )
     }
 
-    const newUser = await createUser({ name: body.name.trim(), email: body.email.trim() })
+    const newUser = await createUser({
+      name: body.name.trim(),
+      email: body.email.trim(),
+    })
     return NextResponse.json(newUser, { status: 201 })
   } catch (error) {
     if (error instanceof UnauthorizedError) {
@@ -53,6 +66,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
     Sentry.captureException(error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }

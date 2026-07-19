@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { LoaderCircle } from "lucide-react"
 import { authClient } from "@/infrastructure/auth/client"
+import { isAdminRole } from "@/infrastructure/auth/roles"
 
 export default function AuthCallbackPage() {
   const router = useRouter()
@@ -15,7 +16,7 @@ export default function AuthCallbackPage() {
       router.replace("/login")
       return
     }
-    router.replace(session.user.role === "admin" ? "/admin" : "/dashboard")
+    router.replace(isAdminRole(session.user.role) ? "/admin" : "/dashboard")
   }, [session, isPending, router])
 
   return (

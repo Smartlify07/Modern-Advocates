@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation"
 import { AuthCodeForm } from "@/features/auth/components/auth-code-form"
 import { AuthGoogleButton } from "@/features/auth/components/auth-google-button"
 import { authClient } from "@/infrastructure/auth/client"
+import { isAdminRole } from "@/infrastructure/auth/roles"
 
 const formSchema = z.object({
   email: z.email({
@@ -87,7 +88,7 @@ export function LoginForm({
       toast.error(msg)
       return
     }
-    router.push(data?.user?.role === "admin" ? "/admin" : "/dashboard")
+    router.push(isAdminRole(data?.user?.role) ? "/admin" : "/dashboard")
   }
 
   const handleResendCode = async () => {

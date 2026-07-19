@@ -4,11 +4,11 @@ import { useState, useCallback } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { TeamTable } from "@/features/admin/team/components/team-table"
 import { TeamFilterBar } from "@/features/admin/team/components/team-filter-bar"
-import { TableSkeleton } from "@/features/admin/team/components/table-skeleton"
 import { AddMemberDialog } from "@/features/admin/team/components/add-member-dialog"
 import { EditPermissionDialog } from "@/features/admin/team/components/edit-permission-dialog"
 import { PaginationBar } from "@/features/admin/team/components/pagination-bar"
 import type { TeamMember } from "@/features/admin/team/types"
+import { authClient } from "@/infrastructure/auth/client"
 
 const PAGE_SIZE = 10
 
@@ -20,6 +20,8 @@ interface ListTeamMembersResponse {
 }
 
 export default function AdminTeamsPage() {
+  const { data: session, isPending: sessionPending } = authClient.useSession()
+  const role = session?.user?.role
   const [search, setSearch] = useState("")
   const [typeFilter, setTypeFilter] = useState("all")
   const [page, setPage] = useState(1)
@@ -64,30 +66,19 @@ export default function AdminTeamsPage() {
         typeFilter={typeFilter}
         onTypeFilterChange={handleTypeFilterChange}
         onAddMember={() => setAddDialogOpen(true)}
+        role={role}
       />
 
       <div className="flex flex-col gap-8">
-        {isLoading ? (
-          <TableSkeleton />
-        ) : members.length === 0 ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-2 py-20">
-            <p className="text-lg font-medium">
-              {total === 0 ? "No team members yet" : "No team members found"}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {total === 0
-                ? "Team members will appear here once added."
-                : "There are no team members matching your criteria."}
-            </p>
-          </div>
-        ) : (
-          <>
-            <TeamTable
-              members={members}
-              onEdit={(m) => { setSelectedMember(m); setEditDialogOpen(true) }}
-            />
-            <PaginationBar page={page} total={total} pageSize={PAGE_SIZE} onPageChange={setPage} />
-          </>
+        <TeamTable
+          members={members}
+          onEdit={(m) => { setSelectedMember(m); setEditDialogOpen(true) }}
+          isLoading={isLoading}
+          total={total}
+          role={role}
+        />
+        {!isLoading && members.length > 0 && (
+          <PaginationBar page={page} total={total} pageSize={PAGE_SIZE} onPageChange={setPage} />
         )}
       </div>
 

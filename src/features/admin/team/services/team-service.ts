@@ -6,6 +6,12 @@ import { ForbiddenError } from "@/infrastructure/auth/errors"
 import { eq, like, or, and, sql, desc, count } from "drizzle-orm"
 import { headers } from "next/headers"
 
+const teamRoleToAuthRole: Record<string, string> = {
+  Admin: "admin",
+  Manager: "manager",
+  Editor: "editor",
+}
+
 export interface ListTeamMembersParams {
   search?: string
   role?: string
@@ -98,24 +104,20 @@ export async function addTeamMember(data: {
   role: string
   invitedById: string
 }) {
-  const apiUsers = await auth.api.listUsers({
-    query: {
-      searchValue: data.email,
-      searchField: "email",
-      searchOperator: "eq",
-    } as never,
-    headers: await headers(),
-  })
+  const userRecord = await db
+    .select({ id: user.id, name: user.name, email: user.email, updatedAt: user.updatedAt })
+    .from(user)
+    .where(eq(user.email, data.email.toLowerCase().trim()))
+    .then((r) => r[0])
 
-  const found = (apiUsers.users as Array<{ id: string }>)?.[0]
-  if (!found) {
+  if (!userRecord) {
     throw new Error("No user found with that email address")
   }
 
   const existing = await db
     .select({ id: teamMembers.id })
     .from(teamMembers)
-    .where(eq(teamMembers.userId, found.id))
+    .where(eq(teamMembers.userId, userRecord.id))
     .then((r) => r[0])
 
   if (existing) {
@@ -125,17 +127,19 @@ export async function addTeamMember(data: {
   const [member] = await db
     .insert(teamMembers)
     .values({
-      userId: found.id,
+      userId: userRecord.id,
       role: data.role as typeof teamRole.enumValues[number],
       invitedById: data.invitedById,
     })
     .returning()
 
-  const userRecord = await db
-    .select()
-    .from(user)
-    .where(eq(user.id, found.id))
-    .then((r) => r[0])
+  const memberRole = teamRoleToAuthRole[data.role] as "admin" | "manager" | "editor"
+  if (memberRole) {
+    await auth.api.setRole({
+      body: { userId: userRecord.id, role: memberRole },
+      headers: await headers(),
+    })
+  }
 
   return {
     id: member.id,
@@ -173,6 +177,14 @@ export async function updateTeamMemberRole(id: string, role: string) {
     .where(eq(teamMembers.id, id))
     .returning()
 
+  const memberRole = teamRoleToAuthRole[role] as "admin" | "manager" | "editor"
+  if (memberRole) {
+    await auth.api.setRole({
+      body: { userId: member.userId, role: memberRole },
+      headers: await headers(),
+    })
+  }
+
   const userRecord = await db
     .select()
     .from(user)
@@ -205,6 +217,11 @@ export async function removeTeamMember(id: string) {
   }
 
   await db.delete(teamMembers).where(eq(teamMembers.id, id))
+
+  await auth.api.setRole({
+    body: { userId: member.userId, role: "user" as const },
+    headers: await headers(),
+  })
 
   return { success: true }
 }

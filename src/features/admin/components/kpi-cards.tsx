@@ -7,6 +7,7 @@ import {
   GiftIcon,
   ShoppingBag,
 } from "lucide-react"
+import { Skeleton } from "@/shared/ui/skeleton"
 import { StatCard } from "./stat-card"
 
 const kpiData = [
@@ -28,10 +29,35 @@ const kpiData = [
   },
 ]
 
-export function KpiCards() {
+interface KpiCardsProps {
+  role?: string | null
+}
+
+const hiddenForEditor = new Set(["Donation", "Sales"])
+
+function SkeletonCards() {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {kpiData.map((kpi) => (
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div key={i} className="rounded-xl border p-5">
+          <Skeleton className="mb-3 h-4 w-16" />
+          <Skeleton className="mb-2 h-8 w-24" />
+          <Skeleton className="h-3 w-12" />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export function KpiCards({ role }: KpiCardsProps) {
+  if (!role) return <SkeletonCards />
+
+  const showAll = role === "admin" || role === "manager"
+  const visible = showAll ? kpiData : kpiData.filter((k) => !hiddenForEditor.has(k.title))
+
+  return (
+    <div className={`grid gap-4 md:grid-cols-2 lg:grid-cols-${visible.length}`}>
+      {visible.map((kpi) => (
         <StatCard key={kpi.title} {...kpi} />
       ))}
     </div>

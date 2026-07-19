@@ -9,14 +9,16 @@ import { BellIcon, SearchIcon, UserCircle2 } from "lucide-react"
 export default function AdminLayoutClient({
   children,
   userName,
+  role,
 }: {
   children: React.ReactNode
   userName: string
+  role: string | null | undefined
 }) {
   return (
     <TooltipProvider>
       <SidebarProvider>
-        <SidebarNavigation />
+        <SidebarNavigation role={role ?? undefined} />
         <SidebarInset>
           <header className="border-b px-7.5 py-4">
             <div className="mx-auto flex shrink-0 items-center justify-between gap-2 lg:max-w-7xl 2xl:max-w-360">

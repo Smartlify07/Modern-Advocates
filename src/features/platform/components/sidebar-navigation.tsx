@@ -28,22 +28,10 @@ import {
 } from "@/shared/ui/sidebar"
 import { Separator } from "@/shared/ui/separator"
 
-const mainNavItems = [
-  { title: "Home", url: "/admin", icon: LayoutGrid },
-  { title: "Courses", url: "/admin/courses", icon: PlayCircle },
-  { title: "Users", url: "/admin/users", icon: Users },
-  { title: "Products", url: "/admin/products", icon: ShoppingBag },
-]
-
-const businessNavItems = [
-  { title: "Donations", url: "/admin/donations", icon: Gift },
-  { title: "Team", url: "/admin/team", icon: UserPlus },
-  { title: "Help & Support", url: "/admin/help", icon: MessageSquareMore },
-]
-
 export function SidebarNavigation({
+  role,
   ...props
-}: React.ComponentProps<typeof Sidebar>) {
+}: React.ComponentProps<typeof Sidebar> & { role?: string | null }) {
   const pathname = usePathname()
   const router = useRouter()
   const sidebar = useSidebar()
@@ -52,6 +40,23 @@ export function SidebarNavigation({
     if (url === "/admin") return pathname === "/admin"
     return pathname === url || pathname.startsWith(url + "/")
   }
+
+  const mainNavItems = [
+    { title: "Home", url: "/admin", icon: LayoutGrid },
+    { title: "Courses", url: "/admin/courses", icon: PlayCircle },
+    { title: "Users", url: "/admin/users", icon: Users },
+    ...(role === "admin" || role === "manager"
+      ? [{ title: "Products", url: "/admin/products", icon: ShoppingBag }]
+      : []),
+  ]
+
+  const businessNavItems = [
+    ...(role === "admin" || role === "manager"
+      ? [{ title: "Donations", url: "/admin/donations", icon: Gift }]
+      : []),
+    { title: "Team", url: "/admin/team", icon: UserPlus },
+    { title: "Help & Support", url: "/admin/help", icon: MessageSquareMore },
+  ]
 
   const handleLogout = () => {
     router.push("/auth/signout")

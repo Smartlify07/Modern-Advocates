@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireAdmin } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
-import { listTeamMembers, addTeamMember } from "@/features/admin/team/services/team-service"
+import {
+  listTeamMembers,
+  addTeamMember,
+} from "@/features/admin/team/services/team-service"
 import * as Sentry from "@sentry/nextjs"
 import type { ListTeamMembersParams } from "@/features/admin/team/services/team-service"
 
@@ -26,8 +29,15 @@ export async function GET(request: NextRequest) {
     if (error instanceof ForbiddenError) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 400 })
+    }
     Sentry.captureException(error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    console.error(error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
 
@@ -40,7 +50,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 })
     }
     if (!body.role || !["Admin", "Manager", "Editor"].includes(body.role)) {
-      return NextResponse.json({ error: "Valid role is required (Admin, Manager, or Editor)" }, { status: 400 })
+      return NextResponse.json(
+        { error: "Valid role is required (Admin, Manager, or Editor)" },
+        { status: 400 }
+      )
     }
 
     const member = await addTeamMember({
@@ -60,6 +73,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
     Sentry.captureException(error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
