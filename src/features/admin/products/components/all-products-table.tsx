@@ -18,11 +18,11 @@ export function AllProductsTable({ products }: AllProductsTableProps) {
       <Table>
         <TableHeader className="rounded-t-2xl">
           <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
-            <TableHead>Product</TableHead>
-            <TableHead className="text-center">Sales Price</TableHead>
-            <TableHead className="text-center">Status</TableHead>
-            <TableHead className="text-center">Sales</TableHead>
-            <TableHead className="text-center">Actions</TableHead>
+            <TableHead className="w-[280px]">Product</TableHead>
+            <TableHead className="w-[120px] text-center">Sales Price</TableHead>
+            <TableHead className="w-[100px] text-center">Status</TableHead>
+            <TableHead className="w-[80px] text-center">Sales</TableHead>
+            <TableHead className="w-[80px] text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

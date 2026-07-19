@@ -16,8 +16,8 @@ export function CustomersTable({ customers }: CustomersTableProps) {
       <Table>
         <TableHeader className="rounded-t-2xl">
           <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
-            <TableHead>Customer name</TableHead>
-            <TableHead>Customer email</TableHead>
+            <TableHead className="w-[280px]">Customer name</TableHead>
+            <TableHead className="w-[320px]">Customer email</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
