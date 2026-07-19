@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { requireAdmin } from "@/infrastructure/auth/helpers"
+import { requirePermission } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import {
   listTeamMembers,
@@ -10,7 +10,7 @@ import type { ListTeamMembersParams } from "@/features/admin/team/services/team-
 
 export async function GET(request: NextRequest) {
   try {
-    const { user: currentUser } = await requireAdmin()
+    await requirePermission({ team: ["view"] })
 
     const { searchParams } = request.nextUrl
     const params: ListTeamMembersParams = {
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: Request) {
   try {
-    const { user: currentUser } = await requireAdmin()
+    const { user: currentUser } = await requirePermission({ team: ["manage"] })
 
     const body = await request.json()
     if (!body.email?.trim()) {
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     if (error instanceof ForbiddenError) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+      return NextResponse.json({ error: error.message }, { status: 403 })
     }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })

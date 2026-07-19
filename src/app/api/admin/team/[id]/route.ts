@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { requireAdmin } from "@/infrastructure/auth/helpers"
+import { requirePermission } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import { updateTeamMemberRole, removeTeamMember } from "@/features/admin/team/services/team-service"
 import * as Sentry from "@sentry/nextjs"
@@ -9,7 +9,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    await requireAdmin()
+    await requirePermission({ team: ["manage"] })
 
     const { id } = await params
     const body = await request.json()
@@ -40,7 +40,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    await requireAdmin()
+    await requirePermission({ team: ["manage"] })
 
     const { id } = await params
     const result = await removeTeamMember(id)

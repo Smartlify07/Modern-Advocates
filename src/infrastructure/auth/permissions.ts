@@ -37,3 +37,4 @@ const user = ac.newRole({
 })
 
 export { ac, admin, manager, editor, instructor, user }
+export type Statement = typeof statement
