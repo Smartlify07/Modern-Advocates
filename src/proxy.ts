@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-const publicPaths = ["/", "/about", "/contact", "/courses", "/donation", "/login", "/signup", "/auth"]
+const publicPaths = ["/", "/about", "/contact", "/courses", "/donation", "/login", "/signup"]
 
 const protectedPaths = ["/dashboard", "/my-learning", "/checkout", "/admin"]
 
