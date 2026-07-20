@@ -1,13 +1,10 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
-import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/shared/ui/card"
@@ -17,16 +14,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/shared/ui/chart"
-
-export const description = "A linear area chart"
-
-const chartData = [
-  { day: "Mon", sales: 100 },
-  { day: "Tue", sales: 20 },
-  { day: "Wed", sales: 80 },
-  { day: "Thu", sales: 50 },
-  { day: "Fri", sales: 40 },
-]
+import type { ChartDataPoint } from "@/features/admin/products/types"
 
 const chartConfig = {
   sales: {
@@ -35,7 +23,31 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function SalesChart() {
+interface SalesChartProps {
+  data: ChartDataPoint[]
+}
+
+export function SalesChart({ data }: SalesChartProps) {
+  if (data.length === 0) {
+    return (
+      <Card className="lg:col-span-2">
+        <CardHeader className="min-h-[42px] py-0">
+          <CardTitle className="text-base">No. of Sales</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex h-[204px] items-center justify-center text-sm text-muted-foreground">
+            No sales yet — the chart will appear once there are sales.
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  const chartData = data.map((d) => ({
+    day: (([y, m, d]) => new Date(y, m - 1, d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }))(d.date.split("-").map(Number)),
+    sales: d.sales,
+  }))
+
   return (
     <Card className="lg:col-span-2">
       <CardHeader className="min-h-[42px] py-0">

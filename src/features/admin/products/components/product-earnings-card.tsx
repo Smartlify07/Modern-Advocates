@@ -1,6 +1,11 @@
-import { Card, CardContent, CardFooter, CardTitle } from "@/shared/ui/card"
+import { Card, CardContent, CardTitle } from "@/shared/ui/card"
 
-export function ProductEarningsCard() {
+interface ProductEarningsCardProps {
+  totalRevenue: number
+  periodLabel: string
+}
+
+export function ProductEarningsCard({ totalRevenue, periodLabel }: ProductEarningsCardProps) {
   return (
     <Card className="gap-0 border border-[#E5E7EB] shadow-none ring-0">
       <CardContent className="flex flex-col gap-13 px-4">
@@ -8,9 +13,11 @@ export function ProductEarningsCard() {
           Product Earnings
         </CardTitle>
         <div className="flex flex-col gap-1">
-          <span className="text-5xl font-medium lg:text-[64px]">$6,000</span>
+          <span className="text-5xl font-medium lg:text-[64px]">
+            ${totalRevenue.toLocaleString()}
+          </span>
           <span className="text-sm font-medium text-ma-admin-primary">
-            Last 7 days
+            {periodLabel}
           </span>
         </div>
         <span className="text-base text-muted-foreground">

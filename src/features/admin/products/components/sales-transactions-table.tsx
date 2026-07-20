@@ -29,11 +29,11 @@ export function SalesTransactionsTable({ sales, showProduct, getRowHref }: Sales
       <Table>
         <TableHeader className="rounded-t-2xl">
           <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
-            {showProduct && <TableHead>Product</TableHead>}
-            <TableHead>Customer name</TableHead>
-            <TableHead>Customer email</TableHead>
-            <TableHead>Transaction Date</TableHead>
-            <TableHead>Amount</TableHead>
+            {showProduct && <TableHead className="w-[200px]">Product</TableHead>}
+            <TableHead className="w-[200px]">Customer name</TableHead>
+            <TableHead className="w-[260px]">Customer email</TableHead>
+            <TableHead className="w-[180px]">Transaction Date</TableHead>
+            <TableHead className="w-[120px]">Amount</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
