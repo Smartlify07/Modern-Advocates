@@ -1,21 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
-import { Bell, Menu, User, LogOut, X } from "lucide-react"
+import { Bell, Menu, X } from "lucide-react"
 
-import { Avatar, AvatarFallback } from "@/shared/ui/avatar"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/shared/ui/dropdown-menu"
-import { authClient } from "@/infrastructure/auth/client"
+import { ProfileDropdown } from "@/features/platform/components/profile-dropdown"
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard" },
@@ -25,14 +16,6 @@ const navItems = [
 export default function DashboardNavbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const pathname = usePathname()
-  const router = useRouter()
-  const { data: session } = authClient.useSession()
-  const user = session?.user
-  const firstLetter = user?.name?.charAt(0)?.toUpperCase() ?? "U"
-
-  const handleLogout = () => {
-    router.push("/auth/signout")
-  }
 
   return (
     <header className="bg-white">
@@ -65,56 +48,7 @@ export default function DashboardNavbar() {
             </nav>
             <div className="flex items-center gap-4">
               <Bell className="size-5 text-[#6B7280]" />
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button type="button" className="cursor-pointer outline-none">
-                    <Avatar className="size-12.5 bg-primary text-white">
-                      <AvatarFallback className="bg-primary text-base text-primary-foreground">
-                        {firstLetter}
-                      </AvatarFallback>
-                    </Avatar>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  sideOffset={8}
-                  className="w-64"
-                >
-                  <DropdownMenuLabel className="p-0 font-normal">
-                    <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-                      <Avatar className="size-10 bg-primary text-white">
-                        <AvatarFallback className="bg-primary text-xs text-primary-foreground">
-                          {firstLetter}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="grid flex-1 text-start leading-tight">
-                        <span className="truncate text-base font-medium text-primary">
-                          {user?.name ?? "User"}
-                        </span>
-                        <span className="truncate text-sm text-muted-foreground">
-                          {user?.email ?? ""}
-                        </span>
-                      </div>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="p-2 text-base" asChild>
-                    <Link href="/dashboard/profile" className="cursor-pointer">
-                      <User />
-                      View Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={handleLogout}
-                    variant="destructive"
-                    className="cursor-pointer p-2 text-base text-destructive hover:text-destructive focus:text-destructive"
-                  >
-                    <LogOut />
-                    Log out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <ProfileDropdown avatarSize={12.5} dropdownWidth="w-64" />
             </div>
           </div>
 
@@ -151,55 +85,7 @@ export default function DashboardNavbar() {
               </Link>
             ))}
             <div className="mt-2 flex justify-center">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button type="button" className="cursor-pointer outline-none">
-                    <Avatar className="size-12.5 bg-primary text-white">
-                      <AvatarFallback className="bg-primary text-base text-primary-foreground">
-                        {firstLetter}
-                      </AvatarFallback>
-                    </Avatar>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  sideOffset={8}
-                  className="w-56"
-                >
-                  <DropdownMenuLabel className="p-0 font-normal">
-                    <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-                      <Avatar className="size-8 bg-primary text-white">
-                        <AvatarFallback className="bg-primary text-xs text-primary-foreground">
-                          {firstLetter}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="grid flex-1 text-start text-sm leading-tight">
-                        <span className="truncate font-medium">
-                          {user?.name ?? "User"}
-                        </span>
-                        <span className="truncate text-xs text-muted-foreground">
-                          {user?.email ?? ""}
-                        </span>
-                      </div>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard/profile" className="cursor-pointer">
-                      <User />
-                      View Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={handleLogout}
-                    className="cursor-pointer text-destructive focus:text-destructive"
-                  >
-                    <LogOut />
-                    Log out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <ProfileDropdown />
             </div>
           </nav>
         </div>
