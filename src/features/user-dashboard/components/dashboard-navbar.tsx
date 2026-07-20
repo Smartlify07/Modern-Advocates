@@ -48,7 +48,7 @@ export default function DashboardNavbar() {
             </nav>
             <div className="flex items-center gap-4">
               <Bell className="size-5 text-[#6B7280]" />
-              <ProfileDropdown avatarSize={12.5} dropdownWidth="w-64" />
+              <ProfileDropdown className="size-12.5" dropdownWidth="w-64" />
             </div>
           </div>
 
