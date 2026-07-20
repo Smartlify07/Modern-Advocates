@@ -5,6 +5,7 @@ import { useParams } from "next/navigation"
 import { PageHeader } from "@/features/admin/products/components/page-header"
 import { SalesSummaryCards } from "@/features/admin/products/components/sales-summary-cards"
 import { SalesTransactionsTable } from "@/features/admin/products/components/sales-transactions-table"
+import { SalesSummarySkeleton, TableSkeleton } from "@/features/admin/products/components/products-skeleton"
 
 export default function SaleDetailPage() {
   const params = useParams()
@@ -19,8 +20,12 @@ export default function SaleDetailPage() {
   if (isLoading) {
     return (
       <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
-        <PageHeader title="Loading..." />
-        <p className="text-muted-foreground">Loading sale details...</p>
+        <PageHeader title="Sale Details" />
+        <SalesSummarySkeleton />
+        <div className="flex flex-col gap-4">
+          <div className="h-6 w-52 rounded bg-muted animate-pulse" />
+          <TableSkeleton rows={5} cols={4} />
+        </div>
       </div>
     )
   }

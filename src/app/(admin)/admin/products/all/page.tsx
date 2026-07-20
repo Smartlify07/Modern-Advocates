@@ -6,12 +6,13 @@ import { PageHeader } from "@/features/admin/products/components/page-header"
 import { SearchExportRow } from "@/features/admin/products/components/search-export-row"
 import { AllProductsTable } from "@/features/admin/products/components/all-products-table"
 import { PaginationBar } from "@/features/admin/products/components/pagination-bar"
+import { SearchExportSkeleton, TableSkeleton } from "@/features/admin/products/components/products-skeleton"
 import type { Product } from "@/features/admin/products/types"
 
 const PAGE_SIZE = 10
 
 export default function AllProductsPage() {
-  const { data: products = [] } = useQuery<Product[]>({
+  const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["admin-products"],
     queryFn: () => fetch("/api/admin/products").then((r) => r.json()),
   })
@@ -27,11 +28,20 @@ export default function AllProductsPage() {
   return (
     <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
       <PageHeader title="All Products" />
-      <SearchExportRow placeholder="Search product..." value={search} onChange={setSearch} />
-      <div className="flex flex-col gap-8">
-        <AllProductsTable products={filtered} />
-        <PaginationBar page={page} total={filtered.length} pageSize={PAGE_SIZE} onPageChange={setPage} />
-      </div>
+      {isLoading ? (
+        <>
+          <SearchExportSkeleton />
+          <TableSkeleton rows={5} cols={5} />
+        </>
+      ) : (
+        <>
+          <SearchExportRow placeholder="Search product..." value={search} onChange={setSearch} />
+          <div className="flex flex-col gap-8">
+            <AllProductsTable products={filtered} />
+            <PaginationBar page={page} total={filtered.length} pageSize={PAGE_SIZE} onPageChange={setPage} />
+          </div>
+        </>
+      )}
     </div>
   )
 }
