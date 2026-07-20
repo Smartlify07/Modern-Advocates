@@ -6,17 +6,12 @@ import { useParams } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
 import { Trophy } from "lucide-react"
 
-import { Avatar, AvatarFallback } from "@/shared/ui/avatar"
-import { authClient } from "@/infrastructure/auth/client"
+import { ProfileDropdown } from "@/features/platform/components/profile-dropdown"
 import { ReviewDialog } from "@/features/courses/components/review-dialog"
 
 export default function CoursePlayerNavbar() {
   const params = useParams()
   const courseId = params.courseId as string
-
-  const { data: session } = authClient.useSession()
-  const user = session?.user
-  const firstLetter = user?.name?.charAt(0)?.toUpperCase() ?? "U"
 
   const { data: enrollment } = useQuery({
     queryKey: ["enrollment-progress", courseId],
@@ -80,11 +75,7 @@ export default function CoursePlayerNavbar() {
             </div>
             Your progress
           </Link>
-          <Avatar className="size-8 bg-primary text-white">
-            <AvatarFallback className="bg-primary font-extrabold text-primary-foreground">
-              {firstLetter}
-            </AvatarFallback>
-          </Avatar>
+          <ProfileDropdown avatarSize={8} />
         </div>
       </div>
     </header>
