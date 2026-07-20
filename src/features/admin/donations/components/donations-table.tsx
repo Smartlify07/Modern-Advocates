@@ -1,12 +1,19 @@
 "use client"
 
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/shared/ui/table"
 import type { Donation } from "@/features/admin/donations/types"
 import { donationTypeLabels } from "@/features/admin/donations/types"
 
-interface DonationsTableProps { donations: Donation[] }
+interface DonationsTableProps {
+  donations: Donation[]
+}
 
 export function DonationsTable({ donations }: DonationsTableProps) {
   return (
@@ -24,14 +31,16 @@ export function DonationsTable({ donations }: DonationsTableProps) {
           {donations.map((d) => (
             <TableRow className="hover:bg-[#F5F7FA]" key={d.id}>
               <TableCell className="font-normal">{d.donorName}</TableCell>
-              <TableCell className="text-muted-foreground">{d.donorEmail}</TableCell>
+              <TableCell className="text-muted-foreground">
+                {d.donorEmail}
+              </TableCell>
               <TableCell className="font-medium tabular-nums">
                 {new Intl.NumberFormat("en-US", {
                   style: "currency",
                   currency: "USD",
                 }).format(d.amount)}
               </TableCell>
-              <TableCell className="font-normal text-muted-foreground">
+              <TableCell className="font-normal">
                 {donationTypeLabels[d.donationType]}
               </TableCell>
             </TableRow>
