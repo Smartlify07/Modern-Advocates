@@ -43,6 +43,20 @@
       "when": 1783958845548,
       "tag": "0005_hot_quentin_quire",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1784236170137,
+      "tag": "0006_typical_norman_osborn",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1784407119079,
+      "tag": "0007_mature_young_avengers",
+      "breakpoints": true
     }
   ]
 }
