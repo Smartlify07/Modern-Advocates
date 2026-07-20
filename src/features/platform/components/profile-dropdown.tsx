@@ -32,7 +32,7 @@ export function ProfileDropdown({
   const firstLetter = user?.name?.charAt(0)?.toUpperCase() ?? "U"
 
   const handleLogout = () => {
-    router.push("/auth/signout")
+    router.replace("/auth/signout")
   }
 
   return (
@@ -41,7 +41,10 @@ export function ProfileDropdown({
         <button type="button" className="cursor-pointer outline-none">
           <Avatar
             className="bg-primary text-white"
-            style={{ width: `${avatarSize * 4}px`, height: `${avatarSize * 4}px` }}
+            style={{
+              width: `${avatarSize * 4}px`,
+              height: `${avatarSize * 4}px`,
+            }}
           >
             <AvatarFallback className="bg-primary font-extrabold text-primary-foreground">
               {firstLetter}
