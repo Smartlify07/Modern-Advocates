@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation"
 import { headers } from "next/headers"
 import { auth } from "@/infrastructure/auth/auth"
+import { isManagerOrAdmin } from "@/infrastructure/auth/roles"
 
 export default async function CreateLayout({
   children,
@@ -11,8 +12,7 @@ export default async function CreateLayout({
     headers: await headers(),
   })
 
-  const role = session?.user.role
-  if (role !== "admin" && role !== "manager") {
+  if (!isManagerOrAdmin(session?.user.role)) {
     redirect("/admin")
   }
 

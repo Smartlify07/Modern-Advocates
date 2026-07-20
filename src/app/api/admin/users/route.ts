@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { requireAdmin } from "@/infrastructure/auth/helpers"
+import { requireAdmin, requirePermission } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import {
   listUsers,
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: Request) {
   try {
-    await requireAdmin()
+    await requirePermission({ user: ["create"] })
 
     const body = await request.json()
     if (!body.name?.trim() || !body.email?.trim()) {
@@ -62,10 +62,8 @@ export async function POST(request: Request) {
     if (error instanceof ForbiddenError) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
-    }
     Sentry.captureException(error)
+    console.error(error)
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

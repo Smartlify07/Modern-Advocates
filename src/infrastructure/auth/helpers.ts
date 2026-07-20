@@ -2,6 +2,11 @@ import { headers } from "next/headers"
 import { auth } from "./auth"
 import { UnauthorizedError, ForbiddenError } from "./errors"
 import { isAdminRole } from "./roles"
+import type { Statement } from "./permissions"
+
+type PermissionInput = {
+  [K in keyof Statement]?: Statement[K][number][]
+}
 
 export async function requireAdmin() {
   const session = await auth.api.getSession({
@@ -48,7 +53,7 @@ export async function requireSession() {
 }
 
 export async function requirePermission(
-  permissions: Record<string, string[]>,
+  permissions: PermissionInput,
 ) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -62,7 +67,7 @@ export async function requirePermission(
     body: {
       userId: session.user.id,
       permissions,
-    } as never,
+    } as { userId: string; permissions: PermissionInput },
   })
 
   if ("error" in result && result.error) {

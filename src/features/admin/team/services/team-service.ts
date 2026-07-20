@@ -38,7 +38,8 @@ export interface ListTeamMembersResult {
 export async function listTeamMembers(
   params: ListTeamMembersParams
 ): Promise<ListTeamMembersResult> {
-  const { search, role, page = 1, pageSize = 10 } = params
+  const { search, role, page: rawPage = 1, pageSize = 10 } = params
+  const page = Math.max(1, rawPage)
   const offset = (page - 1) * pageSize
 
   const conditions = []
