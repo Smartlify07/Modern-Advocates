@@ -1,6 +1,5 @@
 "use client"
 
-import { Badge } from "@/shared/ui/badge"
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/shared/ui/table"
@@ -32,10 +31,8 @@ export function DonationsTable({ donations }: DonationsTableProps) {
                   currency: "USD",
                 }).format(d.amount)}
               </TableCell>
-              <TableCell>
-                <Badge variant="secondary" className="rounded-[8px] bg-ma-admin-primary/10 font-normal text-ma-admin-primary">
-                  {donationTypeLabels[d.donationType]}
-                </Badge>
+              <TableCell className="font-normal text-muted-foreground">
+                {donationTypeLabels[d.donationType]}
               </TableCell>
             </TableRow>
           ))}
