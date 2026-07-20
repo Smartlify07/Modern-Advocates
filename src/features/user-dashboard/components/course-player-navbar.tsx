@@ -75,7 +75,7 @@ export default function CoursePlayerNavbar() {
             </div>
             Your progress
           </Link>
-          <ProfileDropdown />
+          <ProfileDropdown avatarSize={8} />
         </div>
       </div>
     </header>

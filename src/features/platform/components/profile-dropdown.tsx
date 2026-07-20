@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { User, LogOut } from "lucide-react"
 
-import { UserAvatar } from "@/shared/ui/user-avatar"
+import { Avatar, AvatarFallback } from "@/shared/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,29 +16,37 @@ import {
 import { authClient } from "@/infrastructure/auth/client"
 
 interface ProfileDropdownProps {
-  className?: string
+  avatarSize?: number
   dropdownWidth?: string
   sideOffset?: number
 }
 
 export function ProfileDropdown({
-  className,
+  avatarSize = 8,
   dropdownWidth = "w-56",
   sideOffset = 8,
 }: ProfileDropdownProps) {
   const router = useRouter()
   const { data: session } = authClient.useSession()
   const user = session?.user
+  const firstLetter = user?.name?.charAt(0)?.toUpperCase() ?? "U"
 
   const handleLogout = () => {
-    router.replace("/auth/signout")
+    router.push("/auth/signout")
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button type="button" className="cursor-pointer outline-none">
-          <UserAvatar user={user} className={className} />
+          <Avatar
+            className="bg-primary text-white"
+            style={{ width: `${avatarSize * 4}px`, height: `${avatarSize * 4}px` }}
+          >
+            <AvatarFallback className="bg-primary font-extrabold text-primary-foreground">
+              {firstLetter}
+            </AvatarFallback>
+          </Avatar>
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -48,7 +56,11 @@ export function ProfileDropdown({
       >
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-            <UserAvatar user={user} className="size-10" />
+            <Avatar className="size-10 bg-primary text-white">
+              <AvatarFallback className="bg-primary text-xs text-primary-foreground">
+                {firstLetter}
+              </AvatarFallback>
+            </Avatar>
             <div className="grid flex-1 text-start leading-tight">
               <span className="truncate text-base font-medium text-primary">
                 {user?.name ?? "User"}
