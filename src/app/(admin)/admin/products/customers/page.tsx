@@ -14,7 +14,7 @@ const PAGE_SIZE = 10
 export default function AllCustomersPage() {
   const { data: customers = [], isLoading } = useQuery<Customer[]>({
     queryKey: ["admin-customers"],
-    queryFn: () => fetch("/api/admin/customers").then((r) => r.json()),
+    queryFn: async () => { const r = await fetch("/api/admin/customers"); if (!r.ok) throw new Error("Failed to fetch customers"); return r.json() },
   })
 
   const [search, setSearch] = useState("")

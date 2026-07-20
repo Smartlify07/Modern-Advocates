@@ -18,7 +18,7 @@ export default function AllSalesPage() {
 
   const { data, isLoading } = useQuery<{ sales: SaleTransaction[]; summary: SalesSummary }>({
     queryKey: ["admin-sales"],
-    queryFn: () => fetch("/api/admin/sales").then((r) => r.json()),
+    queryFn: async () => { const r = await fetch("/api/admin/sales?period=all"); if (!r.ok) throw new Error("Failed to fetch sales"); return r.json() },
   })
 
   const sales = data?.sales ?? []

@@ -12,7 +12,7 @@ export function KpiSection({
 }) {
   const { data: customers = [] } = useQuery<Customer[]>({
     queryKey: ["admin-customers"],
-    queryFn: () => fetch("/api/admin/customers").then((r) => r.json()),
+    queryFn: async () => { const r = await fetch("/api/admin/customers"); if (!r.ok) throw new Error("Failed to fetch customers"); return r.json() },
   })
 
   return (

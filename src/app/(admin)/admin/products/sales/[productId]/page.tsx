@@ -7,13 +7,24 @@ import { SalesSummaryCards } from "@/features/admin/products/components/sales-su
 import { SalesTransactionsTable } from "@/features/admin/products/components/sales-transactions-table"
 import { SalesSummarySkeleton, TableSkeleton } from "@/features/admin/products/components/products-skeleton"
 
+interface SaleDetailItem {
+  id: string
+  customer: { id: string; name: string; email: string } | null
+  date: string
+  amount: number | string
+}
+
 export default function SaleDetailPage() {
   const params = useParams()
   const productId = params.productId as string
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-sale-detail", productId],
-    queryFn: () => fetch(`/api/admin/sales/${productId}`).then((r) => r.json()),
+    queryFn: async () => {
+      const r = await fetch(`/api/admin/sales/${productId}`)
+      if (!r.ok) return null
+      return r.json()
+    },
     enabled: !!productId,
   })
 
@@ -39,7 +50,7 @@ export default function SaleDetailPage() {
     )
   }
 
-  const sales = data.sales.map((s: any) => ({
+  const sales = (data.sales as SaleDetailItem[]).map((s) => ({
     id: s.id,
     productId,
     product: data.product.title,

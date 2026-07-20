@@ -12,13 +12,13 @@ export async function GET() {
   try {
     await requireAdmin()
 
-    const customers = await db
+    const raw = await db
       .select({
         id: user.id,
         name: user.name,
         email: user.email,
-        totalSpent: sql<number>`COALESCE(SUM(CASE WHEN ${orders.paymentStatus} = 'paid' THEN ${orders.amount} ELSE 0 END), 0)`,
-        courseCount: sql<number>`COUNT(DISTINCT ${orders.courseId})`,
+        totalSpent: sql<string>`COALESCE(SUM(CASE WHEN ${orders.paymentStatus} = 'paid' THEN ${orders.amount} ELSE 0 END), 0)`,
+        courseCount: sql<string>`CAST(COUNT(DISTINCT ${orders.courseId}) AS TEXT)`,
         lastPurchase: sql<string | null>`MAX(${orders.createdAt})`,
       })
       .from(user)
@@ -26,6 +26,12 @@ export async function GET() {
       .where(eq(orders.paymentStatus, "paid"))
       .groupBy(user.id)
       .orderBy(desc(sql`MAX(${orders.createdAt})`))
+
+    const customers = raw.map((c) => ({
+      ...c,
+      totalSpent: Number(c.totalSpent),
+      courseCount: Number(c.courseCount),
+    }))
 
     return NextResponse.json(customers)
   } catch (error) {

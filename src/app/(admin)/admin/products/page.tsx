@@ -10,7 +10,7 @@ import type { Product } from "@/features/admin/products/types"
 export default function AdminProductsPage() {
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["admin-products"],
-    queryFn: () => fetch("/api/admin/products").then((r) => r.json()),
+    queryFn: async () => { const r = await fetch("/api/admin/products"); if (!r.ok) throw new Error("Failed to fetch products"); return r.json() },
   })
 
   return (

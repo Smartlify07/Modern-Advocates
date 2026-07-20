@@ -5,21 +5,13 @@ import { db } from "@/infrastructure/database/client"
 import { orders } from "@/infrastructure/database/schema/course"
 import { requireAdmin } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
+import { buildDateCondition } from "../utils"
 import * as Sentry from "@sentry/nextjs"
 
-function buildDateCondition(period: string) {
-  switch (period) {
-    case "this-week":
-      return sql`${orders.createdAt} >= DATE_TRUNC('week', NOW()) AND ${orders.createdAt} < DATE_TRUNC('week', NOW()) + INTERVAL '7 days'`
-    case "this-month":
-      return sql`${orders.createdAt} >= DATE_TRUNC('month', NOW()) AND ${orders.createdAt} < DATE_TRUNC('month', NOW()) + INTERVAL '1 month'`
-    case "last-month":
-      return sql`${orders.createdAt} >= DATE_TRUNC('month', NOW() - INTERVAL '1 month') AND ${orders.createdAt} < DATE_TRUNC('month', NOW())`
-    case "90d":
-      return sql`${orders.createdAt} >= NOW() - INTERVAL '90 days'`
-    default:
-      return sql`${orders.createdAt} >= NOW() - INTERVAL '7 days'`
-  }
+interface StatsRow {
+  date: string
+  sales: string
+  revenue: string
 }
 
 export async function GET(request: NextRequest) {
@@ -42,7 +34,7 @@ export async function GET(request: NextRequest) {
       ORDER BY DATE(${orders.createdAt}) ASC
     `)
 
-    const chartData = raw.rows.map((row: any) => ({
+    const chartData = (raw.rows as unknown as StatsRow[]).map((row) => ({
       date: row.date,
       sales: Number(row.sales),
       revenue: Number(row.revenue),

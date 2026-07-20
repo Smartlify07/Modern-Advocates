@@ -44,7 +44,7 @@ export function SalesChart({ data }: SalesChartProps) {
   }
 
   const chartData = data.map((d) => ({
-    day: new Date(d.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }),
+    day: (([y, m, d]) => new Date(y, m - 1, d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }))(d.date.split("-").map(Number)),
     sales: d.sales,
   }))
 

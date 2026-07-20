@@ -14,7 +14,7 @@ const PAGE_SIZE = 10
 export default function AllProductsPage() {
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["admin-products"],
-    queryFn: () => fetch("/api/admin/products").then((r) => r.json()),
+    queryFn: async () => { const r = await fetch("/api/admin/products"); if (!r.ok) throw new Error("Failed to fetch products"); return r.json() },
   })
 
   const [search, setSearch] = useState("")
