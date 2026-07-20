@@ -40,7 +40,7 @@ export function DonationsTable({ donations }: DonationsTableProps) {
                   currency: "USD",
                 }).format(d.amount)}
               </TableCell>
-              <TableCell className="font-normal">
+              <TableCell className="font-normal text-muted-foreground">
                 {donationTypeLabels[d.donationType]}
               </TableCell>
             </TableRow>
