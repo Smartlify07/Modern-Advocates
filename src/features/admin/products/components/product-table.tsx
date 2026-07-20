@@ -19,10 +19,10 @@ export function ProductTable({ products }: ProductTableProps) {
         <TableHeader className="rounded-t-2xl">
           <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
             <TableHead className="w-[280px]">Product</TableHead>
-            <TableHead>Sales Price</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Sales</TableHead>
-            <TableHead className="text-center">Actions</TableHead>
+            <TableHead className="w-[140px]">Sales Price</TableHead>
+            <TableHead className="w-[100px]">Status</TableHead>
+            <TableHead className="w-[80px]">Sales</TableHead>
+            <TableHead className="w-[80px] text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
