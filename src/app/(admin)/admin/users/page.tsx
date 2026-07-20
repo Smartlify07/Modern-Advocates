@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { toast } from "sonner"
 import { Button } from "@/shared/ui/button"
 import { Skeleton } from "@/shared/ui/skeleton"
@@ -32,11 +32,11 @@ function TableSkeleton() {
       <TableHeader className="rounded-t-2xl">
         <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
           <TableHead className="w-[220px]">User</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead className="text-center">Course Enrolled</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Last Login</TableHead>
-          <TableHead className="text-center">Actions</TableHead>
+          <TableHead className="w-[280px]">Email</TableHead>
+          <TableHead className="w-[140px] text-center">Course Enrolled</TableHead>
+          <TableHead className="w-[100px]">Status</TableHead>
+          <TableHead className="w-[160px]">Last Login</TableHead>
+          <TableHead className="w-[80px] text-center">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -80,11 +80,37 @@ export default function AdminUsersPage() {
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
-  const { data, isLoading, isError, error, refetch } = useUsers({ search, status: statusFilter, page, pageSize: PAGE_SIZE })
+  const { data, isLoading, isError, error, refetch } = useUsers({ page: 1, pageSize: 10000 })
   const createUser = useCreateUser()
   const suspendUser = useSuspendUser()
   const activateUser = useActivateUser()
   const deleteUser = useDeleteUser()
+
+  const allUsers = data?.users ?? []
+
+  const filtered = useMemo(() => {
+    let result = allUsers
+    if (search) {
+      const q = search.toLowerCase()
+      result = result.filter(
+        (u) =>
+          u.name.toLowerCase().includes(q) ||
+          u.email.toLowerCase().includes(q),
+      )
+    }
+    if (statusFilter !== "all") {
+      result = result.filter((u) => u.status === statusFilter)
+    }
+    return result
+  }, [allUsers, search, statusFilter])
+
+  const total = filtered.length
+
+  if (page > Math.max(1, Math.ceil(total / PAGE_SIZE))) {
+    setPage(1)
+  }
+
+  const paginatedUsers = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   const handleSuspend = useCallback((user: User) => {
     setSelectedUser(user)
@@ -133,20 +159,18 @@ export default function AdminUsersPage() {
         ) : (
           <>
             <UserTable
-              users={data?.users ?? []}
+              users={paginatedUsers}
               onSuspend={handleSuspend}
               onActivate={handleActivate}
               onDelete={handleDelete}
               userRole={role}
             />
-            {data && (
-              <PaginationBar
-                page={page}
-                total={data.total}
-                pageSize={PAGE_SIZE}
-                onPageChange={setPage}
-              />
-            )}
+            <PaginationBar
+              page={page}
+              total={total}
+              pageSize={PAGE_SIZE}
+              onPageChange={setPage}
+            />
           </>
         )}
       </div>

@@ -18,10 +18,10 @@ function TableSkeleton() {
     <Table>
       <TableHeader className="rounded-t-2xl">
         <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
-          <TableHead>Name</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Amount</TableHead>
-          <TableHead>Donation Type</TableHead>
+          <TableHead className="w-[220px]">Name</TableHead>
+          <TableHead className="w-[280px]">Email</TableHead>
+          <TableHead className="w-[120px]">Amount</TableHead>
+          <TableHead className="w-[160px]">Donation Type</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

@@ -29,11 +29,11 @@ function TableSkeleton() {
       <TableHeader className="rounded-t-2xl">
         <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
           <TableHead className="w-[220px]">User</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead className="text-center">Course Enrolled</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Last Login</TableHead>
-          <TableHead className="text-center">Actions</TableHead>
+          <TableHead className="w-[280px]">Email</TableHead>
+          <TableHead className="w-[140px] text-center">Course Enrolled</TableHead>
+          <TableHead className="w-[100px]">Status</TableHead>
+          <TableHead className="w-[160px]">Last Login</TableHead>
+          <TableHead className="w-[80px] text-center">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

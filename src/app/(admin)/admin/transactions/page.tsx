@@ -49,12 +49,12 @@ export default function AdminTransactionsPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b text-left text-muted-foreground">
-                <th className="p-4 font-medium">Date</th>
-                <th className="p-4 font-medium">User</th>
-                <th className="p-4 font-medium">Course</th>
-                <th className="p-4 font-medium">Amount</th>
-                <th className="p-4 font-medium">Status</th>
-                <th className="p-4 font-medium">Stripe ID</th>
+                <th className="w-[180px] p-4 font-medium">Date</th>
+                <th className="w-[220px] p-4 font-medium">User</th>
+                <th className="w-[200px] p-4 font-medium">Course</th>
+                <th className="w-[120px] p-4 font-medium">Amount</th>
+                <th className="w-[100px] p-4 font-medium">Status</th>
+                <th className="w-[180px] p-4 font-medium">Stripe ID</th>
               </tr>
             </thead>
             <tbody>
