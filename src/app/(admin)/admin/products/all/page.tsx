@@ -1,21 +1,27 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { PageHeader } from "@/features/admin/products/components/page-header"
 import { SearchExportRow } from "@/features/admin/products/components/search-export-row"
 import { AllProductsTable } from "@/features/admin/products/components/all-products-table"
 import { PaginationBar } from "@/features/admin/products/components/pagination-bar"
-import { sampleProducts } from "@/features/admin/products/types"
+import type { Product } from "@/features/admin/products/types"
 
 const PAGE_SIZE = 10
 
 export default function AllProductsPage() {
+  const { data: products = [] } = useQuery<Product[]>({
+    queryKey: ["admin-products"],
+    queryFn: () => fetch("/api/admin/products").then((r) => r.json()),
+  })
+
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
 
   const filtered = useMemo(
-    () => sampleProducts.filter((p) => p.name.toLowerCase().includes(search.toLowerCase())),
-    [search],
+    () => products.filter((p) => p.name.toLowerCase().includes(search.toLowerCase())),
+    [search, products],
   )
 
   return (

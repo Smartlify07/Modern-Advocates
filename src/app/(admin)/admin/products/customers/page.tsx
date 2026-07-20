@@ -1,28 +1,27 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { PageHeader } from "@/features/admin/products/components/page-header"
 import { SearchExportRow } from "@/features/admin/products/components/search-export-row"
 import { CustomersTable } from "@/features/admin/products/components/customers-table"
 import { PaginationBar } from "@/features/admin/products/components/pagination-bar"
-import type { Customer } from "@/features/admin/products/components/customers-table"
-
-const sampleCustomers: Customer[] = [
-  { id: "c1", name: "John Doe", email: "john@example.com" },
-  { id: "c2", name: "Jane Smith", email: "jane@example.com" },
-  { id: "c3", name: "Bob Wilson", email: "bob@example.com" },
-  { id: "c4", name: "Alice Brown", email: "alice@example.com" },
-]
+import type { Customer } from "@/features/admin/products/types"
 
 const PAGE_SIZE = 10
 
 export default function AllCustomersPage() {
+  const { data: customers = [] } = useQuery<Customer[]>({
+    queryKey: ["admin-customers"],
+    queryFn: () => fetch("/api/admin/customers").then((r) => r.json()),
+  })
+
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
 
   const filtered = useMemo(
-    () => sampleCustomers.filter((c) => c.name.toLowerCase().includes(search.toLowerCase())),
-    [search],
+    () => customers.filter((c) => c.name?.toLowerCase().includes(search.toLowerCase()) ?? false),
+    [search, customers],
   )
 
   return (
