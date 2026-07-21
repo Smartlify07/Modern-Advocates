@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/shared/ui/tooltip"
 import { Input } from "@/shared/ui/input"
 import { Button } from "@/shared/ui/button"
 import { BellIcon, SearchIcon, UserCircle2 } from "lucide-react"
+
 export default function AdminLayoutClient({
   children,
   userName,
