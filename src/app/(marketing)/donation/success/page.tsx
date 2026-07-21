@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { CheckCircle, LoaderCircle } from "lucide-react"
@@ -8,7 +8,7 @@ import { CheckCircle, LoaderCircle } from "lucide-react"
 import { Button } from "@/shared/ui/button"
 import type { Donation } from "@/features/admin/donations/types"
 
-export default function DonationSuccessPage() {
+function DonationSuccessContent() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get("session_id")
   const [donation, setDonation] = useState<Donation | null>(null)
@@ -87,5 +87,22 @@ export default function DonationSuccessPage() {
           </Link>
       </div>
     </main>
+  )
+}
+
+export default function DonationSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-[60vh] items-center justify-center bg-white">
+          <div className="flex flex-col items-center gap-4">
+            <LoaderCircle className="size-8 animate-spin text-ma-text" />
+            <p className="text-lg text-ma-text">Verifying your donation...</p>
+          </div>
+        </main>
+      }
+    >
+      <DonationSuccessContent />
+    </Suspense>
   )
 }
