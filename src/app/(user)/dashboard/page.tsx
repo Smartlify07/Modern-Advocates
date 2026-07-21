@@ -3,7 +3,7 @@
 import { useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Skeleton } from "@/shared/ui/skeleton"
-import { Avatar, AvatarFallback } from "@/shared/ui/avatar"
+import { UserAvatar } from "@/shared/ui/user-avatar"
 import {
   CourseCard,
   type Course,
@@ -16,14 +16,6 @@ export default function UserDashboardPage() {
   const user = session?.user
 
   const firstName = user?.name?.split(" ")[0] ?? "User"
-  const initials = user?.name
-    ? user.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
-    : "U"
 
   const {
     data: courses,
@@ -69,11 +61,7 @@ export default function UserDashboardPage() {
   return (
     <div className="mx-auto px-4 py-8 lg:max-w-7xl lg:px-25 lg:py-19.25 2xl:max-w-360 2xl:px-50">
       <div className="mb-[70px] flex items-center gap-4 lg:mb-26.75">
-        <Avatar className="size-[50px] bg-primary text-white lg:size-12.5">
-          <AvatarFallback className="bg-primary text-base text-primary-foreground">
-            {initials}
-          </AvatarFallback>
-        </Avatar>
+        <UserAvatar user={user} className="size-[50px] lg:size-12.5" />
         <p className="text-xl font-bold text-ma-text lg:text-2xl">
           Welcome back, {firstName}
         </p>
