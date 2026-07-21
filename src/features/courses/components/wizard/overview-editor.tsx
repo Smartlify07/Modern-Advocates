@@ -37,9 +37,14 @@ export function OverviewEditor({ content, onChange }: { content: JSONContent | n
 
   useEffect(() => { return () => editor?.destroy() }, [editor])
   useEffect(() => {
-    if (editor && content) {
+    if (!editor) return
+    if (content === null) {
+      editor.commands.setContent("", { emitUpdate: false })
+    } else {
       const currentJson = editor.getJSON()
-      if (JSON.stringify(currentJson) !== JSON.stringify(content)) editor.commands.setContent(content)
+      if (JSON.stringify(currentJson) !== JSON.stringify(content)) {
+        editor.commands.setContent(content, { emitUpdate: false })
+      }
     }
   }, [editor, content])
 

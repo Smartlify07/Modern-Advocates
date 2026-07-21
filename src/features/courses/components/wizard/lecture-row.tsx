@@ -33,6 +33,7 @@ export function LectureRow({ sectionId, lecture }: { sectionId: string; lecture:
         videoFile: file,
       })
     }
+    if (videoInputRef.current) videoInputRef.current.value = ""
     setMediaOpen(false)
   }
 
@@ -108,7 +109,10 @@ export function LectureRow({ sectionId, lecture }: { sectionId: string; lecture:
           <span className="max-w-28 truncate">{lecture.mediaName ?? "Media"}</span>
           <button
             type="button"
-            onClick={() => updateLecture(sectionId, lecture.id, { mediaType: "none", mediaName: null, mediaUrl: null, videoFile: null, notesContent: "" })}
+            onClick={() => {
+              updateLecture(sectionId, lecture.id, { mediaType: "none", mediaName: null, mediaUrl: null, videoFile: null, notesContent: "" })
+              if (videoInputRef.current) videoInputRef.current.value = ""
+            }}
             className="ml-0.5 text-slate-400 hover:text-slate-600"
           >
             <XIcon className="size-3" />
