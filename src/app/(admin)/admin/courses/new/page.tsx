@@ -1,111 +1,115 @@
 "use client"
 
-import { useEffect } from "react"
 import Link from "next/link"
-import { useQuery } from "@tanstack/react-query"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-
+import { useCourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
+import { Stepper } from "@/shared/ui/stepper"
 import { Button } from "@/shared/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
-import { BasicInfoSection } from "@/features/courses/components/basic-info-section"
-import { CourseContentSection } from "@/features/courses/components/course-content-section"
-import { PricingSection } from "@/features/courses/components/pricing-section"
-import { PublishSection } from "@/features/courses/components/publish-section"
-import { useCourseFormStore } from "@/features/courses/store/use-course-form-store"
-import { SaveIcon, XIcon } from "lucide-react"
+import { BasicInfoStep } from "@/features/courses/components/wizard/basic-info-step"
+import { AdvanceInfoStep } from "@/features/courses/components/wizard/advance-info-step"
+import { CurriculumStep } from "@/features/courses/components/wizard/curriculum-step"
+import { PublishStep } from "@/features/courses/components/wizard/publish-step"
+import {
+  Layers,
+  ClipboardList,
+  MonitorPlay,
+  CirclePlay,
+  XIcon,
+  SaveIcon,
+  ArrowLeftIcon,
+  SendIcon,
+} from "lucide-react"
+import type { Step } from "@/shared/ui/stepper"
 
-const formSchema = z.object({
-  title: z.string({ message: "Title is required" }).min(1, { message: "Title is required" }),
-  categoryId: z.string({ message: "Category is required" }).min(1, { message: "Category is required" }),
-  description: z.string().optional(),
-})
-
-type FormValues = z.infer<typeof formSchema>
-type Category = { id: string; name: string }
-
-const steps = ["Basic Info", "Course Content", "Pricing", "Publish"]
+const wizardSteps: Step[] = [
+  { title: "Basic Information", icon: Layers },
+  { title: "Advance Information", icon: ClipboardList },
+  { title: "Curriculum", icon: MonitorPlay },
+  { title: "Publish Course", icon: CirclePlay },
+]
 
 export default function CreateCoursePage() {
-  const activeTab = useCourseFormStore((s) => s.activeTab)
-  const setActiveTab = useCourseFormStore((s) => s.setActiveTab)
-  const syncFormValues = useCourseFormStore((s) => s.syncFormValues)
+  const currentStep = useCourseWizardStore((s) => s.currentStep)
+  const setCurrentStep = useCourseWizardStore((s) => s.setCurrentStep)
+  const completedSteps = useCourseWizardStore((s) => s.completedSteps)
+  const setCompletedSteps = useCourseWizardStore((s) => s.setCompletedSteps)
+  const isSaving = useCourseWizardStore((s) => s.isSaving)
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { title: "", categoryId: "", description: "" },
-  })
-
-  const { data: categories } = useQuery<Category[]>({
-    queryKey: ["categories"],
-    queryFn: () => fetch("/api/categories").then((r) => r.json()),
-    refetchOnWindowFocus: false,
-  })
-
-  const formValues = form.watch()
-  useEffect(() => {
-    syncFormValues(formValues, categories ?? [])
-  }, [formValues, categories, syncFormValues])
-
-  const onSubmit = () => {
-    const currentIndex = steps.indexOf(activeTab)
-    if (currentIndex < steps.length - 1) {
-      setActiveTab(steps[currentIndex + 1])
+  const handlePrevious = () => {
+    if (currentStep > 0) {
+      const newStep = currentStep - 1
+      setCurrentStep(newStep)
     }
   }
 
-  const handleSaveAndContinue = async () => {
-    const currentIndex = steps.indexOf(activeTab)
-    if (activeTab === "Basic Info") {
-      const valid = await form.trigger()
-      if (!valid) return
-    }
-    if (currentIndex < steps.length - 1) {
-      setActiveTab(steps[currentIndex + 1])
+  const handleSaveAndContinue = () => {
+    if (currentStep < wizardSteps.length - 1) {
+      const newStep = currentStep + 1
+      if (!completedSteps.includes(currentStep)) {
+        setCompletedSteps([...completedSteps, currentStep])
+      }
+      setCurrentStep(newStep)
     }
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-4 py-8">
-      <div className="flex items-center justify-between">
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList>
-            {steps.map((step) => (
-              <TabsTrigger key={step} value={step}>{step}</TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" asChild>
-            <Link href="/admin/courses"><XIcon className="size-4" />Cancel</Link>
-          </Button>
-          {activeTab !== "Publish" && (
-            <Button onClick={handleSaveAndContinue}>
-              <SaveIcon className="size-4" />
-              Save and Continue
-            </Button>
-          )}
-        </div>
+    <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
+      <Stepper
+        steps={wizardSteps}
+        currentStep={currentStep}
+        completedSteps={completedSteps}
+        onStepClick={setCurrentStep}
+      />
+
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+        <h1 className="text-xl font-semibold lg:text-[36px]">
+          {wizardSteps[currentStep].title}
+        </h1>
+        <Button
+          variant="ghost"
+          className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
+          asChild
+        >
+          <Link href="/admin/courses">
+            <XIcon className="mr-1 size-4" />
+            Save & Close
+          </Link>
+        </Button>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
-        <TabsContent value="Basic Info" className="flex flex-col gap-4">
-          <BasicInfoSection form={form} categories={categories} onSubmit={onSubmit} />
-        </TabsContent>
+      {currentStep === 0 && <BasicInfoStep />}
+      {currentStep === 1 && <AdvanceInfoStep />}
+      {currentStep === 2 && <CurriculumStep />}
+      {currentStep === 3 && <PublishStep />}
 
-        <TabsContent value="Course Content" className="flex flex-col gap-4">
-          <CourseContentSection />
-        </TabsContent>
-
-        <TabsContent value="Pricing">
-          <PricingSection />
-        </TabsContent>
-
-        <TabsContent value="Publish">
-          <PublishSection />
-        </TabsContent>
-      </Tabs>
+      <div className="flex items-center justify-between border-t border-slate-200 pt-4">
+        {currentStep > 0 ? (
+          <Button
+            variant="outline"
+            onClick={handlePrevious}
+            className="h-[44px] rounded-[8px]"
+          >
+            <ArrowLeftIcon className="mr-1 size-4" />
+            Previous
+          </Button>
+        ) : (
+          <div />
+        )}
+        {currentStep < wizardSteps.length - 1 && (
+          <Button
+            onClick={handleSaveAndContinue}
+            disabled={isSaving}
+            className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
+          >
+            <SaveIcon className="mr-1 size-4" />
+            Save & Continue
+          </Button>
+        )}
+        {currentStep === wizardSteps.length - 1 && (
+          <Button className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90">
+            Publish Course
+          </Button>
+        )}
+      </div>
     </div>
   )
 }

@@ -4,55 +4,38 @@ import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-
+import { useCourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
+import { Stepper } from "@/shared/ui/stepper"
 import { Button } from "@/shared/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
-import { BasicInfoSection } from "@/features/courses/components/basic-info-section"
-import { CourseContentSection } from "@/features/courses/components/course-content-section"
-import { PricingSection } from "@/features/courses/components/pricing-section"
-import { PublishSection } from "@/features/courses/components/publish-section"
-import { useCourseFormStore } from "@/features/courses/store/use-course-form-store"
-import { SaveIcon, XIcon, Loader2 } from "lucide-react"
+import { BasicInfoStep } from "@/features/courses/components/wizard/basic-info-step"
+import { AdvanceInfoStep } from "@/features/courses/components/wizard/advance-info-step"
+import { CurriculumStep } from "@/features/courses/components/wizard/curriculum-step"
+import { PublishStep } from "@/features/courses/components/wizard/publish-step"
+import { Layers, ClipboardList, MonitorPlay, CirclePlay, XIcon, SaveIcon, ArrowLeftIcon, Loader2, SendIcon } from "lucide-react"
+import type { Step } from "@/shared/ui/stepper"
 
-const formSchema = z.object({
-  title: z.string({ message: "Title is required" }).min(1, { message: "Title is required" }),
-  categoryId: z.string({ message: "Category is required" }).min(1, { message: "Category is required" }),
-  description: z.string().optional(),
-})
-
-type FormValues = z.infer<typeof formSchema>
-type Category = { id: string; name: string }
-
-const steps = ["Basic Info", "Course Content", "Pricing", "Publish"]
+const wizardSteps: Step[] = [
+  { title: "Basic Information", icon: Layers },
+  { title: "Advance Information", icon: ClipboardList },
+  { title: "Curriculum", icon: MonitorPlay },
+  { title: "Publish Course", icon: CirclePlay },
+]
 
 export default function EditCoursePage() {
   const params = useParams()
   const router = useRouter()
   const courseId = params.id as string
 
-  const activeTab = useCourseFormStore((s) => s.activeTab)
-  const setActiveTab = useCourseFormStore((s) => s.setActiveTab)
-  const syncFormValues = useCourseFormStore((s) => s.syncFormValues)
-  const loadFromCourse = useCourseFormStore((s) => s.loadFromCourse)
-  const modules = useCourseFormStore((s) => s.modules)
-  const setCourseId = useCourseFormStore((s) => s.setCourseId)
+  const currentStep = useCourseWizardStore((s) => s.currentStep)
+  const setCurrentStep = useCourseWizardStore((s) => s.setCurrentStep)
+  const completedSteps = useCourseWizardStore((s) => s.completedSteps)
+  const setCompletedSteps = useCourseWizardStore((s) => s.setCompletedSteps)
+  const isSaving = useCourseWizardStore((s) => s.isSaving)
+  const loadFromCourse = useCourseWizardStore((s) => s.loadFromCourse)
+  const setCourseId = useCourseWizardStore((s) => s.setCourseId)
 
   const [loaded, setLoaded] = useState(false)
   const [saving, setSaving] = useState(false)
-
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { title: "", categoryId: "", description: "" },
-  })
-
-  const { data: categories } = useQuery<Category[]>({
-    queryKey: ["categories"],
-    queryFn: () => fetch("/api/categories").then((r) => r.json()),
-    refetchOnWindowFocus: false,
-  })
 
   const { data: course, isLoading } = useQuery({
     queryKey: ["course", courseId],
@@ -63,74 +46,26 @@ export default function EditCoursePage() {
 
   useEffect(() => {
     if (course && !loaded && !isLoading) {
-      form.reset({
-        title: course.title ?? "",
-        categoryId: course.categoryId ?? "",
-        description: course.description ?? "",
-      })
+      setCourseId(course.id)
       loadFromCourse(course)
       setLoaded(true)
     }
-  }, [course, loaded, isLoading, form, loadFromCourse])
+  }, [course, loaded, isLoading, loadFromCourse, setCourseId])
 
-  const formValues = form.watch()
-  useEffect(() => {
-    syncFormValues(formValues, categories ?? [])
-  }, [formValues, categories, syncFormValues])
-
-  const onSubmit = () => {
-    const currentIndex = steps.indexOf(activeTab)
-    if (currentIndex < steps.length - 1) {
-      setActiveTab(steps[currentIndex + 1])
+  const handlePrevious = () => {
+    if (currentStep > 0) {
+      const newStep = currentStep - 1
+      setCurrentStep(newStep)
     }
   }
 
-  const handleSave = async () => {
-    setSaving(true)
-    try {
-      const body = {
-        title: useCourseFormStore.getState().title,
-        description: useCourseFormStore.getState().description,
-        categoryId: useCourseFormStore.getState().categoryId,
-        level: useCourseFormStore.getState().level,
-        price: parseFloat(useCourseFormStore.getState().price) || 0,
-        discountedPrice: useCourseFormStore.getState().isFree
-          ? null
-          : useCourseFormStore.getState().discount > 0
-            ? (parseFloat(useCourseFormStore.getState().price) || 0) * (1 - useCourseFormStore.getState().discount / 100)
-            : null,
-        isFree: useCourseFormStore.getState().isFree,
-        status: "draft",
-        modules: useCourseFormStore.getState().modules.map((mod, mi) => ({
-          id: mod.id,
-          title: mod.title,
-          order: mod.order || mi,
-          topics: mod.topics.map((topic, ti) => ({
-            id: topic.id,
-            title: topic.title,
-            type: topic.type,
-            description: topic.description,
-            order: topic.order || ti,
-          })),
-        })),
+  const handleSaveAndContinue = () => {
+    if (currentStep < wizardSteps.length - 1) {
+      const newStep = currentStep + 1
+      if (!completedSteps.includes(currentStep)) {
+        setCompletedSteps([...completedSteps, currentStep])
       }
-
-      const res = await fetch(`/api/courses/${courseId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      })
-
-      if (!res.ok) {
-        const err = await res.json()
-        throw new Error(err.error ?? "Failed to save course")
-      }
-
-      router.push("/admin/courses")
-    } catch (error) {
-      console.error("Failed to save:", error)
-    } finally {
-      setSaving(false)
+      setCurrentStep(newStep)
     }
   }
 
@@ -153,63 +88,52 @@ export default function EditCoursePage() {
     )
   }
 
-  const handleSaveAndContinue = async () => {
-    const currentIndex = steps.indexOf(activeTab)
-    if (activeTab === "Basic Info") {
-      const valid = await form.trigger()
-      if (!valid) return
-    }
-    if (currentIndex < steps.length - 1) {
-      setActiveTab(steps[currentIndex + 1])
-    }
-  }
-
   return (
-    <div className="flex flex-1 flex-col gap-4 py-8">
-      <div className="flex items-center justify-between">
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList>
-            {steps.map((step) => (
-              <TabsTrigger key={step} value={step}>{step}</TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" asChild>
-            <Link href="/admin/courses"><XIcon className="size-4" />Cancel</Link>
-          </Button>
-          {activeTab !== "Publish" && (
-            <Button onClick={handleSaveAndContinue} disabled={saving}>
-              <SaveIcon className="size-4" />
-              Save and Continue
-            </Button>
-          )}
-          {activeTab === "Publish" && (
-            <Button onClick={handleSave} disabled={saving}>
-              {saving ? <Loader2 className="size-4 animate-spin" /> : <SaveIcon className="size-4" />}
-              {saving ? "Saving..." : "Save Changes"}
-            </Button>
-          )}
-        </div>
+    <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
+      <Stepper
+        steps={wizardSteps}
+        currentStep={currentStep}
+        completedSteps={completedSteps}
+        onStepClick={setCurrentStep}
+      />
+
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+        <h1 className="text-xl font-semibold lg:text-[36px]">{wizardSteps[currentStep].title}</h1>
+        <Button variant="ghost" className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90" asChild>
+          <Link href="/admin/courses">
+            <XIcon className="size-4 mr-1" />
+            Save & Close
+          </Link>
+        </Button>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
-        <TabsContent value="Basic Info" className="flex flex-col gap-4">
-          <BasicInfoSection form={form} categories={categories} onSubmit={onSubmit} />
-        </TabsContent>
+      {currentStep === 0 && <BasicInfoStep />}
+      {currentStep === 1 && <AdvanceInfoStep />}
+      {currentStep === 2 && <CurriculumStep />}
+      {currentStep === 3 && <PublishStep />}
 
-        <TabsContent value="Course Content" className="flex flex-col gap-4">
-          <CourseContentSection />
-        </TabsContent>
-
-        <TabsContent value="Pricing">
-          <PricingSection />
-        </TabsContent>
-
-        <TabsContent value="Publish">
-          <PublishSection />
-        </TabsContent>
-      </Tabs>
+      <div className="flex items-center justify-between border-t border-slate-200 pt-4">
+        {currentStep > 0 ? (
+          <Button variant="outline" onClick={handlePrevious} className="h-[44px] rounded-[8px]">
+            <ArrowLeftIcon className="size-4 mr-1" />
+            Previous
+          </Button>
+        ) : (
+          <div />
+        )}
+        {currentStep < wizardSteps.length - 1 && (
+          <Button onClick={handleSaveAndContinue} disabled={saving} className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90">
+            <SaveIcon className="size-4 mr-1" />
+            Save & Continue
+          </Button>
+        )}
+        {currentStep === wizardSteps.length - 1 && (
+          <Button className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90">
+            <SendIcon className="size-4 mr-1" />
+            Publish
+          </Button>
+        )}
+      </div>
     </div>
   )
 }

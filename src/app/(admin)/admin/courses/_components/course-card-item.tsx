@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useMutation } from "@tanstack/react-query"
 import { Button } from "@/shared/ui/button"
 import {
   DropdownMenu,
@@ -9,21 +10,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/shared/ui/dialog"
-import {
-  MoreHorizontalIcon,
-  PencilIcon,
-  ArchiveIcon,
-  RotateCcwIcon,
-} from "lucide-react"
+import { MoreHorizontalIcon, PencilIcon, ArchiveIcon, RotateCcwIcon } from "lucide-react"
 import { CourseCard } from "@/features/courses/components/course-card"
+import { ArchiveCourseDialog } from "./archive-course-dialog"
 import type { Course } from "./types"
 
 export default function CourseCardItem({ course }: { course: Course }) {
@@ -33,7 +22,29 @@ export default function CourseCardItem({ course }: { course: Course }) {
   >(null)
   const isArchived = course.status === "archived"
 
-  const action = dialogAction ?? (isArchived ? "unarchive" : "archive")
+  const archiveMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/courses/${course.id}/archive`, {
+        method: "PATCH",
+      })
+      if (!res.ok) throw new Error("Failed to archive course")
+    },
+    onSettled: () => setDialogAction(null),
+  })
+
+  const unarchiveMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/courses/${course.id}/unarchive`, {
+        method: "PATCH",
+      })
+      if (!res.ok) throw new Error("Failed to unarchive course")
+    },
+    onSettled: () => setDialogAction(null),
+  })
+
+  const mode = dialogAction ?? (isArchived ? "unarchive" : "archive")
+  const isPending =
+    mode === "archive" ? archiveMutation.isPending : unarchiveMutation.isPending
 
   return (
     <>
@@ -97,48 +108,22 @@ export default function CourseCardItem({ course }: { course: Course }) {
         </div>
       </div>
 
-      <Dialog
+      <ArchiveCourseDialog
         open={!!dialogAction}
         onOpenChange={(o) => {
           if (!o) setDialogAction(null)
         }}
-      >
-        <DialogContent showCloseButton={false} className="sm:max-w-[360px]">
-          <DialogHeader className="items-center gap-3 pt-6">
-            <div className="flex size-12 items-center justify-center rounded-full bg-red-100">
-              {action === "archive" ? (
-                <ArchiveIcon className="size-6 text-red-600" />
-              ) : (
-                <RotateCcwIcon className="size-6 text-red-600" />
-              )}
-            </div>
-            <DialogTitle className="text-center text-lg font-semibold">
-              {action === "archive" ? "Archive Course" : "Unarchive Course"}
-            </DialogTitle>
-            <DialogDescription className="text-center">
-              {action === "archive"
-                ? "This course will be archived and no longer visible to students. You can unarchive it anytime."
-                : "This course will be restored and visible to students again."}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="border-none pt-2">
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={() => setDialogAction(null)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              className="flex-1"
-              onClick={() => setDialogAction(null)}
-            >
-              {action === "archive" ? "Archive" : "Unarchive"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        course={course}
+        mode={mode}
+        onConfirm={() => {
+          if (mode === "archive") {
+            archiveMutation.mutateAsync()
+          } else {
+            unarchiveMutation.mutateAsync()
+          }
+        }}
+        isPending={isPending}
+      />
     </>
   )
 }
