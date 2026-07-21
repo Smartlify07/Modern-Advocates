@@ -16,7 +16,7 @@ const donationAmounts = [100, 200, 1000]
 
 const donationFormSchema = z.object({
   donationType: z.enum(donationTypes),
-  amount: z.coerce.number().positive("Amount must be greater than 0"),
+  amount: z.number().positive("Amount must be greater than 0"),
   donorName: z.string().min(1, "Full name is required"),
   donorEmail: z.email("Please enter a valid email address"),
   confirmation: z.boolean().refine((val) => val === true, {
@@ -36,7 +36,7 @@ export function DonationSupportSection() {
     resolver: zodResolver(donationFormSchema),
     defaultValues: {
       donationType: "Fixed Donation",
-      amount: undefined,
+      amount: 0,
       donorName: "",
       donorEmail: "",
       confirmation: false,
@@ -187,11 +187,12 @@ export function DonationSupportSection() {
                   </label>
                   <div className="relative">
                     <Input
-                      {...field}
                       id={field.name}
                       type="number"
                       inputMode="decimal"
                       placeholder="Enter Amount"
+                      value={field.value || ""}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                       aria-invalid={fieldState.invalid}
                       className="h-10 rounded-[6px] border-[#e5e7eb] bg-white px-4 py-2.5 pr-10 text-base placeholder:text-[#6b7280]"
                     />

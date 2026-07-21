@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   try {
     const { amount, donorName, donorEmail, donationType } = await request.json()
 
-    if (!amount || typeof amount !== "number" || amount <= 0) {
+    if (!amount || typeof amount !== "number" || amount < 0.5) {
       return NextResponse.json(
         { error: "A valid amount is required" },
         { status: 400 },

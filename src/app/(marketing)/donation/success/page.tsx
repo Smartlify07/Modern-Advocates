@@ -12,15 +12,13 @@ export default function DonationSuccessPage() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get("session_id")
   const [donation, setDonation] = useState<Donation | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(!!sessionId)
+  const [error, setError] = useState<string | null>(
+    !sessionId ? "No session ID provided" : null,
+  )
 
   useEffect(() => {
-    if (!sessionId) {
-      setError("No session ID provided")
-      setLoading(false)
-      return
-    }
+    if (!sessionId) return
 
     fetch(`/api/donations/success?session_id=${sessionId}`)
       .then(async (res) => {

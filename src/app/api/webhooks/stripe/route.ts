@@ -104,6 +104,10 @@ export async function POST(request: Request) {
           return NextResponse.json({ success: true })
         }
 
+        if (checkoutSession.payment_status !== "paid") {
+          return NextResponse.json({ success: true })
+        }
+
         await db
           .update(donations)
           .set({ paymentStatus: "paid" })
