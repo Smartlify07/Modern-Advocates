@@ -13,13 +13,11 @@ export const auth = betterAuth({
   }),
   baseURL: {
     allowedHosts: [
-      "localhost:*",
-      "modern-advocates.vercel.app",
+      "localhost:3000",
+      "*.vercel.app",
     ],
-    fallback:
-      process.env.NODE_ENV === "development"
-        ? "http://localhost:3000"
-        : "https://modern-advocates.vercel.app",
+    protocol: process.env.NODE_ENV === "development" ? "http" : "https",
+    fallback: "https://modern-advocates.vercel.app",
   },
   emailAndPassword: { enabled: true },
   socialProviders: {
