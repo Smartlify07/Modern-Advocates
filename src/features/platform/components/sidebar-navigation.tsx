@@ -55,7 +55,7 @@ export function SidebarNavigation({
       ? [{ title: "Donations", url: "/admin/donations", icon: Gift }]
       : []),
     { title: "Team", url: "/admin/team", icon: UserPlus },
-    { title: "Help & Support", url: "/admin/help", icon: MessageSquareMore },
+    { title: "Help & Support", url: "/admin/support", icon: MessageSquareMore },
   ]
 
   const handleLogout = () => {
