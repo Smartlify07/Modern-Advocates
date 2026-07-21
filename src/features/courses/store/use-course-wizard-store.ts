@@ -140,7 +140,7 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
         {
           id: `section_${nextSectionId++}`,
           title: "",
-          order: state.sections.length,
+          order: state.sections.reduce((max, s) => Math.max(max, s.order), -1) + 1,
           lectures: [],
         },
       ],
@@ -209,6 +209,9 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
 
   loadFromCourse: (course) => {
     set({
+      currentStep: 0,
+      completedSteps: [],
+      thumbnail: null,
       courseId: course.id,
       title: course.title ?? "",
       thumbnailPreview: course.thumbnailUrl ?? null,
@@ -234,16 +237,20 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
           mediaName: topic.videoUrl ?? null,
           mediaUrl: topic.videoId ?? null,
           videoFile: null,
-          notesContent: "",
+          notesContent: topic.description ?? "",
         })),
       })),
     })
   },
 
-  resetForm: () =>
+  resetForm: () => {
+    const { thumbnailPreview } = get()
+    if (thumbnailPreview && !thumbnailPreview.startsWith("http")) {
+      URL.revokeObjectURL(thumbnailPreview)
+    }
     set({
-  currentStep: 0,
-  completedSteps: [],
+      currentStep: 0,
+      completedSteps: [],
       title: "",
       thumbnail: null,
       thumbnailPreview: null,
@@ -263,5 +270,6 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
       isSaving: false,
       isPublishing: false,
       publishError: null,
-    }),
+    })
+  },
 }))

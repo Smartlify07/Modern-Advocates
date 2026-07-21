@@ -32,10 +32,12 @@ export default function EditCoursePage() {
   const setCompletedSteps = useCourseWizardStore((s) => s.setCompletedSteps)
   const isSaving = useCourseWizardStore((s) => s.isSaving)
   const loadFromCourse = useCourseWizardStore((s) => s.loadFromCourse)
+  const resetForm = useCourseWizardStore((s) => s.resetForm)
   const setCourseId = useCourseWizardStore((s) => s.setCourseId)
 
   const [loaded, setLoaded] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [publishing, setPublishing] = useState(false)
 
   const { data: course, isLoading } = useQuery({
     queryKey: ["course", courseId],
@@ -46,11 +48,12 @@ export default function EditCoursePage() {
 
   useEffect(() => {
     if (course && !loaded && !isLoading) {
+      resetForm()
       setCourseId(course.id)
       loadFromCourse(course)
       setLoaded(true)
     }
-  }, [course, loaded, isLoading, loadFromCourse, setCourseId])
+  }, [course, loaded, isLoading, resetForm, loadFromCourse, setCourseId])
 
   const handlePrevious = () => {
     if (currentStep > 0) {
@@ -66,6 +69,23 @@ export default function EditCoursePage() {
         setCompletedSteps([...completedSteps, currentStep])
       }
       setCurrentStep(newStep)
+    }
+  }
+
+  const handlePublish = async () => {
+    setPublishing(true)
+    try {
+      const res = await fetch(`/api/courses/${courseId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "published" }),
+      })
+      if (!res.ok) throw new Error("Failed to publish course")
+      router.push("/admin/courses")
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setPublishing(false)
     }
   }
 
@@ -128,9 +148,9 @@ export default function EditCoursePage() {
           </Button>
         )}
         {currentStep === wizardSteps.length - 1 && (
-          <Button className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90">
+          <Button onClick={handlePublish} disabled={publishing} className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90">
             <SendIcon className="size-4 mr-1" />
-            Publish
+            {publishing ? "Publishing..." : "Publish"}
           </Button>
         )}
       </div>

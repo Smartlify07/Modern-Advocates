@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 import { Button } from "@/shared/ui/button"
 import {
   DropdownMenu,
@@ -22,12 +23,22 @@ export default function CourseCardItem({ course }: { course: Course }) {
   >(null)
   const isArchived = course.status === "archived"
 
+  const queryClient = useQueryClient()
+
   const archiveMutation = useMutation({
     mutationFn: async () => {
       const res = await fetch(`/api/courses/${course.id}/archive`, {
         method: "PATCH",
       })
       if (!res.ok) throw new Error("Failed to archive course")
+    },
+    onSuccess: () => {
+      toast.success("Course archived")
+      queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
+    },
+    onError: (err) => {
+      console.error(err)
+      toast.error(err instanceof Error ? err.message : "Failed to archive course")
     },
     onSettled: () => setDialogAction(null),
   })
@@ -38,6 +49,14 @@ export default function CourseCardItem({ course }: { course: Course }) {
         method: "PATCH",
       })
       if (!res.ok) throw new Error("Failed to unarchive course")
+    },
+    onSuccess: () => {
+      toast.success("Course unarchived")
+      queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
+    },
+    onError: (err) => {
+      console.error(err)
+      toast.error(err instanceof Error ? err.message : "Failed to unarchive course")
     },
     onSettled: () => setDialogAction(null),
   })
@@ -117,9 +136,9 @@ export default function CourseCardItem({ course }: { course: Course }) {
         mode={mode}
         onConfirm={() => {
           if (mode === "archive") {
-            archiveMutation.mutateAsync()
+            archiveMutation.mutate()
           } else {
-            unarchiveMutation.mutateAsync()
+            unarchiveMutation.mutate()
           }
         }}
         isPending={isPending}
