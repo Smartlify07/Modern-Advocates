@@ -1,14 +1,8 @@
 "use client"
 
 import { useCourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
-import {
-  Star,
-  Users,
-  PlayCircle,
-  Languages,
-  ClockIcon,
-  LayersIcon,
-} from "lucide-react"
+import { CoursePreviewSidebar } from "@/features/courses/components/wizard/course-preview-sidebar"
+import { Users, Star } from "lucide-react"
 
 export function CoursePreviewContent() {
   const sections = useCourseWizardStore((s) => s.sections)
@@ -27,19 +21,11 @@ export function CoursePreviewContent() {
         .map((n: any) => n.content?.map((c: any) => c.text).join(" "))
         .join(" ")
     : ""
-
   const levelCapitalized = level
     ? level.charAt(0).toUpperCase() + level.slice(1)
     : ""
   const languageDisplay = language || "English"
   const totalDuration = duration ? `${duration} ${durationUnit}` : "Self-paced"
-
-  const infoItems = [
-    { label: "Duration:", value: totalDuration, icon: ClockIcon },
-    { label: "Lesson:", value: `${lectureCount} Lessons`, icon: PlayCircle },
-    { label: "Level:", value: levelCapitalized || "Not set", icon: LayersIcon },
-    { label: "Language:", value: languageDisplay, icon: Languages },
-  ]
 
   return (
     <section className="bg-white py-10 text-ma-text lg:py-12">
@@ -126,30 +112,12 @@ export function CoursePreviewContent() {
           </section>
         </div>
 
-        {/* Course Information Sidebar */}
-        <aside className="w-full rounded-2xl border border-[#d9d9d9] bg-white px-4 pt-4 pb-[25px]">
-          <h2 className="text-xl font-extrabold text-ma-text sm:text-2xl">
-            Course information
-          </h2>
-          <div className="mt-6 flex flex-col">
-            {infoItems.map((item, i) => (
-              <div
-                key={item.label}
-                className="border-dashed border-[#d9d9d9] py-4 not-last:border-b first:pt-0 first:pb-4 last:pb-0"
-              >
-                <div className="flex items-center justify-between gap-4 py-0">
-                  <span className="inline-flex items-center gap-2 text-base font-medium text-ma-text">
-                    <item.icon className="size-5 shrink-0 text-[#6b7280]" />
-                    {item.label}
-                  </span>
-                  <span className="text-base font-medium whitespace-nowrap text-ma-text">
-                    {item.value}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </aside>
+        <CoursePreviewSidebar
+          totalDuration={totalDuration}
+          lectureCount={lectureCount}
+          levelCapitalized={levelCapitalized}
+          languageDisplay={languageDisplay}
+        />
       </div>
     </section>
   )
