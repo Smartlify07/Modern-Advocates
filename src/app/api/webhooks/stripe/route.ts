@@ -4,6 +4,7 @@ import type Stripe from "stripe"
 
 import { db } from "@/infrastructure/database/client"
 import { orders } from "@/infrastructure/database/schema/course"
+import { donations } from "@/infrastructure/database/schema/donation"
 import { getStripe } from "@/infrastructure/payment/stripe"
 import { completeOrder } from "@/features/orders/services/order-service"
 import * as Sentry from "@sentry/nextjs"
@@ -79,6 +80,53 @@ export async function POST(request: Request) {
         Sentry.captureMessage("Stripe payment failed", {
           extra: { stripePaymentIntentId, error: lastError },
         })
+        break
+      }
+
+      case "checkout.session.completed": {
+        const checkoutSession = event.data.object as Stripe.Checkout.Session
+        const stripeCheckoutSessionId = checkoutSession.id
+
+        const donation = await db
+          .select()
+          .from(donations)
+          .where(eq(donations.stripeCheckoutSessionId, stripeCheckoutSessionId))
+          .then((r) => r[0])
+
+        if (!donation) {
+          Sentry.captureMessage("Donation not found for completed Checkout Session", {
+            extra: { stripeCheckoutSessionId },
+          })
+          return NextResponse.json({ received: true })
+        }
+
+        if (donation.paymentStatus === "paid") {
+          return NextResponse.json({ success: true })
+        }
+
+        await db
+          .update(donations)
+          .set({ paymentStatus: "paid" })
+          .where(eq(donations.id, donation.id))
+        break
+      }
+
+      case "checkout.session.expired": {
+        const expiredSession = event.data.object as Stripe.Checkout.Session
+        const expiredSessionId = expiredSession.id
+
+        const expiredDonation = await db
+          .select()
+          .from(donations)
+          .where(eq(donations.stripeCheckoutSessionId, expiredSessionId))
+          .then((r) => r[0])
+
+        if (expiredDonation && expiredDonation.paymentStatus === "pending") {
+          await db
+            .update(donations)
+            .set({ paymentStatus: "failed" })
+            .where(eq(donations.id, expiredDonation.id))
+        }
         break
       }
 

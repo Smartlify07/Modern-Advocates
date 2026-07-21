@@ -4,6 +4,7 @@ export interface Donation {
   donorEmail: string
   amount: number
   donationType: "fixed" | "tier" | "monthly"
+  paymentStatus: "pending" | "paid" | "failed" | "refunded"
   createdAt: string
 }
 
