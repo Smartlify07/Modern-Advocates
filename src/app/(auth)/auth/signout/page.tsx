@@ -1,23 +1,20 @@
 "use client"
 
 import { useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { LoaderCircle } from "lucide-react"
 import { authClient } from "@/infrastructure/auth/client"
 
 export default function SignOutPage() {
-  const router = useRouter()
-
   useEffect(() => {
     const signOut = async () => {
       try {
         await authClient.signOut()
       } finally {
-        router.push("/login")
+        window.location.href = "/login"
       }
     }
     signOut()
-  }, [router])
+  }, [])
 
   return (
     <div className="my-auto flex flex-col items-center justify-center gap-4 justify-self-center-safe">

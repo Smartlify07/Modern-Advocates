@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-const publicPaths = ["/", "/about", "/contact", "/courses", "/donation", "/login", "/signup"]
+const publicPaths = ["/about", "/contact", "/courses", "/donation"]
+
+const guestOnlyPaths = ["/", "/login", "/signup"]
 
 const protectedPaths = ["/dashboard", "/my-learning", "/checkout", "/admin"]
 
@@ -15,11 +17,14 @@ export function proxy(request: NextRequest) {
   const isPublic = publicPaths.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`),
   )
+  const isGuestOnly = guestOnlyPaths.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  )
   const isProtected = protectedPaths.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`),
   )
 
-  if (sessionCookie && isPublic) {
+  if (sessionCookie && isGuestOnly) {
     return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 
