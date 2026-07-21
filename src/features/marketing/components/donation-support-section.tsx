@@ -19,8 +19,8 @@ const donationFormSchema = z.object({
   amount: z.coerce.number().positive("Amount must be greater than 0"),
   donorName: z.string().min(1, "Full name is required"),
   donorEmail: z.email("Please enter a valid email address"),
-  confirmation: z.literal(true, {
-    errorMap: () => ({ message: "You must confirm the donation to proceed" }),
+  confirmation: z.boolean().refine((val) => val === true, {
+    message: "You must confirm the donation to proceed",
   }),
 })
 
@@ -39,7 +39,7 @@ export function DonationSupportSection() {
       amount: undefined,
       donorName: "",
       donorEmail: "",
-      confirmation: false as unknown as true,
+      confirmation: false,
     },
   })
 
