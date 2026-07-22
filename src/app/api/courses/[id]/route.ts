@@ -115,8 +115,8 @@ export async function GET(
           videoId: string | null
           videoName: string | null
           videoStatus: string | null
-        }>()
-
+        }>
+      }>()
       for (const row of moduleTopicRows) {
         if (!map.has(row.moduleId)) {
           map.set(row.moduleId, {
