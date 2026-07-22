@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Button } from "@/shared/ui/button"
 import { KpiCards } from "@/features/admin/support/components/kpi-cards"
 import { SupportFilterBar } from "@/features/admin/support/components/support-filter-bar"
@@ -28,8 +28,6 @@ function mapTicket(t: ApiTicket): Ticket {
   return { id: t.id, name: t.name, email: t.email, phone: t.phone, message: t.message, status: t.status, date }
 }
 
-const PAGE_SIZE = 10
-
 function TicketsError({ onRetry }: { onRetry: () => void }) {
   return (
     <div className="flex flex-col items-center gap-4 py-20">
@@ -48,31 +46,27 @@ function TicketsError({ onRetry }: { onRetry: () => void }) {
 
 export default function AdminSupportPage() {
   const [search, setSearch] = useState("")
+  const [debouncedSearch, setDebouncedSearch] = useState("")
   const [filter, setFilter] = useState("all")
   const [page, setPage] = useState(1)
   const [viewOpen, setViewOpen] = useState(false)
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null)
 
-  const { data, isLoading, isError, refetch } = useSupportTickets()
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 300)
+    return () => clearTimeout(timer)
+  }, [search])
+
+  const { data, isLoading, isError, refetch } = useSupportTickets({
+    search: debouncedSearch || undefined,
+    filter: filter !== "all" ? filter : undefined,
+    page,
+    pageSize: 10,
+  })
   const statusMutation = useUpdateTicketStatus()
   const deleteMutation = useDeleteTicket()
 
-  const allTickets = useMemo(() => (data?.tickets ?? []).map(mapTicket), [data?.tickets])
-
-  const filteredTickets = useMemo(() => {
-    let result = allTickets
-    if (filter !== "all") result = result.filter((t) => t.status === filter)
-    if (search) {
-      const q = search.toLowerCase()
-      result = result.filter(
-        (t) =>
-          t.name.toLowerCase().includes(q) ||
-          t.email.toLowerCase().includes(q) ||
-          t.message.toLowerCase().includes(q),
-      )
-    }
-    return result
-  }, [allTickets, filter, search])
+  const tickets = useMemo(() => (data?.tickets ?? []).map(mapTicket), [data?.tickets])
 
   const kpis = useMemo(() => {
     return {
@@ -82,12 +76,6 @@ export default function AdminSupportPage() {
       resolved: data?.resolved ?? 0,
     }
   }, [data?.total, data?.open, data?.pending, data?.resolved])
-
-  const filteredTotal = filteredTickets.length
-  const paginatedTickets = useMemo(
-    () => filteredTickets.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
-    [filteredTickets, page],
-  )
 
   const handleView = (ticket: Ticket) => {
     setSelectedTicket(ticket)
@@ -113,6 +101,7 @@ export default function AdminSupportPage() {
         open={kpis.open}
         pending={kpis.pending}
         resolved={kpis.resolved}
+        isLoading={isLoading}
       />
 
       <SupportFilterBar
@@ -122,7 +111,10 @@ export default function AdminSupportPage() {
           setSearch(v)
           setPage(1)
         }}
-        onFilterChange={(v) => setFilter(v)}
+        onFilterChange={(v) => {
+          setFilter(v)
+          setPage(1)
+        }}
       />
 
       {isLoading ? (
@@ -132,15 +124,15 @@ export default function AdminSupportPage() {
       ) : (
         <>
           <SupportTable
-            tickets={paginatedTickets}
+            tickets={tickets}
             onView={handleView}
             onDelete={handleDelete}
           />
-          {filteredTotal > 0 && (
+          {(data?.total ?? 0) > 0 && (
             <PaginationBar
-              page={page}
-              total={filteredTotal}
-              pageSize={PAGE_SIZE}
+              page={data?.page ?? 1}
+              total={data?.total ?? 0}
+              pageSize={data?.pageSize ?? 10}
               onPageChange={setPage}
             />
           )}

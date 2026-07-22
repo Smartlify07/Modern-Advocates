@@ -4,11 +4,19 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import type { ListSupportTicketsResult } from "@/features/admin/support/services/support-service"
 
-export function useSupportTickets() {
+export function useSupportTickets(
+  params: { search?: string; filter?: string; page?: number; pageSize?: number } = {},
+) {
+  const queryString = new URLSearchParams()
+  if (params.search) queryString.set("search", params.search)
+  if (params.filter) queryString.set("filter", params.filter)
+  if (params.page) queryString.set("page", String(params.page))
+  if (params.pageSize) queryString.set("pageSize", String(params.pageSize))
+
   return useQuery<ListSupportTicketsResult>({
-    queryKey: ["admin-support"],
+    queryKey: ["admin-support", params],
     queryFn: () =>
-      fetch("/api/admin/support?pageSize=1000").then((r) => {
+      fetch(`/api/admin/support?${queryString.toString()}`).then((r) => {
         if (!r.ok) throw new Error("Failed to fetch support tickets")
         return r.json()
       }),

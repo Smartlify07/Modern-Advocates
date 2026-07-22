@@ -50,7 +50,7 @@ export function ViewTicketDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange} key={ticket?.id}>
       <DialogContent className="px-7.5 py-4 sm:max-w-xl [&>button]:end-7.5 [&>button]:top-4">
         <DialogHeader className="-mx-7.5 border-b px-7.5 pb-4">
           <DialogTitle className="text-base">View Ticket</DialogTitle>

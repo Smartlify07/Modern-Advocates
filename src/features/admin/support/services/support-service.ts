@@ -100,10 +100,10 @@ export async function listSupportTickets(
   }
 }
 
-export async function resolveTicket(id: string) {
+export async function updateTicketStatus(id: string, status: "open" | "pending" | "resolved") {
   const [updated] = await db
     .update(contacts)
-    .set({ status: "resolved" })
+    .set({ status })
     .where(eq(contacts.id, id))
     .returning()
 

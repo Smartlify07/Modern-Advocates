@@ -1,45 +1,33 @@
 import { NextResponse } from "next/server"
 import { randomUUID } from "node:crypto"
+import { z } from "zod"
 import { db } from "@/infrastructure/database/client"
 import { contacts } from "@/infrastructure/database/schema/contact"
 import * as Sentry from "@sentry/nextjs"
 
+const contactSchema = z.object({
+  name: z.string().min(1, "Name is required").transform((s) => s.trim()),
+  email: z.string().email("Invalid email format").transform((s) => s.trim()),
+  message: z.string().min(1, "Message is required").transform((s) => s.trim()),
+  phone: z.string().optional().transform((s) => s?.trim() || null),
+})
+
 export async function POST(request: Request) {
   try {
-    const { name, email, phone, message } = await request.json()
+    const body = await request.json()
+    const parsed = contactSchema.safeParse(body)
 
-    if (!name || typeof name !== "string" || !name.trim()) {
-      return NextResponse.json(
-        { error: "Name is required" },
-        { status: 400 },
-      )
+    if (!parsed.success) {
+      const firstError = parsed.error.issues[0]?.message ?? "Invalid request"
+      return NextResponse.json({ error: firstError }, { status: 400 })
     }
 
-    if (!email || typeof email !== "string" || !email.trim()) {
-      return NextResponse.json(
-        { error: "Email is required" },
-        { status: 400 },
-      )
-    }
-
-    if (!message || typeof message !== "string" || !message.trim()) {
-      return NextResponse.json(
-        { error: "Message is required" },
-        { status: 400 },
-      )
-    }
-
+    const { name, email, message, phone } = parsed.data
     const id = randomUUID()
 
     const [contact] = await db
       .insert(contacts)
-      .values({
-        id,
-        name: name.trim(),
-        email: email.trim(),
-        phone: phone?.trim() || null,
-        message: message.trim(),
-      })
+      .values({ id, name, email, phone, message })
       .returning()
 
     if (!contact) {

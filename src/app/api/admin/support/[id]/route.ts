@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { requireAdmin } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
-import { resolveTicket, deleteTicket } from "@/features/admin/support/services/support-service"
+import { updateTicketStatus, deleteTicket } from "@/features/admin/support/services/support-service"
 import * as Sentry from "@sentry/nextjs"
 
 export async function PATCH(
@@ -11,7 +11,11 @@ export async function PATCH(
   try {
     await requireAdmin()
     const { id } = await params
-    const updated = await resolveTicket(id)
+    const { status } = await request.json()
+    if (!status || typeof status !== "string") {
+      return NextResponse.json({ error: "Status is required" }, { status: 400 })
+    }
+    const updated = await updateTicketStatus(id, status as "open" | "pending" | "resolved")
     return NextResponse.json(updated)
   } catch (error) {
     if (error instanceof UnauthorizedError) {
