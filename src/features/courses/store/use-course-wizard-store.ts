@@ -76,7 +76,7 @@ export interface CourseWizardStore {
   setPublishError: (v: string | null) => void
   setCompletedSteps: (steps: number[]) => void
   resetForm: () => void
-  loadFromCourse: (course: any) => void
+  initialize: (course: any) => void
 }
 
 let nextSectionId = 1
@@ -207,7 +207,7 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
   setPublishError: (v) => set({ publishError: v }),
   setCompletedSteps: (steps) => set({ completedSteps: steps }),
 
-  loadFromCourse: (course) => {
+  initialize: (course) => {
     set({
       currentStep: 0,
       completedSteps: [],
@@ -230,7 +230,7 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
         id: mod.id,
         title: mod.title ?? "",
         order: mod.order ?? mi,
-        lectures: (mod.topics ?? []).map((topic: any, ti: number) => ({
+        lectures: (mod.topics ?? []).map((topic: any) => ({
           id: topic.id,
           title: topic.title ?? "",
           mediaType: topic.videoId ? "video" : topic.description ? "lecture_notes" : "none",
