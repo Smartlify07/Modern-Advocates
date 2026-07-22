@@ -1,150 +1,108 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import { Button } from "@/shared/ui/button"
 import { KpiCards } from "@/features/admin/support/components/kpi-cards"
 import { SupportFilterBar } from "@/features/admin/support/components/support-filter-bar"
 import { SupportTable } from "@/features/admin/support/components/support-table"
 import { PaginationBar } from "@/features/admin/support/components/pagination-bar"
 import { TableSkeleton } from "@/features/admin/support/components/table-skeleton"
+import { ViewTicketDialog } from "@/features/admin/support/components/view-ticket-dialog"
+import { useSupportTickets, useUpdateTicketStatus, useDeleteTicket } from "@/features/admin/support/hooks/use-support"
+import { RefreshCwIcon, AlertCircleIcon } from "lucide-react"
+import type { Ticket } from "@/features/admin/support/types"
+
+interface ApiTicket {
+  id: string
+  name: string
+  email: string
+  phone: string | null
+  message: string
+  status: "open" | "pending" | "resolved"
+  createdAt: string
+}
+
+function mapTicket(t: ApiTicket): Ticket {
+  const d = new Date(t.createdAt)
+  const date = `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`
+  return { id: t.id, name: t.name, email: t.email, phone: t.phone, message: t.message, status: t.status, date }
+}
 
 const PAGE_SIZE = 10
 
-const mockTickets = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john@example.com",
-    message: "Help! I can't sign in to my account after the recent update.",
-    status: "open" as const,
-    date: "1/7/2026",
-  },
-  {
-    id: "2",
-    name: "Alice Smith",
-    email: "alice@example.com",
-    message: "Course curriculum not loading properly on mobile devices.",
-    status: "open" as const,
-    date: "1/7/2026",
-  },
-  {
-    id: "3",
-    name: "Bob Johnson",
-    email: "bob@example.com",
-    message: "Payment issue with my monthly subscription plan.",
-    status: "open" as const,
-    date: "1/6/2026",
-  },
-  {
-    id: "4",
-    name: "Carol White",
-    email: "carol@example.com",
-    message: "Certificate download option is missing from dashboard.",
-    status: "open" as const,
-    date: "1/6/2026",
-  },
-  {
-    id: "5",
-    name: "David Lee",
-    email: "david@example.com",
-    message: "Unable to reset my password using the forgot password link.",
-    status: "open" as const,
-    date: "1/5/2026",
-  },
-  {
-    id: "6",
-    name: "Eva Martinez",
-    email: "eva@example.com",
-    message: "Video lectures are buffering despite good internet connection.",
-    status: "open" as const,
-    date: "1/5/2026",
-  },
-  {
-    id: "7",
-    name: "Frank Brown",
-    email: "frank@example.com",
-    message: "Refund request for course ID #2049 not processed yet.",
-    status: "pending" as const,
-    date: "1/4/2026",
-  },
-  {
-    id: "8",
-    name: "Grace Kim",
-    email: "grace@example.com",
-    message: "Account upgrade from basic to premium not reflecting.",
-    status: "pending" as const,
-    date: "1/4/2026",
-  },
-  {
-    id: "9",
-    name: "Henry Davis",
-    email: "henry@example.com",
-    message: "Quiz results not syncing after completion of module 3.",
-    status: "resolved" as const,
-    date: "1/3/2026",
-  },
-  {
-    id: "10",
-    name: "Ivy Chen",
-    email: "ivy@example.com",
-    message: "Notification emails not being delivered to my inbox.",
-    status: "open" as const,
-    date: "1/3/2026",
-  },
-  {
-    id: "11",
-    name: "Jack Wilson",
-    email: "jack@example.com",
-    message: "Progress tracking not updating after watching videos.",
-    status: "open" as const,
-    date: "1/2/2026",
-  },
-  {
-    id: "12",
-    name: "Karen Taylor",
-    email: "karen@example.com",
-    message: "Unable to access course materials after enrollment.",
-    status: "open" as const,
-    date: "1/2/2026",
-  },
-]
+function TicketsError({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div className="flex flex-col items-center gap-4 py-20">
+      <div className="flex size-12 items-center justify-center rounded-full bg-red-100">
+        <AlertCircleIcon className="size-6 text-red-600" />
+      </div>
+      <p className="text-lg font-semibold">Failed to load tickets</p>
+      <p className="text-sm text-muted-foreground">Something went wrong. Please try again.</p>
+      <Button variant="outline" className="gap-2" onClick={onRetry}>
+        <RefreshCwIcon className="size-4" />
+        Try Again
+      </Button>
+    </div>
+  )
+}
 
 export default function AdminSupportPage() {
   const [search, setSearch] = useState("")
   const [filter, setFilter] = useState("all")
   const [page, setPage] = useState(1)
-  const [isLoading] = useState(false)
+  const [viewOpen, setViewOpen] = useState(false)
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null)
 
-  const kpis = useMemo(() => {
-    const total = mockTickets.length
-    const open = mockTickets.filter((t) => t.status === "open").length
-    const pending = mockTickets.filter((t) => t.status === "pending").length
-    const resolved = mockTickets.filter((t) => t.status === "resolved").length
-    return { total, open, pending, resolved }
-  }, [])
+  const { data, isLoading, isError, refetch } = useSupportTickets()
+  const statusMutation = useUpdateTicketStatus()
+  const deleteMutation = useDeleteTicket()
 
-  const filtered = useMemo(() => {
-    let result = mockTickets
+  const allTickets = useMemo(() => (data?.tickets ?? []).map(mapTicket), [data?.tickets])
+
+  const filteredTickets = useMemo(() => {
+    let result = allTickets
+    if (filter !== "all") result = result.filter((t) => t.status === filter)
     if (search) {
       const q = search.toLowerCase()
       result = result.filter(
         (t) =>
           t.name.toLowerCase().includes(q) ||
           t.email.toLowerCase().includes(q) ||
-          t.id.toLowerCase().includes(q) ||
-          t.message.toLowerCase().includes(q)
+          t.message.toLowerCase().includes(q),
       )
     }
-    if (filter !== "all") {
-      result = result.filter((t) => t.status === filter)
-    }
     return result
-  }, [search, filter])
+  }, [allTickets, filter, search])
 
-  if (page > Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))) {
-    setPage(1)
+  const kpis = useMemo(() => {
+    return {
+      total: data?.total ?? 0,
+      open: data?.open ?? 0,
+      pending: data?.pending ?? 0,
+      resolved: data?.resolved ?? 0,
+    }
+  }, [data?.total, data?.open, data?.pending, data?.resolved])
+
+  const filteredTotal = filteredTickets.length
+  const paginatedTickets = useMemo(
+    () => filteredTickets.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [filteredTickets, page],
+  )
+
+  const handleView = (ticket: Ticket) => {
+    setSelectedTicket(ticket)
+    setViewOpen(true)
   }
 
-  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+  const handleStatusChange = async (id: string, status: string) => {
+    await statusMutation.mutateAsync({ id, status })
+    setViewOpen(false)
+    setSelectedTicket(null)
+  }
+
+  const handleDelete = async (id: string) => {
+    await deleteMutation.mutateAsync(id)
+  }
 
   return (
     <div className="mx-auto flex flex-col gap-7.5 p-7.5 lg:max-w-7xl 2xl:max-w-360">
@@ -164,27 +122,41 @@ export default function AdminSupportPage() {
           setSearch(v)
           setPage(1)
         }}
-        onFilterChange={(v) => {
-          setFilter(v)
-          setPage(1)
-        }}
+        onFilterChange={(v) => setFilter(v)}
       />
 
       {isLoading ? (
         <TableSkeleton />
+      ) : isError ? (
+        <TicketsError onRetry={() => refetch()} />
       ) : (
         <>
-          <SupportTable tickets={paginated} />
-          {filtered.length > 0 && (
+          <SupportTable
+            tickets={paginatedTickets}
+            onView={handleView}
+            onDelete={handleDelete}
+          />
+          {filteredTotal > 0 && (
             <PaginationBar
               page={page}
-              total={filtered.length}
+              total={filteredTotal}
               pageSize={PAGE_SIZE}
               onPageChange={setPage}
             />
           )}
         </>
       )}
+
+      <ViewTicketDialog
+        open={viewOpen}
+        onOpenChange={(o) => {
+          setViewOpen(o)
+          if (!o) setSelectedTicket(null)
+        }}
+        ticket={selectedTicket}
+        onStatusChange={handleStatusChange}
+        isPending={statusMutation.isPending}
+      />
     </div>
   )
 }
