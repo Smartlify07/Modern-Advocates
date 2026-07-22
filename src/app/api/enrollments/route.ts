@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { eq, sql } from "drizzle-orm"
+import { eq, sql, desc } from "drizzle-orm"
 
 import { db } from "@/infrastructure/database/client"
 import {
@@ -124,6 +124,7 @@ export async function GET() {
         courses.duration,
         user.name
       )
+      .orderBy(desc(courses.createdAt))
 
     return NextResponse.json(enrolled)
   } catch (error) {

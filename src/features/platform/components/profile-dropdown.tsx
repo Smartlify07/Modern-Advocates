@@ -23,7 +23,7 @@ interface ProfileDropdownProps {
 
 export function ProfileDropdown({
   className,
-  dropdownWidth = "w-56",
+  dropdownWidth = "w-80",
   sideOffset = 8,
 }: ProfileDropdownProps) {
   const router = useRouter()
@@ -44,37 +44,55 @@ export function ProfileDropdown({
       <DropdownMenuContent
         align="end"
         sideOffset={sideOffset}
-        className={dropdownWidth}
+        className={`${dropdownWidth} flex min-w-[360px] flex-col space-y-0 px-0 pt-0 pb-3`}
       >
-        <DropdownMenuLabel className="p-0 font-normal">
-          <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-            <UserAvatar user={user} className="size-10" />
-            <div className="grid flex-1 text-start leading-tight">
-              <span className="truncate text-base font-medium text-primary">
-                {user?.name ?? "User"}
-              </span>
-              <span className="truncate text-sm text-muted-foreground">
-                {user?.email ?? ""}
-              </span>
+        <div>
+          <DropdownMenuLabel className="p-0 font-normal">
+            <div className="flex items-center gap-5 p-5 text-center text-sm">
+              <UserAvatar
+                user={user}
+                fallbackClassName="size-20 text-4xl"
+                className="size-20 text-4xl"
+              />
+              <div className="grid text-start leading-tight">
+                <span className="truncate text-base font-medium text-primary">
+                  {user?.name ?? "User"}
+                </span>
+                <span className="truncate text-sm text-muted-foreground">
+                  {user?.email ?? ""}
+                </span>
+              </div>
             </div>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="p-2 text-base" asChild>
-          <Link href="/dashboard/profile" className="cursor-pointer">
-            <User />
-            View Profile
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={handleLogout}
-          variant="destructive"
-          className="cursor-pointer p-2 text-base text-destructive hover:text-destructive focus:text-destructive"
-        >
-          <LogOut />
-          Log out
-        </DropdownMenuItem>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+        </div>
+        <div className="flex flex-col justify-center gap-2">
+          <DropdownMenuItem
+            className="px-5 py-2 text-base text-muted-foreground hover:text-primary data-inset:ps-0"
+            asChild
+          >
+            <Link href="/my-learning" className="cursor-pointer">
+              My Learning{" "}
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="px-5 py-2 text-base text-muted-foreground hover:text-primary data-inset:ps-0"
+            asChild
+          >
+            <Link href="/contact" className="cursor-pointer">
+              Help and Support{" "}
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator className="mt-0" />
+          <DropdownMenuItem
+            onClick={handleLogout}
+            variant="destructive"
+            className="cursor-pointer px-5 py-2 text-base text-destructive hover:text-destructive focus:text-destructive"
+          >
+            <LogOut />
+            Log out
+          </DropdownMenuItem>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   )
