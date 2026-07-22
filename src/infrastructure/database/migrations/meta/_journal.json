@@ -71,6 +71,13 @@
       "when": 1784672023199,
       "tag": "0009_loud_odin",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1784841600000,
+      "tag": "0010_rename_cloudinary_public_id",
+      "breakpoints": true
     }
   ]
 }

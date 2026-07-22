@@ -1,6 +1,6 @@
 import type { CourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
 import type { VideoUploadStore } from "@/features/courses/store/use-video-upload-store"
-import { uploadInChunks, type ChunkedUploadConfig } from "@/shared/lib/cloudinary-upload"
+import { uploadToStorage, type StorageUploadConfig } from "@/shared/lib/storage-upload"
 import {
   savePendingUpload,
   updatePendingUpload,
@@ -140,7 +140,7 @@ async function getSignedUploadConfig(
   moduleId: string,
   topicId: string,
   title: string,
-): Promise<ChunkedUploadConfig & { videoId: string }> {
+): Promise<StorageUploadConfig> {
   const res = await fetch("/api/videos/sign-upload", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -190,7 +190,7 @@ export async function uploadSingleVideoWithTracking(
   })
 
   try {
-    await uploadInChunks(videoFile, config, (progress) => {
+    await uploadToStorage(videoFile, config, (progress) => {
       store.updateProgress(uploadId, progress.bytesUploaded)
       updatePendingUpload(uploadId, progress.bytesUploaded)
     })

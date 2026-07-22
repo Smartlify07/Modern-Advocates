@@ -5,7 +5,10 @@ import { db } from "@/infrastructure/database/client"
 import { courseVideos } from "@/infrastructure/database/schema/video"
 import { requireInstructorOrAdmin } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
-import { generateUploadSignature } from "@/infrastructure/cloudinary/signatures"
+import {
+  generatePresignedUploadUrl,
+  getPublicUrl,
+} from "@/infrastructure/storage/service"
 import {
   createVideoRecord,
   getVideoByTopicId,
@@ -69,16 +72,15 @@ export async function POST(request: Request) {
       videoId = video.id
     }
 
-    const uploadConfig = generateUploadSignature({
-      courseId,
-      moduleId,
-      topicId,
-      videoId,
-    })
+    const storageKey = `course-videos/${courseId}/${moduleId}/${topicId}/${videoId}.mp4`
+    const uploadUrl = await generatePresignedUploadUrl(storageKey, "video/mp4")
+    const publicUrl = getPublicUrl(storageKey)
 
     return NextResponse.json({
-      ...uploadConfig,
+      uploadUrl,
+      publicUrl,
       videoId,
+      storageKey,
     })
   } catch (error) {
     if (error instanceof UnauthorizedError) {
