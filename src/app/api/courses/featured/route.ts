@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { eq, sql } from "drizzle-orm"
+import { eq, sql, desc } from "drizzle-orm"
 
 import { db } from "@/infrastructure/database/client"
 import { courses, reviews } from "@/infrastructure/database/schema/course"
@@ -27,6 +27,7 @@ export async function GET() {
     .innerJoin(user, eq(courses.tutorId, user.id))
     .leftJoin(reviews, eq(reviews.courseId, courses.id))
     .groupBy(courses.id, courses.title, courses.overview, courses.thumbnailUrl, courses.level, courses.price, courses.discountedPrice, courses.duration, user.name)
+    .orderBy(desc(courses.createdAt))
 
   return NextResponse.json(featured)
 }
