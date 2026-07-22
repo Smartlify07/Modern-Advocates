@@ -6,15 +6,13 @@ import { Button } from "@/shared/ui/button"
 import { Input } from "@/shared/ui/input"
 import { Label } from "@/shared/ui/label"
 
-type UploadState = "idle" | "uploading" | "processing" | "success" | "error"
+type UploadState = "idle" | "uploading" | "uploaded" | "success" | "error"
 
 interface UploadConfig {
-  signature: string
-  timestamp: number
-  apiKey: string
-  cloudName: string
-  folder: string
+  uploadUrl: string
+  publicUrl: string
   videoId: string
+  storageKey: string
 }
 
 interface VideoUploaderProps {
@@ -37,6 +35,7 @@ export function VideoUploader({
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
   const handleUpload = useCallback(async () => {
@@ -54,23 +53,12 @@ export function VideoUploader({
         body: JSON.stringify({ courseId, moduleId, topicId, title, description }),
       })
 
-
       if (!res.ok) {
         const err = await res.json()
-        throw new Error(err.error ?? "Failed to get upload signature")
+        throw new Error(err.error ?? "Failed to get upload config")
       }
 
       const config: UploadConfig = await res.json()
-
-      const formData = new FormData()
-      formData.append("file", file)
-      formData.append("api_key", config.apiKey)
-      formData.append("timestamp", String(config.timestamp))
-      formData.append("signature", config.signature)
-      formData.append("folder", config.folder)
-      formData.append("public_id", config.videoId)
-      formData.append("eager", "sp_hd")
-      formData.append("eager_async", "1")
 
       const xhr = new XMLHttpRequest()
 
@@ -85,26 +73,19 @@ export function VideoUploader({
           if (xhr.status >= 200 && xhr.status < 300) {
             resolve()
           } else {
-            try {
-              const err = JSON.parse(xhr.responseText)
-              reject(new Error(err.error?.message ?? "Upload failed"))
-            } catch {
-              reject(new Error("Upload failed"))
-            }
+            reject(new Error(`Upload failed with status ${xhr.status}`))
           }
         })
 
         xhr.addEventListener("error", () => reject(new Error("Upload failed")))
         xhr.addEventListener("abort", () => reject(new Error("Upload cancelled")))
 
-        xhr.open(
-          "POST",
-          `https://api.cloudinary.com/v1_1/${config.cloudName}/video/upload`,
-        )
-        xhr.send(formData)
+        xhr.open("PUT", config.uploadUrl)
+        xhr.setRequestHeader("Content-Type", file.type)
+        xhr.send(file)
       })
 
-      setState("processing")
+      setState("uploaded")
       onSuccess?.(config.videoId)
     } catch (error) {
       setState("error")
@@ -112,16 +93,19 @@ export function VideoUploader({
       setErrorMessage(msg)
       onError?.(msg)
     }
-  }, [courseId, moduleId, title, description, onSuccess, onError])
+  }, [courseId, moduleId, topicId, title, description, onSuccess, onError])
+
+  const handleFileChange = useCallback(() => {
+    setSelectedFileName(fileRef.current?.files?.[0]?.name ?? null)
+  }, [])
 
   const handleCancel = useCallback(() => {
     setState("idle")
     setProgress(0)
     setErrorMessage(null)
+    setSelectedFileName(null)
     if (fileRef.current) fileRef.current.value = ""
   }, [])
-
-  const selectedFile = fileRef.current?.files?.[0]
 
   return (
     <div className="space-y-4 rounded-lg border p-6">
@@ -132,7 +116,7 @@ export function VideoUploader({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Enter video title"
-          disabled={state === "uploading" || state === "processing"}
+          disabled={state === "uploading" || state === "uploaded"}
         />
       </div>
 
@@ -143,7 +127,7 @@ export function VideoUploader({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Enter video description"
-          disabled={state === "uploading" || state === "processing"}
+          disabled={state === "uploading" || state === "uploaded"}
         />
       </div>
 
@@ -154,7 +138,8 @@ export function VideoUploader({
           id="video-file"
           type="file"
           accept="video/mp4,video/webm,video/quicktime"
-          disabled={state === "uploading" || state === "processing"}
+          onChange={handleFileChange}
+          disabled={state === "uploading" || state === "uploaded"}
         />
       </div>
 
@@ -173,10 +158,10 @@ export function VideoUploader({
         </div>
       )}
 
-      {state === "processing" && (
+      {state === "uploaded" && (
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" />
-          Processing video...
+          Finalizing upload...
         </div>
       )}
 
@@ -198,13 +183,13 @@ export function VideoUploader({
         {state === "idle" && (
           <Button
             onClick={handleUpload}
-            disabled={!title.trim() || !selectedFile}
+            disabled={!title.trim() || !selectedFileName}
           >
             <Upload className="mr-2 h-4 w-4" />
             Upload Video
           </Button>
         )}
-        {(state === "uploading" || state === "processing") && (
+        {(state === "uploading" || state === "uploaded") && (
           <Button variant="outline" onClick={handleCancel}>
             <X className="mr-2 h-4 w-4" />
             Cancel

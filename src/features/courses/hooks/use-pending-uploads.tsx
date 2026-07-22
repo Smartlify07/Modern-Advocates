@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { useVideoUploadStore } from "@/features/courses/store/use-video-upload-store"
-import { uploadInChunks, type ChunkedUploadConfig } from "@/shared/lib/cloudinary-upload"
+import { uploadToStorage, type StorageUploadConfig } from "@/shared/lib/storage-upload"
 import { VideoUploadToast } from "@/features/courses/components/video-upload-toast"
 import { toast } from "sonner"
 
@@ -76,7 +76,7 @@ async function getFreshSignedConfig(
   moduleId: string,
   topicId: string,
   title: string,
-): Promise<ChunkedUploadConfig & { videoId: string }> {
+): Promise<StorageUploadConfig> {
   const res = await fetch("/api/videos/sign-upload", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -119,7 +119,7 @@ export function usePendingUploads(courseId?: string) {
       const completeTask = useVideoUploadStore.getState().completeTask
       const failTask = useVideoUploadStore.getState().failTask
 
-      let config: ChunkedUploadConfig & { videoId: string }
+      let config: StorageUploadConfig
       try {
         config = await getFreshSignedConfig(
           pendingUpload.courseId,
@@ -147,7 +147,7 @@ export function usePendingUploads(courseId?: string) {
       })
 
       try {
-        await uploadInChunks(file, config, (progress) => {
+        await uploadToStorage(file, config, (progress) => {
           updateProgress(config.videoId, progress.bytesUploaded)
           updatePendingUpload(uploadId, progress.bytesUploaded)
         }, { resumeFromBytes: pendingUpload.bytesUploaded })

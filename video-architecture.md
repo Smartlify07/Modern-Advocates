@@ -2,7 +2,7 @@
 
 ## Overview
 
-Build a scalable video upload, processing, and delivery system for a course platform.
+Build a scalable video upload, storage, and delivery system for a course platform.
 
 ### Tech Stack
 
@@ -12,7 +12,7 @@ Build a scalable video upload, processing, and delivery system for a course plat
 - Drizzle ORM
 - Better Auth
 - Sentry
-- Cloudinary (Video Storage + Streaming)
+- Backblaze B2 (S3-compatible Object Storage)
 - React
 - Vidstack (Video Player)
 
@@ -23,15 +23,14 @@ Build a scalable video upload, processing, and delivery system for a course plat
 The system must:
 
 1. Allow instructors/admins to upload course videos.
-2. Upload directly from browser → Cloudinary.
+2. Upload directly from browser → Backblaze B2 via presigned URL.
 3. Avoid routing video files through Next.js servers.
-4. Process videos asynchronously.
-5. Store metadata in PostgreSQL.
-6. Deliver videos through Cloudinary CDN.
-7. Support HLS streaming.
-8. Support future scaling to thousands of videos and users.
-9. Support protected video playback for paid courses.
-10. Support video progress tracking.
+4. Store metadata in PostgreSQL.
+5. Deliver videos through Backblaze B2 CDN.
+6. Support raw MP4 delivery (HLS streaming possible as future enhancement).
+7. Support future scaling to thousands of videos and users.
+8. Support protected video playback for paid courses.
+9. Support video progress tracking.
 
 ---
 
@@ -41,28 +40,25 @@ The system must:
 Instructor Uploads Video
         |
         v
-Frontend Requests Upload Signature
+Frontend Requests Upload URL
         |
         v
-Backend Generates Cloudinary Signature
+Backend Generates Presigned Upload URL
         |
         v
-Browser Uploads Directly To Cloudinary
+Browser Uploads Directly To Backblaze B2 (PUT)
         |
         v
-Cloudinary Processes Video
+Upload Completes
         |
         v
-Cloudinary Webhook
-        |
-        v
-Backend Updates Database
+Backend Updates Database (status = ready)
         |
         v
 Video Becomes Available
         |
         v
-Student Streams Through Cloudinary CDN
+Student Streams Through Backblaze B2 CDN
 ```
 
 ---
@@ -78,39 +74,22 @@ id: uuid (primary key)
 
 courseId: uuid
 moduleId: uuid
+topicId: uuid
 
 title: text
 description: text
 
-cloudinaryPublicId: text
+storageKey: text           // B2 object key (e.g. course-videos/{courseId}/{moduleId}/{topicId}/{videoId}.mp4)
 
-playbackUrl: text
-thumbnailUrl: text
+playbackUrl: text          // Public B2 URL for playback
+thumbnailUrl: text         // Thumbnail URL (optional, can be generated server-side)
 
 duration: integer
 
 status:
   - uploading
-  - processing
   - ready
   - failed
-
-createdAt: timestamp
-updatedAt: timestamp
-```
-
----
-
-## Table: course_modules
-
-```ts
-id: uuid
-courseId: uuid
-
-title: text
-description: text
-
-position: integer
 
 createdAt: timestamp
 updatedAt: timestamp
@@ -126,9 +105,6 @@ Tracks user watch progress.
 id: uuid
 
 userId: uuid
-
-courseId: uuid
-moduleId: uuid
 videoId: uuid
 
 watchedSeconds: integer
@@ -145,34 +121,30 @@ Indexes:
 
 ```sql
 (user_id, video_id)
-(course_id)
 (video_id)
 ```
 
 ---
 
-# Cloudinary Configuration
+# Storage Configuration
 
-Create folder structure:
-
-```text
-course-videos/
-```
-
-Example:
+Backblaze B2 bucket structure:
 
 ```text
-course-videos/course-123/module-456/video.mp4
+course-videos/{courseId}/{moduleId}/{topicId}/{videoId}.mp4
+course-thumbnails/{uuid}.{ext}
 ```
 
-Enable:
+B2 is configured via environment variables:
 
-- Video uploads
-- Adaptive bitrate streaming
-- HLS generation
-- Video thumbnails
-- Signed uploads
-- Webhooks
+```text
+B2_ENDPOINT=https://s3.us-west-001.backblazeb2.com
+B2_REGION=us-west-001
+B2_ACCESS_KEY_ID=
+B2_SECRET_ACCESS_KEY=
+B2_BUCKET_NAME=modern-advocates
+NEXT_PUBLIC_B2_DOMAIN=https://f000.backblazeb2.com
+```
 
 ---
 
@@ -194,10 +166,10 @@ Response:
 
 ```json
 {
-  "timestamp": 1234567890,
-  "signature": "...",
-  "apiKey": "...",
-  "cloudName": "..."
+  "uploadUrl": "https://s3.us-west-001.backblazeb2.com/...?X-Amz-Signature=...",
+  "publicUrl": "https://f000.backblazeb2.com/file/modern-advocates/course-videos/...",
+  "videoId": "uuid",
+  "storageKey": "course-videos/uuid/uuid/uuid/uuid.mp4"
 }
 ```
 
@@ -205,17 +177,17 @@ Response:
 
 ## Step 2
 
-Frontend uploads directly to Cloudinary.
-
-Use:
+Frontend uploads directly to Backblaze B2 via presigned PUT URL.
 
 ```http
-https://api.cloudinary.com/v1_1/{cloud_name}/video/upload
+PUT {uploadUrl}
+Content-Type: video/mp4
+<binary video data>
 ```
 
 Video file must never pass through Next.js.
 
-Only browser → Cloudinary.
+Only browser → Backblaze B2.
 
 ---
 
@@ -234,6 +206,7 @@ Store:
 ```ts
 courseId
 moduleId
+topicId
 title
 ```
 
@@ -243,58 +216,37 @@ No playback URL yet.
 
 ## Step 4
 
-Cloudinary finishes upload.
+Upload completes.
 
-Cloudinary sends webhook.
+The client signals success. The backend marks the video as ready.
 
-Endpoint:
-
-```http
-POST /api/webhooks/cloudinary
-```
-
-Verify webhook signature.
-
-Never trust unsigned webhook requests.
-
----
-
-## Step 5
-
-Webhook updates database.
-
-Extract:
-
-```ts
-public_id
-duration
-secure_url
-```
-
-Generate:
-
-```ts
-playbackUrl
-thumbnailUrl
-```
-
-Update status:
+Status:
 
 ```text
 ready
 ```
 
-If processing fails:
+No webhook needed — Backblaze B2 is raw object storage without transcoding.
 
-```text
-failed
+---
+
+## Step 5
+
+Backend updates database.
+
+Set:
+
+```ts
+storageKey
+playbackUrl
+status = "ready"
 ```
 
 ---
 
 # Backend API Requirements
 
-## Create Upload Signature
+## Initiate Upload
 
 Route:
 
@@ -314,8 +266,8 @@ instructor
 Responsibilities:
 
 - Verify user session
-- Generate Cloudinary signature
-- Return upload metadata
+- Generate presigned upload URL for B2
+- Return upload URL, public URL, and video ID
 
 ---
 
@@ -387,46 +339,10 @@ DELETE /api/videos/:videoId
 Responsibilities:
 
 1. Verify permissions
-2. Delete Cloudinary asset
+2. Delete B2 object
 3. Delete database record
 
 Deletion must be transactional where possible.
-
----
-
-# Cloudinary Webhook Handler
-
-Route:
-
-```http
-POST /api/webhooks/cloudinary
-```
-
-Requirements:
-
-### Verify Signature
-
-Reject invalid requests.
-
-### Process Events
-
-Handle:
-
-```text
-upload.completed
-video.ready
-video.failed
-```
-
-Update database accordingly.
-
-### Error Handling
-
-Log failures to Sentry.
-
-Never crash endpoint.
-
-Always return proper status code.
 
 ---
 
@@ -443,8 +359,8 @@ VideoUploader
 Responsibilities:
 
 - Select file
-- Request upload signature
-- Upload to Cloudinary
+- Request upload URL
+- Upload to B2 via presigned PUT URL
 - Show progress
 - Handle failures
 
@@ -453,7 +369,7 @@ States:
 ```text
 idle
 uploading
-processing
+uploaded
 success
 error
 ```
@@ -484,7 +400,7 @@ CourseVideoList
 
 Displays:
 
-- Thumbnail
+- Thumbnail (optional)
 - Title
 - Duration
 - Upload status
@@ -493,7 +409,6 @@ Statuses:
 
 ```text
 Uploading
-Processing
 Ready
 Failed
 ```
@@ -506,17 +421,17 @@ Use Vidstack.
 
 Requirements:
 
-### Streaming
+### Playback
 
-Prefer HLS.
+Serve raw MP4 from B2 public URL.
 
 Example source:
 
 ```text
-https://res.cloudinary.com/.../video/upload/sp_hd/.../playlist.m3u8
+https://f000.backblazeb2.com/file/modern-advocates/course-videos/uuid/uuid/uuid/uuid.mp4
 ```
 
-Do not stream raw MP4 unless fallback required.
+HLS streaming can be added later via a transcoding service (Mux, Cloudflare Stream, etc.) if needed.
 
 ---
 
@@ -566,7 +481,7 @@ Can:
 
 Can:
 
-- Stream purchased course videos
+- Stream purchased course videos (if enrolled)
 - Save progress
 
 Cannot:
@@ -595,7 +510,7 @@ Only then return playback URL.
 Future enhancement:
 
 ```text
-Cloudinary Signed URLs
+Signed B2 URLs (expiring presigned download URLs)
 ```
 
 Implement architecture so signed URLs can be added later.
@@ -609,9 +524,8 @@ Use Sentry.
 Capture:
 
 - Upload failures
-- Webhook failures
 - Progress update failures
-- Cloudinary API failures
+- Storage API failures
 - Authorization failures
 
 Attach:
@@ -638,7 +552,7 @@ Must support:
 1GB+
 ```
 
-Use chunked uploads when supported.
+Uses presigned PUT URLs (supports up to 5GB per file). For larger files, multipart upload can be added.
 
 ---
 
@@ -647,9 +561,8 @@ Use chunked uploads when supported.
 Use:
 
 ```text
-HLS
-Adaptive Bitrate
-Cloudinary CDN
+Direct B2 CDN delivery
+Raw MP4
 ```
 
 Do not proxy videos through Next.js.
@@ -689,7 +602,7 @@ Reason:
 All video traffic must flow:
 
 User
-→ Cloudinary CDN
+→ Backblaze B2 CDN
 
 NOT:
 
@@ -711,31 +624,24 @@ src/
         [videoId]/
           route.ts
           progress/
-      webhooks/
-        cloudinary/
 
-  lib/
-    cloudinary/
-      client.ts
-      signatures.ts
-      webhooks.ts
+  infrastructure/
+    storage/
+      config.ts
+      service.ts
 
-  db/
-    schema/
-      courseVideos.ts
-      videoProgress.ts
+  infrastructure/database/schema/
+    video.ts
+    videoProgress.ts
 
-  components/
-    video/
+  features/videos/
+    components/
       VideoUploader.tsx
       VideoPlayer.tsx
       CourseVideoList.tsx
 
-  services/
-    videos/
-      createVideo.ts
-      deleteVideo.ts
-      updateProgress.ts
+  shared/lib/
+    storage-upload.ts
 ```
 
 ---
@@ -744,17 +650,14 @@ src/
 
 A completed implementation must:
 
-- Upload directly to Cloudinary
+- Upload directly to Backblaze B2 via presigned URL
 - Avoid server-side file uploads
 - Store metadata in PostgreSQL
-- Process webhooks correctly
-- Stream via HLS
+- Stream via B2 public URLs
 - Track progress efficiently
 - Support protected access
 - Scale independently from application servers
 - Report failures through Sentry
 - Be production ready
-
-```
 
 ```

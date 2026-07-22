@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server"
 import { requireInstructorOrAdmin } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
-import { cloudinary } from "@/infrastructure/cloudinary/config"
+import { uploadBufferToStorage } from "@/infrastructure/storage/service"
 import * as Sentry from "@sentry/nextjs"
+import { randomUUID } from "node:crypto"
 
 export async function POST(request: Request) {
   try {
@@ -27,24 +28,11 @@ export async function POST(request: Request) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer())
+    const ext = file.name.split(".").pop() ?? "png"
+    const key = `course-thumbnails/${randomUUID()}.${ext}`
+    const url = await uploadBufferToStorage(buffer, key, file.type)
 
-    const result = await new Promise<{ secure_url: string }>((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder: "course-thumbnails",
-          resource_type: "image",
-          transformation: [{ width: 1280, height: 720, crop: "fill", quality: "auto" }],
-        },
-        (error, result) => {
-          if (error) reject(error)
-          else resolve(result as { secure_url: string })
-        },
-      )
-
-      uploadStream.end(buffer)
-    })
-
-    return NextResponse.json({ url: result.secure_url })
+    return NextResponse.json({ url })
   } catch (error) {
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
