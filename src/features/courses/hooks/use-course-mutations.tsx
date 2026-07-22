@@ -13,13 +13,18 @@ import {
 } from "@/features/courses/api/course-service"
 import { useVideoUploadStore } from "@/features/courses/store/use-video-upload-store"
 import { VideoUploadToast } from "@/features/courses/components/video-upload-toast"
-import type { CourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
+import {
+  useCourseWizardStore,
+  type CourseWizardStore,
+} from "@/features/courses/store/use-course-wizard-store"
 
 export function useCreateCourse() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (payload: CreateCoursePayload): Promise<CourseResponse> => {
+    mutationFn: async (
+      payload: CreateCoursePayload
+    ): Promise<CourseResponse> => {
       const res = await fetch("/api/courses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -106,60 +111,57 @@ export function useSaveCourse() {
       toast.success(
         options.status === "published"
           ? "Course published successfully"
-          : "Course saved as draft",
+          : "Course saved as draft"
       )
 
-      if (result?.modules?.length) {
-        const freshStore = useCourseWizardStore.getState()
-        freshStore.initialize(result)
+      if (result?.modules?.length && store.sections.some((s) => s.lectures.some((l) => l.videoFile))) {
+        const videoStore = useVideoUploadStore.getState()
+        const hasClientIds = !!result.modules[0]?.clientId
 
-        if (store.sections.some((s) => s.lectures.some((l) => l.videoFile))) {
-          const videoStore = useVideoUploadStore.getState()
-          const freshSections = useCourseWizardStore.getState().sections
-
-          const moduleMap = new Map<string, string>()
-          const topicMap = new Map<string, string>()
-          for (const mod of result.modules) {
-            moduleMap.set(mod.id, mod.id)
-            for (const topic of mod.topics) {
-              topicMap.set(topic.id, topic.id)
-            }
+        const moduleMap = new Map<string, string>()
+        const topicMap = new Map<string, string>()
+        for (const mod of result.modules) {
+          moduleMap.set(hasClientIds ? mod.clientId : mod.id, mod.id)
+          for (const topic of mod.topics) {
+            topicMap.set(hasClientIds ? topic.clientId : topic.id, topic.id)
           }
-
-          const toastId = toast.custom(() => <VideoUploadToast />, {
-            duration: Infinity,
-            style: { opacity: 1, transform: "none" },
-          })
-
-          const uploads = uploadCourseVideos(
-            freshSections,
-            moduleMap,
-            topicMap,
-            result.id,
-            freshStore.title,
-            videoStore,
-          )
-
-          Promise.allSettled(uploads).then((results) => {
-            const allDone = results.every((r) => r.status === "fulfilled")
-            if (allDone) {
-              toast.dismiss(toastId)
-              toast.success("All videos uploaded")
-            } else {
-              toast.dismiss(toastId)
-              toast.custom(() => <VideoUploadToast />, {
-                duration: Infinity,
-                style: { opacity: 1, transform: "none" },
-              })
-            }
-          })
         }
+
+        const toastId = toast.custom(() => <VideoUploadToast />, {
+          duration: Infinity,
+          style: { opacity: 1, transform: "none" },
+        })
+
+        const uploads = uploadCourseVideos(
+          store.sections,
+          moduleMap,
+          topicMap,
+          result.id,
+          store.title,
+          videoStore,
+        )
+
+        Promise.allSettled(uploads).then((results) => {
+          const allDone = results.every((r) => r.status === "fulfilled")
+          if (allDone) {
+            toast.dismiss(toastId)
+            toast.success("All videos uploaded")
+          } else {
+            toast.dismiss(toastId)
+            toast.custom(() => <VideoUploadToast />, {
+              duration: Infinity,
+              style: { opacity: 1, transform: "none" },
+            })
+          }
+        })
       }
 
       options.onSuccess?.(result)
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Something went wrong")
+      toast.error(
+        error instanceof Error ? error.message : "Something went wrong"
+      )
     },
   })
 }
