@@ -59,8 +59,11 @@ export function useUpdateCourse() {
       }
       return getCourse(courseId)
     },
-    onSuccess: () => {
+    onSuccess: (_data, { courseId }) => {
       queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
+      if (courseId) {
+        queryClient.invalidateQueries({ queryKey: ["course", courseId] })
+      }
     },
   })
 }
@@ -106,48 +109,51 @@ export function useSaveCourse() {
           : "Course saved as draft",
       )
 
-      if (
-        result &&
-        store.sections.some((s) => s.lectures.some((l) => l.videoFile))
-      ) {
-        const videoStore = useVideoUploadStore.getState()
+      if (result?.modules?.length) {
+        const freshStore = useCourseWizardStore.getState()
+        freshStore.initialize(result)
 
-        const moduleMap = new Map<string, string>()
-        const topicMap = new Map<string, string>()
-        for (const mod of result.modules) {
-          moduleMap.set(mod.clientId, mod.id)
-          for (const topic of mod.topics) {
-            topicMap.set(topic.clientId, topic.id)
+        if (store.sections.some((s) => s.lectures.some((l) => l.videoFile))) {
+          const videoStore = useVideoUploadStore.getState()
+          const freshSections = useCourseWizardStore.getState().sections
+
+          const moduleMap = new Map<string, string>()
+          const topicMap = new Map<string, string>()
+          for (const mod of result.modules) {
+            moduleMap.set(mod.id, mod.id)
+            for (const topic of mod.topics) {
+              topicMap.set(topic.id, topic.id)
+            }
           }
+
+          const toastId = toast.custom(() => <VideoUploadToast />, {
+            duration: Infinity,
+            style: { opacity: 1, transform: "none" },
+          })
+
+          const uploads = uploadCourseVideos(
+            freshSections,
+            moduleMap,
+            topicMap,
+            result.id,
+            freshStore.title,
+            videoStore,
+          )
+
+          Promise.allSettled(uploads).then((results) => {
+            const allDone = results.every((r) => r.status === "fulfilled")
+            if (allDone) {
+              toast.dismiss(toastId)
+              toast.success("All videos uploaded")
+            } else {
+              toast.dismiss(toastId)
+              toast.custom(() => <VideoUploadToast />, {
+                duration: Infinity,
+                style: { opacity: 1, transform: "none" },
+              })
+            }
+          })
         }
-
-        const toastId = toast.custom(() => <VideoUploadToast />, {
-          duration: Infinity,
-          style: { opacity: 1, transform: "none" },
-        })
-
-        const uploads = uploadCourseVideos(
-          store.sections,
-          moduleMap,
-          topicMap,
-          result.id,
-          store.title,
-          videoStore,
-        )
-
-        Promise.allSettled(uploads).then((results) => {
-          const allDone = results.every((r) => r.status === "fulfilled")
-          if (allDone) {
-            toast.dismiss(toastId)
-            toast.success("All videos uploaded")
-          } else {
-            toast.dismiss(toastId)
-            toast.custom(() => <VideoUploadToast />, {
-              duration: Infinity,
-              style: { opacity: 1, transform: "none" },
-            })
-          }
-        })
       }
 
       options.onSuccess?.(result)

@@ -76,12 +76,20 @@ export async function GET(
 
     const videoRows = topicIds.length > 0
       ? await db
-          .select({ topicId: courseVideos.topicId, id: courseVideos.id })
+          .select({
+            topicId: courseVideos.topicId,
+            id: courseVideos.id,
+            title: courseVideos.title,
+            playbackUrl: courseVideos.playbackUrl,
+            cloudinaryPublicId: courseVideos.cloudinaryPublicId,
+            duration: courseVideos.duration,
+            status: courseVideos.status,
+          })
           .from(courseVideos)
           .where(inArray(courseVideos.topicId, topicIds))
       : []
 
-    const videoByTopicId = new Map(videoRows.map((v) => [v.topicId, v.id]))
+    const videoByTopicId = new Map(videoRows.map((v) => [v.topicId, v]))
 
     function parseContent(content: string | null): unknown {
       if (!content) return null
@@ -105,8 +113,9 @@ export async function GET(
           order: number
           videoUrl: string | null
           videoId: string | null
-        }>
-      }>()
+          videoName: string | null
+          videoStatus: string | null
+        }>()
 
       for (const row of moduleTopicRows) {
         if (!map.has(row.moduleId)) {
@@ -126,8 +135,10 @@ export async function GET(
             type: row.topicFormat === "video" ? "video_and_text" : row.topicFormat!,
             description: parseContent(row.topicContent),
             order: row.topicOrder!,
-            videoUrl: videoByTopicId.get(row.topicId) ?? null,
-            videoId: videoByTopicId.get(row.topicId) ?? null,
+            videoUrl: videoByTopicId.get(row.topicId)?.playbackUrl ?? null,
+            videoId: videoByTopicId.get(row.topicId)?.cloudinaryPublicId ?? null,
+            videoName: videoByTopicId.get(row.topicId)?.title ?? null,
+            videoStatus: videoByTopicId.get(row.topicId)?.status ?? null,
           })
         }
       }
