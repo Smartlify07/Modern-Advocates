@@ -24,6 +24,8 @@ import type { Ticket } from "../types"
 
 interface SupportTableProps {
   tickets: Ticket[]
+  onView?: (ticket: Ticket) => void
+  onDelete?: (id: string) => void
 }
 
 const statusStyles: Record<string, string> = {
@@ -32,7 +34,9 @@ const statusStyles: Record<string, string> = {
   resolved: "bg-slate-100 text-slate-600",
 }
 
-export function SupportTable({ tickets }: SupportTableProps) {
+export function SupportTable({ tickets, onView, onDelete }: SupportTableProps) {
+  const adminEmail = "modadvinc@gmail.com"
+
   return (
     <div className="rounded-t-2xl">
       <Table>
@@ -92,13 +96,25 @@ export function SupportTable({ tickets }: SupportTableProps) {
                         <MoreHorizontalIcon className="size-3" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40">
+                    <DropdownMenuContent align="end" className="w-44">
                       <DropdownMenuGroup>
-                        <DropdownMenuItem className="gap-2.5 p-2">
+                        <DropdownMenuItem
+                          className="gap-2.5 p-2"
+                          onSelect={() => onView?.(ticket)}
+                        >
                           <EyeIcon strokeWidth={1.5} className="size-4" />
                           View ticket
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2.5 p-2">
+                        <DropdownMenuItem
+                          className="gap-2.5 p-2"
+                          onSelect={() => {
+                            const subject = encodeURIComponent(`Re: Support Ticket #${ticket.id}`)
+                            const body = encodeURIComponent(
+                              `Dear ${ticket.name},\n\nRegarding your message:\n"${ticket.message}"\n\n`,
+                            )
+                            window.open(`mailto:${ticket.email}?subject=${subject}&body=${body}&cc=${adminEmail}`, "_blank")
+                          }}
+                        >
                           <MessageSquareReplyIcon strokeWidth={1.5} className="size-4" />
                           Reply
                         </DropdownMenuItem>
@@ -107,6 +123,7 @@ export function SupportTable({ tickets }: SupportTableProps) {
                       <DropdownMenuItem
                         className="gap-2.5 p-2"
                         variant="destructive"
+                        onSelect={() => onDelete?.(ticket.id)}
                       >
                         <Trash2Icon strokeWidth={1.5} className="size-4" />
                         Delete ticket

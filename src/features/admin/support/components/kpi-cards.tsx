@@ -1,11 +1,13 @@
 import { MessageCircleMore } from "lucide-react"
 import { Card, CardTitle, CardContent } from "@/shared/ui/card"
+import { Skeleton } from "@/shared/ui/skeleton"
 
 interface KpiCardsProps {
   totalTickets: number
   open: number
   pending: number
   resolved: number
+  isLoading?: boolean
 }
 
 const kpiData = [
@@ -32,6 +34,7 @@ export function KpiCards({
   open,
   pending,
   resolved,
+  isLoading,
 }: KpiCardsProps) {
   const values = { totalTickets, open, pending, resolved }
 
@@ -50,7 +53,11 @@ export function KpiCards({
                   {kpi.label}
                 </CardTitle>
                 <div className="mt-1 font-semibold lg:text-4xl/[100%] 2xl:text-[40px]/[100%]">
-                  {values[kpi.value]}
+                  {isLoading ? (
+                    <Skeleton className="h-9 w-16" />
+                  ) : (
+                    values[kpi.value]
+                  )}
                 </div>
               </div>
               <div
