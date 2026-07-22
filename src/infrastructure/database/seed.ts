@@ -67,7 +67,7 @@ const TOPIC_TITLES = [
 const COURSE_DATA = [
   {
     title: "Build Foundational AI Skills",
-    thumbnail: "",
+    thumbnail: "https://f000.backblazeb2.com/file/ModernAdvocates/seed-thumbnails/course-1.png",
     content:
       "Master the fundamentals of artificial intelligence from the ground up. This course covers machine learning, neural networks, NLP, computer vision, and AI ethics — everything you need to start building intelligent solutions.",
     overview:
@@ -75,7 +75,7 @@ const COURSE_DATA = [
   },
   {
     title: "Income Producing Assets",
-    thumbnail: "",
+    thumbnail: "https://f000.backblazeb2.com/file/ModernAdvocates/seed-thumbnails/course-2.png",
     content:
       "Learn how to build, manage, and scale income-producing assets across real estate, digital assets, stocks, and business ownership. Develop a diversified portfolio that generates passive income.",
     overview:
@@ -83,7 +83,7 @@ const COURSE_DATA = [
   },
   {
     title: "Generate first revenue within 60 days",
-    thumbnail: "",
+    thumbnail: "https://f000.backblazeb2.com/file/ModernAdvocates/seed-thumbnails/course-3.png",
     content:
       "A high-intensity, action-oriented course designed to help you launch a revenue-generating product or service in just 60 days. Covers MVP development, pricing, customer acquisition, and sales automation.",
     overview:
