@@ -13,6 +13,7 @@ export interface UploadSignatureResult {
   apiKey: string
   cloudName: string
   folder: string
+  notificationUrl: string
 }
 
 
@@ -40,11 +41,14 @@ export function generateUploadSignature({
     process.env.CLOUDINARY_API_SECRET!,
   )
 
+  const notificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/cloudinary`
+
   return {
     signature,
     timestamp,
     apiKey: process.env.CLOUDINARY_API_KEY!,
     cloudName: process.env.CLOUDINARY_CLOUD_NAME!,
     folder,
+    notificationUrl,
   }
 }

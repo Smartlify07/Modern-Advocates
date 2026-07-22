@@ -1,7 +1,9 @@
 "use client"
 
-import Link from "next/link"
+import { useCallback } from "react"
+import { useRouter } from "next/navigation"
 import { useCourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
+import { useSaveCourse } from "@/features/courses/hooks/use-course-mutations"
 import { Stepper } from "@/shared/ui/stepper"
 import { Button } from "@/shared/ui/button"
 import { BasicInfoStep } from "@/features/courses/components/wizard/basic-info-step"
@@ -17,6 +19,7 @@ import {
   SaveIcon,
   ArrowLeftIcon,
   SendIcon,
+  Loader2,
 } from "lucide-react"
 import type { Step } from "@/shared/ui/stepper"
 
@@ -28,11 +31,14 @@ const wizardSteps: Step[] = [
 ]
 
 export default function CreateCoursePage() {
+  const router = useRouter()
   const currentStep = useCourseWizardStore((s) => s.currentStep)
   const setCurrentStep = useCourseWizardStore((s) => s.setCurrentStep)
   const completedSteps = useCourseWizardStore((s) => s.completedSteps)
   const setCompletedSteps = useCourseWizardStore((s) => s.setCompletedSteps)
-  const isSaving = useCourseWizardStore((s) => s.isSaving)
+  const resetForm = useCourseWizardStore((s) => s.resetForm)
+  const store = useCourseWizardStore.getState
+  const saveCourse = useSaveCourse()
 
   const handlePrevious = () => {
     if (currentStep > 0) {
@@ -51,6 +57,20 @@ export default function CreateCoursePage() {
     }
   }
 
+  const handleSaveAndClose = useCallback(() => {
+    saveCourse.mutate(
+      { store: store(), options: { status: "draft", onSuccess: () => { resetForm(); router.push("/admin/courses") } } },
+    )
+  }, [saveCourse, store, resetForm, router])
+
+  const handlePublish = useCallback(() => {
+    saveCourse.mutate(
+      { store: store(), options: { status: "published", onSuccess: () => { resetForm(); router.push("/admin/courses") } } },
+    )
+  }, [saveCourse, store, resetForm, router])
+
+  const isPending = saveCourse.isPending
+
   return (
     <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
       <Stepper
@@ -66,13 +86,16 @@ export default function CreateCoursePage() {
         </h1>
         <Button
           variant="ghost"
+          onClick={handleSaveAndClose}
+          disabled={isPending}
           className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
-          asChild
         >
-          <Link href="/admin/courses">
+          {isPending ? (
+            <Loader2 className="mr-1 size-4 animate-spin" />
+          ) : (
             <XIcon className="mr-1 size-4" />
-            Save & Close
-          </Link>
+          )}
+          Save & Close
         </Button>
       </div>
 
@@ -97,7 +120,6 @@ export default function CreateCoursePage() {
         {currentStep < wizardSteps.length - 1 && (
           <Button
             onClick={handleSaveAndContinue}
-            disabled={isSaving}
             className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
           >
             <SaveIcon className="mr-1 size-4" />
@@ -105,8 +127,17 @@ export default function CreateCoursePage() {
           </Button>
         )}
         {currentStep === wizardSteps.length - 1 && (
-          <Button className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90">
-            Publish Course
+          <Button
+            onClick={handlePublish}
+            disabled={isPending}
+            className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
+          >
+            {isPending ? (
+              <Loader2 className="mr-1 size-4 animate-spin" />
+            ) : (
+              <SendIcon className="mr-1 size-4" />
+            )}
+            {isPending ? "Saving..." : "Publish Course"}
           </Button>
         )}
       </div>
