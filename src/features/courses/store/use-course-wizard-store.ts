@@ -79,6 +79,17 @@ export interface CourseWizardStore {
   initialize: (course: any) => void
 }
 
+const LANG_CODE_TO_LABEL: Record<string, string> = {
+  en: "English",
+  es: "Spanish",
+  fr: "French",
+  de: "German",
+  zh: "Chinese",
+  ja: "Japanese",
+  ar: "Arabic",
+  pt: "Portuguese",
+}
+
 let nextSectionId = 1
 let nextLectureId = 1
 
@@ -97,7 +108,7 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
   language: "English",
   level: "",
   duration: "",
-  durationUnit: "Day",
+  durationUnit: "Days",
   instructorName: "",
   instructorSpecialty: "",
   aboutInstructor: "",
@@ -218,11 +229,11 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
       originalPrice: String(course.price ?? ""),
       salePrice: course.discountedPrice ? String(course.discountedPrice) : "",
       showStrikedOriginal: !!course.discountedPrice,
-      overview: course.overview ?? null,
-      language: course.language ?? "English",
+      overview: typeof course.overview === "string" ? (() => { try { return JSON.parse(course.overview) } catch { return null } })() : course.overview,
+      language: LANG_CODE_TO_LABEL[course.language] ?? course.language ?? "English",
       level: course.level ?? "",
-      duration: course.duration?.value ?? "",
-      durationUnit: course.duration?.unit ?? "Day",
+      duration: course.duration != null ? String(course.duration) : "",
+      durationUnit: "Days",
       instructorName: course.instructorName ?? "",
       instructorSpecialty: course.instructorSpecialty ?? "",
       aboutInstructor: course.aboutInstructor ?? "",
@@ -261,7 +272,7 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
       language: "English",
       level: "",
       duration: "",
-      durationUnit: "Day",
+      durationUnit: "Days",
       instructorName: "",
       instructorSpecialty: "",
       aboutInstructor: "",
