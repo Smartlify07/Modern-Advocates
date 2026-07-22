@@ -244,7 +244,7 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
         lectures: (mod.topics ?? []).map((topic: any) => ({
           id: topic.id,
           title: topic.title ?? "",
-          mediaType: topic.videoStatus === "ready" || topic.videoStatus === "processing" ? "video" : topic.description ? "lecture_notes" : "none",
+          mediaType: topic.videoId ? "video" : topic.description ? "lecture_notes" : "none",
           mediaName: topic.videoName ?? null,
           mediaUrl: topic.videoId ?? null,
           videoFile: null,

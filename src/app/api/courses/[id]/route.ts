@@ -129,16 +129,17 @@ export async function GET(
 
         if (row.topicId) {
           const mod = map.get(row.moduleId)!
+          const video = videoByTopicId.get(row.topicId)
           mod.topics.push({
             id: row.topicId,
             title: row.topicTitle!,
             type: row.topicFormat === "video" ? "video_and_text" : row.topicFormat!,
             description: parseContent(row.topicContent),
             order: row.topicOrder!,
-            videoUrl: videoByTopicId.get(row.topicId)?.playbackUrl ?? null,
-            videoId: videoByTopicId.get(row.topicId)?.cloudinaryPublicId ?? null,
-            videoName: videoByTopicId.get(row.topicId)?.title ?? null,
-            videoStatus: videoByTopicId.get(row.topicId)?.status ?? null,
+            videoUrl: video?.playbackUrl ?? null,
+            videoId: video?.cloudinaryPublicId ?? video?.id ?? null,
+            videoName: video?.title ?? null,
+            videoStatus: video?.status ?? null,
           })
         }
       }
