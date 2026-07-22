@@ -109,6 +109,11 @@ export function usePendingUploads(courseId?: string) {
         return
       }
 
+      if (file.size !== pendingUpload.fileSize || file.lastModified !== pendingUpload.lastModified) {
+        toast.error("Selected file does not match the original. Please select the exact same file.")
+        return
+      }
+
       const addTask = useVideoUploadStore.getState().addTask
       const updateProgress = useVideoUploadStore.getState().updateProgress
       const completeTask = useVideoUploadStore.getState().completeTask

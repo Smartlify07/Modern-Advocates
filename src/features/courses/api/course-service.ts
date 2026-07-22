@@ -129,37 +129,10 @@ export async function uploadThumbnail(file: File): Promise<string> {
   return data.url as string
 }
 
-export async function createCourse(
-  payload: CreateCoursePayload,
-): Promise<CourseResponse> {
-  const res = await fetch("/api/courses", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  })
-
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error ?? "Failed to create course")
-  }
-
+export async function getCourse(courseId: string): Promise<CourseResponse> {
+  const res = await fetch(`/api/courses/${courseId}`)
+  if (!res.ok) throw new Error("Failed to fetch course")
   return res.json()
-}
-
-export async function updateCourse(
-  courseId: string,
-  payload: UpdateCoursePayload,
-): Promise<void> {
-  const res = await fetch(`/api/courses/${courseId}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  })
-
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error ?? "Failed to update course")
-  }
 }
 
 async function getSignedUploadConfig(

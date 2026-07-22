@@ -5,15 +5,65 @@ import { toast } from "sonner"
 import {
   buildCoursePayload,
   uploadThumbnail,
-  createCourse,
-  updateCourse,
+  getCourse,
   uploadCourseVideos,
   type CreateCoursePayload,
+  type UpdateCoursePayload,
   type CourseResponse,
 } from "@/features/courses/api/course-service"
 import { useVideoUploadStore } from "@/features/courses/store/use-video-upload-store"
 import { VideoUploadToast } from "@/features/courses/components/video-upload-toast"
 import type { CourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
+
+export function useCreateCourse() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (payload: CreateCoursePayload): Promise<CourseResponse> => {
+      const res = await fetch("/api/courses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error ?? "Failed to create course")
+      }
+      return res.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
+    },
+  })
+}
+
+export function useUpdateCourse() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({
+      courseId,
+      payload,
+    }: {
+      courseId: string
+      payload: UpdateCoursePayload
+    }): Promise<CourseResponse> => {
+      const res = await fetch(`/api/courses/${courseId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error ?? "Failed to update course")
+      }
+      return getCourse(courseId)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
+    },
+  })
+}
 
 interface SaveCourseOptions {
   status: "draft" | "published"
@@ -22,7 +72,8 @@ interface SaveCourseOptions {
 }
 
 export function useSaveCourse() {
-  const queryClient = useQueryClient()
+  const createCourse = useCreateCourse()
+  const updateCourse = useUpdateCourse()
 
   return useMutation({
     mutationFn: async ({
@@ -31,7 +82,7 @@ export function useSaveCourse() {
     }: {
       store: CourseWizardStore
       options: SaveCourseOptions
-    }): Promise<CourseResponse | void> => {
+    }): Promise<CourseResponse> => {
       let thumbnailUrl: string | undefined
 
       if (store.thumbnail instanceof File) {
@@ -42,15 +93,13 @@ export function useSaveCourse() {
       const payload = buildCoursePayload(store, thumbnailUrl, options.status)
 
       if (isNew) {
-        return await createCourse(payload as CreateCoursePayload)
+        return await createCourse.mutateAsync(payload as CreateCoursePayload)
       } else {
         const courseId = store.courseId ?? options.courseId!
-        await updateCourse(courseId, payload)
+        return await updateCourse.mutateAsync({ courseId, payload })
       }
     },
     onSuccess: (result, { store, options }) => {
-      queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
-
       toast.success(
         options.status === "published"
           ? "Course published successfully"
@@ -65,7 +114,7 @@ export function useSaveCourse() {
 
         const moduleMap = new Map<string, string>()
         const topicMap = new Map<string, string>()
-        for (const mod of (result as CourseResponse).modules) {
+        for (const mod of result.modules) {
           moduleMap.set(mod.clientId, mod.id)
           for (const topic of mod.topics) {
             topicMap.set(topic.clientId, topic.id)
@@ -77,31 +126,31 @@ export function useSaveCourse() {
           style: { opacity: 1, transform: "none" },
         })
 
-        const courseTitle = store.title
         const uploads = uploadCourseVideos(
           store.sections,
           moduleMap,
           topicMap,
-          (result as CourseResponse).id,
-          courseTitle,
+          result.id,
+          store.title,
           videoStore,
         )
 
         Promise.allSettled(uploads).then((results) => {
-          const allDone = results.every(
-            (r) => r.status === "fulfilled",
-          )
+          const allDone = results.every((r) => r.status === "fulfilled")
           if (allDone) {
             toast.dismiss(toastId)
             toast.success("All videos uploaded")
           } else {
             toast.dismiss(toastId)
-            toast.custom(() => <VideoUploadToast />, { duration: Infinity, style: { opacity: 1, transform: "none" } })
+            toast.custom(() => <VideoUploadToast />, {
+              duration: Infinity,
+              style: { opacity: 1, transform: "none" },
+            })
           }
         })
       }
 
-      options.onSuccess?.(result as CourseResponse)
+      options.onSuccess?.(result)
     },
     onError: (error) => {
       toast.error(error instanceof Error ? error.message : "Something went wrong")
