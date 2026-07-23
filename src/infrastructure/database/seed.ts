@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto"
 import { sql } from "drizzle-orm"
 import { db } from "./client"
 import { user, account } from "./schema/auth"
+import { generatePresignedDownloadUrl } from "../storage/service"
 import {
   categories,
   courses,
@@ -64,10 +65,16 @@ const TOPIC_TITLES = [
   "Summary & Next Steps",
 ]
 
+const SEED_THUMBNAIL_KEYS = [
+  "seed-thumbnails/course-1.png",
+  "seed-thumbnails/course-2.png",
+  "seed-thumbnails/course-3.png",
+]
+
 const COURSE_DATA = [
   {
     title: "Build Foundational AI Skills",
-    thumbnail: "https://f005.backblazeb2.com/file/ModernAdvocates/seed-thumbnails/course-1.png",
+    thumbnailKey: SEED_THUMBNAIL_KEYS[0],
     content:
       "Master the fundamentals of artificial intelligence from the ground up. This course covers machine learning, neural networks, NLP, computer vision, and AI ethics — everything you need to start building intelligent solutions.",
     overview:
@@ -75,7 +82,7 @@ const COURSE_DATA = [
   },
   {
     title: "Income Producing Assets",
-    thumbnail: "https://f005.backblazeb2.com/file/ModernAdvocates/seed-thumbnails/course-2.png",
+    thumbnailKey: SEED_THUMBNAIL_KEYS[1],
     content:
       "Learn how to build, manage, and scale income-producing assets across real estate, digital assets, stocks, and business ownership. Develop a diversified portfolio that generates passive income.",
     overview:
@@ -83,7 +90,7 @@ const COURSE_DATA = [
   },
   {
     title: "Generate first revenue within 60 days",
-    thumbnail: "https://f005.backblazeb2.com/file/ModernAdvocates/seed-thumbnails/course-3.png",
+    thumbnailKey: SEED_THUMBNAIL_KEYS[2],
     content:
       "A high-intensity, action-oriented course designed to help you launch a revenue-generating product or service in just 60 days. Covers MVP development, pricing, customer acquisition, and sales automation.",
     overview:
@@ -217,13 +224,15 @@ async function seed() {
     const courseId = randomUUID()
     const data = COURSE_DATA[c]
 
+    const thumbnailUrl = await generatePresignedDownloadUrl(data.thumbnailKey, 604800)
+
     await db.insert(courses).values([
       {
         id: courseId,
         title: data.title,
         content: data.content,
         overview: data.overview,
-        thumbnailUrl: data.thumbnail,
+        thumbnailUrl,
         language: "en",
         level: "beginner" as const,
         price: 550.00,

@@ -1,9 +1,10 @@
 import {
   DeleteObjectCommand,
+  GetObjectCommand,
   PutObjectCommand,
 } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
-import { s3, B2_BUCKET, B2_PUBLIC_DOMAIN } from "./config"
+import { s3, B2_BUCKET } from "./config"
 
 export async function deleteStorageAsset(key: string): Promise<void> {
   try {
@@ -15,8 +16,16 @@ export async function deleteStorageAsset(key: string): Promise<void> {
   }
 }
 
-export function getPublicUrl(key: string): string {
-  return `${B2_PUBLIC_DOMAIN}/file/${B2_BUCKET}/${key}`
+export async function generatePresignedDownloadUrl(
+  key: string,
+  expiresIn = 604800, // max 7 days for S3 presigned URLs
+): Promise<string> {
+  const command = new GetObjectCommand({
+    Bucket: B2_BUCKET,
+    Key: key,
+  })
+
+  return getSignedUrl(s3, command, { expiresIn })
 }
 
 export async function generatePresignedUploadUrl(
@@ -36,6 +45,7 @@ export async function uploadBufferToStorage(
   buffer: Buffer,
   key: string,
   contentType: string,
+  expiresIn = 604800, // max 7 days for S3 presigned URLs
 ): Promise<string> {
   await s3.send(
     new PutObjectCommand({
@@ -46,5 +56,5 @@ export async function uploadBufferToStorage(
     }),
   )
 
-  return getPublicUrl(key)
+  return generatePresignedDownloadUrl(key, expiresIn)
 }

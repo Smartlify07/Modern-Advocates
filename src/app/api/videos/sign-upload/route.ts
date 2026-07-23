@@ -7,7 +7,7 @@ import { requireInstructorOrAdmin } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import {
   generatePresignedUploadUrl,
-  getPublicUrl,
+  generatePresignedDownloadUrl,
 } from "@/infrastructure/storage/service"
 import {
   createVideoRecord,
@@ -73,8 +73,10 @@ export async function POST(request: Request) {
     }
 
     const storageKey = `course-videos/${courseId}/${moduleId}/${topicId}/${videoId}.mp4`
-    const uploadUrl = await generatePresignedUploadUrl(storageKey, "video/mp4")
-    const publicUrl = getPublicUrl(storageKey)
+    const [uploadUrl, publicUrl] = await Promise.all([
+      generatePresignedUploadUrl(storageKey, "video/mp4"),
+      generatePresignedDownloadUrl(storageKey),
+    ])
 
     return NextResponse.json({
       uploadUrl,

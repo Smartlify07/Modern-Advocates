@@ -13,4 +13,3 @@ export const s3 = new S3Client({
 })
 
 export const B2_BUCKET = process.env.B2_BUCKET_NAME!
-export const B2_PUBLIC_DOMAIN = process.env.NEXT_PUBLIC_B2_DOMAIN!
