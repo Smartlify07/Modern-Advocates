@@ -90,7 +90,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
     Sentry.captureException(error)
-    console.error(error)
+  console.error(error, "Error at signing")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

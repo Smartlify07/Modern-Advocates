@@ -200,6 +200,7 @@ export async function uploadSingleVideoWithTracking(
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Upload failed"
     store.failTask(uploadId, msg)
+    console.error(err)
     throw err
   }
 }
