@@ -124,11 +124,7 @@ export default function UserDashboardPage() {
             return (
               <CourseCard.Root
                 key={course.id}
-                href={
-                  isEnrolled
-                    ? `/my-learning/${course.id}`
-                    : `/courses/${course.id}`
-                }
+                href={`/dashboard/course/${course.id}`}
               >
                 <CourseCard.Thumbnail
                   src={course.thumbnailUrl}
