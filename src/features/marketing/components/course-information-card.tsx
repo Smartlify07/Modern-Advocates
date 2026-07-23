@@ -15,7 +15,7 @@ export function CourseInformationCard({
 }: {
   course: CourseContentData
 }) {
-  const totalTopics = course.modules.reduce(
+  const totalTopics = (course.modules ?? []).reduce(
     (sum, m) => sum + m.topics.length,
     0
   )

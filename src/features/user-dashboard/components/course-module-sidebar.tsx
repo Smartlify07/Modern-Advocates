@@ -65,7 +65,7 @@ export function CourseModuleSidebar({ course }: { course: CourseData }) {
     }
   }, [enrollment?.completedTopicIds])
 
-  const totalTopics = modules.reduce((sum, mod) => sum + mod.topics.length, 0)
+  const totalTopics = (modules ?? []).reduce((sum, mod) => sum + mod.topics.length, 0)
 
   const toggleMutation = useMutation({
     mutationFn: async ({
