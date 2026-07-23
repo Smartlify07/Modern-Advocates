@@ -12,13 +12,15 @@
     "typecheck": "tsc --noEmit",
     "db:clean-enums": "tsx src/infrastructure/database/scripts/clean-enums.ts",
     "db:migrate": "tsx src/infrastructure/database/scripts/clean-enums.ts && npx drizzle-kit migrate",
-    "db:migrate:dev": "tsx src/infrastructure/database/scripts/clean-enums.ts && npx drizzle-kit migrate --config drizzle.dev.config.ts",
-    "db:migrate:prod": "tsx src/infrastructure/database/scripts/clean-enums.ts && npx drizzle-kit migrate --config drizzle.prod.config.ts",
+    "db:migrate:dev": "tsx src/infrastructure/database/scripts/clean-enums.ts .env.local && npx drizzle-kit migrate --config drizzle.dev.config.ts",
+    "db:migrate:prod": "tsx src/infrastructure/database/scripts/clean-enums.ts .env && npx drizzle-kit migrate --config drizzle.prod.config.ts",
     "db:generate": "npx drizzle-kit generate",
     "db:generate:dev": "npx drizzle-kit generate --config drizzle.dev.config.ts",
     "db:generate:prod": "npx drizzle-kit generate --config drizzle.prod.config.ts",
     "db:push": "npx drizzle-kit push",
-    "db:seed": "tsx src/infrastructure/database/seed.ts"
+    "db:seed": "tsx src/infrastructure/database/seed.ts",
+    "db:seed:dev": "tsx src/infrastructure/database/scripts/run-seed.ts .env.local",
+    "db:seed:prod": "tsx src/infrastructure/database/scripts/run-seed.ts .env"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.6.18",

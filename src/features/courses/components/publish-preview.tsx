@@ -40,7 +40,7 @@ function ModuleAccordion({
 
       <div
         className={`overflow-hidden transition-all duration-300 ${
-          open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+          open ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         {topics.length > 0 ? (
@@ -65,6 +65,8 @@ export function PublishPreview() {
   const categoryName = useCourseFormStore((s) => s.categoryName)
   const description = useCourseFormStore((s) => s.description)
   const level = useCourseFormStore((s) => s.level)
+  const duration = useCourseFormStore((s) => s.duration)
+  const durationUnit = useCourseFormStore((s) => s.durationUnit)
   const modules = useCourseFormStore((s) => s.modules)
   const price = useCourseFormStore((s) => s.price)
   const discount = useCourseFormStore((s) => s.discount)
@@ -78,8 +80,12 @@ export function PublishPreview() {
     ? level.charAt(0).toUpperCase() + level.slice(1)
     : "Not set"
 
+  const durationDisplay = duration && durationUnit
+    ? `${duration} ${durationUnit}`
+    : "Not set"
+
   const infoItems = [
-    { label: "Duration:", value: "Self-paced", icon: Clock },
+    { label: "Duration:", value: durationDisplay, icon: Clock },
     { label: "Lesson:", value: `${topicCount} Lessons`, icon: PlayCircle },
     { label: "Level:", value: levelCapitalized, icon: Layers },
     { label: "Language:", value: "English", icon: Languages },

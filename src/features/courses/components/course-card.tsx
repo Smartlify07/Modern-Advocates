@@ -115,6 +115,34 @@ function Price({
   )
 }
 
+function DiscountedPrice({
+  discountedPrice,
+  className,
+}: {
+  discountedPrice: number
+  className?: string
+}) {
+  return (
+    <p className={cn("text-xl text-ma-text", className)}>
+      $ {discountedPrice.toFixed(2)} USD
+    </p>
+  )
+}
+
+function DisplayPrice({
+  displayPrice,
+  className,
+}: {
+  displayPrice: number | null
+  className?: string
+}) {
+  return (
+    <p className={cn("text-base text-[#6b7280] line-through", className)}>
+      $ {displayPrice?.toFixed(2)} USD
+    </p>
+  )
+}
+
 function Progress({ value }: { value: number }) {
   return (
     <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
@@ -160,4 +188,6 @@ export const CourseCard = {
   Price,
   Progress,
   ContinueButton,
+  DisplayPrice,
+  DiscountedPrice,
 }

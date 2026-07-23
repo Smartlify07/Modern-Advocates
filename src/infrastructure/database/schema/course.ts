@@ -42,6 +42,9 @@ export const courses = pgTable(
     isFree: boolean("is_free").default(false).notNull(),
     duration: integer("duration"),
     durationUnit: text("duration_unit").default("Hours"),
+    instructorName: text("instructor_name"),
+    instructorSpecialty: text("instructor_specialty"),
+    aboutInstructor: text("about_instructor"),
     status: courseStatus("status").notNull().default("draft"),
     tutorId: text("tutor_id")
       .notNull()

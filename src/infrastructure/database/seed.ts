@@ -64,35 +64,47 @@ const TOPIC_TITLES = [
   "Summary & Next Steps",
 ]
 
-const COURSE_DATA = [
-  {
-    title: "Build Foundational AI Skills",
-    thumbnail:
-      "https://res.cloudinary.com/dgpbznsc3/image/upload/v1783089340/course-thumbnails/Rectangle_20_ebk9hc.png",
-    content:
-      "Master the fundamentals of artificial intelligence from the ground up. This course covers machine learning, neural networks, NLP, computer vision, and AI ethics — everything you need to start building intelligent solutions.",
-    overview:
-      "A comprehensive introduction to AI concepts, tools, and real-world applications for beginners and aspiring practitioners.",
-  },
-  {
-    title: "Income Producing Assets",
-    thumbnail:
-      "https://res.cloudinary.com/dgpbznsc3/image/upload/v1783089340/course-thumbnails/Rectangle_21_clzlef.png",
-    content:
-      "Learn how to build, manage, and scale income-producing assets across real estate, digital assets, stocks, and business ownership. Develop a diversified portfolio that generates passive income.",
-    overview:
-      "Build lasting wealth by mastering the strategies behind income-generating assets and portfolio diversification.",
-  },
-  {
-    title: "Generate first revenue within 60 days",
-    thumbnail:
-      "https://res.cloudinary.com/dgpbznsc3/image/upload/v1783089340/course-thumbnails/rect_ykzdtp.png",
-    content:
-      "A high-intensity, action-oriented course designed to help you launch a revenue-generating product or service in just 60 days. Covers MVP development, pricing, customer acquisition, and sales automation.",
-    overview:
-      "Go from idea to first sale in 60 days with proven strategies for rapid revenue generation and scalable growth.",
-  },
-]
+  const COURSE_DATA = [
+    {
+      title: "Build Foundational AI Skills",
+      thumbnail:
+        "https://res.cloudinary.com/dgpbznsc3/image/upload/v1783089340/course-thumbnails/Rectangle_20_ebk9hc.png",
+      content:
+        "Master the fundamentals of artificial intelligence from the ground up. This course covers machine learning, neural networks, NLP, computer vision, and AI ethics — everything you need to start building intelligent solutions.",
+      overview:
+        "A comprehensive introduction to AI concepts, tools, and real-world applications for beginners and aspiring practitioners.",
+      instructorName: "Maxwell Anthony",
+      instructorSpecialty: "AI & Machine Learning Expert",
+      aboutInstructor:
+        "Maxwell has over 15 years of experience in artificial intelligence and machine learning, having led AI teams at top tech companies and startups.",
+    },
+    {
+      title: "Income Producing Assets",
+      thumbnail:
+        "https://res.cloudinary.com/dgpbznsc3/image/upload/v1783089340/course-thumbnails/Rectangle_21_clzlef.png",
+      content:
+        "Learn how to build, manage, and scale income-producing assets across real estate, digital assets, stocks, and business ownership. Develop a diversified portfolio that generates passive income.",
+      overview:
+        "Build lasting wealth by mastering the strategies behind income-generating assets and portfolio diversification.",
+      instructorName: "Maxwell Anthony",
+      instructorSpecialty: "Wealth Building & Investment Strategist",
+      aboutInstructor:
+        "Maxwell is a seasoned investor and financial strategist who has helped hundreds of professionals build diversified portfolios and achieve financial independence.",
+    },
+    {
+      title: "Generate first revenue within 60 days",
+      thumbnail:
+        "https://res.cloudinary.com/dgpbznsc3/image/upload/v1783089340/course-thumbnails/rect_ykzdtp.png",
+      content:
+        "A high-intensity, action-oriented course designed to help you launch a revenue-generating product or service in just 60 days. Covers MVP development, pricing, customer acquisition, and sales automation.",
+      overview:
+        "Go from idea to first sale in 60 days with proven strategies for rapid revenue generation and scalable growth.",
+      instructorName: "Maxwell Anthony",
+      instructorSpecialty: "Revenue Growth & Business Development Expert",
+      aboutInstructor:
+        "Maxwell has launched multiple successful ventures and specializes in rapid go-to-market strategies that help entrepreneurs generate revenue quickly and sustainably.",
+    },
+  ]
 
 async function reset() {
   console.log("Clearing existing data...")
@@ -232,6 +244,10 @@ async function seed() {
         price: 550.00,
         discountedPrice: 100.00,
         duration: 720,
+        durationUnit: "Minutes",
+        instructorName: data.instructorName,
+        instructorSpecialty: data.instructorSpecialty,
+        aboutInstructor: data.aboutInstructor,
         status: "published" as const,
         tutorId,
       },

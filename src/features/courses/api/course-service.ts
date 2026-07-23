@@ -7,6 +7,9 @@ import {
   removePendingUpload,
 } from "@/features/courses/hooks/use-pending-uploads"
 
+export const DURATION_UNITS = ["Minutes", "Hours", "Days", "Weeks"] as const
+export type DurationUnit = (typeof DURATION_UNITS)[number]
+
 const LANGUAGE_MAP: Record<string, string> = {
   English: "en",
   Spanish: "es",
@@ -40,7 +43,10 @@ export interface CreateCoursePayload {
   language: string
   level: string
   duration?: number | null
-  durationUnit?: string
+  durationUnit?: DurationUnit
+  instructorName?: string | null
+  instructorSpecialty?: string | null
+  aboutInstructor?: string | null
   price: number
   discountedPrice?: number | null
   isFree: boolean
@@ -71,7 +77,10 @@ export interface UpdateCoursePayload {
   language?: string
   level?: string
   duration?: number | null
-  durationUnit?: string
+  durationUnit?: DurationUnit
+  instructorName?: string | null
+  instructorSpecialty?: string | null
+  aboutInstructor?: string | null
   price?: number
   discountedPrice?: number | null
   isFree?: boolean
@@ -83,19 +92,19 @@ function normalizeLanguage(name: string): string {
   return LANGUAGE_MAP[name] ?? name.toLowerCase().slice(0, 2)
 }
 
-const UNIT_TO_MINUTES: Record<string, number> = {
+const UNIT_TO_MINUTES: Record<DurationUnit, number> = {
   Minutes: 1,
   Hours: 60,
   Days: 1440,
   Weeks: 10080,
 }
 
-export function durationToMinutes(value: number, unit: string): number {
-  return value * (UNIT_TO_MINUTES[unit] ?? UNIT_TO_MINUTES.Hours)
+export function durationToMinutes(value: number, unit: DurationUnit): number {
+  return value * UNIT_TO_MINUTES[unit]
 }
 
-export function minutesToDuration(minutes: number, unit: string): { value: number; unit: string } {
-  const divisor = UNIT_TO_MINUTES[unit] ?? UNIT_TO_MINUTES.Hours
+export function minutesToDuration(minutes: number, unit: DurationUnit): { value: number; unit: DurationUnit } {
+  const divisor = UNIT_TO_MINUTES[unit]
   return { value: minutes / divisor, unit }
 }
 
@@ -110,8 +119,11 @@ export function buildCoursePayload(
     overview: store.overview ? JSON.stringify(store.overview) : null,
     language: normalizeLanguage(store.language),
     level: store.level,
-    duration: store.duration ? durationToMinutes(Number(store.duration), store.durationUnit) : null,
-    durationUnit: store.durationUnit || "Hours",
+    duration: store.duration ? durationToMinutes(Number(store.duration), (store.durationUnit || "Hours") as DurationUnit) : null,
+    durationUnit: (store.durationUnit as DurationUnit) || "Hours",
+    instructorName: store.instructorName || null,
+    instructorSpecialty: store.instructorSpecialty || null,
+    aboutInstructor: store.aboutInstructor || null,
     price: store.originalPrice ? Number(store.originalPrice) : 0,
     discountedPrice: store.showStrikedOriginal && store.salePrice
       ? Number(store.salePrice)

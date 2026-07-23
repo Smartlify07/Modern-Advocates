@@ -11,7 +11,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
-import { MoreHorizontalIcon, PencilIcon, ArchiveIcon, RotateCcwIcon } from "lucide-react"
+import {
+  MoreHorizontalIcon,
+  PencilIcon,
+  ArchiveIcon,
+  RotateCcwIcon,
+} from "lucide-react"
 import { CourseCard } from "@/features/courses/components/course-card"
 import { ArchiveCourseDialog } from "./archive-course-dialog"
 import type { Course } from "./types"
@@ -38,7 +43,9 @@ export default function CourseCardItem({ course }: { course: Course }) {
     },
     onError: (err) => {
       console.error(err)
-      toast.error(err instanceof Error ? err.message : "Failed to archive course")
+      toast.error(
+        err instanceof Error ? err.message : "Failed to archive course"
+      )
     },
     onSettled: () => setDialogAction(null),
   })
@@ -56,7 +63,9 @@ export default function CourseCardItem({ course }: { course: Course }) {
     },
     onError: (err) => {
       console.error(err)
-      toast.error(err instanceof Error ? err.message : "Failed to unarchive course")
+      toast.error(
+        err instanceof Error ? err.message : "Failed to unarchive course"
+      )
     },
     onSettled: () => setDialogAction(null),
   })
@@ -77,13 +86,23 @@ export default function CourseCardItem({ course }: { course: Course }) {
             <CourseCard.Tutor name={course.tutorName ?? "Unknown Instructor"} />
           </CourseCard.Content>
           <div className="flex items-center justify-between px-2.5">
-            {course.isFree ? (
+            {course.status === "draft" ? (
+              <p className="text-sm font-medium text-[#6B7280]">In Draft</p>
+            ) : course.isFree ? (
               <span className="text-xl font-medium text-ma-text">Free</span>
             ) : (
-              <CourseCard.Price
-                price={course.price}
-                discountedPrice={course.discountedPrice}
-              />
+              <div className="flex flex-wrap items-baseline gap-2.5 leading-normal font-medium">
+                {course.discountedPrice && (
+                  <CourseCard.DiscountedPrice
+                    className="text-sm"
+                    discountedPrice={course.discountedPrice}
+                  />
+                )}
+                <CourseCard.DisplayPrice
+                  className="text-xs"
+                  displayPrice={course.price}
+                />
+              </div>
             )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

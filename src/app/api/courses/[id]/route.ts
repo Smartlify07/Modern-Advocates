@@ -44,6 +44,9 @@ export async function GET(
         discountedPrice: courses.discountedPrice,
         duration: courses.duration,
         durationUnit: courses.durationUnit,
+        instructorName: courses.instructorName,
+        instructorSpecialty: courses.instructorSpecialty,
+        aboutInstructor: courses.aboutInstructor,
         status: courses.status,
         tutorId: courses.tutorId,
         createdAt: courses.createdAt,
@@ -208,6 +211,9 @@ export async function PATCH(
       level,
       duration,
       durationUnit,
+      instructorName,
+      instructorSpecialty,
+      aboutInstructor,
       price,
       discountedPrice,
       isFree,
@@ -225,6 +231,9 @@ export async function PATCH(
       if (level !== undefined) updateData.level = level
       if (duration !== undefined) updateData.duration = duration
       if (durationUnit !== undefined) updateData.durationUnit = durationUnit
+      if (instructorName !== undefined) updateData.instructorName = instructorName
+      if (instructorSpecialty !== undefined) updateData.instructorSpecialty = instructorSpecialty
+      if (aboutInstructor !== undefined) updateData.aboutInstructor = aboutInstructor
       if (price !== undefined) updateData.price = isFree ? 0 : price
       if (discountedPrice !== undefined)
         updateData.discountedPrice = isFree ? null : discountedPrice

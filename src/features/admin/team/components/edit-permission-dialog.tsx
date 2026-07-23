@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import {
@@ -27,19 +27,14 @@ export function EditPermissionDialog({
   onOpenChange,
   member,
 }: EditPermissionDialogProps) {
-  const [role, setRole] = useState<"Manager" | "Editor">("Editor")
+  const [role, setRole] = useState<"Admin" | "Manager" | "Editor">(member?.role ?? "Editor")
   const [removeChecked, setRemoveChecked] = useState(false)
   const queryClient = useQueryClient()
-
-  useEffect(() => {
-    setRole(member?.role === "Admin" ? "Manager" : (member?.role ?? "Editor"))
-    setRemoveChecked(false)
-  }, [member])
 
   function handleOpenChange(nextOpen: boolean) {
     if (!nextOpen) {
       setRemoveChecked(false)
-      setRole(member?.role === "Admin" ? "Manager" : (member?.role ?? "Editor"))
+      setRole(member?.role ?? "Editor")
     }
     onOpenChange(nextOpen)
   }
@@ -92,7 +87,7 @@ export function EditPermissionDialog({
   const isPending = updateMutation.isPending || removeMutation.isPending
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog key={member?.id ?? "none"} open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="px-7.5 py-4 sm:max-w-xl [&>button]:end-7.5">
         <DialogHeader className="-mx-7.5 border-b px-7.5 pb-4">
           <DialogTitle className="text-base">Edit Permission</DialogTitle>
