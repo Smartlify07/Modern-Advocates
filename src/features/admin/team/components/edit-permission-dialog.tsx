@@ -27,8 +27,8 @@ export function EditPermissionDialog({
   onOpenChange,
   member,
 }: EditPermissionDialogProps) {
-  const [role, setRole] = useState<"Manager" | "Editor">(
-    member?.role === "Manager" || member?.role === "Admin" ? "Manager" : "Editor"
+  const [role, setRole] = useState<"Admin" | "Manager" | "Editor">(
+    member!.role
   )
   const [removeChecked, setRemoveChecked] = useState(false)
   const queryClient = useQueryClient()
@@ -36,7 +36,7 @@ export function EditPermissionDialog({
   function handleOpenChange(nextOpen: boolean) {
     if (!nextOpen) {
       setRemoveChecked(false)
-      setRole(member?.role === "Manager" || member?.role === "Admin" ? "Manager" : "Editor")
+      setRole(member!.role)
     }
     onOpenChange(nextOpen)
   }
@@ -108,6 +108,15 @@ export function EditPermissionDialog({
           <div className="flex flex-col gap-3">
             <span className="text-sm font-semibold">Assign Role</span>
             <div className="flex items-center gap-6">
+              <TeamCheckbox
+                checked={role === "Admin"}
+                onCheckedChange={(c) => {
+                  if (!isRemove && c) setRole("Admin")
+                }}
+                id="edit-admin"
+                label="Admin"
+                disabled={isRemove}
+              />
               <TeamCheckbox
                 checked={role === "Manager"}
                 onCheckedChange={(c) => {
