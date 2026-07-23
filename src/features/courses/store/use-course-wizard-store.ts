@@ -218,7 +218,9 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
       originalPrice: String(course.price ?? ""),
       salePrice: course.discountedPrice ? String(course.discountedPrice) : "",
       showStrikedOriginal: !!course.discountedPrice,
-      overview: course.overview ?? null,
+      overview: course.overview
+        ? (typeof course.overview === "string" ? JSON.parse(course.overview) : course.overview)
+        : null,
       language: course.language ?? "English",
       level: course.level ?? "",
       duration: course.duration?.value ?? "",

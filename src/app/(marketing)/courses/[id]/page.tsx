@@ -4,6 +4,24 @@ import { headers } from "next/headers"
 import { CourseDetailHeroSection } from "@/features/marketing/components/course-detail-hero-section"
 import { CourseDetailContentSection } from "@/features/marketing/components/course-detail-content-section"
 
+function extractTextFromJson(jsonString: string | null | undefined): string {
+  if (!jsonString) return ""
+  try {
+    const parsed = JSON.parse(jsonString)
+    if (!parsed.content) return jsonString
+    return parsed.content
+      .map((n: any) =>
+        n.content
+          ?.map((c: any) => (c.text ?? c.content?.map((cc: any) => cc.text).join(" ") ?? ""))
+          .join(" ")
+      )
+      .join(" ")
+      .trim()
+  } catch {
+    return jsonString
+  }
+}
+
 async function fetchCourse(id: string) {
   const host = (await headers()).get("host")
   const protocol = process.env.NODE_ENV === "development" ? "http" : "https"
@@ -48,12 +66,14 @@ export default async function CourseDetailPage({
         ) / normalizedReviews.length
       : 0
 
+  const overviewText = extractTextFromJson(course.overview ?? course.content)
+
   const courseData = {
     id: course.id,
     title: course.title,
     tutorName: course.tutorName,
     content: course.content,
-    overview: course.overview,
+    overview: overviewText,
     thumbnailUrl: course.thumbnailUrl,
     language: course.language,
     level: course.level,
