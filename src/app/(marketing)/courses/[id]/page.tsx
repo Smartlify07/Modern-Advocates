@@ -1,31 +1,39 @@
 import { notFound } from "next/navigation"
-import { headers } from "next/headers"
 
 import { CourseDetailHeroSection } from "@/features/marketing/components/course-detail-hero-section"
 import { CourseDetailContentSection } from "@/features/marketing/components/course-detail-content-section"
 
-function extractTextFromJson(jsonString: string | null | undefined): string {
-  if (!jsonString) return ""
+interface TiptapNode {
+  type?: string
+  text?: string
+  content?: TiptapNode[]
+}
+
+function extractTextFromJson(input: unknown): string {
+  if (typeof input !== "string") return ""
   try {
-    const parsed = JSON.parse(jsonString)
-    if (!parsed.content) return jsonString
-    return parsed.content
-      .map((n: any) =>
-        n.content
-          ?.map((c: any) => (c.text ?? c.content?.map((cc: any) => cc.text).join(" ") ?? ""))
-          .join(" ")
-      )
-      .join(" ")
-      .trim()
+    const parsed: TiptapNode = JSON.parse(input)
+    if (!parsed.content) return ""
+    const texts: string[] = []
+    function walk(nodes: TiptapNode[]) {
+      for (const node of nodes) {
+        if (node.text) texts.push(node.text)
+        if (node.content) walk(node.content)
+      }
+    }
+    walk(parsed.content)
+    return texts.join(" ").trim()
   } catch {
-    return jsonString
+    return ""
   }
 }
 
 async function fetchCourse(id: string) {
-  const host = (await headers()).get("host")
-  const protocol = process.env.NODE_ENV === "development" ? "http" : "https"
-  const res = await fetch(`${protocol}://${host}/api/courses/${id}`, {
+  const origin = process.env.NEXT_PUBLIC_APP_URL
+  if (!origin) {
+    throw new Error("NEXT_PUBLIC_APP_URL is not configured")
+  }
+  const res = await fetch(`${origin}/api/courses/${id}`, {
     cache: "no-store",
   })
 

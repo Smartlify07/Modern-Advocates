@@ -219,7 +219,12 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
       salePrice: course.discountedPrice ? String(course.discountedPrice) : "",
       showStrikedOriginal: !!course.discountedPrice,
       overview: course.overview
-        ? (typeof course.overview === "string" ? JSON.parse(course.overview) : course.overview)
+        ? (() => {
+            if (typeof course.overview === "string") {
+              try { return JSON.parse(course.overview) } catch { return null }
+            }
+            return course.overview
+          })()
         : null,
       language: course.language ?? "English",
       level: course.level ?? "",

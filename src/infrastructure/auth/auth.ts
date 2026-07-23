@@ -13,13 +13,23 @@ import {
   user as userRole,
 } from "./permissions"
 
+function getAppHost(): string | null {
+  const url = process.env.NEXT_PUBLIC_APP_URL
+  if (!url) return null
+  try { return new URL(url).host } catch { return null }
+}
+
+const appHost = getAppHost()
+const allowedHosts: string[] = ["localhost:*", "*.vercel.app"]
+if (appHost) allowedHosts.push(appHost)
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
     schema,
   }),
   baseURL: {
-    allowedHosts: ["localhost:*", "*.vercel.app"],
+    allowedHosts,
     protocol: process.env.NODE_ENV === "development" ? "http" : "https",
     fallback: "https://modern-advocates.vercel.app",
   },

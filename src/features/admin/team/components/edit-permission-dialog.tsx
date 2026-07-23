@@ -56,7 +56,7 @@ export function EditPermissionDialog({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-team"] })
-      onOpenChange(false)
+      handleOpenChange(false)
       toast.success("Role updated")
     },
     onError: (err) => {
@@ -77,7 +77,7 @@ export function EditPermissionDialog({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-team"] })
-      onOpenChange(false)
+      handleOpenChange(false)
       toast.success("Team member removed")
     },
     onError: (err) => {
@@ -142,7 +142,7 @@ export function EditPermissionDialog({
           <Button
             variant="outline"
             className="h-[53px] flex-1 rounded-button-medium px-6 py-4"
-            onClick={() => onOpenChange(false)}
+            onClick={() => handleOpenChange(false)}
           >
             Cancel
           </Button>
