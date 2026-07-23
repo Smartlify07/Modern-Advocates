@@ -29,7 +29,7 @@ export function CoursePreviewContent() {
 
   return (
     <section className="bg-white py-10 text-ma-text lg:py-12">
-      <div className="mx-auto flex flex-col-reverse gap-10 lg:grid lg:grid-cols-[0.6fr_0.4fr] lg:items-start lg:gap-20">
+      <div className="mx-auto flex flex-col-reverse gap-10 lg:grid lg:grid-cols-[0.6fr_0.5fr] lg:items-start lg:gap-30">
         <div className="flex w-full max-w-[598px] flex-col gap-[30px]">
           {/* Overview */}
           <section className="flex flex-col gap-4">
