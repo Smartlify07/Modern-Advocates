@@ -11,9 +11,13 @@
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
     "db:clean-enums": "tsx src/infrastructure/database/scripts/clean-enums.ts",
-    "db:migrate": "tsx src/infrastructure/database/scripts/clean-enums.ts && npx drizzle-kit migrate ",
-    "db:generate": "npx drizzle-kit generate ",
-    "db:push": "npx drizzle-kit push ",
+    "db:migrate": "tsx src/infrastructure/database/scripts/clean-enums.ts && npx drizzle-kit migrate",
+    "db:migrate:dev": "tsx src/infrastructure/database/scripts/clean-enums.ts && npx drizzle-kit migrate --config drizzle.dev.config.ts",
+    "db:migrate:prod": "tsx src/infrastructure/database/scripts/clean-enums.ts && npx drizzle-kit migrate --config drizzle.prod.config.ts",
+    "db:generate": "npx drizzle-kit generate",
+    "db:generate:dev": "npx drizzle-kit generate --config drizzle.dev.config.ts",
+    "db:generate:prod": "npx drizzle-kit generate --config drizzle.prod.config.ts",
+    "db:push": "npx drizzle-kit push",
     "db:seed": "tsx src/infrastructure/database/seed.ts"
   },
   "dependencies": {
