@@ -13,7 +13,7 @@ import {
 import { courseVideos } from "@/infrastructure/database/schema/video"
 import {
   requireInstructorOrAdmin,
-  requireAdmin,
+  requireManagerOrAdmin,
 } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import { updateCourseSchema } from "@/features/courses/schemas"
@@ -332,7 +332,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await requireAdmin()
+    await requireManagerOrAdmin()
     const { id } = await params
 
     const course = await db

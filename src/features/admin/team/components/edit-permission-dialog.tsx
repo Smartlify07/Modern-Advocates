@@ -33,6 +33,14 @@ export function EditPermissionDialog({
   const [removeChecked, setRemoveChecked] = useState(false)
   const queryClient = useQueryClient()
 
+  function handleOpenChange(nextOpen: boolean) {
+    if (!nextOpen) {
+      setRemoveChecked(false)
+      setRole(member?.role === "Manager" ? "Manager" : "Editor")
+    }
+    onOpenChange(nextOpen)
+  }
+
   const updateMutation = useMutation({
     mutationFn: async () => {
       const r = await fetch(`/api/admin/team/${member!.id}`, {
@@ -81,7 +89,7 @@ export function EditPermissionDialog({
   const isPending = updateMutation.isPending || removeMutation.isPending
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="px-7.5 py-4 sm:max-w-xl [&>button]:end-7.5">
         <DialogHeader className="-mx-7.5 border-b px-7.5 pb-4">
           <DialogTitle className="text-base">Edit Permission</DialogTitle>
