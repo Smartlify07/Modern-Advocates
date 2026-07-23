@@ -17,9 +17,8 @@ import {
 } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import { updateCourseSchema } from "@/features/courses/schemas"
+import { isValidUuid } from "@/shared/utils"
 import * as Sentry from "@sentry/nextjs"
-
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 export async function GET(
   _request: Request,
@@ -28,7 +27,7 @@ export async function GET(
   try {
     const { id } = await params
 
-    if (!UUID_RE.test(id)) {
+    if (!isValidUuid(id)) {
       return NextResponse.json({ error: "Course not found" }, { status: 404 })
     }
 
@@ -183,7 +182,7 @@ export async function PATCH(
     const { user } = await requireInstructorOrAdmin()
     const { id } = await params
 
-    if (!UUID_RE.test(id)) {
+    if (!isValidUuid(id)) {
       return NextResponse.json({ error: "Course not found" }, { status: 404 })
     }
     const body = await request.json()
@@ -345,7 +344,7 @@ export async function DELETE(
     await requireManagerOrAdmin()
     const { id } = await params
 
-    if (!UUID_RE.test(id)) {
+    if (!isValidUuid(id)) {
       return NextResponse.json({ error: "Course not found" }, { status: 404 })
     }
 

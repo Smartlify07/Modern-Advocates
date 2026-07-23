@@ -1,5 +1,8 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { validate as isValidUuid } from "uuid"
+
+export { isValidUuid }
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

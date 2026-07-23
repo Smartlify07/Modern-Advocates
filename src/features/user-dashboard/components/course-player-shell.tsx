@@ -32,6 +32,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
     queryKey: ["course", courseId],
     queryFn: async () => {
       const r = await fetch(`/api/courses/${courseId}`)
+      if (r.status === 404) return null
       if (!r.ok) throw new Error("Failed to fetch course")
       const json = await r.json()
       function extractText(input: unknown): string {

@@ -144,26 +144,20 @@ export default function UserDashboardPage() {
                     <CourseCard.Title>{course.title}</CourseCard.Title>
                     <CourseCard.Tutor name={course.tutorName} />
                   </div>
-                  {isEnrolled ? (
-                    <div className="flex flex-col gap-5">
-                      <CourseCard.Rating
-                        avg={course.avgRating}
-                        count={course.reviewCount}
-                      />
+                  <div className="mt-auto flex flex-col gap-5">
+                    <CourseCard.Rating
+                      avg={course.avgRating}
+                      count={course.reviewCount}
+                    />
+                    {isEnrolled ? (
                       <CourseCard.ContinueButton />
-                    </div>
-                  ) : (
-                    <div className="flex flex-col gap-5">
-                      <CourseCard.Rating
-                        avg={course.avgRating}
-                        count={course.reviewCount}
-                      />
+                    ) : (
                       <CourseCard.Price
                         price={course.price}
                         discountedPrice={course.discountedPrice}
                       />
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </CourseCard.Content>
               </CourseCard.Root>
             )
