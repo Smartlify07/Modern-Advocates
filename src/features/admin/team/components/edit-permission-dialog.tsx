@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import {
@@ -32,6 +32,13 @@ export function EditPermissionDialog({
   )
   const [removeChecked, setRemoveChecked] = useState(false)
   const queryClient = useQueryClient()
+
+  useEffect(() => {
+    if (open) {
+      setRemoveChecked(false)
+      setRole(member?.role === "Manager" ? "Manager" : "Editor")
+    }
+  }, [open, member])
 
   const updateMutation = useMutation({
     mutationFn: async () => {
