@@ -33,10 +33,27 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
       const r = await fetch(`/api/courses/${courseId}`)
       if (!r.ok) throw new Error("Failed to fetch course")
       const json = await r.json()
+      function extractText(input: unknown): string {
+        if (typeof input !== "string") return ""
+        try {
+          const parsed = JSON.parse(input) as { content?: { text?: string; content?: unknown[] }[] }
+          if (!parsed.content) return ""
+          const texts: string[] = []
+          function walk(nodes: { text?: string; content?: unknown[] }[]) {
+            for (const node of nodes) {
+              if (node.text) texts.push(node.text)
+              if (node.content) walk(node.content as typeof nodes)
+            }
+          }
+          walk(parsed.content)
+          return texts.join(" ").trim()
+        } catch { return input }
+      }
+
       return {
         id: json.id,
         title: json.title,
-        overview: json.overview,
+        overview: extractText(json.overview),
         thumbnailUrl: json.thumbnailUrl,
         language: json.language,
         level: json.level,
