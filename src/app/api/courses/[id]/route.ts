@@ -80,12 +80,13 @@ export async function GET(
       .map((r) => r.topicId)
       .filter((id): id is string => id !== null)
 
-    const videoRows = topicIds.length > 0
-      ? await db
-          .select({ topicId: courseVideos.topicId, id: courseVideos.id })
-          .from(courseVideos)
-          .where(inArray(courseVideos.topicId, topicIds))
-      : []
+    const videoRows =
+      topicIds.length > 0
+        ? await db
+            .select({ topicId: courseVideos.topicId, id: courseVideos.id })
+            .from(courseVideos)
+            .where(inArray(courseVideos.topicId, topicIds))
+        : []
 
     const videoByTopicId = new Map(videoRows.map((v) => [v.topicId, v.id]))
 
@@ -99,20 +100,23 @@ export async function GET(
     }
 
     const modulesWithTopics = (() => {
-      const map = new Map<string, {
-        id: string
-        title: string
-        order: number
-        topics: Array<{
+      const map = new Map<
+        string,
+        {
           id: string
           title: string
-          type: string
-          description: unknown
           order: number
-          videoUrl: string | null
-          videoId: string | null
-        }>
-      }>()
+          topics: Array<{
+            id: string
+            title: string
+            type: string
+            description: unknown
+            order: number
+            videoUrl: string | null
+            videoId: string | null
+          }>
+        }
+      >()
 
       for (const row of moduleTopicRows) {
         if (!map.has(row.moduleId)) {
@@ -129,7 +133,8 @@ export async function GET(
           mod.topics.push({
             id: row.topicId,
             title: row.topicTitle!,
-            type: row.topicFormat === "video" ? "video_and_text" : row.topicFormat!,
+            type:
+              row.topicFormat === "video" ? "video_and_text" : row.topicFormat!,
             description: parseContent(row.topicContent),
             order: row.topicOrder!,
             videoUrl: videoByTopicId.get(row.topicId) ?? null,
@@ -192,7 +197,7 @@ export async function PATCH(
     if (!parsed.success) {
       return NextResponse.json(
         { error: "Invalid request", details: parsed.error.flatten() },
-        { status: 400 },
+        { status: 400 }
       )
     }
 

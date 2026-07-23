@@ -139,7 +139,7 @@ export default async function DashboardCoursePage({
 
   return (
     <main className="min-h-svh overflow-hidden bg-white text-ma-text">
-      <CourseDetailHeroSection course={courseData} />
+      <CourseDetailHeroSection course={courseData} breadcrumbHref="/dashboard" />
       <CourseDetailContentSection course={courseData} />
     </main>
   )

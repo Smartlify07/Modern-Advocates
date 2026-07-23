@@ -16,7 +16,7 @@ type CourseHeroData = {
   enrollmentCount: number
 }
 
-export function CourseDetailHeroSection({ course }: { course: CourseHeroData }) {
+export function CourseDetailHeroSection({ course, breadcrumbHref = "/courses" }: { course: CourseHeroData; breadcrumbHref?: string }) {
   const displayPrice = course.discountedPrice ?? course.price
 
   return (
@@ -33,7 +33,7 @@ export function CourseDetailHeroSection({ course }: { course: CourseHeroData }) 
         <div className="flex flex-col justify-between px-0 py-2 lg:min-h-107 lg:px-2.5 lg:py-0">
           <div className="flex flex-col gap-5">
             <nav aria-label="Breadcrumb" className="hidden flex-wrap items-center gap-1 text-base leading-normal font-medium lg:flex">
-              <Link href="/courses" className="text-[#6b7280] transition-colors hover:text-ma-text">Course</Link>
+              <Link href={breadcrumbHref} className="text-[#6b7280] transition-colors hover:text-ma-text">Course</Link>
               <ChevronRight className="size-4 text-[#6b7280]" aria-hidden />
               <span className="text-ma-text">{course.title}</span>
             </nav>
