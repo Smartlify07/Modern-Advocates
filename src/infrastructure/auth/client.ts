@@ -4,7 +4,7 @@ import { ac, admin, manager, editor, instructor, user } from "./permissions"
 
 const BASE_URL =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:3000"
+    ? window.location.origin
     : "https://modern-advocates.vercel.app"
 
 export const authClient = createAuthClient({
