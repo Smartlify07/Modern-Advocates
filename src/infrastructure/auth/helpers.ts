@@ -1,7 +1,7 @@
 import { headers } from "next/headers"
 import { auth } from "./auth"
 import { UnauthorizedError, ForbiddenError } from "./errors"
-import { isAdminRole } from "./roles"
+import { isAdminRole, isManagerOrAdmin } from "./roles"
 import type { Statement } from "./permissions"
 
 type PermissionInput = {
@@ -33,7 +33,23 @@ export async function requireInstructorOrAdmin() {
     throw new UnauthorizedError()
   }
 
-  if (session.user.role !== "admin" && session.user.role !== "instructor") {
+  if (session.user.role !== "instructor" && session.user.role !== "admin" && session.user.role !== "manager") {
+    throw new ForbiddenError()
+  }
+
+  return { user: session.user }
+}
+
+export async function requireManagerOrAdmin() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+
+  if (!session) {
+    throw new UnauthorizedError()
+  }
+
+  if (!isManagerOrAdmin(session.user.role)) {
     throw new ForbiddenError()
   }
 

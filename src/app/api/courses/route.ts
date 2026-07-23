@@ -34,7 +34,7 @@ export async function GET() {
       .innerJoin(user, eq(courses.tutorId, user.id))
       .orderBy(desc(courses.createdAt))
 
-    const filtered = sessionUser.role === "admin"
+    const filtered = sessionUser.role === "admin" || sessionUser.role === "manager"
       ? list
       : list.filter((c) => c.status === "published" || c.tutorId === sessionUser.id)
 
