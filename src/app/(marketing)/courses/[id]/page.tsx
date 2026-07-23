@@ -4,7 +4,7 @@ import { CourseDetailHeroSection } from "@/features/marketing/components/course-
 import { CourseDetailContentSection } from "@/features/marketing/components/course-detail-content-section"
 
 async function fetchCourse(id: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/courses/${id}`, {
+  const res = await fetch(`/api/courses/${id}`, {
     cache: "no-store",
   })
 

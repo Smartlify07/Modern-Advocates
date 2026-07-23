@@ -4,7 +4,14 @@ import { admin, emailOTP } from "better-auth/plugins"
 import { db } from "@/infrastructure/database/client"
 import { schema } from "@/infrastructure/database/schema/schema"
 import { sendOTPEmail } from "../email/send"
-import { ac, admin as adminRole, manager, editor, instructor, user as userRole } from "./permissions"
+import {
+  ac,
+  admin as adminRole,
+  manager,
+  editor,
+  instructor,
+  user as userRole,
+} from "./permissions"
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -12,10 +19,7 @@ export const auth = betterAuth({
     schema,
   }),
   baseURL: {
-    allowedHosts: [
-      "localhost:3000",
-      "*.vercel.app",
-    ],
+    allowedHosts: ["localhost:*", "*.vercel.app"],
     protocol: process.env.NODE_ENV === "development" ? "http" : "https",
     fallback: "https://modern-advocates.vercel.app",
   },
