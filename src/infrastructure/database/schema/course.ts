@@ -41,6 +41,7 @@ export const courses = pgTable(
     discountedPrice: numeric("discounted_price", { precision: 10, scale: 2, mode: "number" }),
     isFree: boolean("is_free").default(false).notNull(),
     duration: integer("duration"),
+    durationUnit: text("duration_unit").default("Hours"),
     status: courseStatus("status").notNull().default("draft"),
     tutorId: text("tutor_id")
       .notNull()

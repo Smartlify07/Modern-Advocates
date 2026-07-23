@@ -71,6 +71,13 @@
       "when": 1784672023199,
       "tag": "0009_loud_odin",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1784817460619,
+      "tag": "0010_sticky_steel_serpent",
+      "breakpoints": true
     }
   ]
 }

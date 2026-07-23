@@ -2,6 +2,7 @@
 
 import { create } from "zustand"
 import type { JSONContent } from "@tiptap/react"
+import { minutesToDuration } from "@/features/courses/api/course-service"
 
 export interface Lecture {
   id: string
@@ -208,6 +209,10 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
   setCompletedSteps: (steps) => set({ completedSteps: steps }),
 
   initialize: (course) => {
+    const languageMap: Record<string, string> = {
+      en: "English", es: "Spanish", fr: "French", de: "German",
+      zh: "Chinese", ja: "Japanese", ar: "Arabic", pt: "Portuguese",
+    }
     set({
       currentStep: 0,
       completedSteps: [],
@@ -226,10 +231,10 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
             return course.overview
           })()
         : null,
-      language: course.language ?? "English",
+      language: languageMap[course.language] ?? course.language ?? "English",
       level: course.level ?? "",
-      duration: String(course.duration ?? ""),
-      durationUnit: course.duration ? "Hours" : "",
+      duration: course.duration ? String(minutesToDuration(course.duration, course.durationUnit ?? "Hours").value) : "",
+      durationUnit: course.durationUnit ?? "",
       instructorName: course.instructorName ?? "",
       instructorSpecialty: course.instructorSpecialty ?? "",
       aboutInstructor: course.aboutInstructor ?? "",

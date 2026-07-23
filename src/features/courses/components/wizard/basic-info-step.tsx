@@ -79,7 +79,7 @@ export function BasicInfoStep() {
           id="show-striked"
           checked={showStrikedOriginal}
           onCheckedChange={(v) => setShowStrikedOriginal(v === true)}
-          className="data-checked:bg-ma-admin-primary"
+          className="data-checked:bg-ma-admin-primary border-ma-admin-primary"
         />
         <label
           htmlFor="show-striked"
