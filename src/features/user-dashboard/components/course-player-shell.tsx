@@ -27,6 +27,10 @@ type ApiReview = {
 }
 
 export function CoursePlayerShell({ courseId }: { courseId: string }) {
+  if (process.env.NODE_ENV === "development") {
+    throw new Error("[TEST] Intentional error to verify error boundary works")
+  }
+
   const { data: course, isLoading, isError, error } = useQuery({
     queryKey: ["course", courseId],
     queryFn: async () => {
