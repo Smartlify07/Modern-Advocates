@@ -1,6 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
+import { notFound } from "next/navigation"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { CoursePlayerContent } from "@/features/user-dashboard/components/course-player-content"
 import { CourseModuleSidebar } from "@/features/user-dashboard/components/course-module-sidebar"
@@ -212,13 +213,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
     )
   }
 
-  if (!course) {
-    return (
-      <div className="mx-auto flex items-center justify-center py-20">
-        <p className="text-[#6b7280]">Course not found.</p>
-      </div>
-    )
-  }
+  if (!course) notFound()
 
   return (
     <div className="mx-auto py-8">
