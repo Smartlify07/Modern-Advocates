@@ -27,7 +27,7 @@ export function Stepper({ steps, currentStep, completedSteps, onStepClick }: Ste
         const clickable = canClickStep(index)
 
         return (
-          <div key={step.title} className="flex-1 flex items-center justify-center">
+          <div key={step.title} className={cn("flex-1 flex items-center", index === 0 ? "justify-start" : index === steps.length - 1 ? "justify-end" : "justify-center")}>
             <button
               type="button"
               disabled={!clickable}
