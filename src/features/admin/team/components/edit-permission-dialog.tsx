@@ -28,7 +28,7 @@ export function EditPermissionDialog({
   member,
 }: EditPermissionDialogProps) {
   const [role, setRole] = useState<"Manager" | "Editor">(
-    member?.role === "Manager" ? "Manager" : "Editor"
+    member?.role === "Manager" || member?.role === "Admin" ? "Manager" : "Editor"
   )
   const [removeChecked, setRemoveChecked] = useState(false)
   const queryClient = useQueryClient()
@@ -36,7 +36,7 @@ export function EditPermissionDialog({
   function handleOpenChange(nextOpen: boolean) {
     if (!nextOpen) {
       setRemoveChecked(false)
-      setRole(member?.role === "Manager" ? "Manager" : "Editor")
+      setRole(member?.role === "Manager" || member?.role === "Admin" ? "Manager" : "Editor")
     }
     onOpenChange(nextOpen)
   }
