@@ -1,10 +1,13 @@
 import { notFound } from "next/navigation"
+import { headers } from "next/headers"
 
 import { CourseDetailHeroSection } from "@/features/marketing/components/course-detail-hero-section"
 import { CourseDetailContentSection } from "@/features/marketing/components/course-detail-content-section"
 
 async function fetchCourse(id: string) {
-  const res = await fetch(`/api/courses/${id}`, {
+  const host = (await headers()).get("host")
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https"
+  const res = await fetch(`${protocol}://${host}/api/courses/${id}`, {
     cache: "no-store",
   })
 
