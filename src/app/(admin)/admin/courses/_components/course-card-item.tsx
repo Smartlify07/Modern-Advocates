@@ -28,7 +28,7 @@ export default function CourseCardItem({ course }: { course: Course }) {
   const [dialogAction, setDialogAction] = useState<
     "archive" | "unarchive" | "delete" | null
   >(null)
-  const isArchived = course.status === "archived"
+  const isArchived = course.status === "archived" || course.status === "draft"
 
   const queryClient = useQueryClient()
 
@@ -112,7 +112,9 @@ export default function CourseCardItem({ course }: { course: Course }) {
             <CourseCard.Title className="text-lg">
               {course.title}
             </CourseCard.Title>
-            <CourseCard.Tutor name={course.instructorName ?? "Unknown Instructor"} />
+            <CourseCard.Tutor
+              name={course.instructorName ?? "Unknown Instructor"}
+            />
           </CourseCard.Content>
           <div className="flex items-center justify-between px-2.5">
             {course.status === "draft" || course.status === "archived" ? (
