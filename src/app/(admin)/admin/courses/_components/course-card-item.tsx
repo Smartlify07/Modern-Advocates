@@ -28,7 +28,7 @@ export default function CourseCardItem({ course }: { course: Course }) {
   const [dialogAction, setDialogAction] = useState<
     "archive" | "unarchive" | "delete" | null
   >(null)
-  const isArchived = course.status === "archived" || course.status === "draft"
+  const isArchived = course.status === "archived"
 
   const queryClient = useQueryClient()
 
