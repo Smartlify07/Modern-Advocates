@@ -30,7 +30,7 @@ function extractText(input: unknown): string {
 export function CoursePlayerShell({ courseId }: { courseId: string }) {
   const {
     data: course,
-    isLoading,
+    isPending,
     isError,
     error,
   } = useQuery({
@@ -74,7 +74,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
     },
     enabled: !!courseId,
   })
-  if (isLoading) {
+  if (isPending) {
     return (
       <div className="mx-auto py-8">
         <div className="grid gap-0 md:grid-cols-[2.2fr_0.8fr]">

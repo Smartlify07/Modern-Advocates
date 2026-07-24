@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { useParams } from "next/navigation"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { ChevronDown, VideoIcon } from "lucide-react"
 
@@ -36,8 +35,7 @@ type CourseData = {
 }
 
 export function CourseModuleSidebar({ course }: { course: CourseData }) {
-  const params = useParams()
-  const courseId = params.courseId as string
+  const courseId = course.id
   const queryClient = useQueryClient()
   const queryKey = ["enrollment-progress", courseId]
   const modules = course.modules
