@@ -244,7 +244,7 @@ async function seed() {
         price: 550.00,
         discountedPrice: 100.00,
         duration: 720,
-        durationUnit: "Minutes",
+        durationUnit: "Hours",
         instructorName: data.instructorName,
         instructorSpecialty: data.instructorSpecialty,
         aboutInstructor: data.aboutInstructor,
