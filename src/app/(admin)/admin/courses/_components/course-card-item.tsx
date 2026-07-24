@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { Button } from "@/shared/ui/button"
 import {
@@ -77,7 +77,10 @@ export default function CourseCardItem({ course }: { course: Course }) {
       const res = await fetch(`/api/courses/${course.id}`, {
         method: "DELETE",
       })
-      if (!res.ok) throw new Error("Failed to delete course")
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error ?? "Failed to delete course")
+      }
     },
     onSuccess: () => {
       toast.success("Course deleted")

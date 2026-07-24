@@ -370,6 +370,20 @@ export async function DELETE(
       return NextResponse.json({ error: "Course not found" }, { status: 404 })
     }
 
+    const [enrollmentResult] = await db
+      .select({ count: sql<number>`COUNT(*)` })
+      .from(enrollments)
+      .where(eq(enrollments.courseId, id))
+
+    if (enrollmentResult.count > 0) {
+      return NextResponse.json(
+        {
+          error: `Cannot delete this course because ${enrollmentResult.count} student${enrollmentResult.count !== 1 ? "s have" : " has"} already enrolled.`,
+        },
+        { status: 409 },
+      )
+    }
+
     const course = await db
       .delete(courses)
       .where(eq(courses.id, id))
