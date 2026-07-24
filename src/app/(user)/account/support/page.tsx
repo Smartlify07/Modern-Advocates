@@ -73,7 +73,7 @@ export default function AccountSupportPage() {
     <main className="overflow-hidden bg-white text-ma-text">
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="rounded-[24px] bg-[#f5f5f5] px-4 py-7.5 lg:p-[30px]"
+        className="rounded-[24px] bg-[#f5f5f5] px-4 py-7.5 lg:w-[600px] lg:p-[30px]"
       >
         <div className="flex flex-col gap-5">
           <Controller
@@ -93,7 +93,7 @@ export default function AccountSupportPage() {
                   autoComplete="name"
                   placeholder="Justine Ryan"
                   aria-invalid={fieldState.invalid}
-                  className="h-9 rounded-md border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base placeholder:text-[#6b7280]"
+                  className="h-11 rounded-md border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base placeholder:text-[#6b7280]"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -121,7 +121,7 @@ export default function AccountSupportPage() {
                     autoComplete="email"
                     placeholder="example@gmail.com"
                     aria-invalid={fieldState.invalid}
-                    className="h-9 rounded-md border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base placeholder:text-[#6b7280]"
+                    className="h-11 rounded-md border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base placeholder:text-[#6b7280]"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -148,7 +148,7 @@ export default function AccountSupportPage() {
                     autoComplete="tel"
                     placeholder="+10000023045"
                     aria-invalid={fieldState.invalid}
-                    className="h-9 rounded-md border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base placeholder:text-[#6b7280]"
+                    className="h-11 rounded-md border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base placeholder:text-[#6b7280]"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
