@@ -104,7 +104,7 @@ export function useSaveCourse() {
       toast.success(
         options.status === "published"
           ? "Course published successfully"
-          : "Course saved as draft",
+          : "Saved to your drafts",
       )
 
       if (
