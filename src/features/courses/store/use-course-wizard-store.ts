@@ -226,7 +226,10 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
       overview: course.overview
         ? (() => {
             if (typeof course.overview === "string") {
-              try { return JSON.parse(course.overview) } catch { return null }
+              try { return JSON.parse(course.overview) } catch {
+                // Plain text fallback — wrap in Tiptap doc
+                return { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: course.overview }] }] } as JSONContent
+              }
             }
             return course.overview
           })()
