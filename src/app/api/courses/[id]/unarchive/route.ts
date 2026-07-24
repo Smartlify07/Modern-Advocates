@@ -21,7 +21,7 @@ export async function PATCH(
 
     const updated = await db
       .update(courses)
-      .set({ status: "published" })
+      .set({ status: "draft" })
       .where(eq(courses.id, id))
       .returning()
       .then((r) => r[0])

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
 import { desc, eq } from "drizzle-orm"
 import { db } from "@/infrastructure/database/client"
-import { user } from "@/infrastructure/database/schema/auth"
 import {
   courses,
   courseModules,
@@ -27,11 +26,10 @@ export async function GET() {
         isFree: courses.isFree,
         thumbnailUrl: courses.thumbnailUrl,
         tutorId: courses.tutorId,
-        tutorName: user.name,
+        instructorName: courses.instructorName,
         createdAt: courses.createdAt,
       })
       .from(courses)
-      .innerJoin(user, eq(courses.tutorId, user.id))
       .orderBy(desc(courses.createdAt))
 
     const filtered = sessionUser.role === "admin" || sessionUser.role === "manager"

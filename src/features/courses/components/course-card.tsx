@@ -170,7 +170,7 @@ export type Course = {
   id: string
   title: string
   thumbnailUrl: string | null
-  tutorName: string | null
+  instructorName: string | null
   avgRating: number
   reviewCount: number
   price: number

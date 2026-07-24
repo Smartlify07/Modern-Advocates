@@ -20,7 +20,7 @@ type Review = {
   studentName: string | null
   studentImage: string | null
 }
-type Tutor = { name: string | null; image: string | null }
+type Tutor = { name: string | null; image: string | null; specialty: string | null; about: string | null }
 
 type CourseData = {
   id: string
