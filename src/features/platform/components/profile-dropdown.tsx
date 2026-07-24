@@ -45,7 +45,7 @@ export function ProfileDropdown({
       <HoverCardContent
         align="end"
         sideOffset={sideOffset}
-        className={`${dropdownWidth} flex-col space-y-0 px-0 pt-0 pb-3`}
+        className={`min-w-[360px] flex-col space-y-0 px-0 pt-0 pb-3`}
       >
         <div>
           <div className="flex items-center gap-5 p-5 text-center text-sm">
@@ -68,13 +68,13 @@ export function ProfileDropdown({
         <div className="flex flex-col justify-center gap-2.5 px-5 pt-3">
           <Link
             href="/my-learning"
-            className="cursor-pointer rounded-md py-2 text-base text-muted-foreground transition-colors hover:text-primary"
+            className="cursor-pointer rounded-md px-2 py-2 text-base text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
           >
             My Learning
           </Link>
           <Link
             href="/dashboard/support"
-            className="cursor-pointer rounded-md py-2 text-base text-muted-foreground transition-colors hover:text-primary"
+            className="cursor-pointer rounded-md px-2 py-2 text-base text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
           >
             Help and Support
           </Link>
@@ -82,7 +82,7 @@ export function ProfileDropdown({
           <button
             type="button"
             onClick={handleLogout}
-            className="flex cursor-pointer items-center gap-2 rounded-md py-2 text-base text-destructive transition-colors hover:text-destructive/80"
+            className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-2 text-base text-destructive transition-colors hover:bg-destructive/10 hover:text-destructive/80"
           >
             <LogOut className="size-4" />
             Log out
