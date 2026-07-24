@@ -51,7 +51,6 @@ export async function GET(
         tutorId: courses.tutorId,
         createdAt: courses.createdAt,
         updatedAt: courses.updatedAt,
-        tutorName: user.name,
         tutorImage: user.image,
       })
       .from(courses)

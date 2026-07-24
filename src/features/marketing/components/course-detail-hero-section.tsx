@@ -8,7 +8,7 @@ type CourseHeroData = {
   id: string
   title: string
   thumbnailUrl: string | null
-  tutorName: string | null
+  instructorName: string | null
   avgRating: number
   reviewCount: number
   price: number
@@ -40,7 +40,7 @@ export function CourseDetailHeroSection({ course, breadcrumbHref = "/courses" }:
 
             <div>
               <h1 className="max-w-[510px] text-[28px] leading-normal font-bold text-ma-text lg:text-[40px]">{course.title}</h1>
-              <p className="mt-5 text-lg leading-normal text-ma-text">{course.tutorName ?? "Instructor"}</p>
+              <p className="mt-5 text-lg leading-normal text-ma-text">{course.instructorName ?? "Instructor"}</p>
             </div>
           </div>
 

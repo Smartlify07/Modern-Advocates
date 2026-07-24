@@ -138,7 +138,7 @@ export default function UserDashboardPage() {
                 >
                   <div className="flex flex-col gap-2">
                     <CourseCard.Title>{course.title}</CourseCard.Title>
-                    <CourseCard.Tutor name={course.tutorName} />
+                    <CourseCard.Tutor name={course.instructorName} />
                   </div>
                   <div className="mt-auto flex flex-col gap-5">
                     <CourseCard.Rating

@@ -7,7 +7,7 @@ export interface Course {
   discountedPrice: number | null
   isFree: boolean
   thumbnailUrl: string | null
-  tutorName: string | null
+  instructorName: string | null
   createdAt: string
 }
 

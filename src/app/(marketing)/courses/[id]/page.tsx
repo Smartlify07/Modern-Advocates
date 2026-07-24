@@ -79,7 +79,7 @@ export default async function CourseDetailPage({
   const courseData = {
     id: course.id,
     title: course.title,
-    tutorName: course.instructorName ?? course.tutorName,
+    instructorName: course.instructorName,
     content: course.content,
     overview: overviewText,
     thumbnailUrl: course.thumbnailUrl,
@@ -91,7 +91,7 @@ export default async function CourseDetailPage({
       : null,
     duration: course.duration,
     tutor: {
-      name: course.instructorName ?? course.tutorName,
+      name: course.instructorName,
       image: course.tutorImage,
       specialty: course.instructorSpecialty ?? null,
       about: course.aboutInstructor ?? null,
