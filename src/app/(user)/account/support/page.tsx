@@ -1,11 +1,13 @@
 "use client"
-import { ArrowRight, LoaderCircle, Mail, MapPin, Phone } from "lucide-react"
-import { useState } from "react"
+import { ArrowRight, LoaderCircle } from "lucide-react"
+import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import * as z from "zod"
 
+import { authClient } from "@/infrastructure/auth/client"
+import { useAccountSession } from "../_context"
 import { Button } from "@/shared/ui/button"
 import { Field, FieldError, FieldLabel } from "@/shared/ui/field"
 import { Input } from "@/shared/ui/input"
@@ -18,6 +20,8 @@ const contactFormSchema = z.object({
 })
 
 export default function AccountSupportPage() {
+  const { user, isPending } = useAccountSession()
+
   const form = useForm<z.infer<typeof contactFormSchema>>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
@@ -27,6 +31,17 @@ export default function AccountSupportPage() {
       message: "",
     },
   })
+
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        name: user.name ?? "",
+        email: user.email ?? "",
+        phone: "",
+        message: "",
+      })
+    }
+  }, [user, form])
   const [submitting, setSubmitting] = useState(false)
 
   async function onSubmit(data: z.infer<typeof contactFormSchema>) {

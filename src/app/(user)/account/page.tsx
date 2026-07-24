@@ -9,21 +9,21 @@ import { UserAvatar } from "@/shared/ui/user-avatar"
 import { Input } from "@/shared/ui/input"
 import { Label } from "@/shared/ui/label"
 import { Button } from "@/shared/ui/button"
+import { Skeleton } from "@/shared/ui/skeleton"
+import { useAccountSession } from "./_context"
 
 export default function AccountPage() {
-  const { data: session, refetch: refetchSession } = authClient.useSession()
-  const user = session?.user
+  const { user, isPending, refetchSession } = useAccountSession()
 
-  const [name, setName] = useState(user?.name ?? "")
-  const [image, setImage] = useState<string | null>(user?.image ?? null)
+  const [editedName, setEditedName] = useState<string | null>(null)
   const [pendingFile, setPendingFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const displayImage = previewUrl ?? image
+  const displayImage = previewUrl ?? user?.image ?? null
   const hasChanges =
-    name !== (user?.name ?? "") || pendingFile !== null
+    (editedName !== null && editedName !== user?.name) || pendingFile !== null
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -44,7 +44,7 @@ export default function AccountPage() {
 
     setSaving(true)
     try {
-      let imageUrl = image
+      let imageUrl: string | undefined
 
       if (pendingFile) {
         const formData = new FormData()
@@ -65,35 +65,61 @@ export default function AccountPage() {
       }
 
       await authClient.updateUser({
-        name,
-        image: imageUrl ?? undefined,
+        name: editedName ?? user?.name ?? undefined,
+        image: imageUrl,
       })
 
-      setImage(imageUrl)
+      await refetchSession()
+
       setPendingFile(null)
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl)
         setPreviewUrl(null)
       }
 
-      await refetchSession()
       toast.success("Profile updated")
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to update profile")
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update profile"
+      )
     } finally {
       setSaving(false)
     }
   }
 
+  if (isPending) {
+    return (
+      <div className="flex flex-1 flex-col gap-12 lg:max-w-xl">
+        <div className="flex items-center gap-4">
+          <Skeleton className="size-20 rounded-full" />
+          <div>
+            <Skeleton className="h-9 w-[130px] rounded-lg" />
+            <Skeleton className="mt-1 h-4 w-[140px]" />
+          </div>
+        </div>
+        <div className="flex flex-col gap-5">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-20" />
+            <Skeleton className="h-11 w-full rounded-[8px]" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-14" />
+            <Skeleton className="h-11 w-full rounded-[8px]" />
+          </div>
+        </div>
+        <Skeleton className="h-8 w-[70px] rounded-lg" />
+      </div>
+    )
+  }
+
   return (
-    <div className="flex flex-1 flex-col gap-6 lg:max-w-xl lg:pl-8">
+    <div className="flex flex-1 flex-col gap-12 lg:max-w-xl">
       <div className="flex items-center gap-4">
         <div className="relative">
           <UserAvatar
             user={{ name: user?.name, image: displayImage }}
             className="size-20"
             fallbackClassName="text-4xl"
-            showImage
           />
         </div>
         <div>
@@ -119,30 +145,34 @@ export default function AccountPage() {
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="full-name">Full Name</Label>
-        <Input
-          id="full-name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Your full name"
-        />
-      </div>
+      <div className="flex flex-col gap-5">
+        <div className="space-y-2">
+          <Label htmlFor="full-name">Full Name</Label>
+          <Input
+            id="full-name"
+            value={editedName ?? user?.name ?? ""}
+            onChange={(e) => setEditedName(e.target.value)}
+            placeholder="Your full name"
+            className="h-11 rounded-full"
+          />
+        </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          value={user?.email ?? ""}
-          disabled
-          className="bg-muted/50"
-        />
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            value={user?.email ?? ""}
+            disabled
+            className="h-11 rounded-full bg-muted/50"
+          />
+        </div>
       </div>
 
       <div>
         <Button
           onClick={handleSave}
+          className="h-11 w-60 rounded-full"
           disabled={!hasChanges || saving}
         >
           {saving ? "Saving..." : "Save"}
