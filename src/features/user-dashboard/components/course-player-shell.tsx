@@ -6,51 +6,40 @@ import { Skeleton } from "@/shared/ui/skeleton"
 import { CoursePlayerContent } from "@/features/user-dashboard/components/course-player-content"
 import { CourseModuleSidebar } from "@/features/user-dashboard/components/course-module-sidebar"
 
-type ApiTopic = {
-  id: string
-  title: string
-  type: string
-  description: unknown
-  order: number
-}
-type ApiModule = {
-  id: string
-  title: string
-  order: number
-  topics: ApiTopic[]
-}
-type ApiReview = {
-  id: string
-  body: string | null
-  rating: number
-  studentName: string | null
-  studentImage: string | null
+function extractText(input: unknown): string {
+  if (typeof input !== "string") return ""
+  try {
+    const parsed = JSON.parse(input) as {
+      content?: { text?: string; content?: unknown[] }[]
+    }
+    if (!parsed.content) return ""
+    const texts: string[] = []
+    function walk(nodes: { text?: string; content?: unknown[] }[]) {
+      for (const node of nodes) {
+        if (node?.text) texts.push(node.text)
+        if (node?.content) walk(node.content as typeof nodes)
+      }
+    }
+    walk(parsed.content)
+    return texts.join(" ").trim()
+  } catch {
+    return input
+  }
 }
 
 export function CoursePlayerShell({ courseId }: { courseId: string }) {
-  const { data: course, isLoading, isError, error } = useQuery({
+  const {
+    data: course,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["course", courseId],
     queryFn: async () => {
       const r = await fetch(`/api/courses/${courseId}`)
       if (r.status === 404) return null
       if (!r.ok) throw new Error("Failed to fetch course")
       const json = await r.json()
-      function extractText(input: unknown): string {
-        if (typeof input !== "string") return ""
-        try {
-          const parsed = JSON.parse(input) as { content?: { text?: string; content?: unknown[] }[] }
-          if (!parsed.content) return ""
-          const texts: string[] = []
-          function walk(nodes: { text?: string; content?: unknown[] }[]) {
-            for (const node of nodes) {
-              if (node.text) texts.push(node.text)
-              if (node.content) walk(node.content as typeof nodes)
-            }
-          }
-          walk(parsed.content)
-          return texts.join(" ").trim()
-        } catch { return input }
-      }
 
       return {
         id: json.id,
@@ -63,12 +52,12 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
         avgRating: Number(json.avgRating ?? 0),
         reviewCount: Number(json.reviewCount ?? 0),
         enrollmentCount: Number(json.enrollmentCount ?? 0),
-        tutor: { name: json.tutorName, image: json.tutorImage },
-        modules: (json.modules ?? []).map((m: ApiModule) => ({
+        tutor: { name: json.tutorName ?? null, image: json.tutorImage ?? null },
+        modules: (json.modules ?? []).map((m: Record<string, unknown>) => ({
           id: m.id,
           title: m.title,
           sortOrder: m.order ?? 0,
-          topics: (m.topics ?? []).map((t: ApiTopic) => ({
+          topics: ((m.topics as Record<string, unknown>[]) ?? []).map((t) => ({
             id: t.id,
             title: t.title,
             format: t.type === "video_and_text" ? "video" : (t.type ?? "video"),
@@ -80,18 +69,11 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
                   : null,
           })),
         })),
-        reviews: (json.reviews ?? []).map((r: ApiReview) => ({
-          id: r.id,
-          body: r.body,
-          rating: r.rating,
-          studentName: r.studentName,
-          studentImage: r.studentImage,
-        })),
+        reviews: json.reviews ?? [],
       }
     },
     enabled: !!courseId,
   })
-
   if (isLoading) {
     return (
       <div className="mx-auto py-8">
@@ -168,7 +150,10 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
             <Skeleton className="h-8 w-44" />
             <div className="mt-5 flex flex-col gap-3">
               {[1, 2, 3].map((mod) => (
-                <div key={mod} className="border-b border-b-[#e5e7eb] last:border-b-0">
+                <div
+                  key={mod}
+                  className="border-b border-b-[#e5e7eb] last:border-b-0"
+                >
                   <div className="flex w-full items-center justify-between px-5 py-3">
                     <div className="flex-1">
                       <Skeleton className="h-5 w-44" />

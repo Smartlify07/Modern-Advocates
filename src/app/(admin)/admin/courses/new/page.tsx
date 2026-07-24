@@ -1,11 +1,19 @@
 "use client"
 
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useCourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
 import { useSaveCourse } from "@/features/courses/hooks/use-course-mutations"
 import { Stepper } from "@/shared/ui/stepper"
 import { Button } from "@/shared/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/shared/ui/dialog"
 import { BasicInfoStep } from "@/features/courses/components/wizard/basic-info-step"
 import { AdvanceInfoStep } from "@/features/courses/components/wizard/advance-info-step"
 import { CurriculumStep } from "@/features/courses/components/wizard/curriculum-step"
@@ -39,6 +47,7 @@ export default function CreateCoursePage() {
   const resetForm = useCourseWizardStore((s) => s.resetForm)
   const store = useCourseWizardStore.getState
   const saveCourse = useSaveCourse()
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false)
 
   const handlePrevious = () => {
     if (currentStep > 0) {
@@ -58,6 +67,11 @@ export default function CreateCoursePage() {
   }
 
   const handleSaveAndClose = useCallback(() => {
+    setSaveDialogOpen(true)
+  }, [])
+
+  const handleSaveConfirmed = useCallback(() => {
+    setSaveDialogOpen(false)
     saveCourse.mutate(
       { store: store(), options: { status: "draft", onSuccess: () => { resetForm(); router.push("/admin/courses") } } },
     )
@@ -141,6 +155,29 @@ export default function CreateCoursePage() {
           </Button>
         )}
       </div>
+
+      <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
+        <DialogContent showCloseButton={false}>
+          <DialogHeader>
+            <DialogTitle>Save as draft?</DialogTitle>
+            <DialogDescription>
+              You can come back anytime to update it and you can also publish it later.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveConfirmed}
+              disabled={isPending}
+              className="bg-ma-admin-primary hover:bg-ma-admin-primary/90"
+            >
+              {isPending ? "Saving..." : "Save as Draft"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

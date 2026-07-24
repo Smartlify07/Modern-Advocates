@@ -22,8 +22,9 @@ export function CourseInformationCard({
   const durationHours = course.duration
     ? Math.round(course.duration / 60)
     : null
-  const levelCapitalized =
-    course.level.charAt(0).toUpperCase() + course.level.slice(1)
+  const levelCapitalized = course?.level
+    ? course?.level.charAt(0).toUpperCase() + course.level.slice(1)
+    : ""
   const languageDisplay =
     course.language === "en"
       ? "English"
