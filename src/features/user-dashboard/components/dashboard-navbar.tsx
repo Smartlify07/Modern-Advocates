@@ -11,7 +11,6 @@ import { ProfileDropdown } from "@/features/platform/components/profile-dropdown
 const navItems = [
   { label: "Dashboard", href: "/dashboard" },
   { label: "My Learning", href: "/my-learning" },
-  { label: "Account", href: "/account" },
 ]
 
 export default function DashboardNavbar() {
