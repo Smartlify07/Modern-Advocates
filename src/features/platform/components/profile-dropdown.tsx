@@ -11,6 +11,7 @@ import {
   HoverCardTrigger,
 } from "@/shared/ui/hover-card"
 import { authClient } from "@/infrastructure/auth/client"
+import { cn } from "@/shared/utils"
 
 interface ProfileDropdownProps {
   className?: string
@@ -20,7 +21,7 @@ interface ProfileDropdownProps {
 
 export function ProfileDropdown({
   className,
-  dropdownWidth = "min-w-[360px]",
+  dropdownWidth,
   sideOffset = 8,
 }: ProfileDropdownProps) {
   const router = useRouter()
@@ -45,7 +46,10 @@ export function ProfileDropdown({
       <HoverCardContent
         align="end"
         sideOffset={sideOffset}
-        className={`${dropdownWidth} flex-col space-y-0 px-0 pt-0 pb-3`}
+        className={cn(
+          dropdownWidth,
+          "min-w-90 flex-col space-y-0 px-0 pt-0 pb-3"
+        )}
       >
         <div>
           <div className="flex items-center gap-5 p-5 text-center text-sm">
