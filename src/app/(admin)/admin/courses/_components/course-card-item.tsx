@@ -170,8 +170,8 @@ export default function CourseCardItem({ course }: { course: Course }) {
                   {isArchived ? "Unarchive" : "Archive"}
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="text-red-600 hover:bg-red-50"
                   onClick={() => setDialogAction("delete")}
+                  variant="destructive"
                 >
                   <Trash2Icon className="size-4" />
                   Delete
