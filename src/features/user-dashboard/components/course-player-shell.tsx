@@ -54,7 +54,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
         enrollmentCount: Number(json.enrollmentCount ?? 0),
         tutor: {
           name: json.instructorName ?? null,
-          image: json.tutorImage ?? null,
+          image: json.instructorImage ?? null,
           specialty: json.instructorSpecialty ?? null,
           about: json.aboutInstructor ?? null,
         },

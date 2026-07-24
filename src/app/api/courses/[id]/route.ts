@@ -51,11 +51,10 @@ export async function GET(
         tutorId: courses.tutorId,
         createdAt: courses.createdAt,
         updatedAt: courses.updatedAt,
-        tutorImage: user.image,
+        instructorImage: courses.instructorImage,
       })
       .from(courses)
       .where(eq(courses.id, id))
-      .innerJoin(user, eq(courses.tutorId, user.id))
       .then((r) => r[0])
 
     if (!course) {

@@ -92,7 +92,7 @@ export default async function DashboardCoursePage({
     duration: course.duration,
     tutor: {
       name: course.instructorName,
-      image: course.tutorImage,
+      image: course.instructorImage,
       specialty: course.instructorSpecialty ?? null,
       about: course.aboutInstructor ?? null,
     },
