@@ -59,8 +59,9 @@ export function useUpdateCourse() {
       }
       return getCourse(courseId)
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
+      queryClient.invalidateQueries({ queryKey: ["course", variables.courseId] })
     },
   })
 }
@@ -103,7 +104,7 @@ export function useSaveCourse() {
       toast.success(
         options.status === "published"
           ? "Course published successfully"
-          : "Course saved as draft",
+          : "Saved to your drafts",
       )
 
       if (

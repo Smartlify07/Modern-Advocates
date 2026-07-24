@@ -231,9 +231,12 @@ export async function PATCH(
       if (level !== undefined) updateData.level = level
       if (duration !== undefined) updateData.duration = duration
       if (durationUnit !== undefined) updateData.durationUnit = durationUnit
-      if (instructorName !== undefined) updateData.instructorName = instructorName
-      if (instructorSpecialty !== undefined) updateData.instructorSpecialty = instructorSpecialty
-      if (aboutInstructor !== undefined) updateData.aboutInstructor = aboutInstructor
+      if (instructorName !== undefined)
+        updateData.instructorName = instructorName
+      if (instructorSpecialty !== undefined)
+        updateData.instructorSpecialty = instructorSpecialty
+      if (aboutInstructor !== undefined)
+        updateData.aboutInstructor = aboutInstructor
       if (price !== undefined) updateData.price = isFree ? 0 : price
       if (discountedPrice !== undefined)
         updateData.discountedPrice = isFree ? null : discountedPrice
@@ -367,6 +370,20 @@ export async function DELETE(
       return NextResponse.json({ error: "Course not found" }, { status: 404 })
     }
 
+    const [enrollmentResult] = await db
+      .select({ count: sql<number>`COUNT(*)` })
+      .from(enrollments)
+      .where(eq(enrollments.courseId, id))
+
+    if (enrollmentResult.count > 0) {
+      return NextResponse.json(
+        {
+          error: `Cannot delete this course because ${enrollmentResult.count} student${enrollmentResult.count !== 1 ? "s have" : " has"} already enrolled.`,
+        },
+        { status: 409 },
+      )
+    }
+
     const course = await db
       .delete(courses)
       .where(eq(courses.id, id))
@@ -379,6 +396,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.error(error)
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }

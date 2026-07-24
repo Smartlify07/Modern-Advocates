@@ -7,14 +7,12 @@ interface UserAvatarProps {
   user: { name?: string | null; image?: string | null } | undefined
   className?: string
   fallbackClassName?: string
-  showImage?: boolean
 }
 
 export function UserAvatar({
   user,
   className,
   fallbackClassName,
-  showImage,
 }: UserAvatarProps) {
   const initials = user?.name
     ? user.name
@@ -27,7 +25,7 @@ export function UserAvatar({
 
   return (
     <Avatar className={cn("size-[50px] bg-primary text-white", className)}>
-      {showImage && user?.image ? (
+      {user?.image ? (
         <AvatarImage src={user.image} alt={user.name ?? ""} />
       ) : null}
       <AvatarFallback

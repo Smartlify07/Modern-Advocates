@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
@@ -8,6 +8,14 @@ import { useCourseWizardStore } from "@/features/courses/store/use-course-wizard
 import { useSaveCourse } from "@/features/courses/hooks/use-course-mutations"
 import { Stepper } from "@/shared/ui/stepper"
 import { Button } from "@/shared/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/shared/ui/dialog"
 import { BasicInfoStep } from "@/features/courses/components/wizard/basic-info-step"
 import { AdvanceInfoStep } from "@/features/courses/components/wizard/advance-info-step"
 import { CurriculumStep } from "@/features/courses/components/wizard/curriculum-step"
@@ -93,6 +101,7 @@ export default function EditCoursePage() {
   const store = useCourseWizardStore.getState
   const saveCourse = useSaveCourse()
   const initialized = useRef(false)
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false)
 
   const { data: course, isLoading } = useQuery({
     queryKey: ["course", courseId],
@@ -131,6 +140,11 @@ export default function EditCoursePage() {
   }
 
   const handleSaveAndClose = () => {
+    setSaveDialogOpen(true)
+  }
+
+  const handleSaveConfirmed = () => {
+    setSaveDialogOpen(false)
     saveCourse.mutate({
       store: store(),
       options: {
@@ -239,6 +253,29 @@ export default function EditCoursePage() {
           </Button>
         )}
       </div>
+
+      <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
+        <DialogContent showCloseButton={false}>
+          <DialogHeader>
+            <DialogTitle>Save as draft?</DialogTitle>
+            <DialogDescription>
+              You can come back anytime to update it and you can also publish it later.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveConfirmed}
+              disabled={isPending}
+              className="bg-ma-admin-primary hover:bg-ma-admin-primary/90"
+            >
+              {isPending ? "Saving..." : "Save as Draft"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
