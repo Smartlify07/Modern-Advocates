@@ -66,10 +66,6 @@ export function CourseDetailHeroSection({ course, breadcrumbHref = "/courses" }:
               )}
             </div>
 
-            <Link href="/contact" className="w-fit text-base leading-normal text-ma-text underline underline-offset-2 transition-colors hover:text-ma-text/70">
-              Apply for Grant
-            </Link>
-
             <div className="mt-3">
               <EnrollNowButton courseId={course.id} />
             </div>

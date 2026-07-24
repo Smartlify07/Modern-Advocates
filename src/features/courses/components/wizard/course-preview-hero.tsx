@@ -70,9 +70,6 @@ export function CoursePreviewHero() {
               )}
             </div>
 
-            <span className="w-fit text-base text-ma-text underline underline-offset-2">
-              Enable Grant
-            </span>
           </div>
         </div>
       </div>
