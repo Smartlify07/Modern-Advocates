@@ -93,8 +93,8 @@ export function CoursePlayerContent({ course }: { course: CourseData }) {
         ) : (
           <div className="flex flex-col gap-5">
             <h2 className="text-2xl font-bold text-ma-text">Student Reviews</h2>
-            {course.reviews.length > 0 ? (
-              course.reviews.map((r) => <ReviewCard key={r.id} review={r} />)
+            {(course.reviews?.length ?? 0) > 0 ? (
+              course.reviews?.map((r) => <ReviewCard key={r.id} review={r} />)
             ) : (
               <p className="text-base text-[#6b7280]">No reviews yet.</p>
             )}
