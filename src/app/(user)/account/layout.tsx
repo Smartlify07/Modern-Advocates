@@ -46,7 +46,7 @@ export default function AccountLayout({
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-4 py-2.5 transition-colors hover:bg-muted",
+"flex items-center gap-3 rounded-lg px-4 py-2.5 transition-colors hover:bg-muted",
                   pathname === item.href
                     ? "bg-muted font-semibold text-ma-text"
                     : "text-muted-foreground hover:text-ma-text"
@@ -59,7 +59,7 @@ export default function AccountLayout({
             <button
               type="button"
               onClick={handleLogout}
-              className="flex items-center gap-3 rounded-lg px-4 py-2.5 font-medium text-destructive transition-colors hover:bg-destructive/10 hover:text-destructive/80"
+className="flex items-center gap-3 rounded-lg px-4 py-2.5 font-medium text-destructive transition-colors hover:bg-destructive/10 hover:text-destructive/80"
             >
               <LogOut className="size-5" />
               Log out
