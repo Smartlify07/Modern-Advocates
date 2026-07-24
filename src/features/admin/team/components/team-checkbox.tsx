@@ -29,9 +29,9 @@ export function TeamCheckbox({
         disabled={disabled}
         id={id}
         className={cn(
-          destructive &&
-            "data-checked:border-red-600 data-checked:bg-red-600 data-checked:text-white",
-          "data-checked:border-ma-admin-primary data-checked:bg-ma-admin-primary"
+          destructive
+            ? "data-checked:border-red-600 data-checked:bg-red-600 data-checked:text-white"
+            : "data-checked:border-ma-admin-primary data-checked:bg-ma-admin-primary"
         )}
       />
       <Label

@@ -1,4 +1,5 @@
 import { headers } from "next/headers"
+import { redirect } from "next/navigation"
 import { auth } from "./auth"
 import { UnauthorizedError, ForbiddenError } from "./errors"
 import { isAdminRole, isManagerOrAdmin } from "./roles"
@@ -62,7 +63,7 @@ export async function requireSession() {
   })
 
   if (!session) {
-    throw new UnauthorizedError()
+    redirect("/login")
   }
 
   return { user: session.user }

@@ -19,7 +19,7 @@ export function Stepper({ steps, currentStep, completedSteps, onStepClick }: Ste
   const canClickStep = (index: number) => index === 0 || (completedSteps ?? []).includes(index - 1)
 
   return (
-    <div className="flex w-full items-center border-b border-slate-200">
+    <div className="flex w-full items-center justify-between border-b border-slate-200">
       {steps.map((step, index) => {
         const isCompleted = completedSteps.includes(index)
         const isActive = currentStep === index
@@ -27,7 +27,7 @@ export function Stepper({ steps, currentStep, completedSteps, onStepClick }: Ste
         const clickable = canClickStep(index)
 
         return (
-          <div key={step.title} className="flex-1 flex items-center justify-center">
+          <div key={step.title} className="flex items-center">
             <button
               type="button"
               disabled={!clickable}

@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { User, LogOut } from "lucide-react"
+import { LogOut } from "lucide-react"
 
 import { UserAvatar } from "@/shared/ui/user-avatar"
 import {
@@ -71,16 +71,24 @@ export function ProfileDropdown({
             className="px-5 py-2 text-base text-muted-foreground hover:text-primary data-inset:ps-0"
             asChild
           >
-            <Link href="/my-learning" className="cursor-pointer">
-              My Learning{" "}
+            <Link href="/dashboard" className="cursor-pointer">
+              Dashboard
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem
             className="px-5 py-2 text-base text-muted-foreground hover:text-primary data-inset:ps-0"
             asChild
           >
-            <Link href="/contact" className="cursor-pointer">
-              Help and Support{" "}
+            <Link href="/my-learning" className="cursor-pointer">
+              My Learning
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="px-5 py-2 text-base text-muted-foreground hover:text-primary data-inset:ps-0"
+            asChild
+          >
+            <Link href="/dashboard/support" className="cursor-pointer">
+              Help and Support
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator className="mt-0" />

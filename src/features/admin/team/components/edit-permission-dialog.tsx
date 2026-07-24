@@ -27,16 +27,14 @@ export function EditPermissionDialog({
   onOpenChange,
   member,
 }: EditPermissionDialogProps) {
-  const [role, setRole] = useState<"Manager" | "Editor">(
-    member?.role === "Manager" ? "Manager" : "Editor"
-  )
+  const [role, setRole] = useState<"Admin" | "Manager" | "Editor">(member?.role ?? "Editor")
   const [removeChecked, setRemoveChecked] = useState(false)
   const queryClient = useQueryClient()
 
   function handleOpenChange(nextOpen: boolean) {
     if (!nextOpen) {
       setRemoveChecked(false)
-      setRole(member?.role === "Manager" ? "Manager" : "Editor")
+      setRole(member?.role ?? "Editor")
     }
     onOpenChange(nextOpen)
   }
@@ -56,7 +54,7 @@ export function EditPermissionDialog({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-team"] })
-      onOpenChange(false)
+      handleOpenChange(false)
       toast.success("Role updated")
     },
     onError: (err) => {
@@ -77,7 +75,7 @@ export function EditPermissionDialog({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-team"] })
-      onOpenChange(false)
+      handleOpenChange(false)
       toast.success("Team member removed")
     },
     onError: (err) => {
@@ -89,7 +87,7 @@ export function EditPermissionDialog({
   const isPending = updateMutation.isPending || removeMutation.isPending
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog key={member?.id ?? "none"} open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="px-7.5 py-4 sm:max-w-xl [&>button]:end-7.5">
         <DialogHeader className="-mx-7.5 border-b px-7.5 pb-4">
           <DialogTitle className="text-base">Edit Permission</DialogTitle>
@@ -142,7 +140,7 @@ export function EditPermissionDialog({
           <Button
             variant="outline"
             className="h-[53px] flex-1 rounded-button-medium px-6 py-4"
-            onClick={() => onOpenChange(false)}
+            onClick={() => handleOpenChange(false)}
           >
             Cancel
           </Button>

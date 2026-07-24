@@ -31,7 +31,7 @@ export function PublishSection() {
         hasThumbnail={hasThumbnail}
         onNavigate={useCourseFormStore.getState().setActiveTab}
       />
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-2">
         <PublishPreview />
         <div className="space-y-6">
           <PublishActions canPublish={canPublish} />

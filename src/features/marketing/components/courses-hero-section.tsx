@@ -65,7 +65,7 @@ export function CoursesHeroSection() {
                       <CourseCard.Title>{course.title}</CourseCard.Title>
                       <CourseCard.Tutor name={course.tutorName} />
                     </div>
-                    <div className="flex flex-col gap-5">
+                    <div className="mt-auto flex flex-col gap-5">
                       <CourseCard.Rating
                         avg={course.avgRating}
                         count={course.reviewCount}

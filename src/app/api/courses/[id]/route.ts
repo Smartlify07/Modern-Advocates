@@ -17,6 +17,7 @@ import {
 } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import { updateCourseSchema } from "@/features/courses/schemas"
+import { isValidUuid } from "@/shared/utils"
 import * as Sentry from "@sentry/nextjs"
 
 export async function GET(
@@ -25,6 +26,10 @@ export async function GET(
 ) {
   try {
     const { id } = await params
+
+    if (!isValidUuid(id)) {
+      return NextResponse.json({ error: "Course not found" }, { status: 404 })
+    }
 
     const course = await db
       .select({
@@ -38,6 +43,10 @@ export async function GET(
         price: courses.price,
         discountedPrice: courses.discountedPrice,
         duration: courses.duration,
+        durationUnit: courses.durationUnit,
+        instructorName: courses.instructorName,
+        instructorSpecialty: courses.instructorSpecialty,
+        aboutInstructor: courses.aboutInstructor,
         status: courses.status,
         tutorId: courses.tutorId,
         createdAt: courses.createdAt,
@@ -74,12 +83,13 @@ export async function GET(
       .map((r) => r.topicId)
       .filter((id): id is string => id !== null)
 
-    const videoRows = topicIds.length > 0
-      ? await db
-          .select({ topicId: courseVideos.topicId, id: courseVideos.id })
-          .from(courseVideos)
-          .where(inArray(courseVideos.topicId, topicIds))
-      : []
+    const videoRows =
+      topicIds.length > 0
+        ? await db
+            .select({ topicId: courseVideos.topicId, id: courseVideos.id })
+            .from(courseVideos)
+            .where(inArray(courseVideos.topicId, topicIds))
+        : []
 
     const videoByTopicId = new Map(videoRows.map((v) => [v.topicId, v.id]))
 
@@ -93,20 +103,23 @@ export async function GET(
     }
 
     const modulesWithTopics = (() => {
-      const map = new Map<string, {
-        id: string
-        title: string
-        order: number
-        topics: Array<{
+      const map = new Map<
+        string,
+        {
           id: string
           title: string
-          type: string
-          description: unknown
           order: number
-          videoUrl: string | null
-          videoId: string | null
-        }>
-      }>()
+          topics: Array<{
+            id: string
+            title: string
+            type: string
+            description: unknown
+            order: number
+            videoUrl: string | null
+            videoId: string | null
+          }>
+        }
+      >()
 
       for (const row of moduleTopicRows) {
         if (!map.has(row.moduleId)) {
@@ -123,7 +136,8 @@ export async function GET(
           mod.topics.push({
             id: row.topicId,
             title: row.topicTitle!,
-            type: row.topicFormat === "video" ? "video_and_text" : row.topicFormat!,
+            type:
+              row.topicFormat === "video" ? "video_and_text" : row.topicFormat!,
             description: parseContent(row.topicContent),
             order: row.topicOrder!,
             videoUrl: videoByTopicId.get(row.topicId) ?? null,
@@ -176,13 +190,17 @@ export async function PATCH(
   try {
     const { user } = await requireInstructorOrAdmin()
     const { id } = await params
+
+    if (!isValidUuid(id)) {
+      return NextResponse.json({ error: "Course not found" }, { status: 404 })
+    }
     const body = await request.json()
     const parsed = updateCourseSchema.safeParse(body)
 
     if (!parsed.success) {
       return NextResponse.json(
         { error: "Invalid request", details: parsed.error.flatten() },
-        { status: 400 },
+        { status: 400 }
       )
     }
 
@@ -191,6 +209,11 @@ export async function PATCH(
       description,
       overview,
       level,
+      duration,
+      durationUnit,
+      instructorName,
+      instructorSpecialty,
+      aboutInstructor,
       price,
       discountedPrice,
       isFree,
@@ -206,6 +229,11 @@ export async function PATCH(
       if (description !== undefined) updateData.content = description
       if (overview !== undefined) updateData.overview = overview
       if (level !== undefined) updateData.level = level
+      if (duration !== undefined) updateData.duration = duration
+      if (durationUnit !== undefined) updateData.durationUnit = durationUnit
+      if (instructorName !== undefined) updateData.instructorName = instructorName
+      if (instructorSpecialty !== undefined) updateData.instructorSpecialty = instructorSpecialty
+      if (aboutInstructor !== undefined) updateData.aboutInstructor = aboutInstructor
       if (price !== undefined) updateData.price = isFree ? 0 : price
       if (discountedPrice !== undefined)
         updateData.discountedPrice = isFree ? null : discountedPrice
@@ -334,6 +362,10 @@ export async function DELETE(
   try {
     await requireManagerOrAdmin()
     const { id } = await params
+
+    if (!isValidUuid(id)) {
+      return NextResponse.json({ error: "Course not found" }, { status: 404 })
+    }
 
     const course = await db
       .delete(courses)

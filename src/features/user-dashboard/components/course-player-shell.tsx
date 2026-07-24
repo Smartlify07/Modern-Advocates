@@ -1,6 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
+import { notFound } from "next/navigation"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { CoursePlayerContent } from "@/features/user-dashboard/components/course-player-content"
 import { CourseModuleSidebar } from "@/features/user-dashboard/components/course-module-sidebar"
@@ -31,12 +32,30 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
     queryKey: ["course", courseId],
     queryFn: async () => {
       const r = await fetch(`/api/courses/${courseId}`)
+      if (r.status === 404) return null
       if (!r.ok) throw new Error("Failed to fetch course")
       const json = await r.json()
+      function extractText(input: unknown): string {
+        if (typeof input !== "string") return ""
+        try {
+          const parsed = JSON.parse(input) as { content?: { text?: string; content?: unknown[] }[] }
+          if (!parsed.content) return ""
+          const texts: string[] = []
+          function walk(nodes: { text?: string; content?: unknown[] }[]) {
+            for (const node of nodes) {
+              if (node.text) texts.push(node.text)
+              if (node.content) walk(node.content as typeof nodes)
+            }
+          }
+          walk(parsed.content)
+          return texts.join(" ").trim()
+        } catch { return input }
+      }
+
       return {
         id: json.id,
         title: json.title,
-        overview: json.overview,
+        overview: extractText(json.overview),
         thumbnailUrl: json.thumbnailUrl,
         language: json.language,
         level: json.level,
@@ -195,13 +214,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
     )
   }
 
-  if (!course) {
-    return (
-      <div className="mx-auto flex items-center justify-center py-20">
-        <p className="text-[#6b7280]">Course not found.</p>
-      </div>
-    )
-  }
+  if (!course) notFound()
 
   return (
     <div className="mx-auto py-8">

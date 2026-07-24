@@ -24,6 +24,7 @@ import {
   Loader2,
 } from "lucide-react"
 import type { Step } from "@/shared/ui/stepper"
+import { Skeleton } from "@/shared/ui/skeleton"
 
 const wizardSteps: Step[] = [
   { title: "Basic Information", icon: Layers },
@@ -35,8 +36,43 @@ const wizardSteps: Step[] = [
 function CourseWizardSkeleton() {
   return (
     <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="size-8 animate-spin text-ma-admin-primary" />
+      <div className="flex items-center justify-between gap-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="flex flex-1 items-center gap-2">
+            <Skeleton className="size-10 rounded-full" />
+            <div className="hidden flex-1 space-y-1.5 sm:block">
+              <Skeleton className="h-2.5 w-16" />
+              <Skeleton className="h-3.5 w-24" />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+        <Skeleton className="h-9 w-48" />
+        <Skeleton className="h-12 w-36 rounded-[8px]" />
+      </div>
+
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="space-y-4">
+            <Skeleton className="h-5 w-32" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-5 w-28" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <div className="space-y-4">
+            <Skeleton className="h-5 w-24" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+        </div>
+        <Skeleton className="h-5 w-20" />
+        <Skeleton className="h-32 w-full" />
+      </div>
+
+      <div className="flex items-center justify-between border-t border-slate-200 pt-4">
+        <Skeleton className="h-11 w-28 rounded-[8px]" />
+        <Skeleton className="h-12 w-40 rounded-[8px]" />
       </div>
     </div>
   )

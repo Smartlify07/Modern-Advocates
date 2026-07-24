@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { DURATION_UNITS } from "@/features/courses/api/course-service"
 
 const topicSchema = z.object({
   id: z.string(),
@@ -20,6 +21,11 @@ export const createCourseSchema = z.object({
   description: z.string().optional(),
   overview: z.string().optional(),
   level: z.enum(["beginner", "intermediate", "advanced"]),
+  duration: z.number().int().min(0).nullable().optional(),
+  durationUnit: z.enum(DURATION_UNITS).optional(),
+  instructorName: z.string().max(255).optional(),
+  instructorSpecialty: z.string().max(255).optional(),
+  aboutInstructor: z.string().optional(),
   price: z.number().min(0).default(0),
   discountedPrice: z.number().min(0).optional().nullable(),
   isFree: z.boolean().optional(),
@@ -34,6 +40,11 @@ export const updateCourseSchema = z.object({
   description: z.string().optional(),
   overview: z.string().optional(),
   level: z.enum(["beginner", "intermediate", "advanced"]).optional(),
+  duration: z.number().int().min(0).nullable().optional(),
+  durationUnit: z.enum(DURATION_UNITS).optional(),
+  instructorName: z.string().max(255).optional(),
+  instructorSpecialty: z.string().max(255).optional(),
+  aboutInstructor: z.string().optional(),
   price: z.number().min(0).optional(),
   discountedPrice: z.number().min(0).optional().nullable(),
   isFree: z.boolean().optional(),

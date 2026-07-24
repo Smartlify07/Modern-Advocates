@@ -41,7 +41,7 @@ async function fetchCourse(id: string) {
   return res.json()
 }
 
-export default async function CourseDetailPage({
+export default async function DashboardCoursePage({
   params,
 }: {
   params: Promise<{ id: string }>
@@ -139,7 +139,7 @@ export default async function CourseDetailPage({
 
   return (
     <main className="min-h-svh overflow-hidden bg-white text-ma-text">
-      <CourseDetailHeroSection course={courseData} />
+      <CourseDetailHeroSection course={courseData} breadcrumbHref="/dashboard" />
       <CourseDetailContentSection course={courseData} />
     </main>
   )
