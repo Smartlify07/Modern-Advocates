@@ -85,7 +85,7 @@ export default function DashboardNavbar() {
               </Link>
             ))}
             <div className="mt-2 flex justify-center">
-              <ProfileDropdown dropdownWidth="w-360px" />
+              <ProfileDropdown />
             </div>
           </nav>
         </div>

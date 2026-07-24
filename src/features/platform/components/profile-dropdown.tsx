@@ -45,7 +45,7 @@ export function ProfileDropdown({
       <HoverCardContent
         align="end"
         sideOffset={sideOffset}
-        className={`min-w-[360px] flex-col space-y-0 px-0 pt-0 pb-3`}
+        className={`${dropdownWidth} flex-col space-y-0 px-0 pt-0 pb-3`}
       >
         <div>
           <div className="flex items-center gap-5 p-5 text-center text-sm">

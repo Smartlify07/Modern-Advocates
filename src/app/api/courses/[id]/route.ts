@@ -231,9 +231,12 @@ export async function PATCH(
       if (level !== undefined) updateData.level = level
       if (duration !== undefined) updateData.duration = duration
       if (durationUnit !== undefined) updateData.durationUnit = durationUnit
-      if (instructorName !== undefined) updateData.instructorName = instructorName
-      if (instructorSpecialty !== undefined) updateData.instructorSpecialty = instructorSpecialty
-      if (aboutInstructor !== undefined) updateData.aboutInstructor = aboutInstructor
+      if (instructorName !== undefined)
+        updateData.instructorName = instructorName
+      if (instructorSpecialty !== undefined)
+        updateData.instructorSpecialty = instructorSpecialty
+      if (aboutInstructor !== undefined)
+        updateData.aboutInstructor = aboutInstructor
       if (price !== undefined) updateData.price = isFree ? 0 : price
       if (discountedPrice !== undefined)
         updateData.discountedPrice = isFree ? null : discountedPrice
@@ -379,6 +382,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.error(error)
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
