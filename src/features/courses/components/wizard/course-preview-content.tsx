@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { useCourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
 import { CoursePreviewSidebar } from "@/features/courses/components/wizard/course-preview-sidebar"
 import { Users, Star } from "lucide-react"
@@ -13,6 +14,7 @@ export function CoursePreviewContent() {
   const instructorName = useCourseWizardStore((s) => s.instructorName)
   const instructorSpecialty = useCourseWizardStore((s) => s.instructorSpecialty)
   const aboutInstructor = useCourseWizardStore((s) => s.aboutInstructor)
+  const instructorPhotoPreview = useCourseWizardStore((s) => s.instructorPhotoPreview)
   const overview = useCourseWizardStore((s) => s.overview)
 
   const lectureCount = sections.reduce((acc, s) => acc + s.lectures.length, 0)
@@ -82,8 +84,18 @@ export function CoursePreviewContent() {
               Meet your tutor
             </h2>
             <article className="flex gap-5 rounded-2xl bg-[#f5f5f5] p-4">
-              <div className="flex h-[120px] min-w-[106px] items-center justify-center overflow-hidden rounded-[10px] bg-slate-200 sm:h-[190px] sm:w-[190px]">
-                <Users className="size-10 text-slate-400" />
+              <div className="relative flex h-[120px] min-w-[106px] shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-slate-200 sm:h-[190px] sm:w-[190px]">
+                {instructorPhotoPreview ? (
+                  <Image
+                    src={instructorPhotoPreview}
+                    alt="Instructor"
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                ) : (
+                  <Users className="size-10 text-slate-400" />
+                )}
               </div>
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1 text-ma-text">
