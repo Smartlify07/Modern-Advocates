@@ -6,6 +6,8 @@ import { CourseInformationCard } from "@/features/marketing/components/course-in
 type TutorData = {
   name: string | null
   image: string | null
+  specialty: string | null
+  about: string | null
 }
 
 type CourseContentData = {

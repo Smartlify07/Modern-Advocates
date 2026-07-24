@@ -52,7 +52,12 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
         avgRating: Number(json.avgRating ?? 0),
         reviewCount: Number(json.reviewCount ?? 0),
         enrollmentCount: Number(json.enrollmentCount ?? 0),
-        tutor: { name: json.tutorName ?? null, image: json.tutorImage ?? null },
+        tutor: {
+          name: json.tutorName ?? null,
+          image: json.tutorImage ?? null,
+          specialty: json.instructorSpecialty ?? null,
+          about: json.aboutInstructor ?? null,
+        },
         modules: (json.modules ?? []).map((m: Record<string, unknown>) => ({
           id: m.id,
           title: m.title,

@@ -93,6 +93,8 @@ export default async function DashboardCoursePage({
     tutor: {
       name: course.tutorName,
       image: course.tutorImage,
+      specialty: course.instructorSpecialty ?? null,
+      about: course.aboutInstructor ?? null,
     },
     avgRating,
     reviewCount: normalizedReviews.length,
