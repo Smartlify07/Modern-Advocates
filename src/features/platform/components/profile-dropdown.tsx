@@ -37,7 +37,7 @@ export function ProfileDropdown({
       <HoverCardTrigger asChild>
         <button
           type="button"
-          onClick={() => router.push("/account/profile")}
+          onClick={() => router.push("/account")}
           className="cursor-pointer outline-none"
         >
           <UserAvatar user={user} className={className} />
