@@ -47,6 +47,7 @@ export interface CreateCoursePayload {
   instructorName?: string | null
   instructorSpecialty?: string | null
   aboutInstructor?: string | null
+  instructorImage?: string | null
   price: number
   discountedPrice?: number | null
   isFree: boolean
@@ -81,6 +82,7 @@ export interface UpdateCoursePayload {
   instructorName?: string | null
   instructorSpecialty?: string | null
   aboutInstructor?: string | null
+  instructorImage?: string | null
   price?: number
   discountedPrice?: number | null
   isFree?: boolean
@@ -112,6 +114,7 @@ export function buildCoursePayload(
   store: CourseWizardStore,
   thumbnailUrl?: string,
   status?: "draft" | "published",
+  instructorImageUrl?: string | null,
 ): CreateCoursePayload {
   return {
     title: store.title,
@@ -124,6 +127,7 @@ export function buildCoursePayload(
     instructorName: store.instructorName || null,
     instructorSpecialty: store.instructorSpecialty || null,
     aboutInstructor: store.aboutInstructor || null,
+    instructorImage: instructorImageUrl ?? store.instructorPhotoPreview ?? null,
     price: store.originalPrice ? Number(store.originalPrice) : 0,
     discountedPrice: store.showStrikedOriginal && store.salePrice
       ? Number(store.salePrice)

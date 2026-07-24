@@ -213,6 +213,7 @@ export async function PATCH(
       instructorName,
       instructorSpecialty,
       aboutInstructor,
+      instructorImage,
       price,
       discountedPrice,
       isFree,
@@ -236,6 +237,8 @@ export async function PATCH(
         updateData.instructorSpecialty = instructorSpecialty
       if (aboutInstructor !== undefined)
         updateData.aboutInstructor = aboutInstructor
+      if (instructorImage !== undefined)
+        updateData.instructorImage = instructorImage
       if (price !== undefined) updateData.price = isFree ? 0 : price
       if (discountedPrice !== undefined)
         updateData.discountedPrice = isFree ? null : discountedPrice
