@@ -112,7 +112,7 @@ export default function CourseCardItem({ course }: { course: Course }) {
             <CourseCard.Tutor name={course.tutorName ?? "Unknown Instructor"} />
           </CourseCard.Content>
           <div className="flex items-center justify-between px-2.5">
-            {course.status === "draft" ? (
+            {course.status === "draft" || course.status === "archived" ? (
               <p className="text-sm font-medium text-[#6B7280]">In Draft</p>
             ) : course.isFree ? (
               <span className="text-xl font-medium text-ma-text">Free</span>
