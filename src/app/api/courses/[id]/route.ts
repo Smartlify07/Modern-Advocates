@@ -343,6 +343,7 @@ export async function PATCH(
 
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.log(error)
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
@@ -382,7 +383,7 @@ export async function DELETE(
         {
           error: `Cannot delete this course because ${enrollmentResult.count} student${enrollmentResult.count !== 1 ? "s have" : " has"} already enrolled.`,
         },
-        { status: 409 },
+        { status: 409 }
       )
     }
 

@@ -17,7 +17,9 @@ export function InstructorFields() {
   const aboutInstructor = useCourseWizardStore((s) => s.aboutInstructor)
   const setAboutInstructor = useCourseWizardStore((s) => s.setAboutInstructor)
   const instructorPhoto = useCourseWizardStore((s) => s.instructorPhoto)
-  const instructorPhotoPreview = useCourseWizardStore((s) => s.instructorPhotoPreview)
+  const instructorPhotoPreview = useCourseWizardStore(
+    (s) => s.instructorPhotoPreview
+  )
   const setInstructorPhoto = useCourseWizardStore((s) => s.setInstructorPhoto)
 
   const inputRef = useRef<HTMLInputElement>(null)
@@ -93,17 +95,17 @@ export function InstructorFields() {
         </label>
         <div className="flex items-start gap-6">
           {localPreview ? (
-            <div className="relative flex size-[120px] shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-slate-200 bg-slate-50">
+            <div className="relative flex h-25 w-30 shrink-0 items-center justify-center overflow-hidden bg-slate-50">
               <Image
                 src={localPreview}
                 alt="Instructor"
                 fill
-                className="rounded-full object-cover"
+                className="object-cover"
                 unoptimized
               />
             </div>
           ) : (
-            <div className="flex size-[120px] shrink-0 items-center justify-center rounded-full border-2 border-dashed border-slate-200 bg-slate-50">
+            <div className="flex h-25 w-30 shrink-0 items-center justify-center bg-slate-50">
               <ImageIcon className="size-12 text-slate-300" />
             </div>
           )}
