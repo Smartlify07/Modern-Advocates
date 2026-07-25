@@ -11,14 +11,14 @@ type ReviewData = {
 
 export function ReviewCard({ review }: { review: ReviewData }) {
   return (
-    <article className="flex flex-col gap-[22px] rounded-2xl border border-[#d9d9d9] p-5">
+    <article className="grid flex-col gap-[22px] rounded-2xl border border-[#d9d9d9] p-5">
       <p className="text-[15px] leading-normal text-ma-text">
         {review.body ?? "No review text provided."}
       </p>
 
-      <div className="flex gap-4 sm:flex-row sm:items-end">
-        <div className="flex flex-1 items-start gap-2.5">
-          <Avatar className="size-12.5">
+      <div className="flex items-end justify-between gap-4">
+        <div className="flex items-start gap-2.5 lg:flex-1">
+          <Avatar className="size-10 lg:size-12.5">
             <AvatarImage src={review.studentImage!} alt="@shadcn" />
             <AvatarFallback>{review.studentName?.[0] ?? "?"}</AvatarFallback>
           </Avatar>
@@ -32,9 +32,12 @@ export function ReviewCard({ review }: { review: ReviewData }) {
           </div>
         </div>
 
-        <div className="flex items-center text-[#ff9d00]" aria-label={`${review.rating} stars`}>
+        <div
+          className="flex items-center text-[#ff9d00]"
+          aria-label={`${review.rating} stars`}
+        >
           {Array.from({ length: review.rating }).map((_, index) => (
-            <Star key={index} className="size-6 fill-current" />
+            <Star key={index} className="size-4 fill-current lg:size-6" />
           ))}
         </div>
       </div>

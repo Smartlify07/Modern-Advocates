@@ -12,6 +12,7 @@ import { ReviewDialog } from "@/features/courses/components/review-dialog"
 
 export default function CoursePlayerNavbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [reviewOpen, setReviewOpen] = useState(false)
   const params = useParams()
   const courseId = params.courseId as string
 
@@ -36,13 +37,20 @@ export default function CoursePlayerNavbar() {
     <header className="bg-white">
       <div className="relative z-20 mx-auto px-4 py-5 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="flex w-full items-center justify-between">
-          <div className="flex items-center gap-3 md:hidden">
+          <div className="flex items-center gap-4 md:hidden">
             <ProfileDropdown
               className="size-10"
               dropdownWidth="min-w-0 w-72"
               alignOffset={8}
               sideOffset={12}
             />
+            <button
+              type="button"
+              onClick={() => setReviewOpen(true)}
+              className="bg-[#E7EBEF] px-3 py-1.5 text-sm text-[#448AFF] md:hidden"
+            >
+              Leave review
+            </button>
           </div>
           <Link href="/" className="hidden w-[157px] flex-col gap-1 md:flex">
             <Image
@@ -55,7 +63,13 @@ export default function CoursePlayerNavbar() {
           </Link>
 
           <div className="hidden items-center gap-4 md:flex">
-            <ReviewDialog />
+            <button
+              type="button"
+              onClick={() => setReviewOpen(true)}
+              className="hidden bg-[#E7EBEF] px-3 py-1.5 text-sm text-[#448AFF] md:block"
+            >
+              Leave review
+            </button>
             <Link
               href="#"
               className="flex items-center gap-1.5 text-sm text-[#6b7280] hover:text-ma-text"
@@ -110,9 +124,6 @@ export default function CoursePlayerNavbar() {
             aria-label="Mobile navigation"
             className="flex flex-col gap-1 border-t border-gray-100 pt-4"
           >
-            <div className="rounded-lg p-3 transition-all duration-300 hover:bg-muted">
-              <ReviewDialog />
-            </div>
             <Link
               href="#"
               onClick={() => setMobileOpen(false)}
@@ -146,6 +157,8 @@ export default function CoursePlayerNavbar() {
             </Link>
           </nav>
         </div>
+
+        <ReviewDialog open={reviewOpen} onOpenChange={setReviewOpen} />
       </div>
     </header>
   )
