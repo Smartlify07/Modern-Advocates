@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { LogOut } from "lucide-react"
@@ -17,16 +18,27 @@ interface ProfileDropdownProps {
   className?: string
   dropdownWidth?: string
   sideOffset?: number
+  alignOffset?: number
 }
 
 export function ProfileDropdown({
   className,
   dropdownWidth,
   sideOffset = 8,
+  alignOffset = -12,
 }: ProfileDropdownProps) {
   const router = useRouter()
-  const { data: session } = authClient.useSession()
+  const { data: session, isPending } = authClient.useSession()
   const user = session?.user
+  const [isDesktop, setIsDesktop] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)")
+    setIsDesktop(mq.matches)
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches)
+    mq.addEventListener("change", handler)
+    return () => mq.removeEventListener("change", handler)
+  }, [])
 
   const handleLogout = () => {
     router.replace("/auth/signout")
@@ -40,15 +52,16 @@ export function ProfileDropdown({
           onClick={() => router.push("/dashboard/account")}
           className="cursor-pointer outline-none"
         >
-          <UserAvatar user={user} className={className} />
+          <UserAvatar user={user} className={className} isPending={isPending} />
         </button>
       </HoverCardTrigger>
       <HoverCardContent
-        align="end"
+        align={isDesktop ? "end" : "start"}
         sideOffset={sideOffset}
+        alignOffset={alignOffset}
         className={cn(
-          dropdownWidth,
-          "min-w-90 flex-col space-y-0 px-0 pt-0 pb-3"
+          "min-w-90 flex-col space-y-0 px-0 pt-0 pb-3",
+          dropdownWidth
         )}
       >
         <div>
@@ -56,7 +69,7 @@ export function ProfileDropdown({
             <UserAvatar
               user={user}
               fallbackClassName="size-20 text-4xl"
-              className="size-20 text-4xl"
+              className="size-14 text-4xl lg:size-20"
             />
             <div className="grid text-start leading-tight">
               <span className="truncate text-base font-medium text-primary">
