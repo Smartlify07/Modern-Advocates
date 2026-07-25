@@ -127,7 +127,7 @@ export function buildCoursePayload(
     thumbnailUrl: thumbnailUrl ?? store.thumbnailPreview ?? null,
     overview: store.overview ? JSON.stringify(store.overview) : null,
     language: normalizeLanguage(store.language),
-    level: store.level,
+    level: store.level || "beginner",
     duration: store.duration
       ? durationToMinutes(
           Number(store.duration),
