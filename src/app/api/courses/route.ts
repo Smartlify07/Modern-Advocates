@@ -8,7 +8,7 @@ import {
 } from "@/infrastructure/database/schema/course"
 import { requireInstructorOrAdmin } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
-import { createCourseSchema } from "@/features/courses/schemas"
+import { updateCourseSchema } from "@/features/courses/schemas"
 import * as Sentry from "@sentry/nextjs"
 
 export async function GET() {
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     const { user } = await requireInstructorOrAdmin()
 
     const body = await request.json()
-    const parsed = createCourseSchema.safeParse(body)
+    const parsed = updateCourseSchema.safeParse(body)
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -79,8 +79,13 @@ export async function POST(request: Request) {
       language,
       status,
       thumbnailUrl,
-      modules: modulesData = [],
+      modules: modulesData,
     } = parsed.data
+
+    if (status === "published") {
+      if (!title) return NextResponse.json({ error: "Title is required to publish" }, { status: 400 })
+      if (!level) return NextResponse.json({ error: "Level is required to publish" }, { status: 400 })
+    }
 
     const course = await db.transaction(async (tx) => {
       const [course] = await tx
@@ -95,12 +100,12 @@ export async function POST(request: Request) {
           instructorSpecialty,
           aboutInstructor,
           instructorImage,
-          language,
+          language: language ?? "en",
           level,
-          price: isFree ? 0 : price,
-          discountedPrice: isFree ? null : discountedPrice,
+          price: isFree ? 0 : (price ?? 0),
+          discountedPrice: isFree ? null : (discountedPrice ?? null),
           isFree: isFree ?? false,
-          status,
+          status: status ?? "draft",
           thumbnailUrl,
           tutorId: user.id,
         })
@@ -109,26 +114,35 @@ export async function POST(request: Request) {
       if (!course) throw new Error("Failed to create course")
 
       const createdModules = []
-      for (const mod of modulesData) {
+      for (const mod of modulesData ?? []) {
+        if (!mod.title) continue
+
         const [module] = await tx
           .insert(courseModules)
           .values({
             courseId: course.id,
             title: mod.title,
-            sortOrder: mod.order,
+            sortOrder: mod.order ?? 0,
           })
           .returning()
 
         const createdTopics = []
         for (const topic of mod.topics ?? []) {
+          if (!topic.title) continue
+
           const [created] = await tx
             .insert(courseTopics)
             .values({
               moduleId: module.id,
               title: topic.title,
-              format: topic.type === "video_and_text" ? "video" : topic.type,
-              content: topic.description ? JSON.stringify(topic.description) : null,
-              sortOrder: topic.order,
+              format:
+                topic.type === "video_and_text"
+                  ? "video"
+                  : (topic.type ?? "text"),
+              content: topic.description
+                ? JSON.stringify(topic.description)
+                : null,
+              sortOrder: topic.order ?? 0,
             })
             .returning()
 

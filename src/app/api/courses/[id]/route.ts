@@ -222,6 +222,20 @@ export async function PATCH(
       modules: modulesData,
     } = parsed.data
 
+    if (status === "published") {
+      const existing = await db
+        .select({ title: courses.title, level: courses.level })
+        .from(courses)
+        .where(eq(courses.id, id))
+        .then((r) => r[0])
+
+      const effectiveTitle = title ?? existing?.title
+      const effectiveLevel = level ?? existing?.level
+
+      if (!effectiveTitle) return NextResponse.json({ error: "Title is required to publish" }, { status: 400 })
+      if (!effectiveLevel) return NextResponse.json({ error: "Level is required to publish" }, { status: 400 })
+    }
+
     await db.transaction(async (tx) => {
       const updateData: Record<string, unknown> = {}
       if (title !== undefined) updateData.title = title
@@ -278,21 +292,32 @@ export async function PATCH(
         }
 
         for (const mod of modulesData) {
-          let moduleId: string
+          let moduleId: string | null = null
 
           if (mod.id && existingModuleIds.includes(mod.id)) {
             moduleId = mod.id
-            await tx
-              .update(courseModules)
-              .set({ title: mod.title, sortOrder: mod.order })
-              .where(eq(courseModules.id, mod.id))
-          } else {
+            const updateFields: Record<string, unknown> = {}
+            if (mod.title !== undefined) updateFields.title = mod.title
+            if (mod.order !== undefined) updateFields.sortOrder = mod.order
+            if (Object.keys(updateFields).length > 0) {
+              await tx
+                .update(courseModules)
+                .set(updateFields)
+                .where(eq(courseModules.id, mod.id))
+            }
+          } else if (mod.title) {
             const [created] = await tx
               .insert(courseModules)
-              .values({ courseId: id, title: mod.title, sortOrder: mod.order })
+              .values({
+                courseId: id,
+                title: mod.title,
+                sortOrder: mod.order ?? 0,
+              })
               .returning()
             moduleId = created.id
           }
+
+          if (!moduleId) continue
 
           const existingTopicIds = await tx
             .select({ id: courseTopics.id })
@@ -312,27 +337,33 @@ export async function PATCH(
 
           for (const topic of mod.topics ?? []) {
             if (topic.id && existingTopicIds.includes(topic.id)) {
-              await tx
-                .update(courseTopics)
-                .set({
-                  title: topic.title,
-                  format:
-                    topic.type === "video_and_text" ? "video" : topic.type,
-                  content: topic.description
-                    ? JSON.stringify(topic.description)
-                    : null,
-                  sortOrder: topic.order,
-                })
-                .where(eq(courseTopics.id, topic.id))
-            } else {
+              const updateFields: Record<string, unknown> = {}
+              if (topic.title !== undefined) updateFields.title = topic.title
+              if (topic.type !== undefined)
+                updateFields.format =
+                  topic.type === "video_and_text" ? "video" : topic.type
+              if (topic.description !== undefined)
+                updateFields.content = topic.description
+                  ? JSON.stringify(topic.description)
+                  : null
+              if (topic.order !== undefined)
+                updateFields.sortOrder = topic.order
+              if (Object.keys(updateFields).length > 0) {
+                await tx
+                  .update(courseTopics)
+                  .set(updateFields)
+                  .where(eq(courseTopics.id, topic.id))
+              }
+            } else if (topic.title) {
               await tx.insert(courseTopics).values({
                 moduleId,
                 title: topic.title,
-                format: topic.type === "video_and_text" ? "video" : topic.type,
+                format:
+                  topic.type === "video_and_text" ? "video" : (topic.type ?? "text"),
                 content: topic.description
                   ? JSON.stringify(topic.description)
                   : null,
-                sortOrder: topic.order,
+                sortOrder: topic.order ?? 0,
               })
             }
           }

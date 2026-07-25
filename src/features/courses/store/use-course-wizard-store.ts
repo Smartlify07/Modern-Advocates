@@ -101,7 +101,7 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
   language: "English",
   level: "",
   duration: "",
-  durationUnit: "Day",
+  durationUnit: "Days",
   instructorName: "",
   instructorSpecialty: "",
   aboutInstructor: "",
