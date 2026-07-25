@@ -26,6 +26,7 @@ export const createCourseSchema = z.object({
   instructorName: z.string().max(255).optional(),
   instructorSpecialty: z.string().max(255).optional(),
   aboutInstructor: z.string().optional(),
+  instructorImage: z.string().optional().nullable(),
   price: z.number().min(0).default(0),
   discountedPrice: z.number().min(0).optional().nullable(),
   isFree: z.boolean().optional(),
@@ -35,21 +36,39 @@ export const createCourseSchema = z.object({
   modules: z.array(moduleSchema).default([]),
 })
 
-export const updateCourseSchema = z.object({
+const updateTopicSchema = z.object({
+  id: z.string().optional(),
   title: z.string().min(1).max(255).optional(),
-  description: z.string().optional(),
-  overview: z.string().optional(),
-  level: z.enum(["beginner", "intermediate", "advanced"]).optional(),
+  type: z.enum(["text", "video", "video_and_text"]).optional(),
+  description: z.unknown().optional(),
+  order: z.number().int().min(0).optional(),
+})
+
+const updateModuleSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().min(1).max(255).optional(),
+  order: z.number().int().min(0).optional(),
+  topics: z.array(updateTopicSchema).optional(),
+})
+
+const emptyToUndefined = z.preprocess((v) => (v === "" ? undefined : v), z.unknown())
+
+export const updateCourseSchema = z.object({
+  title: z.string().max(255).optional(),
+  description: z.string().optional().nullable(),
+  overview: z.string().optional().nullable(),
+  level: emptyToUndefined.pipe(z.enum(["beginner", "intermediate", "advanced"]).optional().nullable()),
   duration: z.number().int().min(0).nullable().optional(),
-  durationUnit: z.enum(DURATION_UNITS).optional(),
-  instructorName: z.string().max(255).optional(),
-  instructorSpecialty: z.string().max(255).optional(),
-  aboutInstructor: z.string().optional(),
+  durationUnit: emptyToUndefined.pipe(z.enum(DURATION_UNITS).optional().nullable()),
+  instructorName: z.string().max(255).optional().nullable(),
+  instructorSpecialty: z.string().max(255).optional().nullable(),
+  aboutInstructor: z.string().optional().nullable(),
+  instructorImage: z.string().optional().nullable(),
   price: z.number().min(0).optional(),
   discountedPrice: z.number().min(0).optional().nullable(),
   isFree: z.boolean().optional(),
   language: z.string().min(1).max(10).optional(),
   status: z.enum(["draft", "published", "archived"]).optional(),
-  thumbnailUrl: z.string().url().optional().nullable(),
-  modules: z.array(moduleSchema).optional(),
+  thumbnailUrl: z.string().optional().nullable(),
+  modules: z.array(updateModuleSchema).optional(),
 })

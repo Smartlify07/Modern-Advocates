@@ -6,6 +6,8 @@ import { CourseInformationCard } from "@/features/marketing/components/course-in
 type TutorData = {
   name: string | null
   image: string | null
+  specialty: string | null
+  about: string | null
 }
 
 type CourseContentData = {
@@ -15,6 +17,7 @@ type CourseContentData = {
   language: string
   level: string
   duration: number | null
+  durationUnit: string | null
   tutor: TutorData
   avgRating: number
   reviewCount: number

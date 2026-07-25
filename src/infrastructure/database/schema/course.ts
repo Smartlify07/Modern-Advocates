@@ -31,12 +31,12 @@ export const courses = pgTable(
   "courses",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    title: text("title").notNull(),
+    title: text("title"),
     content: text("content"),
     overview: text("overview"),
     thumbnailUrl: text("thumbnail_url"),
     language: text("language").notNull().default("en"),
-    level: level("level").notNull(),
+    level: level("level"),
     price: numeric("price", { precision: 10, scale: 2, mode: "number" }).notNull().default(0),
     discountedPrice: numeric("discounted_price", { precision: 10, scale: 2, mode: "number" }),
     isFree: boolean("is_free").default(false).notNull(),
@@ -45,6 +45,7 @@ export const courses = pgTable(
     instructorName: text("instructor_name"),
     instructorSpecialty: text("instructor_specialty"),
     aboutInstructor: text("about_instructor"),
+    instructorImage: text("instructor_image"),
     status: courseStatus("status").notNull().default("draft"),
     tutorId: text("tutor_id")
       .notNull()

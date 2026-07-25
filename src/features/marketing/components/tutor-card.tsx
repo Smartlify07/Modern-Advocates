@@ -4,6 +4,8 @@ import { Star, User } from "lucide-react"
 type TutorData = {
   name: string | null
   image: string | null
+  specialty: string | null
+  about: string | null
 }
 
 export function TutorCard({
@@ -35,13 +37,12 @@ export function TutorCard({
             {tutor?.name ?? "Instructor"}
           </h3>
           <p className="text-xs leading-normal sm:text-[15px]">
-            Course Instructor
+            {tutor?.specialty ?? "Course Instructor"}
           </p>
         </div>
 
         <p className="text-xs leading-normal text-ma-text sm:text-[15px]">
-          Experienced professional with expertise in this field, dedicated to
-          helping students build practical skills and achieve their goals.
+          {tutor?.about ?? "Experienced professional with expertise in this field, dedicated to helping students build practical skills and achieve their goals."}
         </p>
 
         <div className="flex flex-nowrap items-center gap-4 text-[10px] leading-normal font-medium text-nowrap text-[#6b7280] sm:text-sm lg:flex-wrap">

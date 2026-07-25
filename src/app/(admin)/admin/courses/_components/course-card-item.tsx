@@ -106,13 +106,15 @@ export default function CourseCardItem({ course }: { course: Course }) {
   return (
     <>
       <div className="group flex w-full flex-col gap-5 rounded-[24px] border border-[#d9d9d9] bg-white px-2.5 pt-2.5 pb-5 transition-colors duration-300 hover:bg-gray-50">
-        <CourseCard.Thumbnail src={course.thumbnailUrl} alt={course.title} />
+        <CourseCard.Thumbnail src={course.thumbnailUrl} alt={course.title || "Untitled"} />
         <div className="flex flex-1 flex-col justify-between gap-4">
           <CourseCard.Content className="min-h-[64px]">
             <CourseCard.Title className="text-lg">
-              {course.title}
+              {course.title || "Untitled"}
             </CourseCard.Title>
-            <CourseCard.Tutor name={course.tutorName ?? "Unknown Instructor"} />
+            <CourseCard.Tutor
+              name={course.instructorName || "Instructor name"}
+            />
           </CourseCard.Content>
           <div className="flex items-center justify-between px-2.5">
             {course.status === "draft" || course.status === "archived" ? (

@@ -40,6 +40,8 @@ export interface CourseWizardStore {
   instructorName: string
   instructorSpecialty: string
   aboutInstructor: string
+  instructorPhoto: File | null
+  instructorPhotoPreview: string | null
 
   sections: Section[]
 
@@ -62,6 +64,7 @@ export interface CourseWizardStore {
   setInstructorName: (v: string) => void
   setInstructorSpecialty: (v: string) => void
   setAboutInstructor: (v: string) => void
+  setInstructorPhoto: (file: File | null) => void
 
   addSection: () => void
   updateSection: (id: string, title: string) => void
@@ -98,10 +101,12 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
   language: "English",
   level: "",
   duration: "",
-  durationUnit: "Day",
+  durationUnit: "Days",
   instructorName: "",
   instructorSpecialty: "",
   aboutInstructor: "",
+  instructorPhoto: null,
+  instructorPhotoPreview: null,
 
   sections: [],
 
@@ -133,6 +138,16 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
   setInstructorName: (v) => set({ instructorName: v }),
   setInstructorSpecialty: (v) => set({ instructorSpecialty: v }),
   setAboutInstructor: (v) => set({ aboutInstructor: v }),
+  setInstructorPhoto: (file) =>
+    set((state) => {
+      if (state.instructorPhotoPreview && !state.instructorPhotoPreview.startsWith("http")) {
+        URL.revokeObjectURL(state.instructorPhotoPreview)
+      }
+      return {
+        instructorPhoto: file,
+        instructorPhotoPreview: file ? URL.createObjectURL(file) : null,
+      }
+    }),
 
   addSection: () =>
     set((state) => ({
@@ -241,6 +256,8 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
       instructorName: course.instructorName ?? "",
       instructorSpecialty: course.instructorSpecialty ?? "",
       aboutInstructor: course.aboutInstructor ?? "",
+      instructorPhoto: null,
+      instructorPhotoPreview: course.instructorImage ?? null,
       sections: (course.modules ?? []).map((mod: any, mi: number) => ({
         id: mod.id,
         title: mod.title ?? "",
@@ -259,9 +276,12 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
   },
 
   resetForm: () => {
-    const { thumbnailPreview } = get()
+    const { thumbnailPreview, instructorPhotoPreview } = get()
     if (thumbnailPreview && !thumbnailPreview.startsWith("http")) {
       URL.revokeObjectURL(thumbnailPreview)
+    }
+    if (instructorPhotoPreview && !instructorPhotoPreview.startsWith("http")) {
+      URL.revokeObjectURL(instructorPhotoPreview)
     }
     set({
       currentStep: 0,
@@ -280,6 +300,8 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
       instructorName: "",
       instructorSpecialty: "",
       aboutInstructor: "",
+      instructorPhoto: null,
+      instructorPhotoPreview: null,
       sections: [],
       courseId: null,
       isSaving: false,

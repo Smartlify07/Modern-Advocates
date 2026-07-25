@@ -90,7 +90,7 @@ export function ProfileDropdown({
             My Learning
           </Link>
           <Link
-            href="/dashboard/support"
+            href="/account/support"
             className="cursor-pointer rounded-md px-2 py-2 text-base text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
           >
             Help and Support

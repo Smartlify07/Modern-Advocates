@@ -5,6 +5,7 @@ import { notFound } from "next/navigation"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { CoursePlayerContent } from "@/features/user-dashboard/components/course-player-content"
 import { CourseModuleSidebar } from "@/features/user-dashboard/components/course-module-sidebar"
+import type { CourseApiResponse } from "@/features/courses/types"
 
 function extractText(input: unknown): string {
   if (typeof input !== "string") return ""
@@ -30,7 +31,7 @@ function extractText(input: unknown): string {
 export function CoursePlayerShell({ courseId }: { courseId: string }) {
   const {
     data: course,
-    isLoading,
+    isPending,
     isError,
     error,
   } = useQuery({
@@ -39,7 +40,13 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
       const r = await fetch(`/api/courses/${courseId}`)
       if (r.status === 404) return null
       if (!r.ok) throw new Error("Failed to fetch course")
-      const json = await r.json()
+      const json = (await r.json()) as CourseApiResponse
+
+      const reviews = json.reviews ?? []
+      const avgRating =
+        reviews.length > 0
+          ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+          : 0
 
       return {
         id: json.id,
@@ -49,15 +56,21 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
         language: json.language,
         level: json.level,
         duration: json.duration ? Number(json.duration) : null,
-        avgRating: Number(json.avgRating ?? 0),
-        reviewCount: Number(json.reviewCount ?? 0),
+        durationUnit: json.durationUnit ?? "Hours",
+        avgRating,
+        reviewCount: reviews.length,
         enrollmentCount: Number(json.enrollmentCount ?? 0),
-        tutor: { name: json.tutorName ?? null, image: json.tutorImage ?? null },
-        modules: (json.modules ?? []).map((m: Record<string, unknown>) => ({
+        tutor: {
+          name: json.instructorName ?? null,
+          image: json.instructorImage ?? null,
+          specialty: json.instructorSpecialty ?? null,
+          about: json.aboutInstructor ?? null,
+        },
+        modules: (json.modules ?? []).map((m) => ({
           id: m.id,
           title: m.title,
-          sortOrder: m.order ?? 0,
-          topics: ((m.topics as Record<string, unknown>[]) ?? []).map((t) => ({
+          sortOrder: m.order,
+          topics: (m.topics ?? []).map((t) => ({
             id: t.id,
             title: t.title,
             format: t.type === "video_and_text" ? "video" : (t.type ?? "video"),
@@ -74,7 +87,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
     },
     enabled: !!courseId,
   })
-  if (isLoading) {
+  if (isPending) {
     return (
       <div className="mx-auto py-8">
         <div className="grid gap-0 md:grid-cols-[2.2fr_0.8fr]">

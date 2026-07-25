@@ -8,7 +8,6 @@ import {
   enrollments,
   reviews,
 } from "@/infrastructure/database/schema/course"
-import { user } from "@/infrastructure/database/schema/auth"
 import { requireSession } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError } from "@/infrastructure/auth/errors"
 import * as Sentry from "@sentry/nextjs"
@@ -103,13 +102,12 @@ export async function GET() {
         discountedPrice: courses.discountedPrice,
         duration: courses.duration,
         progress: enrollments.progress,
-        tutorName: user.name,
+        instructorName: courses.instructorName,
         avgRating: sql<number>`COALESCE(AVG(${reviews.rating}), 0)`,
         reviewCount: sql<number>`COUNT(${reviews.id})`,
       })
       .from(enrollments)
       .innerJoin(courses, eq(courses.id, enrollments.courseId))
-      .innerJoin(user, eq(courses.tutorId, user.id))
       .leftJoin(reviews, eq(reviews.courseId, courses.id))
       .where(eq(enrollments.studentId, currentUser.id))
       .groupBy(
@@ -121,8 +119,7 @@ export async function GET() {
         courses.level,
         courses.price,
         courses.discountedPrice,
-        courses.duration,
-        user.name
+        courses.duration
       )
       .orderBy(desc(courses.createdAt))
 
