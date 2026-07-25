@@ -222,6 +222,20 @@ export async function PATCH(
       modules: modulesData,
     } = parsed.data
 
+    if (status === "published") {
+      const existing = await db
+        .select({ title: courses.title, level: courses.level })
+        .from(courses)
+        .where(eq(courses.id, id))
+        .then((r) => r[0])
+
+      const effectiveTitle = title ?? existing?.title
+      const effectiveLevel = level ?? existing?.level
+
+      if (!effectiveTitle) return NextResponse.json({ error: "Title is required to publish" }, { status: 400 })
+      if (!effectiveLevel) return NextResponse.json({ error: "Level is required to publish" }, { status: 400 })
+    }
+
     await db.transaction(async (tx) => {
       const updateData: Record<string, unknown> = {}
       if (title !== undefined) updateData.title = title

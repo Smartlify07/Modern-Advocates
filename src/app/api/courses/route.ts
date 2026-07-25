@@ -82,26 +82,31 @@ export async function POST(request: Request) {
       modules: modulesData,
     } = parsed.data
 
+    if (status === "published") {
+      if (!title) return NextResponse.json({ error: "Title is required to publish" }, { status: 400 })
+      if (!level) return NextResponse.json({ error: "Level is required to publish" }, { status: 400 })
+    }
+
     const course = await db.transaction(async (tx) => {
       const [course] = await tx
         .insert(courses)
         .values({
-          title: title ?? "Untitled Course",
-          content: overview ?? null,
-          overview: overview ?? null,
-          duration: duration ?? null,
-          durationUnit: durationUnit ?? null,
-          instructorName: instructorName ?? null,
-          instructorSpecialty: instructorSpecialty ?? null,
-          aboutInstructor: aboutInstructor ?? null,
-          instructorImage: instructorImage ?? null,
+          title,
+          content: overview,
+          overview,
+          duration,
+          durationUnit,
+          instructorName,
+          instructorSpecialty,
+          aboutInstructor,
+          instructorImage,
           language: language ?? "en",
-          level: level ?? "beginner",
+          level,
           price: isFree ? 0 : (price ?? 0),
           discountedPrice: isFree ? null : (discountedPrice ?? null),
           isFree: isFree ?? false,
           status: status ?? "draft",
-          thumbnailUrl: thumbnailUrl ?? null,
+          thumbnailUrl,
           tutorId: user.id,
         })
         .returning()
