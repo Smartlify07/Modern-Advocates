@@ -6,15 +6,8 @@ import { useCourseWizardStore } from "@/features/courses/store/use-course-wizard
 import { useSaveCourse } from "@/features/courses/hooks/use-course-mutations"
 import { Stepper } from "@/shared/ui/stepper"
 import { Button } from "@/shared/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/shared/ui/dialog"
 import { BasicInfoStep } from "@/features/courses/components/wizard/basic-info-step"
+import { SaveDraftDialog } from "@/app/(admin)/admin/courses/_components/save-draft-dialog"
 import { AdvanceInfoStep } from "@/features/courses/components/wizard/advance-info-step"
 import { CurriculumStep } from "@/features/courses/components/wizard/curriculum-step"
 import { PublishStep } from "@/features/courses/components/wizard/publish-step"
@@ -156,28 +149,12 @@ export default function CreateCoursePage() {
         )}
       </div>
 
-      <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
-        <DialogContent showCloseButton={false}>
-          <DialogHeader>
-            <DialogTitle>Save as draft?</DialogTitle>
-            <DialogDescription>
-              You can come back anytime to update it and you can also publish it later.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSaveConfirmed}
-              disabled={isPending}
-              className="bg-ma-admin-primary hover:bg-ma-admin-primary/90"
-            >
-              {isPending ? "Saving..." : "Save as Draft"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <SaveDraftDialog
+        open={saveDialogOpen}
+        onOpenChange={setSaveDialogOpen}
+        onConfirm={handleSaveConfirmed}
+        isPending={isPending}
+      />
     </div>
   )
 }
