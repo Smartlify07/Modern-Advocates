@@ -36,6 +36,21 @@ export const createCourseSchema = z.object({
   modules: z.array(moduleSchema).default([]),
 })
 
+const updateTopicSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().min(1).max(255).optional(),
+  type: z.enum(["text", "video", "video_and_text"]).optional(),
+  description: z.unknown().optional(),
+  order: z.number().int().min(0).optional(),
+})
+
+const updateModuleSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().min(1).max(255).optional(),
+  order: z.number().int().min(0).optional(),
+  topics: z.array(updateTopicSchema).optional(),
+})
+
 export const updateCourseSchema = z.object({
   title: z.string().min(1).max(255).optional(),
   description: z.string().optional(),
@@ -53,5 +68,5 @@ export const updateCourseSchema = z.object({
   language: z.string().min(1).max(10).optional(),
   status: z.enum(["draft", "published", "archived"]).optional(),
   thumbnailUrl: z.string().url().optional().nullable(),
-  modules: z.array(moduleSchema).optional(),
+  modules: z.array(updateModuleSchema).optional(),
 })
