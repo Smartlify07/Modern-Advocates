@@ -34,32 +34,34 @@ export default function AccountLayout({
     <AccountSessionContext.Provider
       value={{ user: session?.user, isPending, refetchSession: refetch }}
     >
-      <div className="mx-auto px-4 py-8 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
+      <div className="px-4 py-8 lg:mx-auto lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <h1 className="mb-8 text-2xl font-bold tracking-tight text-ma-text">
           Account
         </h1>
 
-        <div className="flex flex-col items-start gap-30 lg:flex-row">
-          <nav className="flex shrink-0 flex-col gap-10 border-border pr-0 lg:min-w-[200px] lg:border-r lg:pr-25">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-"flex items-center gap-3 rounded-lg px-4 py-2.5 transition-colors hover:bg-muted",
-                  pathname === item.href
-                    ? "bg-muted font-semibold text-ma-text"
-                    : "text-muted-foreground hover:text-ma-text"
-                )}
-              >
-                <item.icon className="size-5" />
-                {item.label}
-              </Link>
-            ))}
+        <div className="flex flex-col items-start gap-8 lg:flex-row lg:gap-30">
+          <nav className="flex w-full shrink-0 flex-col border-border lg:max-w-[290px] lg:min-w-[200px] lg:gap-10 lg:border-r lg:pr-25">
+            <div className="flex lg:flex-col lg:gap-10 lg:border-b-0">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center justify-start gap-3 border-b px-4 py-3 text-sm transition-colors lg:justify-start lg:rounded-lg lg:border-b-0 lg:px-4 lg:py-2.5 lg:text-base",
+                    pathname === item.href
+                      ? "border-ma-text font-semibold text-ma-text lg:bg-muted"
+                      : "border-transparent text-muted-foreground hover:text-ma-text"
+                  )}
+                >
+                  <item.icon className="size-5" />
+                  {item.label}
+                </Link>
+              ))}
+            </div>
             <button
               type="button"
               onClick={handleLogout}
-className="flex items-center gap-3 rounded-lg px-4 py-2.5 font-medium text-destructive transition-colors hover:bg-destructive/10 hover:text-destructive/80"
+              className="mt-4 hidden items-center gap-3 rounded-lg px-4 py-2.5 font-medium text-destructive transition-colors hover:bg-destructive/10 hover:text-destructive/80 md:flex lg:mt-0"
             >
               <LogOut className="size-5" />
               Log out

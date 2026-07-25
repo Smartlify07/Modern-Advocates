@@ -89,7 +89,7 @@ export default function AccountPage() {
 
   if (isPending) {
     return (
-<div className="flex flex-1 flex-col gap-12 lg:max-w-150">
+      <div className="flex flex-1 flex-col gap-12">
         <div className="flex items-center gap-4">
           <Skeleton className="size-20 rounded-full" />
           <div>
@@ -113,7 +113,7 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-12 lg:max-w-xl">
+    <div className="flex w-full flex-1 flex-col gap-12 lg:max-w-xl">
       <div className="flex items-center gap-4">
         <div className="relative">
           <UserAvatar
