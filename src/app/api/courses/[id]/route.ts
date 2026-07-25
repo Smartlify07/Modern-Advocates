@@ -13,10 +13,11 @@ import {
 import { courseVideos } from "@/infrastructure/database/schema/video"
 import {
   requireInstructorOrAdmin,
-  requireAdmin,
+  requireManagerOrAdmin,
 } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import { updateCourseSchema } from "@/features/courses/schemas"
+import { isValidUuid } from "@/shared/utils"
 import * as Sentry from "@sentry/nextjs"
 
 export async function GET(
@@ -25,6 +26,10 @@ export async function GET(
 ) {
   try {
     const { id } = await params
+
+    if (!isValidUuid(id)) {
+      return NextResponse.json({ error: "Course not found" }, { status: 404 })
+    }
 
     const course = await db
       .select({
@@ -38,16 +43,18 @@ export async function GET(
         price: courses.price,
         discountedPrice: courses.discountedPrice,
         duration: courses.duration,
+        durationUnit: courses.durationUnit,
+        instructorName: courses.instructorName,
+        instructorSpecialty: courses.instructorSpecialty,
+        aboutInstructor: courses.aboutInstructor,
         status: courses.status,
         tutorId: courses.tutorId,
         createdAt: courses.createdAt,
         updatedAt: courses.updatedAt,
-        tutorName: user.name,
-        tutorImage: user.image,
+        instructorImage: courses.instructorImage,
       })
       .from(courses)
       .where(eq(courses.id, id))
-      .innerJoin(user, eq(courses.tutorId, user.id))
       .then((r) => r[0])
 
     if (!course) {
@@ -74,12 +81,13 @@ export async function GET(
       .map((r) => r.topicId)
       .filter((id): id is string => id !== null)
 
-    const videoRows = topicIds.length > 0
-      ? await db
-          .select({ topicId: courseVideos.topicId, id: courseVideos.id })
-          .from(courseVideos)
-          .where(inArray(courseVideos.topicId, topicIds))
-      : []
+    const videoRows =
+      topicIds.length > 0
+        ? await db
+            .select({ topicId: courseVideos.topicId, id: courseVideos.id })
+            .from(courseVideos)
+            .where(inArray(courseVideos.topicId, topicIds))
+        : []
 
     const videoByTopicId = new Map(videoRows.map((v) => [v.topicId, v.id]))
 
@@ -93,20 +101,23 @@ export async function GET(
     }
 
     const modulesWithTopics = (() => {
-      const map = new Map<string, {
-        id: string
-        title: string
-        order: number
-        topics: Array<{
+      const map = new Map<
+        string,
+        {
           id: string
           title: string
-          type: string
-          description: unknown
           order: number
-          videoUrl: string | null
-          videoId: string | null
-        }>
-      }>()
+          topics: Array<{
+            id: string
+            title: string
+            type: string
+            description: unknown
+            order: number
+            videoUrl: string | null
+            videoId: string | null
+          }>
+        }
+      >()
 
       for (const row of moduleTopicRows) {
         if (!map.has(row.moduleId)) {
@@ -123,7 +134,8 @@ export async function GET(
           mod.topics.push({
             id: row.topicId,
             title: row.topicTitle!,
-            type: row.topicFormat === "video" ? "video_and_text" : row.topicFormat!,
+            type:
+              row.topicFormat === "video" ? "video_and_text" : row.topicFormat!,
             description: parseContent(row.topicContent),
             order: row.topicOrder!,
             videoUrl: videoByTopicId.get(row.topicId) ?? null,
@@ -176,13 +188,17 @@ export async function PATCH(
   try {
     const { user } = await requireInstructorOrAdmin()
     const { id } = await params
+
+    if (!isValidUuid(id)) {
+      return NextResponse.json({ error: "Course not found" }, { status: 404 })
+    }
     const body = await request.json()
     const parsed = updateCourseSchema.safeParse(body)
 
     if (!parsed.success) {
       return NextResponse.json(
         { error: "Invalid request", details: parsed.error.flatten() },
-        { status: 400 },
+        { status: 400 }
       )
     }
 
@@ -191,6 +207,12 @@ export async function PATCH(
       description,
       overview,
       level,
+      duration,
+      durationUnit,
+      instructorName,
+      instructorSpecialty,
+      aboutInstructor,
+      instructorImage,
       price,
       discountedPrice,
       isFree,
@@ -200,12 +222,36 @@ export async function PATCH(
       modules: modulesData,
     } = parsed.data
 
+    if (status === "published") {
+      const existing = await db
+        .select({ title: courses.title, level: courses.level })
+        .from(courses)
+        .where(eq(courses.id, id))
+        .then((r) => r[0])
+
+      const effectiveTitle = title ?? existing?.title
+      const effectiveLevel = level ?? existing?.level
+
+      if (!effectiveTitle) return NextResponse.json({ error: "Title is required to publish" }, { status: 400 })
+      if (!effectiveLevel) return NextResponse.json({ error: "Level is required to publish" }, { status: 400 })
+    }
+
     await db.transaction(async (tx) => {
       const updateData: Record<string, unknown> = {}
       if (title !== undefined) updateData.title = title
       if (description !== undefined) updateData.content = description
       if (overview !== undefined) updateData.overview = overview
       if (level !== undefined) updateData.level = level
+      if (duration !== undefined) updateData.duration = duration
+      if (durationUnit !== undefined) updateData.durationUnit = durationUnit
+      if (instructorName !== undefined)
+        updateData.instructorName = instructorName
+      if (instructorSpecialty !== undefined)
+        updateData.instructorSpecialty = instructorSpecialty
+      if (aboutInstructor !== undefined)
+        updateData.aboutInstructor = aboutInstructor
+      if (instructorImage !== undefined)
+        updateData.instructorImage = instructorImage
       if (price !== undefined) updateData.price = isFree ? 0 : price
       if (discountedPrice !== undefined)
         updateData.discountedPrice = isFree ? null : discountedPrice
@@ -246,21 +292,32 @@ export async function PATCH(
         }
 
         for (const mod of modulesData) {
-          let moduleId: string
+          let moduleId: string | null = null
 
           if (mod.id && existingModuleIds.includes(mod.id)) {
             moduleId = mod.id
-            await tx
-              .update(courseModules)
-              .set({ title: mod.title, sortOrder: mod.order })
-              .where(eq(courseModules.id, mod.id))
-          } else {
+            const updateFields: Record<string, unknown> = {}
+            if (mod.title !== undefined) updateFields.title = mod.title
+            if (mod.order !== undefined) updateFields.sortOrder = mod.order
+            if (Object.keys(updateFields).length > 0) {
+              await tx
+                .update(courseModules)
+                .set(updateFields)
+                .where(eq(courseModules.id, mod.id))
+            }
+          } else if (mod.title) {
             const [created] = await tx
               .insert(courseModules)
-              .values({ courseId: id, title: mod.title, sortOrder: mod.order })
+              .values({
+                courseId: id,
+                title: mod.title,
+                sortOrder: mod.order ?? 0,
+              })
               .returning()
             moduleId = created.id
           }
+
+          if (!moduleId) continue
 
           const existingTopicIds = await tx
             .select({ id: courseTopics.id })
@@ -280,27 +337,33 @@ export async function PATCH(
 
           for (const topic of mod.topics ?? []) {
             if (topic.id && existingTopicIds.includes(topic.id)) {
-              await tx
-                .update(courseTopics)
-                .set({
-                  title: topic.title,
-                  format:
-                    topic.type === "video_and_text" ? "video" : topic.type,
-                  content: topic.description
-                    ? JSON.stringify(topic.description)
-                    : null,
-                  sortOrder: topic.order,
-                })
-                .where(eq(courseTopics.id, topic.id))
-            } else {
+              const updateFields: Record<string, unknown> = {}
+              if (topic.title !== undefined) updateFields.title = topic.title
+              if (topic.type !== undefined)
+                updateFields.format =
+                  topic.type === "video_and_text" ? "video" : topic.type
+              if (topic.description !== undefined)
+                updateFields.content = topic.description
+                  ? JSON.stringify(topic.description)
+                  : null
+              if (topic.order !== undefined)
+                updateFields.sortOrder = topic.order
+              if (Object.keys(updateFields).length > 0) {
+                await tx
+                  .update(courseTopics)
+                  .set(updateFields)
+                  .where(eq(courseTopics.id, topic.id))
+              }
+            } else if (topic.title) {
               await tx.insert(courseTopics).values({
                 moduleId,
                 title: topic.title,
-                format: topic.type === "video_and_text" ? "video" : topic.type,
+                format:
+                  topic.type === "video_and_text" ? "video" : (topic.type ?? "text"),
                 content: topic.description
                   ? JSON.stringify(topic.description)
                   : null,
-                sortOrder: topic.order,
+                sortOrder: topic.order ?? 0,
               })
             }
           }
@@ -310,6 +373,7 @@ export async function PATCH(
 
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.log(error)
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
@@ -332,8 +396,26 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await requireAdmin()
+    await requireManagerOrAdmin()
     const { id } = await params
+
+    if (!isValidUuid(id)) {
+      return NextResponse.json({ error: "Course not found" }, { status: 404 })
+    }
+
+    const [enrollmentResult] = await db
+      .select({ count: sql<number>`COUNT(*)` })
+      .from(enrollments)
+      .where(eq(enrollments.courseId, id))
+
+    if (enrollmentResult.count > 0) {
+      return NextResponse.json(
+        {
+          error: `Cannot delete this course because ${enrollmentResult.count} student${enrollmentResult.count !== 1 ? "s have" : " has"} already enrolled.`,
+        },
+        { status: 409 }
+      )
+    }
 
     const course = await db
       .delete(courses)
@@ -347,6 +429,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.error(error)
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }

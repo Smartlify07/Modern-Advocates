@@ -26,7 +26,6 @@ export async function GET() {
     const [courseCount] = await db
       .select({ count: sql<number>`COALESCE(COUNT(*), 0)` })
       .from(courses)
-      .where(sql`${courses.status} = 'published'`)
 
     const [donationTotal] = await db
       .select({ total: sql<number>`COALESCE(SUM(${donations.amount}), 0)` })
@@ -55,7 +54,7 @@ export async function GET() {
     const coursePrevious = await db
       .select({ count: sql<number>`COALESCE(COUNT(*), 0)` })
       .from(courses)
-      .where(sql`${courses.status} = 'published' AND ${courses.createdAt} < NOW() - INTERVAL '30 days'`)
+      .where(sql`${courses.createdAt} < NOW() - INTERVAL '30 days'`)
 
     const donationPrevious = await db
       .select({ total: sql<number>`COALESCE(SUM(${donations.amount}), 0)` })

@@ -1,10 +1,13 @@
 import { Clock, Languages, Layers, PlayCircle } from "lucide-react"
 
 import { EnrollNowButton } from "@/features/courses/components/enroll-now-button"
+import { minutesToDuration } from "@/features/courses/api/course-service"
+import type { DurationUnit } from "@/features/courses/api/course-service"
 
 type CourseContentData = {
   id: string
   duration: number | null
+  durationUnit: string | null
   level: string
   language: string
   modules: { topics: unknown[] }[]
@@ -15,15 +18,19 @@ export function CourseInformationCard({
 }: {
   course: CourseContentData
 }) {
-  const totalTopics = course.modules.reduce(
+  const totalTopics = (course.modules ?? []).reduce(
     (sum, m) => sum + m.topics.length,
     0
   )
-  const durationHours = course.duration
-    ? Math.round(course.duration / 60)
-    : null
-  const levelCapitalized =
-    course.level.charAt(0).toUpperCase() + course.level.slice(1)
+
+  console.log(course.durationUnit)
+  const displayDuration =
+    course.duration && course.durationUnit
+      ? minutesToDuration(course.duration, course.durationUnit as DurationUnit)
+      : null
+  const levelCapitalized = course?.level
+    ? course?.level.charAt(0).toUpperCase() + course.level.slice(1)
+    : ""
   const languageDisplay =
     course.language === "en"
       ? "English"
@@ -36,7 +43,9 @@ export function CourseInformationCard({
   const infoItems = [
     {
       label: "Duration:",
-      value: durationHours ? `${durationHours} Hours` : "Self-paced",
+      value: displayDuration
+        ? `${Math.round(displayDuration.value)} ${displayDuration.unit}`
+        : "No duration",
       icon: Clock,
     },
     {
@@ -47,6 +56,8 @@ export function CourseInformationCard({
     { label: "Level:", value: levelCapitalized, icon: Layers },
     { label: "Language:", value: languageDisplay, icon: Languages },
   ]
+
+  console.log(course)
 
   return (
     <aside className="w-full rounded-2xl border border-[#d9d9d9] bg-white px-4 pt-4 pr-3.5 pb-[25px] lg:top-8">

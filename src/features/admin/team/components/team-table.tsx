@@ -105,7 +105,9 @@ export function TeamTable({
                   {m.lastLogin}
                 </TableCell>
                 <TableCell>
-                  {!role || (role !== "admin" && role !== "manager") || m.role === "Admin" ? (
+                  {!role ||
+                  (role !== "admin" && role !== "manager") ||
+                  m.role === "Admin" ? (
                     <span className="text-muted-foreground/50">—</span>
                   ) : (
                     <button

@@ -77,24 +77,42 @@ const COURSE_DATA = [
     thumbnailKey: SEED_THUMBNAIL_KEYS[0],
     content:
       "Master the fundamentals of artificial intelligence from the ground up. This course covers machine learning, neural networks, NLP, computer vision, and AI ethics — everything you need to start building intelligent solutions.",
-    overview:
-      "A comprehensive introduction to AI concepts, tools, and real-world applications for beginners and aspiring practitioners.",
+    overview: JSON.stringify({
+      type: "doc",
+      content: [{ type: "paragraph", content: [{ type: "text", text: "A comprehensive introduction to AI concepts, tools, and real-world applications for beginners and aspiring practitioners." }] }],
+    }),
+    instructorName: "Maxwell Anthony",
+    instructorSpecialty: "AI & Machine Learning Expert",
+    aboutInstructor:
+      "Maxwell has over 15 years of experience in artificial intelligence and machine learning, having led AI teams at top tech companies and startups.",
   },
   {
     title: "Income Producing Assets",
     thumbnailKey: SEED_THUMBNAIL_KEYS[1],
     content:
       "Learn how to build, manage, and scale income-producing assets across real estate, digital assets, stocks, and business ownership. Develop a diversified portfolio that generates passive income.",
-    overview:
-      "Build lasting wealth by mastering the strategies behind income-generating assets and portfolio diversification.",
+    overview: JSON.stringify({
+      type: "doc",
+      content: [{ type: "paragraph", content: [{ type: "text", text: "Build lasting wealth by mastering the strategies behind income-generating assets and portfolio diversification." }] }],
+    }),
+    instructorName: "Maxwell Anthony",
+    instructorSpecialty: "Wealth Building & Investment Strategist",
+    aboutInstructor:
+      "Maxwell is a seasoned investor and financial strategist who has helped hundreds of professionals build diversified portfolios and achieve financial independence.",
   },
   {
     title: "Generate first revenue within 60 days",
     thumbnailKey: SEED_THUMBNAIL_KEYS[2],
     content:
       "A high-intensity, action-oriented course designed to help you launch a revenue-generating product or service in just 60 days. Covers MVP development, pricing, customer acquisition, and sales automation.",
-    overview:
-      "Go from idea to first sale in 60 days with proven strategies for rapid revenue generation and scalable growth.",
+    overview: JSON.stringify({
+      type: "doc",
+      content: [{ type: "paragraph", content: [{ type: "text", text: "Go from idea to first sale in 60 days with proven strategies for rapid revenue generation and scalable growth." }] }],
+    }),
+    instructorName: "Maxwell Anthony",
+    instructorSpecialty: "Revenue Growth & Business Development Expert",
+    aboutInstructor:
+      "Maxwell has launched multiple successful ventures and specializes in rapid go-to-market strategies that help entrepreneurs generate revenue quickly and sustainably.",
   },
 ]
 
@@ -238,6 +256,10 @@ async function seed() {
         price: 550.00,
         discountedPrice: 100.00,
         duration: 720,
+        durationUnit: "Hours",
+        instructorName: data.instructorName,
+        instructorSpecialty: data.instructorSpecialty,
+        aboutInstructor: data.aboutInstructor,
         status: "published" as const,
         tutorId,
       },

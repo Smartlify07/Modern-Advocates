@@ -1,55 +1,76 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
+import { notFound } from "next/navigation"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { CoursePlayerContent } from "@/features/user-dashboard/components/course-player-content"
 import { CourseModuleSidebar } from "@/features/user-dashboard/components/course-module-sidebar"
+import type { CourseApiResponse } from "@/features/courses/types"
 
-type ApiTopic = {
-  id: string
-  title: string
-  type: string
-  description: unknown
-  order: number
-}
-type ApiModule = {
-  id: string
-  title: string
-  order: number
-  topics: ApiTopic[]
-}
-type ApiReview = {
-  id: string
-  body: string | null
-  rating: number
-  studentName: string | null
-  studentImage: string | null
+function extractText(input: unknown): string {
+  if (typeof input !== "string") return ""
+  try {
+    const parsed = JSON.parse(input) as {
+      content?: { text?: string; content?: unknown[] }[]
+    }
+    if (!parsed.content) return ""
+    const texts: string[] = []
+    function walk(nodes: { text?: string; content?: unknown[] }[]) {
+      for (const node of nodes) {
+        if (node?.text) texts.push(node.text)
+        if (node?.content) walk(node.content as typeof nodes)
+      }
+    }
+    walk(parsed.content)
+    return texts.join(" ").trim()
+  } catch {
+    return input
+  }
 }
 
 export function CoursePlayerShell({ courseId }: { courseId: string }) {
-  const { data: course, isLoading, isError, error } = useQuery({
+  const {
+    data: course,
+    isPending,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["course", courseId],
     queryFn: async () => {
       const r = await fetch(`/api/courses/${courseId}`)
+      if (r.status === 404) return null
       if (!r.ok) throw new Error("Failed to fetch course")
-      const json = await r.json()
+      const json = (await r.json()) as CourseApiResponse
+
+      const reviews = json.reviews ?? []
+      const avgRating =
+        reviews.length > 0
+          ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+          : 0
+
       return {
         id: json.id,
         title: json.title,
-        overview: json.overview,
+        overview: extractText(json.overview),
         thumbnailUrl: json.thumbnailUrl,
         language: json.language,
         level: json.level,
         duration: json.duration ? Number(json.duration) : null,
-        avgRating: Number(json.avgRating ?? 0),
-        reviewCount: Number(json.reviewCount ?? 0),
+        durationUnit: json.durationUnit ?? "Hours",
+        avgRating,
+        reviewCount: reviews.length,
         enrollmentCount: Number(json.enrollmentCount ?? 0),
-        tutor: { name: json.tutorName, image: json.tutorImage },
-        modules: (json.modules ?? []).map((m: ApiModule) => ({
+        tutor: {
+          name: json.instructorName ?? null,
+          image: json.instructorImage ?? null,
+          specialty: json.instructorSpecialty ?? null,
+          about: json.aboutInstructor ?? null,
+        },
+        modules: (json.modules ?? []).map((m) => ({
           id: m.id,
           title: m.title,
-          sortOrder: m.order ?? 0,
-          topics: (m.topics ?? []).map((t: ApiTopic) => ({
+          sortOrder: m.order,
+          topics: (m.topics ?? []).map((t) => ({
             id: t.id,
             title: t.title,
             format: t.type === "video_and_text" ? "video" : (t.type ?? "video"),
@@ -61,19 +82,12 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
                   : null,
           })),
         })),
-        reviews: (json.reviews ?? []).map((r: ApiReview) => ({
-          id: r.id,
-          body: r.body,
-          rating: r.rating,
-          studentName: r.studentName,
-          studentImage: r.studentImage,
-        })),
+        reviews: json.reviews ?? [],
       }
     },
     enabled: !!courseId,
   })
-
-  if (isLoading) {
+  if (isPending) {
     return (
       <div className="mx-auto py-8">
         <div className="grid gap-0 md:grid-cols-[2.2fr_0.8fr]">
@@ -149,7 +163,10 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
             <Skeleton className="h-8 w-44" />
             <div className="mt-5 flex flex-col gap-3">
               {[1, 2, 3].map((mod) => (
-                <div key={mod} className="border-b border-b-[#e5e7eb] last:border-b-0">
+                <div
+                  key={mod}
+                  className="border-b border-b-[#e5e7eb] last:border-b-0"
+                >
                   <div className="flex w-full items-center justify-between px-5 py-3">
                     <div className="flex-1">
                       <Skeleton className="h-5 w-44" />
@@ -195,13 +212,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
     )
   }
 
-  if (!course) {
-    return (
-      <div className="mx-auto flex items-center justify-center py-20">
-        <p className="text-[#6b7280]">Course not found.</p>
-      </div>
-    )
-  }
+  if (!course) notFound()
 
   return (
     <div className="mx-auto py-8">

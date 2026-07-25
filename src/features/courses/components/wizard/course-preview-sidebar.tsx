@@ -21,7 +21,7 @@ export function CoursePreviewSidebar({
   ]
 
   return (
-    <aside className="w-full rounded-2xl border border-[#d9d9d9] bg-white px-4 pt-4 pb-[25px]">
+    <aside className="max-w-[335px] rounded-2xl border border-[#d9d9d9] bg-white px-4 pt-4 pb-[25px]">
       <h2 className="text-xl font-extrabold text-ma-text sm:text-2xl">
         Course information
       </h2>

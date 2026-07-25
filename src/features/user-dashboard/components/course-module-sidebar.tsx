@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { useParams } from "next/navigation"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { ChevronDown, VideoIcon } from "lucide-react"
 
@@ -36,8 +35,7 @@ type CourseData = {
 }
 
 export function CourseModuleSidebar({ course }: { course: CourseData }) {
-  const params = useParams()
-  const courseId = params.courseId as string
+  const courseId = course.id
   const queryClient = useQueryClient()
   const queryKey = ["enrollment-progress", courseId]
   const modules = course.modules
@@ -65,7 +63,7 @@ export function CourseModuleSidebar({ course }: { course: CourseData }) {
     }
   }, [enrollment?.completedTopicIds])
 
-  const totalTopics = modules.reduce((sum, mod) => sum + mod.topics.length, 0)
+  const totalTopics = (modules ?? []).reduce((sum, mod) => sum + mod.topics.length, 0)
 
   const toggleMutation = useMutation({
     mutationFn: async ({
@@ -149,10 +147,11 @@ export function CourseModuleSidebar({ course }: { course: CourseData }) {
       <h2 className="text-2xl font-bold text-ma-text">Course Module</h2>
 
       <div className="mt-5 flex flex-col gap-3">
-        {modules.map((mod) => {
+        {(modules ?? []).map((mod) => {
+          const modTopics = mod.topics ?? []
           const isOpen = openWeeks.has(mod.id)
-          const total = mod.topics.length
-          const done = mod.topics.filter((t) => completed.has(t.id)).length
+          const total = modTopics.length
+          const done = modTopics.filter((t) => completed.has(t.id)).length
           const weekLabel = `Week ${mod.sortOrder + 1}: ${mod.title}`
 
           return (
@@ -180,7 +179,7 @@ export function CourseModuleSidebar({ course }: { course: CourseData }) {
 
               {isOpen && (
                 <div className="flex flex-col gap-1 border-t border-[#e5e7eb] py-2">
-                  {mod.topics.map((topic) => (
+                  {modTopics.map((topic) => (
                     <label
                       key={topic.id}
                       className="flex cursor-pointer items-center gap-3 rounded-lg px-5 py-2 hover:bg-gray-50"

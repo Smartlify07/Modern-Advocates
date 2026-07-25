@@ -21,7 +21,15 @@ export default function DashboardNavbar() {
     <header className="bg-white">
       <div className="relative z-20 mx-auto px-4 py-5 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="flex w-full items-center justify-between">
-          <Link href="/" className="flex w-[157px] flex-col gap-1">
+          <div className="flex items-center gap-3 md:hidden">
+            <ProfileDropdown
+              className="size-10"
+              dropdownWidth="min-w-0 w-72"
+              sideOffset={12}
+              alignOffset={8}
+            />
+          </div>
+          <Link href="/" className="hidden w-[157px] flex-col gap-1 md:flex">
             <Image
               src="/figma-home/logo.svg"
               alt="ModernAdvocates Inc."
@@ -84,9 +92,6 @@ export default function DashboardNavbar() {
                 {item.label}
               </Link>
             ))}
-            <div className="mt-2 flex justify-center">
-              <ProfileDropdown />
-            </div>
           </nav>
         </div>
       </div>

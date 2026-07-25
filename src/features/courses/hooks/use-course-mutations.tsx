@@ -59,8 +59,9 @@ export function useUpdateCourse() {
       }
       return getCourse(courseId)
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
+      queryClient.invalidateQueries({ queryKey: ["course", variables.courseId] })
     },
   })
 }
@@ -84,13 +85,17 @@ export function useSaveCourse() {
       options: SaveCourseOptions
     }): Promise<CourseResponse> => {
       let thumbnailUrl: string | undefined
+      let instructorImageUrl: string | null = null
 
       if (store.thumbnail instanceof File) {
         thumbnailUrl = await uploadThumbnail(store.thumbnail)
       }
+      if (store.instructorPhoto instanceof File) {
+        instructorImageUrl = await uploadThumbnail(store.instructorPhoto)
+      }
 
       const isNew = !store.courseId && !options.courseId
-      const payload = buildCoursePayload(store, thumbnailUrl, options.status)
+      const payload = buildCoursePayload(store, thumbnailUrl, options.status, instructorImageUrl)
 
       if (isNew) {
         return await createCourse.mutateAsync(payload as CreateCoursePayload)
@@ -103,7 +108,7 @@ export function useSaveCourse() {
       toast.success(
         options.status === "published"
           ? "Course published successfully"
-          : "Course saved as draft",
+          : "Saved to your drafts",
       )
 
       if (

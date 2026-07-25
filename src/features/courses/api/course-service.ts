@@ -7,6 +7,9 @@ import {
   removePendingUpload,
 } from "@/features/courses/hooks/use-pending-uploads"
 
+export const DURATION_UNITS = ["Minutes", "Hours", "Days", "Weeks"] as const
+export type DurationUnit = (typeof DURATION_UNITS)[number]
+
 const LANGUAGE_MAP: Record<string, string> = {
   English: "en",
   Spanish: "es",
@@ -39,6 +42,12 @@ export interface CreateCoursePayload {
   overview?: string | null
   language: string
   level: string
+  duration?: number | null
+  durationUnit?: DurationUnit
+  instructorName?: string | null
+  instructorSpecialty?: string | null
+  aboutInstructor?: string | null
+  instructorImage?: string | null
   price: number
   discountedPrice?: number | null
   isFree: boolean
@@ -68,6 +77,12 @@ export interface UpdateCoursePayload {
   overview?: string | null
   language?: string
   level?: string
+  duration?: number | null
+  durationUnit?: DurationUnit
+  instructorName?: string | null
+  instructorSpecialty?: string | null
+  aboutInstructor?: string | null
+  instructorImage?: string | null
   price?: number
   discountedPrice?: number | null
   isFree?: boolean
@@ -79,10 +94,30 @@ function normalizeLanguage(name: string): string {
   return LANGUAGE_MAP[name] ?? name.toLowerCase().slice(0, 2)
 }
 
+const UNIT_TO_MINUTES: Record<DurationUnit, number> = {
+  Minutes: 1,
+  Hours: 60,
+  Days: 1440,
+  Weeks: 10080,
+}
+
+export function durationToMinutes(value: number, unit: DurationUnit): number {
+  return value * UNIT_TO_MINUTES[unit]
+}
+
+export function minutesToDuration(
+  minutes: number,
+  unit: DurationUnit
+): { value: number; unit: DurationUnit } {
+  const divisor = UNIT_TO_MINUTES[unit]
+  return { value: minutes / divisor, unit }
+}
+
 export function buildCoursePayload(
   store: CourseWizardStore,
   thumbnailUrl?: string,
   status?: "draft" | "published",
+  instructorImageUrl?: string | null
 ): CreateCoursePayload {
   return {
     title: store.title,
@@ -90,10 +125,22 @@ export function buildCoursePayload(
     overview: store.overview ? JSON.stringify(store.overview) : null,
     language: normalizeLanguage(store.language),
     level: store.level,
-    price: store.originalPrice ? Number(store.originalPrice) : 0,
-    discountedPrice: store.showStrikedOriginal && store.salePrice
-      ? Number(store.salePrice)
+    duration: store.duration
+      ? durationToMinutes(
+          Number(store.duration),
+          (store.durationUnit || "Hours") as DurationUnit
+        )
       : null,
+    durationUnit: (store.durationUnit as DurationUnit) || "Hours",
+    instructorName: store.instructorName || null,
+    instructorSpecialty: store.instructorSpecialty || null,
+    aboutInstructor: store.aboutInstructor || null,
+    instructorImage: instructorImageUrl ?? store.instructorPhotoPreview ?? null,
+    price: store.originalPrice ? Number(store.originalPrice) : 0,
+    discountedPrice:
+      store.showStrikedOriginal && store.salePrice
+        ? Number(store.salePrice)
+        : null,
     isFree: !store.originalPrice,
     status: status ?? "draft",
     modules: store.sections.map((s, si) => ({
@@ -162,7 +209,7 @@ export async function uploadSingleVideoWithTracking(
   courseId: string,
   title: string,
   courseTitle: string,
-  store: VideoUploadStore,
+  store: VideoUploadStore
 ): Promise<void> {
   const config = await getSignedUploadConfig(courseId, moduleId, topicId, title)
   const uploadId = config.videoId
@@ -211,7 +258,7 @@ export function uploadCourseVideos(
   topicIdMap: Map<string, string>,
   courseId: string,
   courseTitle: string,
-  store: VideoUploadStore,
+  store: VideoUploadStore
 ): Promise<void>[] {
   const uploads: Promise<void>[] = []
   for (const section of sections) {
@@ -229,10 +276,13 @@ export function uploadCourseVideos(
           courseId,
           lecture.title,
           courseTitle,
-          store,
+          store
         ).catch((err) => {
-          console.error(`Failed to upload video for lecture "${lecture.title}":`, err)
-        }),
+          console.error(
+            `Failed to upload video for lecture "${lecture.title}":`,
+            err
+          )
+        })
       )
     }
   }

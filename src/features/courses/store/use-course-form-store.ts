@@ -36,9 +36,13 @@ export interface CourseFormStore {
   setSaleEnd: (v: Date | undefined) => void
 
   level: string
+  duration: string
+  durationUnit: string
   thumbnail: File | null
   thumbnailPreview: string | null
   setLevel: (v: string) => void
+  setDuration: (v: string) => void
+  setDurationUnit: (v: string) => void
   setThumbnail: (file: File | null) => void
 
   courseId: string | null
@@ -59,6 +63,8 @@ export interface CourseFormStore {
     description: string | null
     categoryId: string
     level: string
+    duration?: number | null
+    durationUnit?: string | null
     price: number
     discountedPrice: number | null
     thumbnailUrl: string | null
@@ -129,9 +135,13 @@ export const useCourseFormStore = create<CourseFormStore>((set, get) => ({
   setSaleEnd: (v) => set({ saleEnd: v }),
 
   level: "",
+  duration: "",
+  durationUnit: "Hours",
   thumbnail: null,
   thumbnailPreview: null,
   setLevel: (v) => set({ level: v }),
+  setDuration: (v) => set({ duration: v }),
+  setDurationUnit: (v) => set({ durationUnit: v }),
   setThumbnail: (file) =>
     set((state) => {
       if (state.thumbnailPreview) URL.revokeObjectURL(state.thumbnailPreview)
@@ -170,6 +180,8 @@ export const useCourseFormStore = create<CourseFormStore>((set, get) => ({
         title: state.title || "Untitled Course",
         description: state.description,
         level: state.level || "beginner",
+        duration: state.duration ? Number(state.duration) : null,
+        durationUnit: state.durationUnit || "Hours",
         price: parseFloat(state.price) || 0,
         discountedPrice: state.isFree
           ? null
@@ -266,6 +278,8 @@ export const useCourseFormStore = create<CourseFormStore>((set, get) => ({
       description: course.description ?? "",
       categoryId: course.categoryId,
       level: course.level,
+      duration: String(course.duration ?? ""),
+      durationUnit: course.durationUnit ?? "Hours",
       price: String(course.price),
       discount: course.discountedPrice
         ? Math.round((1 - course.discountedPrice / course.price) * 100)
@@ -306,6 +320,8 @@ export const useCourseFormStore = create<CourseFormStore>((set, get) => ({
       saleStart: undefined,
       saleEnd: undefined,
       level: "",
+      duration: "",
+      durationUnit: "Hours",
       thumbnail: null,
       thumbnailPreview: null,
       courseId: null,

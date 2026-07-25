@@ -5,6 +5,7 @@ import { db } from "@/infrastructure/database/client"
 import { enrollments } from "@/infrastructure/database/schema/course"
 import { requireSession } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError } from "@/infrastructure/auth/errors"
+import { isValidUuid } from "@/shared/utils"
 import * as Sentry from "@sentry/nextjs"
 
 export async function GET(
@@ -14,6 +15,10 @@ export async function GET(
   try {
     const { user: currentUser } = await requireSession()
     const { courseId } = await params
+
+    if (!isValidUuid(courseId)) {
+      return NextResponse.json({ enrolled: false })
+    }
 
     const enrollment = await db
       .select({ id: enrollments.id, status: enrollments.status })

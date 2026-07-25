@@ -20,7 +20,7 @@ type Review = {
   studentName: string | null
   studentImage: string | null
 }
-type Tutor = { name: string | null; image: string | null }
+type Tutor = { name: string | null; image: string | null; specialty: string | null; about: string | null }
 
 type CourseData = {
   id: string
@@ -28,6 +28,7 @@ type CourseData = {
   overview: string | null
   thumbnailUrl: string | null
   duration: number | null
+  durationUnit: string | null
   level: string
   language: string
   avgRating: number
@@ -93,8 +94,8 @@ export function CoursePlayerContent({ course }: { course: CourseData }) {
         ) : (
           <div className="flex flex-col gap-5">
             <h2 className="text-2xl font-bold text-ma-text">Student Reviews</h2>
-            {course.reviews.length > 0 ? (
-              course.reviews.map((r) => <ReviewCard key={r.id} review={r} />)
+            {(course.reviews?.length ?? 0) > 0 ? (
+              course.reviews?.map((r) => <ReviewCard key={r.id} review={r} />)
             ) : (
               <p className="text-base text-[#6b7280]">No reviews yet.</p>
             )}

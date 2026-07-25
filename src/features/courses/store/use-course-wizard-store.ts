@@ -2,6 +2,7 @@
 
 import { create } from "zustand"
 import type { JSONContent } from "@tiptap/react"
+import { minutesToDuration } from "@/features/courses/api/course-service"
 
 export interface Lecture {
   id: string
@@ -39,6 +40,8 @@ export interface CourseWizardStore {
   instructorName: string
   instructorSpecialty: string
   aboutInstructor: string
+  instructorPhoto: File | null
+  instructorPhotoPreview: string | null
 
   sections: Section[]
 
@@ -61,6 +64,7 @@ export interface CourseWizardStore {
   setInstructorName: (v: string) => void
   setInstructorSpecialty: (v: string) => void
   setAboutInstructor: (v: string) => void
+  setInstructorPhoto: (file: File | null) => void
 
   addSection: () => void
   updateSection: (id: string, title: string) => void
@@ -97,10 +101,12 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
   language: "English",
   level: "",
   duration: "",
-  durationUnit: "Day",
+  durationUnit: "Days",
   instructorName: "",
   instructorSpecialty: "",
   aboutInstructor: "",
+  instructorPhoto: null,
+  instructorPhotoPreview: null,
 
   sections: [],
 
@@ -132,6 +138,16 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
   setInstructorName: (v) => set({ instructorName: v }),
   setInstructorSpecialty: (v) => set({ instructorSpecialty: v }),
   setAboutInstructor: (v) => set({ aboutInstructor: v }),
+  setInstructorPhoto: (file) =>
+    set((state) => {
+      if (state.instructorPhotoPreview && !state.instructorPhotoPreview.startsWith("http")) {
+        URL.revokeObjectURL(state.instructorPhotoPreview)
+      }
+      return {
+        instructorPhoto: file,
+        instructorPhotoPreview: file ? URL.createObjectURL(file) : null,
+      }
+    }),
 
   addSection: () =>
     set((state) => ({
@@ -208,6 +224,10 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
   setCompletedSteps: (steps) => set({ completedSteps: steps }),
 
   initialize: (course) => {
+    const languageMap: Record<string, string> = {
+      en: "English", es: "Spanish", fr: "French", de: "German",
+      zh: "Chinese", ja: "Japanese", ar: "Arabic", pt: "Portuguese",
+    }
     set({
       currentStep: 0,
       completedSteps: [],
@@ -218,14 +238,26 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
       originalPrice: String(course.price ?? ""),
       salePrice: course.discountedPrice ? String(course.discountedPrice) : "",
       showStrikedOriginal: !!course.discountedPrice,
-      overview: course.overview ?? null,
-      language: course.language ?? "English",
+      overview: course.overview
+        ? (() => {
+            if (typeof course.overview === "string") {
+              try { return JSON.parse(course.overview) } catch {
+                // Plain text fallback — wrap in Tiptap doc
+                return { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: course.overview }] }] } as JSONContent
+              }
+            }
+            return course.overview
+          })()
+        : null,
+      language: languageMap[course.language] ?? course.language ?? "English",
       level: course.level ?? "",
-      duration: course.duration?.value ?? "",
-      durationUnit: course.duration?.unit ?? "Day",
+      duration: course.duration ? String(minutesToDuration(course.duration, course.durationUnit ?? "Hours").value) : "",
+      durationUnit: course.durationUnit ?? "Hours",
       instructorName: course.instructorName ?? "",
       instructorSpecialty: course.instructorSpecialty ?? "",
       aboutInstructor: course.aboutInstructor ?? "",
+      instructorPhoto: null,
+      instructorPhotoPreview: course.instructorImage ?? null,
       sections: (course.modules ?? []).map((mod: any, mi: number) => ({
         id: mod.id,
         title: mod.title ?? "",
@@ -244,9 +276,12 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
   },
 
   resetForm: () => {
-    const { thumbnailPreview } = get()
+    const { thumbnailPreview, instructorPhotoPreview } = get()
     if (thumbnailPreview && !thumbnailPreview.startsWith("http")) {
       URL.revokeObjectURL(thumbnailPreview)
+    }
+    if (instructorPhotoPreview && !instructorPhotoPreview.startsWith("http")) {
+      URL.revokeObjectURL(instructorPhotoPreview)
     }
     set({
       currentStep: 0,
@@ -261,10 +296,12 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
       language: "English",
       level: "",
       duration: "",
-      durationUnit: "Day",
+  durationUnit: "Hours",
       instructorName: "",
       instructorSpecialty: "",
       aboutInstructor: "",
+      instructorPhoto: null,
+      instructorPhotoPreview: null,
       sections: [],
       courseId: null,
       isSaving: false,

@@ -1,5 +1,6 @@
 import { config } from "dotenv"
-config({ path: ".env" })
+const envPath = process.argv[2] || ".env"
+config({ path: envPath })
 
 import { Pool } from "pg"
 

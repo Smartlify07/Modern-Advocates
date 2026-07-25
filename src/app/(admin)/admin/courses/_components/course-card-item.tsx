@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { Button } from "@/shared/ui/button"
 import {
@@ -11,15 +11,22 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
-import { MoreHorizontalIcon, PencilIcon, ArchiveIcon, RotateCcwIcon } from "lucide-react"
+import {
+  MoreHorizontalIcon,
+  PencilIcon,
+  ArchiveIcon,
+  RotateCcwIcon,
+  Trash2Icon,
+} from "lucide-react"
 import { CourseCard } from "@/features/courses/components/course-card"
 import { ArchiveCourseDialog } from "./archive-course-dialog"
+import { DeleteCourseDialog } from "./delete-course-dialog"
 import type { Course } from "./types"
 
 export default function CourseCardItem({ course }: { course: Course }) {
   const router = useRouter()
   const [dialogAction, setDialogAction] = useState<
-    "archive" | "unarchive" | null
+    "archive" | "unarchive" | "delete" | null
   >(null)
   const isArchived = course.status === "archived"
 
@@ -38,7 +45,9 @@ export default function CourseCardItem({ course }: { course: Course }) {
     },
     onError: (err) => {
       console.error(err)
-      toast.error(err instanceof Error ? err.message : "Failed to archive course")
+      toast.error(
+        err instanceof Error ? err.message : "Failed to archive course"
+      )
     },
     onSettled: () => setDialogAction(null),
   })
@@ -56,34 +65,75 @@ export default function CourseCardItem({ course }: { course: Course }) {
     },
     onError: (err) => {
       console.error(err)
-      toast.error(err instanceof Error ? err.message : "Failed to unarchive course")
+      toast.error(
+        err instanceof Error ? err.message : "Failed to unarchive course"
+      )
+    },
+    onSettled: () => setDialogAction(null),
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/courses/${course.id}`, {
+        method: "DELETE",
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error ?? "Failed to delete course")
+      }
+    },
+    onSuccess: () => {
+      toast.success("Course deleted")
+      queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
+    },
+    onError: (err) => {
+      console.error(err)
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete course"
+      )
     },
     onSettled: () => setDialogAction(null),
   })
 
   const mode = dialogAction ?? (isArchived ? "unarchive" : "archive")
   const isPending =
-    mode === "archive" ? archiveMutation.isPending : unarchiveMutation.isPending
+    mode === "archive"
+      ? archiveMutation.isPending
+      : mode === "unarchive"
+        ? unarchiveMutation.isPending
+        : deleteMutation.isPending
 
   return (
     <>
       <div className="group flex w-full flex-col gap-5 rounded-[24px] border border-[#d9d9d9] bg-white px-2.5 pt-2.5 pb-5 transition-colors duration-300 hover:bg-gray-50">
-        <CourseCard.Thumbnail src={course.thumbnailUrl} alt={course.title} />
+        <CourseCard.Thumbnail src={course.thumbnailUrl} alt={course.title || "Untitled"} />
         <div className="flex flex-1 flex-col justify-between gap-4">
           <CourseCard.Content className="min-h-[64px]">
             <CourseCard.Title className="text-lg">
-              {course.title}
+              {course.title || "Untitled"}
             </CourseCard.Title>
-            <CourseCard.Tutor name={course.tutorName ?? "Unknown Instructor"} />
+            <CourseCard.Tutor
+              name={course.instructorName || "Instructor name"}
+            />
           </CourseCard.Content>
           <div className="flex items-center justify-between px-2.5">
-            {course.isFree ? (
+            {course.status === "draft" || course.status === "archived" ? (
+              <p className="text-sm font-medium text-[#6B7280]">In Draft</p>
+            ) : course.isFree ? (
               <span className="text-xl font-medium text-ma-text">Free</span>
             ) : (
-              <CourseCard.Price
-                price={course.price}
-                discountedPrice={course.discountedPrice}
-              />
+              <div className="flex flex-wrap items-baseline gap-2.5 leading-normal font-medium">
+                {course.discountedPrice && (
+                  <CourseCard.DiscountedPrice
+                    className="text-sm"
+                    discountedPrice={course.discountedPrice}
+                  />
+                )}
+                <CourseCard.DisplayPrice
+                  className="text-xs"
+                  displayPrice={course.price}
+                />
+              </div>
             )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -121,6 +171,13 @@ export default function CourseCardItem({ course }: { course: Course }) {
                   )}
                   {isArchived ? "Unarchive" : "Archive"}
                 </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setDialogAction("delete")}
+                  variant="destructive"
+                >
+                  <Trash2Icon className="size-4" />
+                  Delete
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -128,12 +185,12 @@ export default function CourseCardItem({ course }: { course: Course }) {
       </div>
 
       <ArchiveCourseDialog
-        open={!!dialogAction}
+        open={dialogAction === "archive" || dialogAction === "unarchive"}
         onOpenChange={(o) => {
           if (!o) setDialogAction(null)
         }}
         course={course}
-        mode={mode}
+        mode={mode === "archive" ? "archive" : "unarchive"}
         onConfirm={() => {
           if (mode === "archive") {
             archiveMutation.mutate()
@@ -141,6 +198,16 @@ export default function CourseCardItem({ course }: { course: Course }) {
             unarchiveMutation.mutate()
           }
         }}
+        isPending={isPending}
+      />
+
+      <DeleteCourseDialog
+        open={dialogAction === "delete"}
+        onOpenChange={(o) => {
+          if (!o) setDialogAction(null)
+        }}
+        course={course}
+        onConfirm={() => deleteMutation.mutate()}
         isPending={isPending}
       />
     </>
