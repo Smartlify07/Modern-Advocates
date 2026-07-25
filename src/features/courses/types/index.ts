@@ -1,3 +1,5 @@
+import type { JSONContent } from "@tiptap/react"
+
 export type TopicType = "video" | "text" | "video_and_text"
 
 export interface Topic {
@@ -6,7 +8,7 @@ export interface Topic {
   type: TopicType
   videoUrl: string | null
   videoId: string | null
-  description: unknown
+  description: JSONContent | null
   order: number
 }
 
@@ -23,6 +25,23 @@ export interface CourseApiReview {
   rating: number
   studentName: string | null
   studentImage: string | null
+}
+
+export interface CourseApiTopic {
+  id: string
+  title: string
+  type: string
+  description: unknown
+  order: number
+  videoUrl: string | null
+  videoId: string | null
+}
+
+export interface CourseApiModule {
+  id: string
+  title: string
+  order: number
+  topics: CourseApiTopic[]
 }
 
 export interface CourseApiResponse {
@@ -45,7 +64,7 @@ export interface CourseApiResponse {
   createdAt: string | null
   updatedAt: string | null
   instructorImage: string | null
-  modules: Module[]
+  modules: CourseApiModule[]
   reviews: CourseApiReview[]
   enrollmentCount: number
 }

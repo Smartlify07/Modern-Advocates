@@ -42,6 +42,12 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
       if (!r.ok) throw new Error("Failed to fetch course")
       const json = (await r.json()) as CourseApiResponse
 
+      const reviews = json.reviews ?? []
+      const avgRating =
+        reviews.length > 0
+          ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+          : 0
+
       return {
         id: json.id,
         title: json.title,
@@ -51,8 +57,8 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
         level: json.level,
         duration: json.duration ? Number(json.duration) : null,
         durationUnit: json.durationUnit ?? "Hours",
-        avgRating: Number(json.avgRating ?? 0),
-        reviewCount: Number(json.reviewCount ?? 0),
+        avgRating,
+        reviewCount: reviews.length,
         enrollmentCount: Number(json.enrollmentCount ?? 0),
         tutor: {
           name: json.instructorName ?? null,
