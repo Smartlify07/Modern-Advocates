@@ -68,7 +68,7 @@ export function ReviewDialog() {
           studentImage: null,
         }
         const newCount = old.reviewCount + 1
-        const newAvg = ((old.avgRating * old.reviewCount) + rating) / newCount
+        const newAvg = (old.avgRating * old.reviewCount + rating) / newCount
         return {
           ...old,
           reviews: [...old.reviews, optimisticReview],
@@ -114,7 +114,7 @@ export function ReviewDialog() {
       >
         Leave review
       </button>
-      <DialogContent className="px-0 py-0 sm:max-w-md">
+      <DialogContent className="px-0 py-0 sm:max-w-xl">
         <DialogHeader className="border-b px-5 py-4">
           <DialogTitle className="font-sans">Write a review</DialogTitle>
         </DialogHeader>
@@ -130,9 +130,7 @@ export function ReviewDialog() {
                   key={star}
                   type="button"
                   onClick={() => setRating(star)}
-                  className="cursor-pointer
-                    [&:hover_svg]:fill-[#FFA62F] [&:hover_svg]:text-[#FFA62F]
-                    [&:hover~button_svg]:fill-[#FFA62F] [&:hover~button_svg]:text-[#FFA62F]"
+                  className="cursor-pointer [&:hover_svg]:fill-[#FFA62F] [&:hover_svg]:text-[#FFA62F] [&:hover~button_svg]:fill-[#FFA62F] [&:hover~button_svg]:text-[#FFA62F]"
                 >
                   <Star
                     className={cn(
@@ -170,11 +168,19 @@ export function ReviewDialog() {
           showCloseButton={false}
         >
           <DialogClose asChild>
-            <Button variant="outline" onClick={handleCancel}>
+            <Button
+              variant="outline"
+              className="h-11 w-25"
+              onClick={handleCancel}
+            >
               Cancel
             </Button>
           </DialogClose>
-          <Button onClick={handleSubmit} disabled={isPending} className="gap-3">
+          <Button
+            onClick={handleSubmit}
+            disabled={isPending}
+            className="h-11 gap-3"
+          >
             {isPending ? "Submitting..." : "Submit Review"} <SendHorizonal />
           </Button>
         </DialogFooter>
