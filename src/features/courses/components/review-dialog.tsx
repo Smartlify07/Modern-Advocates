@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { useParams } from "next/navigation"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
@@ -27,15 +27,25 @@ const ratingLabels: Record<number, string> = {
   5: "Amazing",
 }
 
-export function ReviewDialog() {
+interface ReviewDialogProps {
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+}
+
+export function ReviewDialog({
+  open: openProp,
+  onOpenChange,
+}: ReviewDialogProps) {
   const params = useParams()
   const courseId = params.courseId as string
   const queryClient = useQueryClient()
   const { data: session } = authClient.useSession()
 
-  const [open, setOpen] = useState(false)
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = openProp ?? internalOpen
+  const setOpen = onOpenChange ?? setInternalOpen
   const [rating, setRating] = useState(4)
-  const [feedback, setFeedback] = useState("")
+  const feedbackRef = useRef<HTMLTextAreaElement>(null)
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
@@ -45,7 +55,7 @@ export function ReviewDialog() {
         body: JSON.stringify({
           courseId,
           rating,
-          body: feedback.trim() || undefined,
+          body: feedbackRef.current?.value.trim() || undefined,
         }),
       })
       if (!r.ok) {
@@ -62,7 +72,7 @@ export function ReviewDialog() {
         if (!old) return old
         const optimisticReview = {
           id: crypto.randomUUID(),
-          body: feedback.trim() || null,
+          body: feedbackRef.current?.value.trim() || null,
           rating,
           studentName: session?.user?.name ?? "You",
           studentImage: null,
@@ -98,7 +108,7 @@ export function ReviewDialog() {
   function handleCancel() {
     setOpen(false)
     setRating(4)
-    setFeedback("")
+    if (feedbackRef.current) feedbackRef.current.value = ""
   }
 
   function handleSubmit() {
@@ -107,13 +117,6 @@ export function ReviewDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="hidden bg-[#E7EBEF] px-3 py-1.5 text-sm text-[#448AFF] md:block"
-      >
-        Leave review
-      </button>
       <DialogContent className="px-0 py-0 sm:max-w-xl">
         <DialogHeader className="border-b px-5 py-4">
           <DialogTitle className="font-sans">Write a review</DialogTitle>
@@ -153,10 +156,10 @@ export function ReviewDialog() {
               Feedback
             </FieldLabel>
             <textarea
+              ref={feedbackRef}
               id="feedback"
               placeholder="Share your thoughts"
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
+              defaultValue=""
               rows={4}
               className="w-full resize-none rounded-lg border px-3 py-2 text-sm ring-0 outline-none placeholder:text-[#6B7280] focus:ring-2 focus:ring-ring"
             />
@@ -170,7 +173,7 @@ export function ReviewDialog() {
           <DialogClose asChild>
             <Button
               variant="outline"
-              className="h-11 w-25"
+              className="h-11 lg:w-25"
               onClick={handleCancel}
             >
               Cancel
