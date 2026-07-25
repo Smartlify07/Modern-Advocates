@@ -51,13 +51,15 @@ const updateModuleSchema = z.object({
   topics: z.array(updateTopicSchema).optional(),
 })
 
+const emptyToUndefined = z.preprocess((v) => (v === "" ? undefined : v), z.unknown())
+
 export const updateCourseSchema = z.object({
   title: z.string().max(255).optional(),
   description: z.string().optional().nullable(),
   overview: z.string().optional().nullable(),
-  level: z.enum(["beginner", "intermediate", "advanced"]).optional().nullable(),
+  level: emptyToUndefined.pipe(z.enum(["beginner", "intermediate", "advanced"]).optional().nullable()),
   duration: z.number().int().min(0).nullable().optional(),
-  durationUnit: z.enum(DURATION_UNITS).optional().nullable(),
+  durationUnit: emptyToUndefined.pipe(z.enum(DURATION_UNITS).optional().nullable()),
   instructorName: z.string().max(255).optional().nullable(),
   instructorSpecialty: z.string().max(255).optional().nullable(),
   aboutInstructor: z.string().optional().nullable(),
