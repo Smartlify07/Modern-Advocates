@@ -1,6 +1,9 @@
 import type { CourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
 import type { VideoUploadStore } from "@/features/courses/store/use-video-upload-store"
-import { uploadInChunks, type ChunkedUploadConfig } from "@/shared/lib/cloudinary-upload"
+import {
+  uploadInChunks,
+  type ChunkedUploadConfig,
+} from "@/shared/lib/cloudinary-upload"
 import {
   savePendingUpload,
   updatePendingUpload,
@@ -105,7 +108,10 @@ export function durationToMinutes(value: number, unit: DurationUnit): number {
   return value * UNIT_TO_MINUTES[unit]
 }
 
-export function minutesToDuration(minutes: number, unit: DurationUnit): { value: number; unit: DurationUnit } {
+export function minutesToDuration(
+  minutes: number,
+  unit: DurationUnit
+): { value: number; unit: DurationUnit } {
   const divisor = UNIT_TO_MINUTES[unit]
   return { value: minutes / divisor, unit }
 }
@@ -114,7 +120,7 @@ export function buildCoursePayload(
   store: CourseWizardStore,
   thumbnailUrl?: string,
   status?: "draft" | "published",
-  instructorImageUrl?: string | null,
+  instructorImageUrl?: string | null
 ): CreateCoursePayload {
   return {
     title: store.title,
@@ -122,16 +128,22 @@ export function buildCoursePayload(
     overview: store.overview ? JSON.stringify(store.overview) : null,
     language: normalizeLanguage(store.language),
     level: store.level,
-    duration: store.duration ? durationToMinutes(Number(store.duration), (store.durationUnit || "Hours") as DurationUnit) : null,
+    duration: store.duration
+      ? durationToMinutes(
+          Number(store.duration),
+          (store.durationUnit || "Hours") as DurationUnit
+        )
+      : null,
     durationUnit: (store.durationUnit as DurationUnit) || "Hours",
     instructorName: store.instructorName || null,
     instructorSpecialty: store.instructorSpecialty || null,
     aboutInstructor: store.aboutInstructor || null,
     instructorImage: instructorImageUrl ?? store.instructorPhotoPreview ?? null,
     price: store.originalPrice ? Number(store.originalPrice) : 0,
-    discountedPrice: store.showStrikedOriginal && store.salePrice
-      ? Number(store.salePrice)
-      : null,
+    discountedPrice:
+      store.showStrikedOriginal && store.salePrice
+        ? Number(store.salePrice)
+        : null,
     isFree: !store.originalPrice,
     status: status ?? "draft",
     modules: store.sections.map((s, si) => ({
@@ -177,7 +189,7 @@ async function getSignedUploadConfig(
   courseId: string,
   moduleId: string,
   topicId: string,
-  title: string,
+  title: string
 ): Promise<ChunkedUploadConfig & { videoId: string }> {
   const res = await fetch("/api/videos/sign-upload", {
     method: "POST",
@@ -200,7 +212,7 @@ export async function uploadSingleVideoWithTracking(
   courseId: string,
   title: string,
   courseTitle: string,
-  store: VideoUploadStore,
+  store: VideoUploadStore
 ): Promise<void> {
   const config = await getSignedUploadConfig(courseId, moduleId, topicId, title)
   const uploadId = config.videoId
@@ -248,7 +260,7 @@ export function uploadCourseVideos(
   topicIdMap: Map<string, string>,
   courseId: string,
   courseTitle: string,
-  store: VideoUploadStore,
+  store: VideoUploadStore
 ): Promise<void>[] {
   const uploads: Promise<void>[] = []
   for (const section of sections) {
@@ -266,10 +278,13 @@ export function uploadCourseVideos(
           courseId,
           lecture.title,
           courseTitle,
-          store,
+          store
         ).catch((err) => {
-          console.error(`Failed to upload video for lecture "${lecture.title}":`, err)
-        }),
+          console.error(
+            `Failed to upload video for lecture "${lecture.title}":`,
+            err
+          )
+        })
       )
     }
   }

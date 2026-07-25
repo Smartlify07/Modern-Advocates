@@ -5,6 +5,7 @@ import { notFound } from "next/navigation"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { CoursePlayerContent } from "@/features/user-dashboard/components/course-player-content"
 import { CourseModuleSidebar } from "@/features/user-dashboard/components/course-module-sidebar"
+import type { CourseApiResponse } from "@/features/courses/types"
 
 function extractText(input: unknown): string {
   if (typeof input !== "string") return ""
@@ -39,7 +40,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
       const r = await fetch(`/api/courses/${courseId}`)
       if (r.status === 404) return null
       if (!r.ok) throw new Error("Failed to fetch course")
-      const json = await r.json()
+      const json = (await r.json()) as CourseApiResponse
 
       return {
         id: json.id,
@@ -49,6 +50,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
         language: json.language,
         level: json.level,
         duration: json.duration ? Number(json.duration) : null,
+        durationUnit: json.durationUnit ?? "Hours",
         avgRating: Number(json.avgRating ?? 0),
         reviewCount: Number(json.reviewCount ?? 0),
         enrollmentCount: Number(json.enrollmentCount ?? 0),
@@ -58,11 +60,11 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
           specialty: json.instructorSpecialty ?? null,
           about: json.aboutInstructor ?? null,
         },
-        modules: (json.modules ?? []).map((m: Record<string, unknown>) => ({
+        modules: (json.modules ?? []).map((m) => ({
           id: m.id,
           title: m.title,
-          sortOrder: m.order ?? 0,
-          topics: ((m.topics as Record<string, unknown>[]) ?? []).map((t) => ({
+          sortOrder: m.order,
+          topics: (m.topics ?? []).map((t) => ({
             id: t.id,
             title: t.title,
             format: t.type === "video_and_text" ? "video" : (t.type ?? "video"),

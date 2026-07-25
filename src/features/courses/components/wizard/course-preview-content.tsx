@@ -27,7 +27,7 @@ export function CoursePreviewContent() {
     ? level.charAt(0).toUpperCase() + level.slice(1)
     : ""
   const languageDisplay = language || "English"
-  const totalDuration = duration ? `${duration} ${durationUnit}` : "Self-paced"
+  const totalDuration = duration ? `${duration} ${durationUnit}` : "No duration"
 
   return (
     <section className="bg-white py-10 text-ma-text lg:py-12">
