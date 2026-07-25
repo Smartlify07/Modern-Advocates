@@ -20,7 +20,12 @@ type Review = {
   studentName: string | null
   studentImage: string | null
 }
-type Tutor = { name: string | null; image: string | null; specialty: string | null; about: string | null }
+type Tutor = {
+  name: string | null
+  image: string | null
+  specialty: string | null
+  about: string | null
+}
 
 type CourseData = {
   id: string
@@ -65,7 +70,7 @@ export function CoursePlayerContent({ course }: { course: CourseData }) {
         </button>
       </div>
 
-      <div className="mt-10 flex min-h-125 flex-col gap-7.5 px-4 lg:ml-[calc(max(100px,(100vw-1080px)/2))] lg:w-[600px] lg:px-0">
+      <div className="mt-10 grid min-h-125 flex-col gap-7.5 px-4 lg:ml-[calc(max(100px,(100vw-1080px)/2))] lg:w-[600px] lg:px-0">
         {tab === "overview" ? (
           <>
             <div>
@@ -92,7 +97,7 @@ export function CoursePlayerContent({ course }: { course: CourseData }) {
             </div>
           </>
         ) : (
-          <div className="flex flex-col gap-5">
+          <div className="grid gap-5">
             <h2 className="text-2xl font-bold text-ma-text">Student Reviews</h2>
             {(course.reviews?.length ?? 0) > 0 ? (
               course.reviews?.map((r) => <ReviewCard key={r.id} review={r} />)
