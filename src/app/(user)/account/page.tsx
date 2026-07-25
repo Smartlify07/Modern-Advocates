@@ -172,7 +172,7 @@ export default function AccountPage() {
       <div>
         <Button
           onClick={handleSave}
-          className="h-11 w-60 rounded-full"
+          className="h-11 w-full rounded-full lg:w-60"
           disabled={!hasChanges || saving}
         >
           {saving ? "Saving..." : "Save"}
