@@ -45,6 +45,7 @@ export const courses = pgTable(
     instructorName: text("instructor_name"),
     instructorSpecialty: text("instructor_specialty"),
     aboutInstructor: text("about_instructor"),
+    instructorImage: text("instructor_image"),
     status: courseStatus("status").notNull().default("draft"),
     tutorId: text("tutor_id")
       .notNull()

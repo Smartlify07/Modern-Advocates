@@ -28,6 +28,7 @@ type CourseData = {
   overview: string | null
   thumbnailUrl: string | null
   duration: number | null
+  durationUnit: string | null
   level: string
   language: string
   avgRating: number

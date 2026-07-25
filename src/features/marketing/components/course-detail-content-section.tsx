@@ -17,6 +17,7 @@ type CourseContentData = {
   language: string
   level: string
   duration: number | null
+  durationUnit: string | null
   tutor: TutorData
   avgRating: number
   reviewCount: number

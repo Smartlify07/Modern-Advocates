@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 
 import { CourseDetailHeroSection } from "@/features/marketing/components/course-detail-hero-section"
 import { CourseDetailContentSection } from "@/features/marketing/components/course-detail-content-section"
+import type { CourseApiResponse, CourseApiReview } from "@/features/courses/types"
 
 interface TiptapNode {
   type?: string
@@ -28,7 +29,7 @@ function extractTextFromJson(input: unknown): string {
   }
 }
 
-async function fetchCourse(id: string) {
+async function fetchCourse(id: string): Promise<CourseApiResponse | null> {
   const origin = process.env.NEXT_PUBLIC_APP_URL
   if (!origin) {
     throw new Error("NEXT_PUBLIC_APP_URL is not configured")
@@ -51,13 +52,7 @@ export default async function CourseDetailPage({
   if (!course) notFound()
 
   const normalizedReviews = (course.reviews ?? []).map(
-    (r: {
-      id: string
-      body: string | null
-      rating: number
-      studentName: string | null
-      studentImage: string | null
-    }) => ({
+    (r: CourseApiReview) => ({
       id: r.id,
       body: r.body,
       rating: r.rating,
@@ -69,7 +64,7 @@ export default async function CourseDetailPage({
   const avgRating =
     normalizedReviews.length > 0
       ? normalizedReviews.reduce(
-          (sum: number, r: { rating: number }) => sum + r.rating,
+          (sum: number, r: typeof normalizedReviews[number]) => sum + r.rating,
           0
         ) / normalizedReviews.length
       : 0
@@ -90,9 +85,10 @@ export default async function CourseDetailPage({
       ? Number(course.discountedPrice)
       : null,
     duration: course.duration,
+    durationUnit: course.durationUnit,
     tutor: {
       name: course.instructorName,
-      image: course.tutorImage,
+      image: course.instructorImage,
       specialty: course.instructorSpecialty ?? null,
       about: course.aboutInstructor ?? null,
     },

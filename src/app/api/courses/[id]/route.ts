@@ -51,11 +51,10 @@ export async function GET(
         tutorId: courses.tutorId,
         createdAt: courses.createdAt,
         updatedAt: courses.updatedAt,
-        tutorImage: user.image,
+        instructorImage: courses.instructorImage,
       })
       .from(courses)
       .where(eq(courses.id, id))
-      .innerJoin(user, eq(courses.tutorId, user.id))
       .then((r) => r[0])
 
     if (!course) {
@@ -213,6 +212,7 @@ export async function PATCH(
       instructorName,
       instructorSpecialty,
       aboutInstructor,
+      instructorImage,
       price,
       discountedPrice,
       isFree,
@@ -236,6 +236,8 @@ export async function PATCH(
         updateData.instructorSpecialty = instructorSpecialty
       if (aboutInstructor !== undefined)
         updateData.aboutInstructor = aboutInstructor
+      if (instructorImage !== undefined)
+        updateData.instructorImage = instructorImage
       if (price !== undefined) updateData.price = isFree ? 0 : price
       if (discountedPrice !== undefined)
         updateData.discountedPrice = isFree ? null : discountedPrice
@@ -340,6 +342,7 @@ export async function PATCH(
 
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.log(error)
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
@@ -379,7 +382,7 @@ export async function DELETE(
         {
           error: `Cannot delete this course because ${enrollmentResult.count} student${enrollmentResult.count !== 1 ? "s have" : " has"} already enrolled.`,
         },
-        { status: 409 },
+        { status: 409 }
       )
     }
 
