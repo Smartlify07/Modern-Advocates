@@ -36,7 +36,10 @@ export function UserAvatar({
         <AvatarImage src={user.image} alt={user.name ?? ""} />
       ) : null}
       <AvatarFallback
-        className={cn("bg-primary text-primary-foreground", fallbackClassName)}
+        className={cn(
+          "size-[50px] bg-primary text-primary-foreground",
+          fallbackClassName
+        )}
       >
         {initials}
       </AvatarFallback>

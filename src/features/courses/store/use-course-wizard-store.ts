@@ -3,22 +3,24 @@
 import { create } from "zustand"
 import type { JSONContent } from "@tiptap/react"
 import { minutesToDuration } from "@/features/courses/api/course-service"
+import type { TopicType, CourseApiResponse } from "@/features/courses/types"
 
-export interface Lecture {
+export interface Topic {
   id: string
   title: string
-  mediaType: "none" | "video" | "lecture_notes"
-  mediaName: string | null
-  mediaUrl: string | null
+  type: TopicType
+  videoId: string | null
+  videoTitle: string | null
+  description: string
+  order: number
   videoFile: File | null
-  notesContent: string
 }
 
-export interface Section {
+export interface Module {
   id: string
   title: string
   order: number
-  lectures: Lecture[]
+  topics: Topic[]
 }
 
 export interface CourseWizardStore {
@@ -43,7 +45,7 @@ export interface CourseWizardStore {
   instructorPhoto: File | null
   instructorPhotoPreview: string | null
 
-  sections: Section[]
+  modules: Module[]
 
   courseId: string | null
   isSaving: boolean
@@ -66,13 +68,13 @@ export interface CourseWizardStore {
   setAboutInstructor: (v: string) => void
   setInstructorPhoto: (file: File | null) => void
 
-  addSection: () => void
-  updateSection: (id: string, title: string) => void
-  removeSection: (id: string) => void
+  addModule: () => void
+  updateModule: (id: string, title: string) => void
+  removeModule: (id: string) => void
 
-  addLecture: (sectionId: string) => void
-  updateLecture: (sectionId: string, lectureId: string, updates: Partial<Lecture>) => void
-  removeLecture: (sectionId: string, lectureId: string) => void
+  addTopic: (moduleId: string) => void
+  updateTopic: (moduleId: string, topicId: string, updates: Partial<Topic>) => void
+  removeTopic: (moduleId: string, topicId: string) => void
 
   setCourseId: (id: string | null) => void
   setSaving: (v: boolean) => void
@@ -80,11 +82,11 @@ export interface CourseWizardStore {
   setPublishError: (v: string | null) => void
   setCompletedSteps: (steps: number[]) => void
   resetForm: () => void
-  initialize: (course: any) => void
+  initialize: (course: CourseApiResponse) => void
 }
 
-let nextSectionId = 1
-let nextLectureId = 1
+let nextModuleId = 1
+let nextTopicId = 1
 
 export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
   currentStep: 0,
@@ -108,7 +110,7 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
   instructorPhoto: null,
   instructorPhotoPreview: null,
 
-  sections: [],
+  modules: [],
 
   courseId: null,
   isSaving: false,
@@ -149,71 +151,72 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
       }
     }),
 
-  addSection: () =>
+  addModule: () =>
     set((state) => ({
-      sections: [
-        ...state.sections,
+      modules: [
+        ...state.modules,
         {
-          id: `section_${nextSectionId++}`,
+          id: `module_${nextModuleId++}`,
           title: "",
-          order: state.sections.reduce((max, s) => Math.max(max, s.order), -1) + 1,
-          lectures: [],
+          order: state.modules.reduce((max, s) => Math.max(max, s.order), -1) + 1,
+          topics: [],
         },
       ],
     })),
-  updateSection: (id, title) =>
+  updateModule: (id, title) =>
     set((state) => ({
-      sections: state.sections.map((s) => (s.id === id ? { ...s, title } : s)),
+      modules: state.modules.map((m) => (m.id === id ? { ...m, title } : m)),
     })),
-  removeSection: (id) =>
+  removeModule: (id) =>
     set((state) => ({
-      sections: state.sections.filter((s) => s.id !== id),
+      modules: state.modules.filter((m) => m.id !== id),
     })),
 
-  addLecture: (sectionId) =>
+  addTopic: (moduleId) =>
     set((state) => ({
-      sections: state.sections.map((s) =>
-        s.id === sectionId
+      modules: state.modules.map((m) =>
+        m.id === moduleId
           ? {
-              ...s,
-              lectures: [
-                ...s.lectures,
+              ...m,
+              topics: [
+                ...m.topics,
                 {
-                  id: `lecture_${nextLectureId++}`,
+                  id: `topic_${nextTopicId++}`,
                   title: "",
-                  mediaType: "none" as const,
-                  mediaName: null,
-                  mediaUrl: null,
+                  type: "text" as const,
+                  videoId: null,
+                  videoTitle: null,
+                  description: "",
+                  order: m.topics.length,
                   videoFile: null,
-                  notesContent: "",
                 },
               ],
             }
-          : s
+          : m
       ),
     })),
-  updateLecture: (sectionId, lectureId, updates) =>
+  updateTopic: (moduleId, topicId, updates) =>
     set((state) => ({
-      sections: state.sections.map((s) =>
-        s.id === sectionId
+      modules: state.modules.map((m) =>
+        m.id === moduleId
           ? {
-              ...s,
-              lectures: s.lectures.map((l) =>
-                l.id === lectureId ? { ...l, ...updates } : l
+              ...m,
+              topics: m.topics.map((t) =>
+                t.id === topicId ? { ...t, ...updates } : t
               ),
             }
-          : s
+          : m
       ),
     })),
-  removeLecture: (sectionId, lectureId) =>
+  removeTopic: (moduleId, topicId) =>
     set((state) => ({
-      sections: state.sections.map((s) =>
-        s.id === sectionId
+      modules: state.modules.map((m) =>
+        m.id === moduleId
           ? {
-              ...s,
-              lectures: s.lectures.filter((l) => l.id !== lectureId),
+              ...m,
+              topics: m.topics.filter((t) => t.id !== topicId),
             }
-          : s
+          : m
       ),
     })),
 
@@ -242,7 +245,6 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
         ? (() => {
             if (typeof course.overview === "string") {
               try { return JSON.parse(course.overview) } catch {
-                // Plain text fallback — wrap in Tiptap doc
                 return { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: course.overview }] }] } as JSONContent
               }
             }
@@ -251,25 +253,26 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
         : null,
       language: languageMap[course.language] ?? course.language ?? "English",
       level: course.level ?? "",
-      duration: course.duration ? String(minutesToDuration(course.duration, course.durationUnit ?? "Hours").value) : "",
+      duration: course.duration ? String(minutesToDuration(course.duration, (course.durationUnit ?? "Hours") as "Minutes" | "Hours" | "Days" | "Weeks").value) : "",
       durationUnit: course.durationUnit ?? "Hours",
       instructorName: course.instructorName ?? "",
       instructorSpecialty: course.instructorSpecialty ?? "",
       aboutInstructor: course.aboutInstructor ?? "",
       instructorPhoto: null,
       instructorPhotoPreview: course.instructorImage ?? null,
-      sections: (course.modules ?? []).map((mod: any, mi: number) => ({
+      modules: (course.modules ?? []).map((mod) => ({
         id: mod.id,
         title: mod.title ?? "",
-        order: mod.order ?? mi,
-        lectures: (mod.topics ?? []).map((topic: any) => ({
+        order: mod.order,
+        topics: (mod.topics ?? []).map((topic) => ({
           id: topic.id,
           title: topic.title ?? "",
-          mediaType: topic.videoId ? "video" : topic.description ? "lecture_notes" : "none",
-          mediaName: topic.videoUrl ?? null,
-          mediaUrl: topic.videoId ?? null,
+          type: topic.type === "video" || topic.type === "video_and_text" ? "video" : "text",
+          videoId: topic.videoId ?? null,
+          videoTitle: topic.videoTitle ?? null,
+          description: typeof topic.description === "string" ? topic.description : "",
+          order: topic.order,
           videoFile: null,
-          notesContent: topic.description ?? "",
         })),
       })),
     })
@@ -296,13 +299,13 @@ export const useCourseWizardStore = create<CourseWizardStore>((set, get) => ({
       language: "English",
       level: "",
       duration: "",
-  durationUnit: "Hours",
+      durationUnit: "Hours",
       instructorName: "",
       instructorSpecialty: "",
       aboutInstructor: "",
       instructorPhoto: null,
       instructorPhotoPreview: null,
-      sections: [],
+      modules: [],
       courseId: null,
       isSaving: false,
       isPublishing: false,

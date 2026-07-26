@@ -5,6 +5,7 @@ import { Upload, X, CheckCircle, AlertCircle, Loader2 } from "lucide-react"
 import { Button } from "@/shared/ui/button"
 import { Input } from "@/shared/ui/input"
 import { Label } from "@/shared/ui/label"
+import { getVideoDuration } from "@/features/videos/lib/get-video-duration"
 
 type UploadState = "idle" | "uploading" | "uploaded" | "success" | "error"
 
@@ -86,6 +87,21 @@ export function VideoUploader({
       })
 
       setState("uploaded")
+
+      const duration = await getVideoDuration(file)
+
+      const finalizeRes = await fetch(`/api/videos/${config.videoId}/finalize`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ storageKey: config.storageKey, duration }),
+      })
+
+      if (!finalizeRes.ok) {
+        const err = await finalizeRes.json()
+        throw new Error(err.error ?? "Failed to finalize upload")
+      }
+
+      setState("success")
       onSuccess?.(config.videoId)
     } catch (error) {
       setState("error")

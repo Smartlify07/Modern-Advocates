@@ -11,7 +11,9 @@ export function CoursePreviewHero() {
   const salePrice = useCourseWizardStore((s) => s.salePrice)
   const showStrikedOriginal = useCourseWizardStore((s) => s.showStrikedOriginal)
   const instructorName = useCourseWizardStore((s) => s.instructorName)
-  const instructorPhotoPreview = useCourseWizardStore((s) => s.instructorPhotoPreview)
+  const instructorPhotoPreview = useCourseWizardStore(
+    (s) => s.instructorPhotoPreview
+  )
 
   const numericPrice = parseFloat(originalPrice) || 0
   const numericSale = parseFloat(salePrice) || 0
@@ -87,7 +89,6 @@ export function CoursePreviewHero() {
                 </p>
               )}
             </div>
-
           </div>
         </div>
       </div>

@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server"
 import { headers } from "next/headers"
 import { auth } from "@/infrastructure/auth/auth"
-import { cloudinary } from "@/infrastructure/cloudinary/config"
+import { uploadBufferToStorage } from "@/infrastructure/storage/service"
 import { UnauthorizedError } from "@/infrastructure/auth/errors"
 import * as Sentry from "@sentry/nextjs"
+import { randomUUID } from "node:crypto"
 
 export async function POST(request: Request) {
   try {
@@ -31,26 +32,11 @@ export async function POST(request: Request) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer())
+    const key = `avatars/${session.user.id}/${randomUUID()}-${file.name}`
 
-    const result = await new Promise<{ secure_url: string }>((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder: "avatars",
-          resource_type: "image",
-          transformation: [
-            { width: 300, height: 300, crop: "fill", quality: "auto" },
-          ],
-        },
-        (error, result) => {
-          if (error) reject(error)
-          else resolve(result as { secure_url: string })
-        },
-      )
+    const url = await uploadBufferToStorage(buffer, key, file.type, 604800)
 
-      uploadStream.end(buffer)
-    })
-
-    return NextResponse.json({ url: result.secure_url })
+    return NextResponse.json({ url })
   } catch (error) {
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

@@ -2,11 +2,15 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { useVideoUploadStore } from "@/features/courses/store/use-video-upload-store"
-import { uploadToStorage, type StorageUploadConfig } from "@/shared/lib/storage-upload"
+import {
+  uploadToStorage,
+  type StorageUploadConfig,
+} from "@/shared/lib/storage-upload"
 import { VideoUploadToast } from "@/features/courses/components/video-upload-toast"
 import { toast } from "sonner"
 
 const STORAGE_KEY = "ma_pending_uploads"
+const MAX_AGE_MS = 24 * 60 * 60 * 1000
 
 export interface PendingUpload {
   uploadId: string
@@ -24,7 +28,11 @@ export interface PendingUpload {
 function readStorage(): PendingUpload[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? JSON.parse(raw) : []
+    const all: PendingUpload[] = raw ? JSON.parse(raw) : []
+    const now = Date.now()
+    const fresh = all.filter((u) => now - u.timestamp < MAX_AGE_MS)
+    if (fresh.length !== all.length) writeStorage(fresh)
+    return fresh
   } catch {
     return []
   }
@@ -45,7 +53,10 @@ export function savePendingUpload(upload: PendingUpload): void {
   writeStorage(all)
 }
 
-export function updatePendingUpload(uploadId: string, bytesUploaded: number): void {
+export function updatePendingUpload(
+  uploadId: string,
+  bytesUploaded: number
+): void {
   const all = readStorage()
   const found = all.find((u) => u.uploadId === uploadId)
   if (found) {
@@ -75,7 +86,7 @@ async function getFreshSignedConfig(
   courseId: string,
   moduleId: string,
   topicId: string,
-  title: string,
+  title: string
 ): Promise<StorageUploadConfig> {
   const res = await fetch("/api/videos/sign-upload", {
     method: "POST",
@@ -100,68 +111,86 @@ export function usePendingUploads(courseId?: string) {
     }
   }, [courseId])
 
-  const resumeUpload = useCallback(
-    async (uploadId: string, file: File) => {
-      const all = readStorage()
-      const pendingUpload = all.find((u) => u.uploadId === uploadId)
-      if (!pendingUpload) {
-        toast.error("Pending upload not found")
-        return
-      }
+  const resumeUpload = useCallback(async (uploadId: string, file: File) => {
+    const all = readStorage()
+    const pendingUpload = all.find((u) => u.uploadId === uploadId)
+    if (!pendingUpload) {
+      toast.error("Pending upload not found")
+      return
+    }
 
-      if (file.size !== pendingUpload.fileSize || file.lastModified !== pendingUpload.lastModified) {
-        toast.error("Selected file does not match the original. Please select the exact same file.")
-        return
-      }
+    if (
+      file.size !== pendingUpload.fileSize ||
+      file.lastModified !== pendingUpload.lastModified
+    ) {
+      toast.error(
+        "Selected file does not match the original. Please select the exact same file."
+      )
+      return
+    }
 
-      const addTask = useVideoUploadStore.getState().addTask
-      const updateProgress = useVideoUploadStore.getState().updateProgress
-      const completeTask = useVideoUploadStore.getState().completeTask
-      const failTask = useVideoUploadStore.getState().failTask
+    const addTask = useVideoUploadStore.getState().addTask
+    const updateProgress = useVideoUploadStore.getState().updateProgress
+    const completeTask = useVideoUploadStore.getState().completeTask
+    const failTask = useVideoUploadStore.getState().failTask
 
-      let config: StorageUploadConfig
-      try {
-        config = await getFreshSignedConfig(
-          pendingUpload.courseId,
-          pendingUpload.moduleId,
-          pendingUpload.topicId,
-          pendingUpload.fileName,
-        )
-      } catch (err) {
-        toast.error("Failed to get upload signature")
-        return
-      }
+    let config: StorageUploadConfig
+    try {
+      config = await getFreshSignedConfig(
+        pendingUpload.courseId,
+        pendingUpload.moduleId,
+        pendingUpload.topicId,
+        pendingUpload.fileName
+      )
+    } catch (err) {
+      toast.error("Failed to get upload signature")
+      return
+    }
 
-      addTask({
-        uploadId: config.videoId,
-        courseId: pendingUpload.courseId,
-        courseTitle: "",
-        fileName: pendingUpload.fileName,
-        totalBytes: file.size,
-        status: "uploading",
-      })
+    addTask({
+      uploadId: config.videoId,
+      courseId: pendingUpload.courseId,
+      courseTitle: "",
+      fileName: pendingUpload.fileName,
+      totalBytes: file.size,
+      status: "uploading",
+    })
 
-      toast.custom(() => <VideoUploadToast />, {
-        duration: Infinity,
-        style: { opacity: 1, transform: "none" },
-      })
+    toast.custom(() => <VideoUploadToast />)
 
-      try {
-        await uploadToStorage(file, config, (progress) => {
+    try {
+      await uploadToStorage(
+        file,
+        config,
+        (progress) => {
           updateProgress(config.videoId, progress.bytesUploaded)
           updatePendingUpload(uploadId, progress.bytesUploaded)
-        }, { resumeFromBytes: pendingUpload.bytesUploaded })
+        },
+        { resumeFromBytes: pendingUpload.bytesUploaded }
+      )
 
-        completeTask(config.videoId, "processing")
-        removePendingUpload(uploadId)
-        setPending((prev) => prev.filter((p) => p.uploadId !== uploadId))
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : "Upload failed"
-        failTask(config.videoId, msg)
+      const finalizeRes = await fetch(
+        `/api/videos/${config.videoId}/finalize`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ storageKey: config.storageKey }),
+        }
+      )
+
+      if (!finalizeRes.ok) {
+        const err = await finalizeRes.json()
+        throw new Error(err.error ?? "Failed to finalize upload")
       }
-    },
-    [],
-  )
+
+      completeTask(config.videoId, "completed")
+      removePendingUpload(uploadId)
+      setPending((prev) => prev.filter((p) => p.uploadId !== uploadId))
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Upload failed"
+      failTask(config.videoId, msg)
+    }
+  }, [])
 
   const dismiss = useCallback((uploadId: string) => {
     removePendingUpload(uploadId)

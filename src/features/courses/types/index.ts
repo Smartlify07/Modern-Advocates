@@ -8,6 +8,7 @@ export interface Topic {
   type: TopicType
   videoUrl: string | null
   videoId: string | null
+  videoTitle: string | null
   description: JSONContent | null
   order: number
 }
@@ -35,6 +36,8 @@ export interface CourseApiTopic {
   order: number
   videoUrl: string | null
   videoId: string | null
+  videoTitle: string | null
+  videoDuration: number | null
 }
 
 export interface CourseApiModule {

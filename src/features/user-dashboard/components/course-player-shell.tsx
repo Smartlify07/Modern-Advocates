@@ -1,7 +1,8 @@
 "use client"
 
+import { useCallback } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { notFound } from "next/navigation"
+import { useSearchParams, useRouter, notFound } from "next/navigation"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { CoursePlayerContent } from "@/features/user-dashboard/components/course-player-content"
 import { CourseModuleSidebar } from "@/features/user-dashboard/components/course-module-sidebar"
@@ -29,6 +30,20 @@ function extractText(input: unknown): string {
 }
 
 export function CoursePlayerShell({ courseId }: { courseId: string }) {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const selectedTopicId = searchParams.get("topicId")
+
+  const onSelectTopic = useCallback(
+    (topicId: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set("topicId", topicId)
+      params.delete("t")
+      router.push(`?${params.toString()}`, { scroll: false })
+    },
+    [searchParams, router],
+  )
+
   const {
     data: course,
     isPending,
@@ -74,6 +89,8 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
             id: t.id,
             title: t.title,
             format: t.type === "video_and_text" ? "video" : (t.type ?? "video"),
+            videoId: t.videoId ?? null,
+            duration: t.videoDuration ?? null,
             content:
               typeof t.description === "string"
                 ? t.description
@@ -217,8 +234,16 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
   return (
     <div className="mx-auto py-8">
       <div className="grid gap-0 md:grid-cols-[2.2fr_0.8fr]">
-        <CoursePlayerContent course={course} />
-        <CourseModuleSidebar course={course} />
+        <CoursePlayerContent
+          course={course}
+          selectedTopicId={selectedTopicId}
+          onSelectTopic={onSelectTopic}
+        />
+        <CourseModuleSidebar
+          course={course}
+          selectedTopicId={selectedTopicId}
+          onSelectTopic={onSelectTopic}
+        />
       </div>
     </div>
   )
