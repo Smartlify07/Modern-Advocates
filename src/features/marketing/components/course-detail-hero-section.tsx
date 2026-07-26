@@ -8,7 +8,7 @@ type CourseHeroData = {
   id: string
   title: string
   thumbnailUrl: string | null
-  tutorName: string | null
+  instructorName: string | null
   avgRating: number
   reviewCount: number
   price: number
@@ -16,7 +16,7 @@ type CourseHeroData = {
   enrollmentCount: number
 }
 
-export function CourseDetailHeroSection({ course }: { course: CourseHeroData }) {
+export function CourseDetailHeroSection({ course, breadcrumbHref = "/courses" }: { course: CourseHeroData; breadcrumbHref?: string }) {
   const displayPrice = course.discountedPrice ?? course.price
 
   return (
@@ -33,14 +33,14 @@ export function CourseDetailHeroSection({ course }: { course: CourseHeroData }) 
         <div className="flex flex-col justify-between px-0 py-2 lg:min-h-107 lg:px-2.5 lg:py-0">
           <div className="flex flex-col gap-5">
             <nav aria-label="Breadcrumb" className="hidden flex-wrap items-center gap-1 text-base leading-normal font-medium lg:flex">
-              <Link href="/courses" className="text-[#6b7280] transition-colors hover:text-ma-text">Course</Link>
+              <Link href={breadcrumbHref} className="text-[#6b7280] transition-colors hover:text-ma-text">Course</Link>
               <ChevronRight className="size-4 text-[#6b7280]" aria-hidden />
               <span className="text-ma-text">{course.title}</span>
             </nav>
 
             <div>
               <h1 className="max-w-[510px] text-[28px] leading-normal font-bold text-ma-text lg:text-[40px]">{course.title}</h1>
-              <p className="mt-5 text-lg leading-normal text-ma-text">{course.tutorName ?? "Instructor"}</p>
+              <p className="mt-5 text-lg leading-normal text-ma-text">{course.instructorName ?? "Instructor"}</p>
             </div>
           </div>
 
@@ -65,10 +65,6 @@ export function CourseDetailHeroSection({ course }: { course: CourseHeroData }) 
                 <p className="text-base text-[#6b7280] line-through">$ {course.price.toFixed(2)} USD</p>
               )}
             </div>
-
-            <Link href="/contact" className="w-fit text-base leading-normal text-ma-text underline underline-offset-2 transition-colors hover:text-ma-text/70">
-              Apply for Grant
-            </Link>
 
             <div className="mt-3">
               <EnrollNowButton courseId={course.id} />

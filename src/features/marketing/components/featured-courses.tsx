@@ -16,7 +16,7 @@ type Course = {
   price: number
   discountedPrice: number | null
   duration: number | null
-  tutorName: string | null
+  instructorName: string | null
   avgRating: number
   reviewCount: number
 }

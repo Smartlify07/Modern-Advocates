@@ -25,7 +25,7 @@ const levels = [
   { value: "intermediate", label: "Intermediate" },
   { value: "advanced", label: "Advanced" },
 ]
-const durationUnits = ["Hours", "Days", "Weeks"]
+const durationUnits = ["Minutes", "Hours", "Days", "Weeks"]
 
 export function CourseMetadataFields() {
   const language = useCourseWizardStore((s) => s.language)

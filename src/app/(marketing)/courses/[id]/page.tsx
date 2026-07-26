@@ -2,9 +2,39 @@ import { notFound } from "next/navigation"
 
 import { CourseDetailHeroSection } from "@/features/marketing/components/course-detail-hero-section"
 import { CourseDetailContentSection } from "@/features/marketing/components/course-detail-content-section"
+import type { CourseApiResponse, CourseApiReview } from "@/features/courses/types"
 
-async function fetchCourse(id: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/courses/${id}`, {
+interface TiptapNode {
+  type?: string
+  text?: string
+  content?: TiptapNode[]
+}
+
+function extractTextFromJson(input: unknown): string {
+  if (typeof input !== "string") return ""
+  try {
+    const parsed: TiptapNode = JSON.parse(input)
+    if (!parsed.content) return ""
+    const texts: string[] = []
+    function walk(nodes: TiptapNode[]) {
+      for (const node of nodes) {
+        if (node.text) texts.push(node.text)
+        if (node.content) walk(node.content)
+      }
+    }
+    walk(parsed.content)
+    return texts.join(" ").trim()
+  } catch {
+    return ""
+  }
+}
+
+async function fetchCourse(id: string): Promise<CourseApiResponse | null> {
+  const origin = process.env.NEXT_PUBLIC_APP_URL
+  if (!origin) {
+    throw new Error("NEXT_PUBLIC_APP_URL is not configured")
+  }
+  const res = await fetch(`${origin}/api/courses/${id}`, {
     cache: "no-store",
   })
 
@@ -22,13 +52,7 @@ export default async function CourseDetailPage({
   if (!course) notFound()
 
   const normalizedReviews = (course.reviews ?? []).map(
-    (r: {
-      id: string
-      body: string | null
-      rating: number
-      studentName: string | null
-      studentImage: string | null
-    }) => ({
+    (r: CourseApiReview) => ({
       id: r.id,
       body: r.body,
       rating: r.rating,
@@ -40,17 +64,19 @@ export default async function CourseDetailPage({
   const avgRating =
     normalizedReviews.length > 0
       ? normalizedReviews.reduce(
-          (sum: number, r: { rating: number }) => sum + r.rating,
+          (sum: number, r: typeof normalizedReviews[number]) => sum + r.rating,
           0
         ) / normalizedReviews.length
       : 0
 
+  const overviewText = extractTextFromJson(course.overview ?? course.content)
+
   const courseData = {
     id: course.id,
     title: course.title,
-    tutorName: course.tutorName,
+    instructorName: course.instructorName,
     content: course.content,
-    overview: course.overview,
+    overview: overviewText,
     thumbnailUrl: course.thumbnailUrl,
     language: course.language,
     level: course.level,
@@ -59,9 +85,12 @@ export default async function CourseDetailPage({
       ? Number(course.discountedPrice)
       : null,
     duration: course.duration,
+    durationUnit: course.durationUnit,
     tutor: {
-      name: course.tutorName,
-      image: course.tutorImage,
+      name: course.instructorName,
+      image: course.instructorImage,
+      specialty: course.instructorSpecialty ?? null,
+      about: course.aboutInstructor ?? null,
     },
     avgRating,
     reviewCount: normalizedReviews.length,

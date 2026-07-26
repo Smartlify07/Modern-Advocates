@@ -1,13 +1,13 @@
 export interface Course {
   id: string
-  title: string
-  level: string
+  title: string | null
+  level: string | null
   status: "draft" | "published" | "archived"
   price: number
   discountedPrice: number | null
   isFree: boolean
   thumbnailUrl: string | null
-  tutorName: string | null
+  instructorName: string | null
   createdAt: string
 }
 

@@ -5,7 +5,6 @@ import { toast } from "sonner"
 import {
   buildCoursePayload,
   uploadThumbnail,
-  getCourse,
   uploadCourseVideos,
   type CreateCoursePayload,
   type UpdateCoursePayload,
@@ -57,10 +56,11 @@ export function useUpdateCourse() {
         const body = await res.json().catch(() => ({}))
         throw new Error(body.error ?? "Failed to update course")
       }
-      return getCourse(courseId)
+      return res.json()
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
+      queryClient.invalidateQueries({ queryKey: ["course", variables.courseId] })
     },
   })
 }
@@ -84,13 +84,17 @@ export function useSaveCourse() {
       options: SaveCourseOptions
     }): Promise<CourseResponse> => {
       let thumbnailUrl: string | undefined
+      let instructorImageUrl: string | null = null
 
       if (store.thumbnail instanceof File) {
         thumbnailUrl = await uploadThumbnail(store.thumbnail)
       }
+      if (store.instructorPhoto instanceof File) {
+        instructorImageUrl = await uploadThumbnail(store.instructorPhoto)
+      }
 
       const isNew = !store.courseId && !options.courseId
-      const payload = buildCoursePayload(store, thumbnailUrl, options.status)
+      const payload = buildCoursePayload(store, thumbnailUrl, options.status, instructorImageUrl)
 
       if (isNew) {
         return await createCourse.mutateAsync(payload as CreateCoursePayload)
@@ -103,12 +107,12 @@ export function useSaveCourse() {
       toast.success(
         options.status === "published"
           ? "Course published successfully"
-          : "Course saved as draft",
+          : "Saved to your drafts",
       )
 
       if (
         result &&
-        store.sections.some((s) => s.lectures.some((l) => l.videoFile))
+        store.modules.some((m) => m.topics.some((t) => t.videoFile))
       ) {
         const videoStore = useVideoUploadStore.getState()
 
@@ -123,17 +127,21 @@ export function useSaveCourse() {
 
         const toastId = toast.custom(() => <VideoUploadToast />, {
           duration: Infinity,
-          style: { opacity: 1, transform: "none" },
         })
 
         const uploads = uploadCourseVideos(
-          store.sections,
+          store.modules,
           moduleMap,
           topicMap,
           result.id,
           store.title,
           videoStore,
         )
+
+        if (uploads.length === 0) {
+          toast.dismiss(toastId)
+          return
+        }
 
         Promise.allSettled(uploads).then((results) => {
           const allDone = results.every((r) => r.status === "fulfilled")
@@ -144,7 +152,6 @@ export function useSaveCourse() {
             toast.dismiss(toastId)
             toast.custom(() => <VideoUploadToast />, {
               duration: Infinity,
-              style: { opacity: 1, transform: "none" },
             })
           }
         })

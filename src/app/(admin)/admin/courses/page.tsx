@@ -105,7 +105,7 @@ export default function AdminCoursesPage() {
   const filtered = useMemo(
     () =>
       courses.filter((c) => {
-        const q = c.title.toLowerCase().includes(search.toLowerCase())
+        const q = (c.title ?? "").toLowerCase().includes(search.toLowerCase())
         const f = filter === "All Courses" || c.status === filter.toLowerCase()
         return q && f
       }),

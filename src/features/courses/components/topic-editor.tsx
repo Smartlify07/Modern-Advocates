@@ -117,9 +117,9 @@ export function TopicEditor({ topic, onChange, onDelete }: TopicEditorProps) {
                   <div className="flex aspect-video items-center justify-center bg-black/5">
                     <div className="flex flex-col items-center gap-1 text-muted-foreground">
                       <span className="text-xs font-medium">Video uploaded</span>
-                      <span className="max-w-full truncate px-4 text-xs">
-                        {topic.videoId}
-                      </span>
+                        <span className="max-w-full truncate px-4 text-xs">
+                          {topic.videoTitle ?? topic.videoId}
+                        </span>
                     </div>
                   </div>
                   <Button

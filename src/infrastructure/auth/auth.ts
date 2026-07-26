@@ -4,7 +4,24 @@ import { admin, emailOTP } from "better-auth/plugins"
 import { db } from "@/infrastructure/database/client"
 import { schema } from "@/infrastructure/database/schema/schema"
 import { sendOTPEmail } from "../email/send"
-import { ac, admin as adminRole, manager, editor, instructor, user as userRole } from "./permissions"
+import {
+  ac,
+  admin as adminRole,
+  manager,
+  editor,
+  instructor,
+  user as userRole,
+} from "./permissions"
+
+function getAppHost(): string | null {
+  const url = process.env.NEXT_PUBLIC_APP_URL
+  if (!url) return null
+  try { return new URL(url).host } catch { return null }
+}
+
+const appHost = getAppHost()
+const allowedHosts: string[] = ["localhost:*", "*.vercel.app"]
+if (appHost) allowedHosts.push(appHost)
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -12,10 +29,7 @@ export const auth = betterAuth({
     schema,
   }),
   baseURL: {
-    allowedHosts: [
-      "localhost:3000",
-      "*.vercel.app",
-    ],
+    allowedHosts,
     protocol: process.env.NODE_ENV === "development" ? "http" : "https",
     fallback: "https://modern-advocates.vercel.app",
   },

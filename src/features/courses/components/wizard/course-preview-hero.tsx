@@ -11,6 +11,9 @@ export function CoursePreviewHero() {
   const salePrice = useCourseWizardStore((s) => s.salePrice)
   const showStrikedOriginal = useCourseWizardStore((s) => s.showStrikedOriginal)
   const instructorName = useCourseWizardStore((s) => s.instructorName)
+  const instructorPhotoPreview = useCourseWizardStore(
+    (s) => s.instructorPhotoPreview
+  )
 
   const numericPrice = parseFloat(originalPrice) || 0
   const numericSale = parseFloat(salePrice) || 0
@@ -40,9 +43,26 @@ export function CoursePreviewHero() {
             <h1 className="text-[28px]/[100%] font-bold text-ma-text lg:text-[40px]/[100%]">
               {title || "Untitled Course"}
             </h1>
-            <p className="text-lg text-ma-text">
-              {instructorName || "Instructor"}
-            </p>
+            <div className="flex items-center gap-3">
+              {instructorPhotoPreview ? (
+                <div className="relative size-10 shrink-0 overflow-hidden rounded-full">
+                  <Image
+                    src={instructorPhotoPreview}
+                    alt="Instructor"
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                </div>
+              ) : (
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-slate-200 text-sm font-medium text-slate-500">
+                  {(instructorName ?? "I").charAt(0).toUpperCase()}
+                </div>
+              )}
+              <p className="text-lg text-ma-text">
+                {instructorName || "Instructor"}
+              </p>
+            </div>
           </div>
 
           <div className="mt-5 flex flex-col gap-4">
@@ -69,10 +89,6 @@ export function CoursePreviewHero() {
                 </p>
               )}
             </div>
-
-            <span className="w-fit text-base text-ma-text underline underline-offset-2">
-              Enable Grant
-            </span>
           </div>
         </div>
       </div>

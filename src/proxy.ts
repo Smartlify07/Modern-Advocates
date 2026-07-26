@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-const publicPaths = ["/", "/about", "/contact", "/courses", "/donation", "/login", "/signup"]
-
+const authPaths = ["/login", "/signup"]
 const protectedPaths = ["/dashboard", "/my-learning", "/checkout", "/admin"]
 
 export function proxy(request: NextRequest) {
@@ -12,7 +11,7 @@ export function proxy(request: NextRequest) {
     request.cookies.get("better-auth.session_token") ||
     request.cookies.get("__Secure-better-auth.session_token")
 
-  const isPublic = publicPaths.some(
+  const isAuthPage = authPaths.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`),
   )
 
@@ -20,7 +19,7 @@ export function proxy(request: NextRequest) {
     (p) => pathname === p || pathname.startsWith(`${p}/`),
   )
 
-  if (sessionCookie && isPublic) {
+  if (sessionCookie && isAuthPage) {
     return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 

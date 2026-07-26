@@ -1,12 +1,13 @@
 "use client"
 
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useCourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
 import { useSaveCourse } from "@/features/courses/hooks/use-course-mutations"
 import { Stepper } from "@/shared/ui/stepper"
 import { Button } from "@/shared/ui/button"
 import { BasicInfoStep } from "@/features/courses/components/wizard/basic-info-step"
+import { SaveDraftDialog } from "@/app/(admin)/admin/courses/_components/save-draft-dialog"
 import { AdvanceInfoStep } from "@/features/courses/components/wizard/advance-info-step"
 import { CurriculumStep } from "@/features/courses/components/wizard/curriculum-step"
 import { PublishStep } from "@/features/courses/components/wizard/publish-step"
@@ -39,6 +40,7 @@ export default function CreateCoursePage() {
   const resetForm = useCourseWizardStore((s) => s.resetForm)
   const store = useCourseWizardStore.getState
   const saveCourse = useSaveCourse()
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false)
 
   const handlePrevious = () => {
     if (currentStep > 0) {
@@ -58,6 +60,11 @@ export default function CreateCoursePage() {
   }
 
   const handleSaveAndClose = useCallback(() => {
+    setSaveDialogOpen(true)
+  }, [])
+
+  const handleSaveConfirmed = useCallback(() => {
+    setSaveDialogOpen(false)
     saveCourse.mutate(
       { store: store(), options: { status: "draft", onSuccess: () => { resetForm(); router.push("/admin/courses") } } },
     )
@@ -141,6 +148,13 @@ export default function CreateCoursePage() {
           </Button>
         )}
       </div>
+
+      <SaveDraftDialog
+        open={saveDialogOpen}
+        onOpenChange={setSaveDialogOpen}
+        onConfirm={handleSaveConfirmed}
+        isPending={isPending}
+      />
     </div>
   )
 }

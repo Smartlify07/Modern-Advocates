@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { useParams } from "next/navigation"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { ChevronDown, VideoIcon } from "lucide-react"
 
@@ -9,6 +8,7 @@ type Topic = {
   id: string
   title: string
   format?: string
+  duration?: number | null
   content?: string | null
 }
 type Module = { id: string; title: string; sortOrder: number; topics: Topic[] }
@@ -35,9 +35,16 @@ type CourseData = {
   }>
 }
 
-export function CourseModuleSidebar({ course }: { course: CourseData }) {
-  const params = useParams()
-  const courseId = params.courseId as string
+export function CourseModuleSidebar({
+  course,
+  selectedTopicId,
+  onSelectTopic,
+}: {
+  course: CourseData
+  selectedTopicId: string | null
+  onSelectTopic?: (topicId: string) => void
+}) {
+  const courseId = course.id
   const queryClient = useQueryClient()
   const queryKey = ["enrollment-progress", courseId]
   const modules = course.modules
@@ -53,7 +60,11 @@ export function CourseModuleSidebar({ course }: { course: CourseData }) {
     queryFn: async () => {
       const r = await fetch(`/api/enrollments/by-course/${courseId}`)
       if (!r.ok) throw new Error(`Failed to fetch enrollment (${r.status})`)
-      return r.json() as Promise<{ id: string; progress: number; completedTopicIds: string[] }>
+      return r.json() as Promise<{
+        id: string
+        progress: number
+        completedTopicIds: string[]
+      }>
     },
     enabled: !!courseId,
   })
@@ -65,7 +76,10 @@ export function CourseModuleSidebar({ course }: { course: CourseData }) {
     }
   }, [enrollment?.completedTopicIds])
 
-  const totalTopics = modules.reduce((sum, mod) => sum + mod.topics.length, 0)
+  const totalTopics = (modules ?? []).reduce(
+    (sum, mod) => sum + mod.topics.length,
+    0
+  )
 
   const toggleMutation = useMutation({
     mutationFn: async ({
@@ -75,9 +89,12 @@ export function CourseModuleSidebar({ course }: { course: CourseData }) {
       enrollmentId: string
       topicId: string
     }) => {
-      const r = await fetch(`/api/enrollments/${enrollmentId}/topics/${topicId}`, {
-        method: "POST",
-      })
+      const r = await fetch(
+        `/api/enrollments/${enrollmentId}/topics/${topicId}`,
+        {
+          method: "POST",
+        }
+      )
       if (!r.ok) throw new Error(`Failed to toggle topic (${r.status})`)
       return r.json() as Promise<{ completed: boolean; progress: number }>
     },
@@ -131,6 +148,15 @@ export function CourseModuleSidebar({ course }: { course: CourseData }) {
     },
   })
 
+  const formatDuration = (seconds: number | null | undefined): string => {
+    if (!seconds || seconds <= 0) return ""
+    const mins = Math.round(seconds / 60)
+    if (mins < 60) return `${mins}mins`
+    const h = Math.floor(mins / 60)
+    const m = mins % 60
+    return m > 0 ? `${h}hr ${m}mins` : `${h}hr`
+  }
+
   const toggleLesson = (topicId: string) => {
     if (!enrollment?.id) return
     toggleMutation.mutate({ enrollmentId: enrollment.id, topicId })
@@ -149,10 +175,11 @@ export function CourseModuleSidebar({ course }: { course: CourseData }) {
       <h2 className="text-2xl font-bold text-ma-text">Course Module</h2>
 
       <div className="mt-5 flex flex-col gap-3">
-        {modules.map((mod) => {
+        {(modules ?? []).map((mod) => {
+          const modTopics = mod.topics ?? []
           const isOpen = openWeeks.has(mod.id)
-          const total = mod.topics.length
-          const done = mod.topics.filter((t) => completed.has(t.id)).length
+          const total = modTopics.length
+          const done = modTopics.filter((t) => completed.has(t.id)).length
           const weekLabel = `Week ${mod.sortOrder + 1}: ${mod.title}`
 
           return (
@@ -170,7 +197,15 @@ export function CourseModuleSidebar({ course }: { course: CourseData }) {
                     {weekLabel}
                   </p>
                   <p className="mt-2 text-xs text-[#6b7280] 2xl:text-sm">
-                    {done}/{total} | 1 hr 30 mins
+                    {done}/{total} |{" "}
+                    {modTopics.some((t) => t.duration)
+                      ? formatDuration(
+                          modTopics.reduce(
+                            (acc, t) => acc + (t.duration ?? 0),
+                            0
+                          )
+                        )
+                      : "n/a"}
                   </p>
                 </div>
                 <ChevronDown
@@ -180,28 +215,40 @@ export function CourseModuleSidebar({ course }: { course: CourseData }) {
 
               {isOpen && (
                 <div className="flex flex-col gap-1 border-t border-[#e5e7eb] py-2">
-                  {mod.topics.map((topic) => (
-                    <label
-                      key={topic.id}
-                      className="flex cursor-pointer items-center gap-3 rounded-lg px-5 py-2 hover:bg-gray-50"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={completed.has(topic.id)}
-                        onChange={() => toggleLesson(topic.id)}
-                        className="size-5 accent-primary"
-                      />
-                      <div className="flex flex-col gap-1">
-                        <div className="flex-1 text-sm text-ma-text 2xl:text-base">
-                          {topic.title}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <VideoIcon className="size-4 text-[#6B7280]" />
-                          <span className="text-xs text-primary">30mins</span>
+                  {modTopics.map((topic) => {
+                    const isSelected = selectedTopicId === topic.id
+                    return (
+                      <div
+                        key={topic.id}
+                        className={`flex cursor-pointer items-center gap-3 rounded-lg px-5 py-2 hover:bg-muted ${isSelected ? "bg-muted" : ""}`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={completed.has(topic.id)}
+                          onChange={() => toggleLesson(topic.id)}
+                          className="size-5 accent-primary"
+                        />
+                        <div
+                          className="flex flex-1 flex-col gap-1"
+                          onClick={() => onSelectTopic?.(topic.id)}
+                        >
+                          <div
+                            className={`flex-1 text-sm 2xl:text-base ${isSelected ? "font-semibold text-primary" : "text-ma-text"}`}
+                          >
+                            {topic.title}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <VideoIcon className="size-4 text-[#6B7280]" />
+                            <span className="text-xs text-primary">
+                              {topic.duration
+                                ? formatDuration(topic.duration)
+                                : "n/a"}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </label>
-                  ))}
+                    )
+                  })}
                 </div>
               )}
             </div>

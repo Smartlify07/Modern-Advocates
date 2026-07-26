@@ -6,6 +6,11 @@ import {
   updatePendingUpload,
   removePendingUpload,
 } from "@/features/courses/hooks/use-pending-uploads"
+import { cacheFile } from "@/features/videos/lib/file-cache"
+import { getVideoDuration } from "@/features/videos/lib/get-video-duration"
+
+export const DURATION_UNITS = ["Minutes", "Hours", "Days", "Weeks"] as const
+export type DurationUnit = (typeof DURATION_UNITS)[number]
 
 const LANGUAGE_MAP: Record<string, string> = {
   English: "en",
@@ -31,6 +36,7 @@ export interface TopicPayload {
   type: "text" | "video" | "video_and_text"
   description: string | null
   order: number
+  videoTitle?: string | null
 }
 
 export interface CreateCoursePayload {
@@ -39,6 +45,12 @@ export interface CreateCoursePayload {
   overview?: string | null
   language: string
   level: string
+  duration?: number | null
+  durationUnit?: DurationUnit
+  instructorName?: string | null
+  instructorSpecialty?: string | null
+  aboutInstructor?: string | null
+  instructorImage?: string | null
   price: number
   discountedPrice?: number | null
   isFree: boolean
@@ -68,6 +80,12 @@ export interface UpdateCoursePayload {
   overview?: string | null
   language?: string
   level?: string
+  duration?: number | null
+  durationUnit?: DurationUnit
+  instructorName?: string | null
+  instructorSpecialty?: string | null
+  aboutInstructor?: string | null
+  instructorImage?: string | null
   price?: number
   discountedPrice?: number | null
   isFree?: boolean
@@ -79,10 +97,30 @@ function normalizeLanguage(name: string): string {
   return LANGUAGE_MAP[name] ?? name.toLowerCase().slice(0, 2)
 }
 
+const UNIT_TO_MINUTES: Record<DurationUnit, number> = {
+  Minutes: 1,
+  Hours: 60,
+  Days: 1440,
+  Weeks: 10080,
+}
+
+export function durationToMinutes(value: number, unit: DurationUnit): number {
+  return value * UNIT_TO_MINUTES[unit]
+}
+
+export function minutesToDuration(
+  minutes: number,
+  unit: DurationUnit
+): { value: number; unit: DurationUnit } {
+  const divisor = UNIT_TO_MINUTES[unit]
+  return { value: minutes / divisor, unit }
+}
+
 export function buildCoursePayload(
   store: CourseWizardStore,
   thumbnailUrl?: string,
   status?: "draft" | "published",
+  instructorImageUrl?: string | null
 ): CreateCoursePayload {
   return {
     title: store.title,
@@ -90,22 +128,35 @@ export function buildCoursePayload(
     overview: store.overview ? JSON.stringify(store.overview) : null,
     language: normalizeLanguage(store.language),
     level: store.level,
-    price: store.originalPrice ? Number(store.originalPrice) : 0,
-    discountedPrice: store.showStrikedOriginal && store.salePrice
-      ? Number(store.salePrice)
+    duration: store.duration
+      ? durationToMinutes(
+          Number(store.duration),
+          (store.durationUnit || "Hours") as DurationUnit
+        )
       : null,
+    durationUnit: (store.durationUnit as DurationUnit) || "Hours",
+    instructorName: store.instructorName || null,
+    instructorSpecialty: store.instructorSpecialty || null,
+    aboutInstructor: store.aboutInstructor || null,
+    instructorImage: instructorImageUrl ?? store.instructorPhotoPreview ?? null,
+    price: store.originalPrice ? Number(store.originalPrice) : 0,
+    discountedPrice:
+      store.showStrikedOriginal && store.salePrice
+        ? Number(store.salePrice)
+        : null,
     isFree: !store.originalPrice,
     status: status ?? "draft",
-    modules: store.sections.map((s, si) => ({
-      id: s.id,
-      title: s.title,
-      order: si,
-      topics: s.lectures.map((l, li) => ({
-        id: l.id,
-        title: l.title,
-        type: l.mediaType === "video" ? "video_and_text" : "text",
-        description: l.notesContent || null,
-        order: li,
+    modules: store.modules.map((m, mi) => ({
+      id: m.id,
+      title: m.title,
+      order: mi,
+      topics: m.topics.map((t, ti) => ({
+        id: t.id,
+        title: t.title,
+        type: t.type,
+        description: t.description?.trim() || null,
+        order: ti,
+        videoTitle: t.videoTitle ?? null,
       })),
     })),
   }
@@ -162,10 +213,12 @@ export async function uploadSingleVideoWithTracking(
   courseId: string,
   title: string,
   courseTitle: string,
-  store: VideoUploadStore,
+  store: VideoUploadStore
 ): Promise<void> {
   const config = await getSignedUploadConfig(courseId, moduleId, topicId, title)
   const uploadId = config.videoId
+
+  cacheFile(uploadId, videoFile)
 
   store.addTask({
     uploadId,
@@ -174,6 +227,7 @@ export async function uploadSingleVideoWithTracking(
     fileName: videoFile.name,
     totalBytes: videoFile.size,
     status: "uploading",
+    retryMeta: { courseId, moduleId, topicId, title },
   })
 
   savePendingUpload({
@@ -195,43 +249,60 @@ export async function uploadSingleVideoWithTracking(
       updatePendingUpload(uploadId, progress.bytesUploaded)
     })
 
-    store.completeTask(uploadId, "processing")
+    const duration = await getVideoDuration(videoFile)
+
+    const finalizeRes = await fetch(`/api/videos/${config.videoId}/finalize`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ storageKey: config.storageKey, duration }),
+    })
+
+    if (!finalizeRes.ok) {
+      const err = await finalizeRes.json()
+      throw new Error(err.error ?? "Failed to finalize upload")
+    }
+
+    store.completeTask(uploadId, "completed")
     removePendingUpload(uploadId)
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Upload failed"
     store.failTask(uploadId, msg)
+    console.error(err)
     throw err
   }
 }
 
 export function uploadCourseVideos(
-  sections: CourseWizardStore["sections"],
+  modules: CourseWizardStore["modules"],
   moduleIdMap: Map<string, string>,
   topicIdMap: Map<string, string>,
   courseId: string,
   courseTitle: string,
-  store: VideoUploadStore,
+  store: VideoUploadStore
 ): Promise<void>[] {
   const uploads: Promise<void>[] = []
-  for (const section of sections) {
-    const moduleId = moduleIdMap.get(section.id)
+  for (const mod of modules) {
+    const moduleId = moduleIdMap.get(mod.id)
     if (!moduleId) continue
-    for (const lecture of section.lectures) {
-      if (!lecture.videoFile) continue
-      const topicId = topicIdMap.get(lecture.id)
+    for (const topic of mod.topics) {
+      if (!topic.videoFile) continue
+      const topicId = topicIdMap.get(topic.id)
       if (!topicId) continue
       uploads.push(
         uploadSingleVideoWithTracking(
-          lecture.videoFile,
+          topic.videoFile,
           moduleId,
           topicId,
           courseId,
-          lecture.title,
+          topic.videoTitle ?? topic.title,
           courseTitle,
-          store,
+          store
         ).catch((err) => {
-          console.error(`Failed to upload video for lecture "${lecture.title}":`, err)
-        }),
+          console.error(
+            `Failed to upload video for topic "${topic.title}":`,
+            err
+          )
+        })
       )
     }
   }

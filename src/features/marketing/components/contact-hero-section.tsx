@@ -40,13 +40,21 @@ const socialLinks = [
   { label: "Instagram", src: "/figma-contact/instagram.svg" },
 ]
 
-export function ContactHeroSection() {
+interface ContactHeroSectionProps {
+  defaultName?: string
+  defaultEmail?: string
+}
+
+export function ContactHeroSection({
+  defaultName = "",
+  defaultEmail = "",
+}: ContactHeroSectionProps) {
   const [submitting, setSubmitting] = useState(false)
   const form = useForm<z.infer<typeof contactFormSchema>>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
-      name: "",
-      email: "",
+      name: defaultName,
+      email: defaultEmail,
       phone: "",
       message: "",
     },

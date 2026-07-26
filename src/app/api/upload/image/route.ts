@@ -17,13 +17,16 @@ export async function POST(request: Request) {
     }
 
     if (!file.type.startsWith("image/")) {
-      return NextResponse.json({ error: "File must be an image" }, { status: 400 })
+      return NextResponse.json(
+        { error: "File must be an image" },
+        { status: 400 }
+      )
     }
 
     if (file.size > 5 * 1024 * 1024) {
       return NextResponse.json(
         { error: "File must be less than 5MB" },
-        { status: 400 },
+        { status: 400 }
       )
     }
 
@@ -34,13 +37,18 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ url })
   } catch (error) {
+    console.error(error)
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     if (error instanceof ForbiddenError) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
+
     Sentry.captureException(error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }

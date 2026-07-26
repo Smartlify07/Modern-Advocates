@@ -7,7 +7,7 @@ import { requireInstructorOrAdmin } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import {
   generatePresignedUploadUrl,
-  getPublicUrl,
+  generatePresignedDownloadUrl,
 } from "@/infrastructure/storage/service"
 import {
   createVideoRecord,
@@ -73,8 +73,10 @@ export async function POST(request: Request) {
     }
 
     const storageKey = `course-videos/${courseId}/${moduleId}/${topicId}/${videoId}.mp4`
-    const uploadUrl = await generatePresignedUploadUrl(storageKey, "video/mp4")
-    const publicUrl = getPublicUrl(storageKey)
+    const [uploadUrl, publicUrl] = await Promise.all([
+      generatePresignedUploadUrl(storageKey, "video/mp4"),
+      generatePresignedDownloadUrl(storageKey),
+    ])
 
     return NextResponse.json({
       uploadUrl,
@@ -90,7 +92,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
     Sentry.captureException(error)
-    console.error(error)
+  console.error(error, "Error at signing")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

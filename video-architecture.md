@@ -143,7 +143,7 @@ B2_REGION=us-west-001
 B2_ACCESS_KEY_ID=
 B2_SECRET_ACCESS_KEY=
 B2_BUCKET_NAME=modern-advocates
-NEXT_PUBLIC_B2_DOMAIN=https://f000.backblazeb2.com
+NEXT_PUBLIC_B2_DOMAIN=https://f005.backblazeb2.com
 ```
 
 ---
@@ -167,7 +167,7 @@ Response:
 ```json
 {
   "uploadUrl": "https://s3.us-west-001.backblazeb2.com/...?X-Amz-Signature=...",
-  "publicUrl": "https://f000.backblazeb2.com/file/modern-advocates/course-videos/...",
+  "publicUrl": "https://f005.backblazeb2.com/file/modern-advocates/course-videos/...",
   "videoId": "uuid",
   "storageKey": "course-videos/uuid/uuid/uuid/uuid.mp4"
 }
@@ -428,7 +428,7 @@ Serve raw MP4 from B2 public URL.
 Example source:
 
 ```text
-https://f000.backblazeb2.com/file/modern-advocates/course-videos/uuid/uuid/uuid/uuid.mp4
+https://f005.backblazeb2.com/file/modern-advocates/course-videos/uuid/uuid/uuid/uuid.mp4
 ```
 
 HLS streaming can be added later via a transcoding service (Mux, Cloudflare Stream, etc.) if needed.
