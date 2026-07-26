@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { SidebarNavigation } from "@/features/platform/components/sidebar-navigation"
 import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar"
 import { TooltipProvider } from "@/shared/ui/tooltip"
@@ -16,6 +17,7 @@ export default function AdminLayoutClient({
   userName: string
   role: string | null | undefined
 }) {
+  const router = useRouter()
   return (
     <TooltipProvider>
       <SidebarProvider>
@@ -36,7 +38,7 @@ export default function AdminLayoutClient({
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Button variant="ghost" size="icon" className="relative">
+                <Button variant="ghost" size="icon" className="relative" onClick={() => router.push("/admin/support")}>
                   <BellIcon
                     stroke="#6B7280"
                     strokeWidth={1.5}

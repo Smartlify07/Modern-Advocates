@@ -76,9 +76,6 @@ function DonationSuccessContent() {
           </span>{" "}
           has been received. Your support helps us make a real impact.
         </p>
-        <p className="text-sm text-[#6b7280]">
-          A receipt will be sent to {donation?.donorEmail}.
-        </p>
           <Link href="/">
             <Button className="group relative h-13 w-40 overflow-hidden rounded-[60px] bg-ma-text text-base font-semibold text-white">
               <span className="relative z-10">Back to Home</span>
