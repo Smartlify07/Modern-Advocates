@@ -18,7 +18,7 @@ export async function deleteStorageAsset(key: string): Promise<void> {
 
 export async function generatePresignedDownloadUrl(
   key: string,
-  expiresIn = 604800, // max 7 days for S3 presigned URLs
+  expiresIn = 604800,
 ): Promise<string> {
   const command = new GetObjectCommand({
     Bucket: B2_BUCKET,
@@ -45,7 +45,7 @@ export async function uploadBufferToStorage(
   buffer: Buffer,
   key: string,
   contentType: string,
-  expiresIn = 604800, // max 7 days for S3 presigned URLs
+  expiresIn = 604800,
 ): Promise<string> {
   await s3.send(
     new PutObjectCommand({

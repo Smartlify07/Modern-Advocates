@@ -2,10 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { useVideoUploadStore } from "@/features/courses/store/use-video-upload-store"
-import {
-  uploadToStorage,
-  type StorageUploadConfig,
-} from "@/shared/lib/storage-upload"
+import { uploadToStorage, type StorageUploadConfig } from "@/shared/lib/storage-upload"
 import { VideoUploadToast } from "@/features/courses/components/video-upload-toast"
 import { toast } from "sonner"
 
@@ -55,7 +52,7 @@ export function savePendingUpload(upload: PendingUpload): void {
 
 export function updatePendingUpload(
   uploadId: string,
-  bytesUploaded: number
+  bytesUploaded: number,
 ): void {
   const all = readStorage()
   const found = all.find((u) => u.uploadId === uploadId)
@@ -86,7 +83,7 @@ async function getFreshSignedConfig(
   courseId: string,
   moduleId: string,
   topicId: string,
-  title: string
+  title: string,
 ): Promise<StorageUploadConfig> {
   const res = await fetch("/api/videos/sign-upload", {
     method: "POST",
@@ -140,7 +137,7 @@ export function usePendingUploads(courseId?: string) {
         pendingUpload.courseId,
         pendingUpload.moduleId,
         pendingUpload.topicId,
-        pendingUpload.fileName
+        pendingUpload.fileName,
       )
     } catch (err) {
       toast.error("Failed to get upload signature")
@@ -156,13 +153,12 @@ export function usePendingUploads(courseId?: string) {
       status: "uploading",
     })
 
-    toast.custom(() => <VideoUploadToast />)
+    toast.custom(() => <VideoUploadToast />, {
+      duration: Infinity,
+    })
 
     try {
-      await uploadToStorage(
-        file,
-        config,
-        (progress) => {
+      await uploadToStorage(file, config, (progress) => {
           updateProgress(config.videoId, progress.bytesUploaded)
           updatePendingUpload(uploadId, progress.bytesUploaded)
         },

@@ -19,11 +19,6 @@ const nextConfig: NextConfig = {
         hostname: "s3.us-east-005.backblazeb2.com",
         pathname: "/**",
       },
-      {
-        protocol: "https",
-        hostname: "res.cloudinary.com",
-        pathname: "/**",
-      },
     ],
   },
 }
