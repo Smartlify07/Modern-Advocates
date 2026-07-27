@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { ChevronDown, VideoIcon } from "lucide-react"
 
@@ -49,11 +49,9 @@ export function CourseModuleSidebar({
   const queryKey = ["enrollment-progress", courseId]
   const modules = course.modules
 
-  const [completed, setCompleted] = useState<Set<string>>(new Set())
   const [openWeeks, setOpenWeeks] = useState<Set<string>>(
     new Set([modules[0]?.id])
   )
-  const seeded = useRef(false)
 
   const { data: enrollment } = useQuery({
     queryKey,
@@ -69,12 +67,7 @@ export function CourseModuleSidebar({
     enabled: !!courseId,
   })
 
-  useEffect(() => {
-    if (enrollment?.completedTopicIds && !seeded.current) {
-      setCompleted(new Set(enrollment.completedTopicIds))
-      seeded.current = true
-    }
-  }, [enrollment?.completedTopicIds])
+  const completedTopicIds = enrollment?.completedTopicIds ?? []
 
   const totalTopics = (modules ?? []).reduce(
     (sum, mod) => sum + mod.topics.length,
@@ -107,12 +100,6 @@ export function CourseModuleSidebar({
         completedTopicIds: string[]
       }>(queryKey)
 
-      setCompleted((prevSet) => {
-        const next = new Set(prevSet)
-        next.has(topicId) ? next.delete(topicId) : next.add(topicId)
-        return next
-      })
-
       if (prev) {
         const toggledOn = !prev.completedTopicIds.includes(topicId)
         const nextCount = toggledOn
@@ -133,15 +120,10 @@ export function CourseModuleSidebar({
 
       return { prev }
     },
-    onError: (_err, { topicId }, context) => {
+    onError: (_err, _vars, context) => {
       if (context?.prev) {
         queryClient.setQueryData(queryKey, context.prev)
       }
-      setCompleted((prevSet) => {
-        const next = new Set(prevSet)
-        next.has(topicId) ? next.delete(topicId) : next.add(topicId)
-        return next
-      })
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey })
@@ -179,7 +161,7 @@ export function CourseModuleSidebar({
           const modTopics = mod.topics ?? []
           const isOpen = openWeeks.has(mod.id)
           const total = modTopics.length
-          const done = modTopics.filter((t) => completed.has(t.id)).length
+          const done = modTopics.filter((t) => completedTopicIds.includes(t.id)).length
           const weekLabel = `Week ${mod.sortOrder + 1}: ${mod.title}`
 
           return (
@@ -232,7 +214,7 @@ export function CourseModuleSidebar({
                       >
                         <input
                           type="checkbox"
-                          checked={completed.has(topic.id)}
+                          checked={completedTopicIds.includes(topic.id)}
                           onChange={() => toggleLesson(topic.id)}
                           className="size-5 accent-primary"
                         />

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback, useRef, useEffect } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useSearchParams, useRouter } from "next/navigation"
 import { VideoPlayer } from "@/features/videos/components/video-player"
 import { TutorCard } from "@/features/marketing/components/tutor-card"
@@ -60,6 +60,7 @@ export function CoursePlayerContent({
   const [tab, setTab] = useState<"overview" | "reviews">("overview")
   const searchParams = useSearchParams()
   const router = useRouter()
+  const queryClient = useQueryClient()
 
   const selectedTopic = findTopic(course.modules, selectedTopicId)
   const isVideoTopic = selectedTopic?.format === "video"
@@ -105,6 +106,44 @@ export function CoursePlayerContent({
     return undefined
   })()
 
+  const { data: enrollmentData } = useQuery({
+    queryKey: ["enrollment-progress", course.id],
+    queryFn: async () => {
+      const r = await fetch(`/api/enrollments/by-course/${course.id}`)
+      if (!r.ok) throw new Error("Failed to fetch enrollment")
+      return r.json() as Promise<{
+        id: string
+        progress: number
+        completedTopicIds: string[]
+      }>
+    },
+    enabled: !!course.id,
+    staleTime: 30 * 60 * 1000,
+  })
+
+  const completedTopicIds = enrollmentData?.completedTopicIds ?? []
+
+  const isCompleted = selectedTopicId
+    ? completedTopicIds.includes(selectedTopicId)
+    : false
+
+  const { prev: prevTopicId, next: nextTopicId } = getAdjacentTopics(
+    course.modules,
+    selectedTopicId
+  )
+
+  const handleCompleteToggle = useCallback(async () => {
+    if (!selectedTopicId || !enrollmentData?.id) return
+
+    await fetch(
+      `/api/enrollments/${enrollmentData.id}/topics/${selectedTopicId}`,
+      { method: "POST" }
+    )
+    queryClient.invalidateQueries({
+      queryKey: ["enrollment-progress", course.id],
+    })
+  }, [selectedTopicId, course.id, enrollmentData?.id, queryClient])
+
   const handlePause = useCallback(
     (watchedSeconds: number) => {
       if (!videoIdRef.current || !video?.duration) return
@@ -124,6 +163,36 @@ export function CoursePlayerContent({
     [video?.duration, searchParams, router]
   )
 
+  const handleEnded = useCallback(
+    async (watchedSeconds: number) => {
+      if (!videoIdRef.current || !video?.duration || !selectedTopicId) return
+
+      await fetch(`/api/videos/${videoIdRef.current}/progress`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ watchedSeconds, duration: video.duration }),
+      })
+
+      const enrollmentData = queryClient.getQueryData<{
+        id: string
+        completedTopicIds: string[]
+      }>(["enrollment-progress", course.id])
+      if (!enrollmentData) return
+
+      if (!enrollmentData.completedTopicIds.includes(selectedTopicId)) {
+        await fetch(
+          `/api/enrollments/${enrollmentData.id}/topics/${selectedTopicId}`,
+          { method: "POST" }
+        )
+      }
+
+      queryClient.invalidateQueries({
+        queryKey: ["enrollment-progress", course.id],
+      })
+    },
+    [video?.duration, videoIdRef, selectedTopicId, course.id, queryClient]
+  )
+
   return (
     <div className="flex flex-col gap-6">
       {selectedTopicId && isVideoTopic ? (
@@ -136,10 +205,10 @@ export function CoursePlayerContent({
         ) : video?.playbackUrl ? (
           <VideoPlayer
             playbackUrl={video.playbackUrl}
-            thumbnailUrl={video.thumbnailUrl ?? course.thumbnailUrl}
             videoId={video.id}
             initialTime={initialTime}
             onPause={handlePause}
+            onEnded={handleEnded}
           />
         ) : video ? (
           <div className="flex aspect-video items-center justify-center rounded-lg bg-muted text-muted-foreground">
@@ -158,14 +227,44 @@ export function CoursePlayerContent({
           </div>
         </div>
       ) : (
-        <VideoPlayer
-          playbackUrl={null}
-          thumbnailUrl={course.thumbnailUrl}
-          videoId={course.id}
-        />
+        <VideoPlayer playbackUrl={null} videoId={course.id} />
       )}
 
-      <div className="mx-3 flex gap-6 border-b border-[#e5e7eb]">
+      {selectedTopicId && (
+        <div className="flex items-center justify-between px-14">
+          <div className="flex gap-2">
+            <button
+              type="button"
+              disabled={!prevTopicId}
+              onClick={() => prevTopicId && onSelectTopic?.(prevTopicId)}
+              className="rounded-[8px] border border-primary px-4 py-2 text-sm font-medium text-ma-text transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Previous
+            </button>
+            <button
+              type="button"
+              disabled={!nextTopicId}
+              onClick={() => nextTopicId && onSelectTopic?.(nextTopicId)}
+              className="rounded-[8px] border border-primary px-4 py-2 text-sm font-medium text-ma-text transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Next
+            </button>
+          </div>
+          <button
+            type="button"
+            onClick={handleCompleteToggle}
+            className={`rounded-[8px] px-6 py-2 text-sm font-medium transition-colors ${
+              isCompleted
+                ? "bg-green-700 text-white hover:bg-green-800"
+                : "bg-primary text-white hover:opacity-90"
+            }`}
+          >
+            {isCompleted ? "Completed" : "Mark as complete"}
+          </button>
+        </div>
+      )}
+
+      <div className="flex gap-6 border-b border-[#e5e7eb] px-14">
         <button
           onClick={() => setTab("overview")}
           className={`pb-2 text-sm font-medium ${tab === "overview" ? "border-b-2 border-ma-text text-ma-text" : "text-[#6b7280]"}`}
@@ -235,4 +334,18 @@ function findTopic(
     if (found) return found
   }
   return undefined
+}
+
+function getAdjacentTopics(
+  modules: Module[],
+  currentId: string | null
+): { prev: string | null; next: string | null } {
+  if (!currentId) return { prev: null, next: null }
+  const allIds = modules.flatMap((m) => m.topics.map((t) => t.id))
+  const idx = allIds.indexOf(currentId)
+  if (idx === -1) return { prev: null, next: null }
+  return {
+    prev: idx > 0 ? allIds[idx - 1] : null,
+    next: idx < allIds.length - 1 ? allIds[idx + 1] : null,
+  }
 }

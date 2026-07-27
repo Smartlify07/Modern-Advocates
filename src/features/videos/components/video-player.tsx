@@ -5,18 +5,18 @@ import { Skeleton } from "@/shared/ui/skeleton"
 
 interface VideoPlayerProps {
   playbackUrl: string | null
-  thumbnailUrl: string | null
   videoId: string
   initialTime?: number
   onPause?: (watchedSeconds: number) => void
+  onEnded?: (watchedSeconds: number) => void
 }
 
 export function VideoPlayer({
   playbackUrl,
-  thumbnailUrl,
   videoId,
   initialTime,
   onPause,
+  onEnded,
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const initialised = useRef(false)
@@ -53,6 +53,14 @@ export function VideoPlayer({
     }
   }, [onPause])
 
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || !onEnded) return
+    const handler = () => onEnded(Math.floor(video.currentTime))
+    video.addEventListener("ended", handler)
+    return () => video.removeEventListener("ended", handler)
+  }, [onEnded])
+
   if (!playbackUrl) {
     return (
       <div className="aspect-video bg-muted">
@@ -66,7 +74,6 @@ export function VideoPlayer({
       <video
         ref={videoRef}
         src={playbackUrl}
-        poster={thumbnailUrl ?? undefined}
         className="h-full w-full"
         controls
         playsInline
