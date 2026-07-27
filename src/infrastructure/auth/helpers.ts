@@ -34,7 +34,7 @@ export async function requireInstructorOrAdmin() {
     throw new UnauthorizedError()
   }
 
-  if (session.user.role !== "instructor" && session.user.role !== "admin" && session.user.role !== "manager") {
+  if (session.user.role !== "instructor" && session.user.role !== "admin" && session.user.role !== "manager" && session.user.role !== "editor") {
     throw new ForbiddenError()
   }
 
@@ -50,7 +50,7 @@ export async function requireManagerOrAdmin() {
     throw new UnauthorizedError()
   }
 
-  if (!isManagerOrAdmin(session.user.role)) {
+  if (!isManagerOrAdmin(session.user.role) && session.user.role !== "editor") {
     throw new ForbiddenError()
   }
 

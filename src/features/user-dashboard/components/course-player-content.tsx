@@ -121,7 +121,7 @@ export function CoursePlayerContent({
         }),
       }).catch(() => {})
     },
-    [video?.duration, searchParams, router],
+    [video?.duration, searchParams, router]
   )
 
   return (
@@ -180,7 +180,7 @@ export function CoursePlayerContent({
         </button>
       </div>
 
-      <div className="mt-10 grid min-h-125 flex-col gap-7.5 px-4 lg:ml-[calc(max(100px,(100vw-1080px)/2))] lg:w-[600px] lg:px-0">
+      <div className="mt-10 grid flex-col gap-7.5 px-4 lg:ml-[calc(max(100px,(100vw-1080px)/2))] lg:w-[600px] lg:px-0">
         {tab === "overview" ? (
           <>
             <div>
@@ -227,7 +227,7 @@ export function CoursePlayerContent({
 
 function findTopic(
   modules: Module[],
-  topicId: string | null,
+  topicId: string | null
 ): Topic | undefined {
   if (!topicId) return undefined
   for (const mod of modules) {

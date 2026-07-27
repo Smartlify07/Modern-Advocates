@@ -27,7 +27,7 @@ export function ReviewCard({ review }: { review: ReviewData }) {
               {review.studentName ?? "Student"}
             </h3>
             <p className="text-[15px]/[100%] font-normal text-primary">
-              Medical Doctor
+              Student
             </p>
           </div>
         </div>

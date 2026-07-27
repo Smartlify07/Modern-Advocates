@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback } from "react"
+import { useCallback, useEffect } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useSearchParams, useRouter, notFound } from "next/navigation"
 import { Skeleton } from "@/shared/ui/skeleton"
@@ -104,6 +104,17 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
     },
     enabled: !!courseId,
   })
+  useEffect(() => {
+    if (course && !selectedTopicId) {
+      const firstTopic = course.modules?.[0]?.topics?.[0]
+      if (firstTopic) {
+        const params = new URLSearchParams(searchParams.toString())
+        params.set("topicId", firstTopic.id)
+        router.replace(`?${params.toString()}`, { scroll: false })
+      }
+    }
+  }, [course, selectedTopicId, searchParams, router])
+
   if (isPending) {
     return (
       <div className="mx-auto py-8">

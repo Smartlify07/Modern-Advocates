@@ -71,7 +71,7 @@ export function SalesChart({ data }: SalesChartProps) {
               axisLine={false}
               tickMargin={8}
             />
-            <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+            <YAxis tickLine={false} axisLine={false} tickMargin={8} allowDecimals={false} />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent indicator="dot" hideLabel />}
