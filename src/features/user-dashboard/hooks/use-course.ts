@@ -3,7 +3,7 @@ import type { OrderSummaryCourseData } from "@/features/user-dashboard/types/che
 
 export function useCourse(courseId: string | null) {
   return useQuery<OrderSummaryCourseData>({
-    queryKey: ["course", courseId],
+    queryKey: ["course-summary", courseId],
     queryFn: () =>
       fetch(`/api/courses/${courseId}`)
         .then((r) => {
