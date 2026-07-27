@@ -15,6 +15,7 @@ import type { TeamMember } from "../types"
 interface TeamTableProps {
   members: TeamMember[]
   onEdit: (member: TeamMember) => void
+  onCancelInvite: (member: TeamMember) => void
   isLoading?: boolean
   total?: number
   role?: string | null
@@ -36,10 +37,10 @@ function SkeletonRows() {
         <Skeleton className="h-6 w-16" />
       </TableCell>
       <TableCell>
-        <Skeleton className="h-6 w-24" />
+        <Skeleton className="h-6 w-16" />
       </TableCell>
       <TableCell>
-        <Skeleton className="h-6 w-12" />
+        <Skeleton className="h-6 w-24" />
       </TableCell>
     </TableRow>
   ))
@@ -48,6 +49,7 @@ function SkeletonRows() {
 export function TeamTable({
   members,
   onEdit,
+  onCancelInvite,
   isLoading,
   total,
   role,
@@ -79,7 +81,7 @@ export function TeamTable({
                   </p>
                   <p className="text-sm text-muted-foreground">
                     {total === 0
-                      ? "Team members will appear here once added."
+                      ? "Team members will appear here once invited."
                       : "There are no team members matching your criteria."}
                   </p>
                 </div>
@@ -88,24 +90,46 @@ export function TeamTable({
           ) : (
             members.map((m) => (
               <TableRow className="hover:bg-[#F5F7FA]" key={m.id}>
-                <TableCell className="font-normal">{m.name}</TableCell>
+                <TableCell className="font-normal">
+                  {m.name ?? "—"}
+                </TableCell>
                 <TableCell className="text-muted-foreground">
                   {m.email}
                 </TableCell>
                 <TableCell>{m.role}</TableCell>
                 <TableCell>
-                  <Badge
-                    variant="secondary"
-                    className="rounded-[8px] bg-green-700/10 font-normal text-green-700"
-                  >
-                    {m.status}
-                  </Badge>
+                  {m.status === "Active" ? (
+                    <Badge
+                      variant="secondary"
+                      className="rounded-[8px] bg-green-700/10 font-normal text-green-700"
+                    >
+                      Active
+                    </Badge>
+                  ) : (
+                    <Badge
+                      variant="secondary"
+                      className="rounded-[8px] bg-amber-700/10 font-normal text-amber-700"
+                    >
+                      Pending
+                    </Badge>
+                  )}
                 </TableCell>
                 <TableCell className="text-muted-foreground">
-                  {m.lastLogin}
+                  {m.lastLogin ?? "—"}
                 </TableCell>
                 <TableCell>
-                  {!role ||
+                  {m.status === "Pending" ? (
+                    role === "admin" || role === "manager" ? (
+                      <button
+                        onClick={() => onCancelInvite(m)}
+                        className="text-red-600 underline-offset-4 hover:underline"
+                      >
+                        Cancel
+                      </button>
+                    ) : (
+                      <span className="text-muted-foreground/50">—</span>
+                    )
+                  ) : !role ||
                   (role !== "admin" && role !== "manager") ||
                   m.role === "Admin" ? (
                     <span className="text-muted-foreground/50">—</span>

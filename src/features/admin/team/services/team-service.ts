@@ -1,15 +1,29 @@
 import { db } from "@/infrastructure/database/client"
-import { teamMembers, teamRole } from "@/infrastructure/database/schema/team"
+import { teamMembers, teamRole, teamInvites } from "@/infrastructure/database/schema/team"
 import { user } from "@/infrastructure/database/schema/auth"
 import { auth } from "@/infrastructure/auth/auth"
 import { ForbiddenError } from "@/infrastructure/auth/errors"
+import { sendTeamInviteEmail } from "@/infrastructure/email/send"
 import { eq, like, or, and, sql, desc, count } from "drizzle-orm"
 import { headers } from "next/headers"
+import crypto from "crypto"
+
+const TEAM_INVITE_TTL_DAYS = 7
 
 const teamRoleToAuthRole: Record<string, string> = {
   Admin: "admin",
   Manager: "manager",
   Editor: "editor",
+}
+
+function generateInviteToken(): { raw: string; hash: string } {
+  const raw = crypto.randomBytes(32).toString("hex")
+  const hash = crypto.createHash("sha256").update(raw).digest("hex")
+  return { raw, hash }
+}
+
+function hashToken(raw: string): string {
+  return crypto.createHash("sha256").update(raw).digest("hex")
 }
 
 export interface ListTeamMembersParams {
@@ -21,11 +35,11 @@ export interface ListTeamMembersParams {
 
 export interface TeamMemberDTO {
   id: string
-  name: string
+  name: string | null
   email: string
   role: "Admin" | "Manager" | "Editor"
-  status: "Active"
-  lastLogin: string
+  status: "Active" | "Pending"
+  lastLogin: string | null
 }
 
 export interface ListTeamMembersResult {
@@ -42,25 +56,32 @@ export async function listTeamMembers(
   const page = Math.max(1, rawPage)
   const offset = (page - 1) * pageSize
 
-  const conditions = []
+  const activeConditions = []
+  const pendingConditions = []
 
   if (search) {
     const q = `%${search.toLowerCase()}%`
-    conditions.push(
+    activeConditions.push(
       or(
         like(sql`LOWER(${user.name})`, q),
         like(sql`LOWER(${user.email})`, q),
       )
     )
+    pendingConditions.push(like(sql`LOWER(${teamInvites.email})`, q))
   }
 
   if (role && role !== "all") {
-    conditions.push(eq(teamMembers.role, role as typeof teamRole.enumValues[number]))
+    activeConditions.push(eq(teamMembers.role, role as typeof teamRole.enumValues[number]))
+    pendingConditions.push(eq(teamInvites.role, role as typeof teamRole.enumValues[number]))
   }
 
-  const where = conditions.length > 0 ? and(...conditions) : undefined
+  const activeWhere = activeConditions.length > 0 ? and(...activeConditions) : undefined
+  const pendingWhere = and(
+    eq(teamInvites.status, "pending"),
+    ...(pendingConditions.length > 0 ? [and(...pendingConditions)] : []),
+  )
 
-  const [rows, totalResult] = await Promise.all([
+  const [activeRows, pendingRows, totalActive, totalPending] = await Promise.all([
     db
       .select({
         id: teamMembers.id,
@@ -68,88 +89,295 @@ export async function listTeamMembers(
         role: teamMembers.role,
         name: user.name,
         email: user.email,
-        banned: user.banned,
         updatedAt: user.updatedAt,
       })
       .from(teamMembers)
       .innerJoin(user, eq(teamMembers.userId, user.id))
-      .where(where)
+      .where(activeWhere)
       .orderBy(desc(teamMembers.createdAt))
+      .limit(pageSize)
+      .offset(offset),
+    db
+      .select({
+        id: teamInvites.id,
+        role: teamInvites.role,
+        email: teamInvites.email,
+        createdAt: teamInvites.createdAt,
+      })
+      .from(teamInvites)
+      .where(pendingWhere)
+      .orderBy(desc(teamInvites.createdAt))
       .limit(pageSize)
       .offset(offset),
     db
       .select({ total: count() })
       .from(teamMembers)
       .innerJoin(user, eq(teamMembers.userId, user.id))
-      .where(where)
+      .where(activeWhere)
+      .then((r) => r[0].total),
+    db
+      .select({ total: count() })
+      .from(teamInvites)
+      .where(pendingWhere)
       .then((r) => r[0].total),
   ])
 
+  const activeMembers: TeamMemberDTO[] = activeRows.map((r) => ({
+    id: r.id,
+    name: r.name,
+    email: r.email,
+    role: r.role,
+    status: "Active" as const,
+    lastLogin: r.updatedAt?.toISOString() ?? null,
+  }))
+
+  const pendingInvites: TeamMemberDTO[] = pendingRows.map((r) => ({
+    id: r.id,
+    name: null,
+    email: r.email,
+    role: r.role,
+    status: "Pending" as const,
+    lastLogin: null,
+  }))
+
+  const allMembers = [...activeMembers, ...pendingInvites]
+  allMembers.sort((a, b) => {
+    const aDate = a.status === "Active" ? (a.lastLogin ?? "") : ""
+    const bDate = b.status === "Active" ? (b.lastLogin ?? "") : ""
+    return bDate.localeCompare(aDate)
+  })
+
   return {
-    members: rows.map((r) => ({
-      id: r.id,
-      name: r.name,
-      email: r.email,
-      role: r.role,
-      status: "Active" as const,
-      lastLogin: r.updatedAt?.toISOString() ?? new Date().toISOString(),
-    })),
-    total: totalResult,
+    members: allMembers.slice(offset, offset + pageSize),
+    total: totalActive + totalPending,
     page,
     pageSize,
   }
 }
 
-export async function addTeamMember(data: {
+export async function inviteTeamMember(data: {
   email: string
   role: string
   invitedById: string
 }) {
-  const userRecord = await db
-    .select({ id: user.id, name: user.name, email: user.email, updatedAt: user.updatedAt })
+  const email = data.email.toLowerCase().trim()
+
+  const existingUser = await db
+    .select({ id: user.id })
     .from(user)
-    .where(eq(user.email, data.email.toLowerCase().trim()))
+    .where(eq(user.email, email))
     .then((r) => r[0])
 
-  if (!userRecord) {
-    throw new Error("No user found with that email address")
+  const memberExists = existingUser
+    ? await db
+        .select({ id: teamMembers.id })
+        .from(teamMembers)
+        .where(eq(teamMembers.userId, existingUser.id))
+        .then((r) => r[0])
+    : null
+
+  if (memberExists) {
+    throw new Error("User is already an active team member")
   }
 
-  const existing = await db
-    .select({ id: teamMembers.id })
-    .from(teamMembers)
-    .where(eq(teamMembers.userId, userRecord.id))
+  const existingPending = await db
+    .select({ id: teamInvites.id })
+    .from(teamInvites)
+    .where(and(eq(teamInvites.email, email), eq(teamInvites.status, "pending")))
     .then((r) => r[0])
 
-  if (existing) {
-    throw new Error("User is already a team member")
+  if (existingPending) {
+    throw new Error("An invitation has already been sent to this email")
+  }
+
+  const { raw, hash } = generateInviteToken()
+  const expiresAt = new Date(Date.now() + TEAM_INVITE_TTL_DAYS * 24 * 60 * 60 * 1000)
+
+  const inviter = await db
+    .select({ name: user.name })
+    .from(user)
+    .where(eq(user.id, data.invitedById))
+    .then((r) => r[0])
+
+  const [invite] = await db
+    .insert(teamInvites)
+    .values({
+      email,
+      role: data.role as typeof teamRole.enumValues[number],
+      token: hash,
+      invitedById: data.invitedById,
+      expiresAt,
+    })
+    .returning()
+
+  try {
+    await sendTeamInviteEmail({
+      email,
+      token: raw,
+      role: data.role,
+      inviterName: inviter?.name ?? "An admin",
+    })
+  } catch {
+    await db.delete(teamInvites).where(eq(teamInvites.id, invite.id))
+    throw new Error("Failed to send invitation email. Please try again.")
+  }
+
+  return {
+    id: invite.id,
+    email: invite.email,
+    role: invite.role,
+    status: "Pending" as const,
+  }
+}
+
+export async function validateInviteToken(rawToken: string) {
+  const hash = hashToken(rawToken)
+
+  const invite = await db
+    .select()
+    .from(teamInvites)
+    .where(and(eq(teamInvites.token, hash), eq(teamInvites.status, "pending")))
+    .then((r) => r[0])
+
+  if (!invite) {
+    return { valid: false as const }
+  }
+
+  if (invite.expiresAt && invite.expiresAt < new Date()) {
+    await db
+      .update(teamInvites)
+      .set({ status: "cancelled" })
+      .where(eq(teamInvites.id, invite.id))
+    return { valid: false as const, expired: true as const }
+  }
+
+  const existingUser = await db
+    .select({ id: user.id, name: user.name })
+    .from(user)
+    .where(eq(user.email, invite.email))
+    .then((r) => r[0])
+
+  const alreadyMember = existingUser
+    ? await db
+        .select({ id: teamMembers.id })
+        .from(teamMembers)
+        .where(eq(teamMembers.userId, existingUser.id))
+        .then((r) => r[0])
+    : null
+
+  return {
+    valid: true as const,
+    email: invite.email,
+    role: invite.role,
+    userExists: !!existingUser,
+    alreadyMember: !!alreadyMember,
+    userId: existingUser?.id ?? null,
+    userName: existingUser?.name ?? null,
+  }
+}
+
+export async function acceptInvite(rawToken: string) {
+  const hash = hashToken(rawToken)
+
+  const invite = await db
+    .select()
+    .from(teamInvites)
+    .where(and(eq(teamInvites.token, hash), eq(teamInvites.status, "pending")))
+    .then((r) => r[0])
+
+  if (!invite) {
+    throw new Error("Invalid or expired invitation token")
+  }
+
+  if (invite.expiresAt && invite.expiresAt < new Date()) {
+    await db
+      .update(teamInvites)
+      .set({ status: "cancelled" })
+      .where(eq(teamInvites.id, invite.id))
+    throw new Error("This invitation has expired")
+  }
+
+  const existingUser = await db
+    .select({ id: user.id, name: user.name, email: user.email, updatedAt: user.updatedAt })
+    .from(user)
+    .where(eq(user.email, invite.email))
+    .then((r) => r[0])
+
+  if (!existingUser) {
+    throw new Error("You must create an account before accepting this invitation")
+  }
+
+  const alreadyMember = await db
+    .select({ id: teamMembers.id })
+    .from(teamMembers)
+    .where(eq(teamMembers.userId, existingUser.id))
+    .then((r) => r[0])
+
+  if (alreadyMember) {
+    await db
+      .update(teamInvites)
+      .set({ status: "accepted" })
+      .where(eq(teamInvites.id, invite.id))
+
+    return {
+      id: alreadyMember.id,
+      name: existingUser.name,
+      email: existingUser.email,
+      role: invite.role,
+      status: "Active" as const,
+      lastLogin: existingUser.updatedAt?.toISOString() ?? null,
+    }
   }
 
   const [member] = await db
     .insert(teamMembers)
     .values({
-      userId: userRecord.id,
-      role: data.role as typeof teamRole.enumValues[number],
-      invitedById: data.invitedById,
+      userId: existingUser.id,
+      role: invite.role,
+      invitedById: invite.invitedById,
     })
     .returning()
 
-  const memberRole = teamRoleToAuthRole[data.role] as "admin" | "manager" | "editor"
+  await db
+    .update(teamInvites)
+    .set({ status: "accepted" })
+    .where(eq(teamInvites.id, invite.id))
+
+  const memberRole = teamRoleToAuthRole[invite.role] as "admin" | "manager" | "editor" | undefined
   if (memberRole) {
-    await auth.api.setRole({
-      body: { userId: userRecord.id, role: memberRole },
-      headers: await headers(),
-    })
+    await db
+      .update(user)
+      .set({ role: memberRole })
+      .where(eq(user.id, existingUser.id))
   }
 
   return {
     id: member.id,
-    name: userRecord.name,
-    email: userRecord.email,
+    name: existingUser.name,
+    email: existingUser.email,
     role: member.role,
     status: "Active" as const,
-    lastLogin: userRecord.updatedAt?.toISOString() ?? new Date().toISOString(),
+    lastLogin: existingUser.updatedAt?.toISOString() ?? null,
   }
+}
+
+export async function cancelInvite(id: string) {
+  const invite = await db
+    .select()
+    .from(teamInvites)
+    .where(and(eq(teamInvites.id, id), eq(teamInvites.status, "pending")))
+    .then((r) => r[0])
+
+  if (!invite) {
+    throw new Error("Pending invitation not found")
+  }
+
+  await db
+    .update(teamInvites)
+    .set({ status: "cancelled" })
+    .where(eq(teamInvites.id, id))
+
+  return { success: true }
 }
 
 export async function updateTeamMemberRole(id: string, role: string) {
@@ -198,7 +426,7 @@ export async function updateTeamMemberRole(id: string, role: string) {
     email: userRecord.email,
     role: updated.role,
     status: "Active" as const,
-    lastLogin: userRecord.updatedAt?.toISOString() ?? new Date().toISOString(),
+    lastLogin: userRecord.updatedAt?.toISOString() ?? null,
   }
 }
 
