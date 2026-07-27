@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import { cacheFile, getCachedFile, removeCachedFile } from "@/features/videos/lib/file-cache"
 import { getVideoDuration } from "@/features/videos/lib/get-video-duration"
+import type { StorageUploadConfig } from "@/shared/lib/storage-upload"
 
 export type UploadStatus = "uploading" | "processing" | "completed" | "failed"
 
@@ -92,19 +93,11 @@ export const useVideoUploadStore = create<VideoUploadStore>((set, get) => ({
 
     const { courseId, moduleId, topicId, title } = task.retryMeta
 
-    set((state) => ({
-      tasks: state.tasks.map((t) =>
-        t.uploadId === uploadId
-          ? { ...t, status: "uploading", bytesUploaded: 0, error: undefined }
-          : t,
-      ),
-    }))
-
     try {
       const res = await fetch("/api/videos/sign-upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ courseId, moduleId, topicId, title }),
+        body: JSON.stringify({ courseId, moduleId, topicId, title, mimeType: file.type }),
       })
 
       if (!res.ok) {
@@ -112,15 +105,25 @@ export const useVideoUploadStore = create<VideoUploadStore>((set, get) => ({
         throw new Error(err.error ?? "Failed to get upload config")
       }
 
-      const config: { uploadUrl: string; videoId: string; storageKey: string } = await res.json()
+      const config: StorageUploadConfig = await res.json()
       const newUploadId = config.videoId
 
+      // Replace old task with new one using the fresh videoId
+      set((state) => ({
+        tasks: state.tasks.map((t) =>
+          t.uploadId === uploadId
+            ? { ...t, uploadId: newUploadId, status: "uploading", bytesUploaded: 0, error: undefined }
+            : t,
+        ),
+      }))
+
       const xhr = new XMLHttpRequest()
+      xhr.timeout = 7_200_000
 
       await new Promise<void>((resolve, reject) => {
         xhr.upload.addEventListener("progress", (e) => {
           if (e.lengthComputable) {
-            get().updateProgress(uploadId, Math.round((e.loaded / e.total) * file.size))
+            get().updateProgress(newUploadId, Math.round((e.loaded / e.total) * file.size))
           }
         })
 
@@ -131,6 +134,7 @@ export const useVideoUploadStore = create<VideoUploadStore>((set, get) => ({
 
         xhr.addEventListener("error", () => reject(new Error("Upload failed")))
         xhr.addEventListener("abort", () => reject(new Error("Upload cancelled")))
+        xhr.addEventListener("timeout", () => reject(new Error("Upload timed out")))
 
         xhr.open("PUT", config.uploadUrl)
         xhr.setRequestHeader("Content-Type", file.type)
@@ -150,7 +154,7 @@ export const useVideoUploadStore = create<VideoUploadStore>((set, get) => ({
         throw new Error(err.error ?? "Failed to finalize upload")
       }
 
-      get().completeTask(uploadId, "completed")
+      get().completeTask(newUploadId, "completed")
       removeCachedFile(uploadId)
     } catch (error) {
       const msg = error instanceof Error ? error.message : "Upload failed"

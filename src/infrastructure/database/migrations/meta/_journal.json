@@ -99,13 +99,6 @@
       "when": 1784963965040,
       "tag": "0013_salty_obadiah_stane",
       "breakpoints": true
-    },
-    {
-      "idx": 14,
-      "version": "7",
-      "when": 1785014400000,
-      "tag": "0014_rename_cloudinary_public_id",
-      "breakpoints": true
     }
   ]
 }

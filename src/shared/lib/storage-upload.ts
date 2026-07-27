@@ -14,22 +14,19 @@ export async function uploadToStorage(
   file: File,
   config: StorageUploadConfig,
   onProgress?: (progress: UploadProgress) => void,
-  options?: { resumeFromBytes?: number },
+  options?: { timeout?: number },
 ): Promise<void> {
   const totalBytes = file.size
-  const startByte = options?.resumeFromBytes ?? 0
-
-  if (startByte >= totalBytes) return
-
-  const blob = startByte > 0 ? file.slice(startByte) : file
 
   await new Promise<void>((resolve, reject) => {
     const xhr = new XMLHttpRequest()
 
+    xhr.timeout = options?.timeout ?? 7_200_000
+
     xhr.upload.addEventListener("progress", (e) => {
       if (e.lengthComputable) {
         onProgress?.({
-          bytesUploaded: startByte + e.loaded,
+          bytesUploaded: e.loaded,
           totalBytes,
         })
       }
@@ -46,12 +43,10 @@ export async function uploadToStorage(
 
     xhr.addEventListener("error", () => reject(new Error("Upload failed")))
     xhr.addEventListener("abort", () => reject(new Error("Upload cancelled")))
+    xhr.addEventListener("timeout", () => reject(new Error("Upload timed out")))
 
     xhr.open("PUT", config.uploadUrl)
     xhr.setRequestHeader("Content-Type", file.type)
-    if (startByte > 0) {
-      xhr.setRequestHeader("Content-Range", `bytes ${startByte}-${totalBytes - 1}/${totalBytes}`)
-    }
-    xhr.send(blob)
+    xhr.send(file)
   })
 }

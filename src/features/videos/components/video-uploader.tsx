@@ -51,7 +51,7 @@ export function VideoUploader({
       const res = await fetch("/api/videos/sign-upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ courseId, moduleId, topicId, title, description }),
+        body: JSON.stringify({ courseId, moduleId, topicId, title, description, mimeType: file.type }),
       })
 
       if (!res.ok) {

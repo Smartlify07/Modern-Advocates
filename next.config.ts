@@ -11,8 +11,13 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "*.backblazeb2.com",
+        hostname: "res.cloudinary.com",
         pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "f005.backblazeb2.com",
+        pathname: "/file/modern-advocates/**",
       },
       {
         protocol: "https",

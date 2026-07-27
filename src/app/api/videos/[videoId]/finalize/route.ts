@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
-import { requireSession } from "@/infrastructure/auth/helpers"
-import { UnauthorizedError } from "@/infrastructure/auth/errors"
+import { requireInstructorOrAdmin } from "@/infrastructure/auth/helpers"
+import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import { generatePresignedDownloadUrl } from "@/infrastructure/storage/service"
 import {
   getVideoById,
-  verifyCourseAccess,
+  verifyInstructorOwnership,
   markVideoReady,
 } from "@/features/videos/services/video-service"
 import * as Sentry from "@sentry/nextjs"
@@ -20,7 +20,7 @@ export async function POST(
   { params }: { params: Promise<{ videoId: string }> },
 ) {
   try {
-    const { user } = await requireSession()
+    const { user } = await requireInstructorOrAdmin()
     const { videoId } = await params
 
     const video = await getVideoById(videoId)
@@ -28,13 +28,11 @@ export async function POST(
       return NextResponse.json({ error: "Video not found" }, { status: 404 })
     }
 
-    const canAccess = await verifyCourseAccess(
-      video.courseId!,
-      user.id,
-      user.role ?? "user",
-    )
-    if (!canAccess) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+    if (user.role !== "admin") {
+      const owns = await verifyInstructorOwnership(video.courseId!, user.id)
+      if (!owns) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+      }
     }
 
     const body = await request.json()
@@ -53,16 +51,21 @@ export async function POST(
 
     await markVideoReady(videoId, storageKey, playbackUrl, duration)
 
+    const updated = await getVideoById(videoId)
+
     return NextResponse.json({
       id: videoId,
-      playbackUrl,
-      storageKey,
-      duration: duration ?? null,
-      status: "ready",
+      playbackUrl: updated?.playbackUrl ?? playbackUrl,
+      storageKey: updated?.storageKey ?? storageKey,
+      duration: updated?.duration ?? duration ?? null,
+      status: updated?.status ?? "ready",
     })
   } catch (error) {
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    if (error instanceof ForbiddenError) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
     Sentry.captureException(error)
     return NextResponse.json(

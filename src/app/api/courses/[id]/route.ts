@@ -88,6 +88,7 @@ export async function GET(
               topicId: courseVideos.topicId,
               id: courseVideos.id,
               title: courseVideos.title,
+              playbackUrl: courseVideos.playbackUrl,
               duration: courseVideos.duration,
             })
             .from(courseVideos)
@@ -95,7 +96,7 @@ export async function GET(
         : []
 
     const videoByTopicId = new Map(
-      videoRows.map((v) => [v.topicId, { id: v.id, title: v.title, duration: v.duration }]),
+      videoRows.map((v) => [v.topicId, { id: v.id, title: v.title, playbackUrl: v.playbackUrl, duration: v.duration }]),
     )
 
     function parseContent(content: string | null): unknown {
@@ -147,7 +148,7 @@ export async function GET(
               row.topicFormat === "video" ? "video_and_text" : row.topicFormat!,
             description: parseContent(row.topicContent),
             order: row.topicOrder!,
-            videoUrl: videoByTopicId.get(row.topicId)?.id ?? null,
+            videoUrl: videoByTopicId.get(row.topicId)?.playbackUrl ?? null,
             videoId: videoByTopicId.get(row.topicId)?.id ?? null,
             videoTitle: videoByTopicId.get(row.topicId)?.title ?? null,
             videoDuration: videoByTopicId.get(row.topicId)?.duration ?? null,

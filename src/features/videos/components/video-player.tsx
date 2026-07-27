@@ -22,18 +22,35 @@ export function VideoPlayer({
   const initialised = useRef(false)
 
   useEffect(() => {
+    initialised.current = false
+  }, [videoId])
+
+  useEffect(() => {
     if (initialTime && videoRef.current && !initialised.current) {
       videoRef.current.currentTime = initialTime
       initialised.current = true
     }
-  }, [initialTime])
+  }, [videoId, initialTime])
 
   useEffect(() => {
     const video = videoRef.current
     if (!video || !onPause) return
+
     const handler = () => onPause(Math.floor(video.currentTime))
     video.addEventListener("pause", handler)
-    return () => video.removeEventListener("pause", handler)
+
+    const flush = () => {
+      if (!video.paused) onPause(Math.floor(video.currentTime))
+    }
+    const onVisibility = () => { if (document.hidden) flush() }
+    document.addEventListener("visibilitychange", onVisibility)
+    window.addEventListener("beforeunload", flush)
+
+    return () => {
+      video.removeEventListener("pause", handler)
+      document.removeEventListener("visibilitychange", onVisibility)
+      window.removeEventListener("beforeunload", flush)
+    }
   }, [onPause])
 
   if (!playbackUrl) {

@@ -31,11 +31,10 @@ export function TopicRow({
   const pendingTypeRef = useRef<Topic["type"]>("video")
 
   const hasVideo = !!topic.videoFile || !!topic.videoId
-  const hasNotes = !!topic.description
-  const showPopover = !hasVideo && !hasNotes
-  const showTextarea = topic.type === "text" && hasNotes
+  const showPopover = !hasVideo && !topic.description
+  const showTextarea = topic.type === "text" && !!topic.description
   const videoLabel =
-    topic.videoFile?.name ?? topic.videoTitle ?? topic.title ?? "Video"
+    topic.videoFile?.name || topic.videoTitle || topic.title || "Video"
 
   const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -62,10 +61,8 @@ export function TopicRow({
 
   const handleSetType = (type: Topic["type"]) => {
     pendingTypeRef.current = type
-    if (type === "text") {
-      updateTopic(moduleId, topic.id, { type, description: " " })
-    } else {
-      updateTopic(moduleId, topic.id, { type })
+    updateTopic(moduleId, topic.id, { type })
+    if (type !== "text") {
       setTimeout(() => videoInputRef.current?.click(), 0)
     }
     setMediaOpen(false)

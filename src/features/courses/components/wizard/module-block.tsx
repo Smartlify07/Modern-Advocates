@@ -1,5 +1,6 @@
 "use client"
 
+import { useRef } from "react"
 import { useCourseWizardStore, type Module } from "@/features/courses/store/use-course-wizard-store"
 import { Input } from "@/shared/ui/input"
 import { TopicRow } from "@/features/courses/components/wizard/topic-row"
@@ -11,6 +12,7 @@ import {
 } from "lucide-react"
 
 export function ModuleBlock({ module: mod, index }: { module: Module; index: number }) {
+  const inputRef = useRef<HTMLInputElement>(null)
   const updateModule = useCourseWizardStore((s) => s.updateModule)
   const removeModule = useCourseWizardStore((s) => s.removeModule)
   const addTopic = useCourseWizardStore((s) => s.addTopic)
@@ -21,6 +23,7 @@ export function ModuleBlock({ module: mod, index }: { module: Module; index: num
         <GripVerticalIcon className="size-4 shrink-0 text-slate-400 cursor-grab" />
         <span className="text-sm font-normal text-slate-500 shrink-0">Module {String(index + 1).padStart(2, "0")}:</span>
         <Input
+          ref={inputRef}
           value={mod.title}
           onChange={(e) => updateModule(mod.id, e.target.value)}
           placeholder="Week 1: AI, Economic Mobility & Entrepreneurship"
@@ -37,6 +40,7 @@ export function ModuleBlock({ module: mod, index }: { module: Module; index: num
           </button>
           <button
             type="button"
+            onClick={() => inputRef.current?.focus()}
             className="flex size-7 items-center justify-center rounded text-slate-500 hover:bg-slate-200"
             title="Edit Module"
           >

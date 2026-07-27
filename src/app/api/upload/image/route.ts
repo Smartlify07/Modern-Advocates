@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server"
 import { requireInstructorOrAdmin } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
-import { uploadBufferToStorage } from "@/infrastructure/storage/service"
 import * as Sentry from "@sentry/nextjs"
-import { randomUUID } from "node:crypto"
+import { uploadImageAsset, ImageUploadError } from "@/shared/lib/upload-image"
 
 export async function POST(request: Request) {
   try {
@@ -16,27 +15,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 })
     }
 
-    if (!file.type.startsWith("image/")) {
-      return NextResponse.json(
-        { error: "File must be an image" },
-        { status: 400 }
-      )
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json(
-        { error: "File must be less than 5MB" },
-        { status: 400 }
-      )
-    }
-
-    const buffer = Buffer.from(await file.arrayBuffer())
-    const ext = file.name.split(".").pop() ?? "png"
-    const key = `course-thumbnails/${randomUUID()}.${ext}`
-    const url = await uploadBufferToStorage(buffer, key, file.type)
+    const url = await uploadImageAsset({
+      file,
+      maxSize: 5 * 1024 * 1024,
+      keyPrefix: "course-thumbnails/",
+    })
 
     return NextResponse.json({ url })
   } catch (error) {
+    if (error instanceof ImageUploadError) {
+      return NextResponse.json({ error: error.message }, { status: 400 })
+    }
     console.error(error)
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

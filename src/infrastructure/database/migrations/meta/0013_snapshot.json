@@ -1722,8 +1722,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "cloudinary_public_id": {
-          "name": "cloudinary_public_id",
+        "storage_key": {
+          "name": "storage_key",
           "type": "text",
           "primaryKey": false,
           "notNull": false

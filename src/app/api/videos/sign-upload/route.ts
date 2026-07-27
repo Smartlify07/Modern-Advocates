@@ -23,6 +23,7 @@ const schema = z.object({
   topicId: z.string().uuid(),
   title: z.string().min(1).max(255),
   description: z.string().max(2000).optional(),
+  mimeType: z.string().min(1).max(255),
 })
 
 export async function POST(request: Request) {
@@ -39,7 +40,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const { courseId, moduleId, topicId, title, description } = parsed.data
+    const { courseId, moduleId, topicId, title, description, mimeType } = parsed.data
 
     if (user.role !== "admin") {
       const owns = await verifyInstructorOwnership(courseId, user.id)
@@ -72,9 +73,10 @@ export async function POST(request: Request) {
       videoId = video.id
     }
 
-    const storageKey = `course-videos/${courseId}/${moduleId}/${topicId}/${videoId}.mp4`
+    const ext = mimeType.split("/")[1] ?? "mp4"
+    const storageKey = `course-videos/${courseId}/${moduleId}/${topicId}/${videoId}.${ext}`
     const [uploadUrl, publicUrl] = await Promise.all([
-      generatePresignedUploadUrl(storageKey, "video/mp4"),
+      generatePresignedUploadUrl(storageKey, mimeType),
       generatePresignedDownloadUrl(storageKey),
     ])
 

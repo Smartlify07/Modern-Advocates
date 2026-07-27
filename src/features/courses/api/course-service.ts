@@ -6,7 +6,7 @@ import {
   updatePendingUpload,
   removePendingUpload,
 } from "@/features/courses/hooks/use-pending-uploads"
-import { cacheFile } from "@/features/videos/lib/file-cache"
+import { cacheFile, removeCachedFile } from "@/features/videos/lib/file-cache"
 import { getVideoDuration } from "@/features/videos/lib/get-video-duration"
 
 export const DURATION_UNITS = ["Minutes", "Hours", "Days", "Weeks"] as const
@@ -154,7 +154,7 @@ export function buildCoursePayload(
         id: t.id,
         title: t.title,
         type: t.type,
-        description: t.description?.trim() || null,
+        description: t.description ?? null,
         order: ti,
         videoTitle: t.videoTitle ?? null,
       })),
@@ -191,11 +191,12 @@ async function getSignedUploadConfig(
   moduleId: string,
   topicId: string,
   title: string,
+  mimeType: string,
 ): Promise<StorageUploadConfig> {
   const res = await fetch("/api/videos/sign-upload", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ courseId, moduleId, topicId, title }),
+    body: JSON.stringify({ courseId, moduleId, topicId, title, mimeType }),
   })
 
   if (!res.ok) {
@@ -215,7 +216,7 @@ export async function uploadSingleVideoWithTracking(
   courseTitle: string,
   store: VideoUploadStore
 ): Promise<void> {
-  const config = await getSignedUploadConfig(courseId, moduleId, topicId, title)
+  const config = await getSignedUploadConfig(courseId, moduleId, topicId, title, videoFile.type)
   const uploadId = config.videoId
 
   cacheFile(uploadId, videoFile)
@@ -258,12 +259,13 @@ export async function uploadSingleVideoWithTracking(
     })
 
     if (!finalizeRes.ok) {
-      const err = await finalizeRes.json()
-      throw new Error(err.error ?? "Failed to finalize upload")
+      const errBody = await finalizeRes.json().catch(() => null)
+      throw new Error(errBody?.error ?? "Failed to finalize upload")
     }
 
     store.completeTask(uploadId, "completed")
     removePendingUpload(uploadId)
+    removeCachedFile(uploadId)
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Upload failed"
     store.failTask(uploadId, msg)
