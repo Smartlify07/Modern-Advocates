@@ -100,7 +100,7 @@ export default function CoursePlayerNavbar() {
               </div>
               Your progress
             </Link>
-            <ProfileDropdown />
+            <ProfileDropdown className="size-10" />
           </div>
 
           <button
