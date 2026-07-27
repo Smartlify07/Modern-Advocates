@@ -84,12 +84,20 @@ export async function GET(
     const videoRows =
       topicIds.length > 0
         ? await db
-            .select({ topicId: courseVideos.topicId, id: courseVideos.id })
+            .select({
+              topicId: courseVideos.topicId,
+              id: courseVideos.id,
+              title: courseVideos.title,
+              playbackUrl: courseVideos.playbackUrl,
+              duration: courseVideos.duration,
+            })
             .from(courseVideos)
             .where(inArray(courseVideos.topicId, topicIds))
         : []
 
-    const videoByTopicId = new Map(videoRows.map((v) => [v.topicId, v.id]))
+    const videoByTopicId = new Map(
+      videoRows.map((v) => [v.topicId, { id: v.id, title: v.title, playbackUrl: v.playbackUrl, duration: v.duration }]),
+    )
 
     function parseContent(content: string | null): unknown {
       if (!content) return null
@@ -115,6 +123,8 @@ export async function GET(
             order: number
             videoUrl: string | null
             videoId: string | null
+            videoTitle: string | null
+            videoDuration: number | null
           }>
         }
       >()
@@ -138,8 +148,10 @@ export async function GET(
               row.topicFormat === "video" ? "video_and_text" : row.topicFormat!,
             description: parseContent(row.topicContent),
             order: row.topicOrder!,
-            videoUrl: videoByTopicId.get(row.topicId) ?? null,
-            videoId: videoByTopicId.get(row.topicId) ?? null,
+            videoUrl: videoByTopicId.get(row.topicId)?.playbackUrl ?? null,
+            videoId: videoByTopicId.get(row.topicId)?.id ?? null,
+            videoTitle: videoByTopicId.get(row.topicId)?.title ?? null,
+            videoDuration: videoByTopicId.get(row.topicId)?.duration ?? null,
           })
         }
       }
@@ -236,7 +248,7 @@ export async function PATCH(
       if (!effectiveLevel) return NextResponse.json({ error: "Level is required to publish" }, { status: 400 })
     }
 
-    await db.transaction(async (tx) => {
+    const resultModules = await db.transaction(async (tx) => {
       const updateData: Record<string, unknown> = {}
       if (title !== undefined) updateData.title = title
       if (description !== undefined) updateData.content = description
@@ -271,6 +283,14 @@ export async function PATCH(
         if (!updated) throw new Error("Course not found")
       }
 
+      const resultModules: Array<{
+        id: string
+        clientId: string
+        title: string
+        sortOrder: number
+        topics: Array<{ id: string; clientId: string; title: string; sortOrder: number }>
+      }> = []
+
       if (modulesData) {
         const existingModuleIds = await tx
           .select({ id: courseModules.id })
@@ -293,6 +313,7 @@ export async function PATCH(
 
         for (const mod of modulesData) {
           let moduleId: string | null = null
+          const clientModuleId = mod.id ?? ""
 
           if (mod.id && existingModuleIds.includes(mod.id)) {
             moduleId = mod.id
@@ -335,6 +356,8 @@ export async function PATCH(
             }
           }
 
+          const resultTopics: Array<{ id: string; clientId: string; title: string; sortOrder: number }> = []
+
           for (const topic of mod.topics ?? []) {
             if (topic.id && existingTopicIds.includes(topic.id)) {
               const updateFields: Record<string, unknown> = {}
@@ -354,24 +377,57 @@ export async function PATCH(
                   .set(updateFields)
                   .where(eq(courseTopics.id, topic.id))
               }
+
+              if (topic.videoTitle !== undefined && topic.videoTitle !== null) {
+                await tx
+                  .update(courseVideos)
+                  .set({ title: topic.videoTitle })
+                  .where(eq(courseVideos.topicId, topic.id))
+              }
+
+              resultTopics.push({
+                id: topic.id,
+                clientId: topic.id,
+                title: topic.title ?? "",
+                sortOrder: topic.order ?? 0,
+              })
             } else if (topic.title) {
-              await tx.insert(courseTopics).values({
-                moduleId,
+              const [created] = await tx
+                .insert(courseTopics)
+                .values({
+                  moduleId,
+                  title: topic.title,
+                  format:
+                    topic.type === "video_and_text" ? "video" : (topic.type ?? "text"),
+                  content: topic.description
+                    ? JSON.stringify(topic.description)
+                    : null,
+                  sortOrder: topic.order ?? 0,
+                })
+                .returning()
+              resultTopics.push({
+                id: created.id,
+                clientId: topic.id ?? "",
                 title: topic.title,
-                format:
-                  topic.type === "video_and_text" ? "video" : (topic.type ?? "text"),
-                content: topic.description
-                  ? JSON.stringify(topic.description)
-                  : null,
                 sortOrder: topic.order ?? 0,
               })
             }
           }
+
+          resultModules.push({
+            id: moduleId,
+            clientId: clientModuleId,
+            title: mod.title ?? "",
+            sortOrder: mod.order ?? 0,
+            topics: resultTopics,
+          })
         }
       }
+
+      return resultModules
     })
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ id, modules: resultModules })
   } catch (error) {
     console.log(error)
     if (error instanceof UnauthorizedError) {

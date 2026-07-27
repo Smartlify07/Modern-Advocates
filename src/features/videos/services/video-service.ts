@@ -5,11 +5,7 @@ import {
   videoProgress,
 } from "@/infrastructure/database/schema/video"
 import { courses, enrollments } from "@/infrastructure/database/schema/course"
-import {
-  deleteCloudinaryAsset,
-  generatePlaybackUrl,
-  generateThumbnailUrl,
-} from "@/infrastructure/cloudinary/service"
+import { deleteStorageAsset } from "@/infrastructure/storage/service"
 import type { InsertCourseVideo, SelectCourseVideo } from "@/infrastructure/database/schema/video"
 
 export async function createVideoRecord(
@@ -51,18 +47,18 @@ export async function resetVideoRecord(videoId: string): Promise<void> {
   const existing = await getVideoById(videoId)
   if (!existing) throw new Error("Video record not found")
 
-  if (existing.cloudinaryPublicId) {
+  if (existing.storageKey) {
     try {
-      await deleteCloudinaryAsset(existing.cloudinaryPublicId)
+      await deleteStorageAsset(existing.storageKey)
     } catch (error) {
-      console.error("Cloudinary deletion failed (proceeding with reset):", error)
+      console.error("Storage deletion failed (proceeding with reset):", error)
     }
   }
 
   await db
     .update(courseVideos)
     .set({
-      cloudinaryPublicId: null,
+      storageKey: null,
       playbackUrl: null,
       thumbnailUrl: null,
       duration: null,
@@ -119,28 +115,23 @@ export async function deleteVideo(videoId: string): Promise<void> {
   const video = await getVideoById(videoId)
   if (!video) throw new Error("Video not found")
 
-  if (video.cloudinaryPublicId) {
+  if (video.storageKey) {
     try {
-      await deleteCloudinaryAsset(video.cloudinaryPublicId)
+      await deleteStorageAsset(video.storageKey)
     } catch (error) {
-      console.error("Cloudinary deletion failed (proceeding with DB cleanup):", error)
+      console.error("Storage deletion failed (proceeding with DB cleanup):", error)
     }
   }
 
   await db.delete(courseVideos).where(eq(courseVideos.id, videoId))
 }
 
-function extractVideoId(publicId: string): string | null {
-  const videoId = publicId.split("/").pop()
-  return videoId ?? null
-}
-
-export async function processWebhookUploadCompleted(
-  publicId: string,
-  duration: number | undefined,
+export async function markVideoReady(
+  videoId: string,
+  storageKey: string,
+  playbackUrl: string,
+  duration?: number,
 ): Promise<void> {
-  const videoId = extractVideoId(publicId)
-  if (!videoId) return
 
   const current = await db
     .select({ status: courseVideos.status })
@@ -148,58 +139,16 @@ export async function processWebhookUploadCompleted(
     .where(eq(courseVideos.id, videoId))
     .then((r) => r[0])
 
-  if (!current || current.status !== "uploading") return
+  if (!current || current.status === "ready") return
 
   await db
     .update(courseVideos)
     .set({
-      cloudinaryPublicId: publicId,
-      duration: duration ? Math.round(duration) : null,
-      status: "processing",
-    })
-    .where(eq(courseVideos.id, videoId))
-}
-
-export async function processWebhookVideoReady(publicId: string): Promise<void> {
-  const videoId = extractVideoId(publicId)
-  if (!videoId) return
-
-  const current = await db
-    .select({ status: courseVideos.status })
-    .from(courseVideos)
-    .where(eq(courseVideos.id, videoId))
-    .then((r) => r[0])
-
-  if (!current || current.status === "ready" || current.status === "uploading") return
-
-  const playbackUrl = generatePlaybackUrl(publicId)
-  const thumbnailUrl = generateThumbnailUrl(publicId)
-
-  await db
-    .update(courseVideos)
-    .set({
+      storageKey,
       playbackUrl,
-      thumbnailUrl,
+      duration: duration ? Math.round(duration) : null,
       status: "ready",
     })
-    .where(eq(courseVideos.id, videoId))
-}
-
-export async function processWebhookVideoFailed(publicId: string): Promise<void> {
-  const videoId = extractVideoId(publicId)
-  if (!videoId) return
-
-  const current = await db
-    .select({ status: courseVideos.status })
-    .from(courseVideos)
-    .where(eq(courseVideos.id, videoId))
-    .then((r) => r[0])
-
-  if (!current || current.status === "ready" || current.status === "failed") return
-
-  await db
-    .update(courseVideos)
-    .set({ status: "failed" })
     .where(eq(courseVideos.id, videoId))
 }
 

@@ -42,6 +42,7 @@ const updateTopicSchema = z.object({
   type: z.enum(["text", "video", "video_and_text"]).optional(),
   description: z.unknown().optional(),
   order: z.number().int().min(0).optional(),
+  videoTitle: z.string().max(255).nullable().optional(),
 })
 
 const updateModuleSchema = z.object({

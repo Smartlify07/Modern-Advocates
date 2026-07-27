@@ -31,12 +31,15 @@ export function UserAvatar({
     : "U"
 
   return (
-    <Avatar className={cn("size-[50px] bg-primary text-white", className)}>
+    <Avatar className={cn("size-full bg-primary text-white", className)}>
       {user?.image ? (
         <AvatarImage src={user.image} alt={user.name ?? ""} />
       ) : null}
       <AvatarFallback
-        className={cn("bg-primary text-primary-foreground", fallbackClassName)}
+        className={cn(
+          "size-full bg-primary text-primary-foreground",
+          fallbackClassName
+        )}
       >
         {initials}
       </AvatarFallback>

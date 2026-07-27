@@ -16,6 +16,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "f005.backblazeb2.com",
+        pathname: "/file/modern-advocates/**",
+      },
+      {
+        protocol: "https",
         hostname: "s3.us-east-005.backblazeb2.com",
         pathname: "/**",
       },

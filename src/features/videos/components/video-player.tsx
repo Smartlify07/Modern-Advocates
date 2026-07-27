@@ -8,8 +8,7 @@ interface VideoPlayerProps {
   thumbnailUrl: string | null
   videoId: string
   initialTime?: number
-  onProgress?: (watchedSeconds: number) => void
-  progressInterval?: number
+  onPause?: (watchedSeconds: number) => void
 }
 
 export function VideoPlayer({
@@ -17,32 +16,42 @@ export function VideoPlayer({
   thumbnailUrl,
   videoId,
   initialTime,
-  onProgress,
-  progressInterval = 15,
+  onPause,
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const initialised = useRef(false)
 
   useEffect(() => {
-    if (!videoRef.current || !onProgress) return
+    initialised.current = false
+  }, [videoId])
 
-    intervalRef.current = setInterval(() => {
-      const video = videoRef.current
-      if (video && typeof video.currentTime === "number") {
-        onProgress(Math.floor(video.currentTime))
-      }
-    }, progressInterval * 1000)
+  useEffect(() => {
+    if (initialTime && videoRef.current && !initialised.current) {
+      videoRef.current.currentTime = initialTime
+      initialised.current = true
+    }
+  }, [videoId, initialTime])
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || !onPause) return
+
+    const handler = () => onPause(Math.floor(video.currentTime))
+    video.addEventListener("pause", handler)
+
+    const flush = () => {
+      if (!video.paused) onPause(Math.floor(video.currentTime))
+    }
+    const onVisibility = () => { if (document.hidden) flush() }
+    document.addEventListener("visibilitychange", onVisibility)
+    window.addEventListener("beforeunload", flush)
 
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
+      video.removeEventListener("pause", handler)
+      document.removeEventListener("visibilitychange", onVisibility)
+      window.removeEventListener("beforeunload", flush)
     }
-  }, [onProgress, progressInterval])
-
-  useEffect(() => {
-    if (initialTime && videoRef.current) {
-      videoRef.current.currentTime = initialTime
-    }
-  }, [initialTime])
+  }, [onPause])
 
   if (!playbackUrl) {
     return (
@@ -53,7 +62,7 @@ export function VideoPlayer({
   }
 
   return (
-    <div className="aspect-video overflow-hidden rounded-lg bg-black">
+    <div className="aspect-video overflow-hidden bg-black">
       <video
         ref={videoRef}
         src={playbackUrl}

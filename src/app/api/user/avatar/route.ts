@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
 import { headers } from "next/headers"
 import { auth } from "@/infrastructure/auth/auth"
-import { cloudinary } from "@/infrastructure/cloudinary/config"
 import { UnauthorizedError } from "@/infrastructure/auth/errors"
 import * as Sentry from "@sentry/nextjs"
+import { uploadImageAsset, ImageUploadError } from "@/shared/lib/upload-image"
 
 export async function POST(request: Request) {
   try {
@@ -22,36 +22,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 })
     }
 
-    if (!file.type.startsWith("image/")) {
-      return NextResponse.json({ error: "File must be an image" }, { status: 400 })
-    }
-
-    if (file.size > 2 * 1024 * 1024) {
-      return NextResponse.json({ error: "File must be less than 2MB" }, { status: 400 })
-    }
-
-    const buffer = Buffer.from(await file.arrayBuffer())
-
-    const result = await new Promise<{ secure_url: string }>((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder: "avatars",
-          resource_type: "image",
-          transformation: [
-            { width: 300, height: 300, crop: "fill", quality: "auto" },
-          ],
-        },
-        (error, result) => {
-          if (error) reject(error)
-          else resolve(result as { secure_url: string })
-        },
-      )
-
-      uploadStream.end(buffer)
+    const url = await uploadImageAsset({
+      file,
+      maxSize: 2 * 1024 * 1024,
+      keyPrefix: `avatars/${session.user.id}/`,
     })
 
-    return NextResponse.json({ url: result.secure_url })
+    return NextResponse.json({ url })
   } catch (error) {
+    if (error instanceof ImageUploadError) {
+      return NextResponse.json({ error: error.message }, { status: 400 })
+    }
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }

@@ -1,23 +1,47 @@
 "use client"
 
+import { useState } from "react"
 import { useVideoUploadStore } from "@/features/courses/store/use-video-upload-store"
-import { Loader2, CheckCircle, AlertCircle, XIcon } from "lucide-react"
+import {
+  Loader2,
+  CheckCircle,
+  AlertCircle,
+  RotateCcw,
+  XIcon,
+} from "lucide-react"
 
 export function VideoUploadToast() {
   const tasks = useVideoUploadStore((s) => s.tasks)
   const clearCompleted = useVideoUploadStore((s) => s.clearCompleted)
   const removeTask = useVideoUploadStore((s) => s.removeTask)
+  const retryUpload = useVideoUploadStore((s) => s.retryUpload)
+  const [retrying, setRetrying] = useState<Set<string>>(new Set())
 
   if (tasks.length === 0) return null
 
   const activeCount = tasks.filter((t) => t.status === "uploading").length
   const completedCount = tasks.filter(
-    (t) => t.status === "completed" || t.status === "processing",
+    (t) => t.status === "completed" || t.status === "processing"
   ).length
   const failedCount = tasks.filter((t) => t.status === "failed").length
 
+  const handleRetry = async (uploadId: string) => {
+    setRetrying((prev) => new Set(prev).add(uploadId))
+    try {
+      await retryUpload(uploadId)
+    } catch {
+      // store already sets failed state on error
+    } finally {
+      setRetrying((prev) => {
+        const next = new Set(prev)
+        next.delete(uploadId)
+        return next
+      })
+    }
+  }
+
   return (
-    <div className="w-80 rounded-lg border bg-white p-4 shadow-lg">
+    <div className="min-h-[100px] w-80 rounded-lg border bg-white p-4 shadow-lg">
       <div className="mb-3 flex items-center justify-between">
         <h4 className="text-sm font-semibold text-slate-900">
           {activeCount > 0
@@ -41,6 +65,7 @@ export function VideoUploadToast() {
             task.totalBytes > 0
               ? Math.round((task.bytesUploaded / task.totalBytes) * 100)
               : 0
+          const isRetrying = retrying.has(task.uploadId)
 
           return (
             <div key={task.uploadId} className="space-y-0.5">
@@ -60,27 +85,30 @@ export function VideoUploadToast() {
                     className={`h-full rounded-full transition-all duration-300 ${
                       task.status === "failed"
                         ? "bg-red-500"
-                        : task.status === "completed" || task.status === "processing"
+                        : task.status === "completed" ||
+                            task.status === "processing"
                           ? "bg-green-500"
                           : "bg-blue-500"
                     }`}
                     style={{
                       width:
-                        task.status === "completed" || task.status === "processing"
+                        task.status === "completed" ||
+                        task.status === "processing"
                           ? "100%"
                           : `${pct}%`,
                     }}
                   />
                 </div>
-                {task.status === "uploading" && (
+                {isRetrying ? (
                   <Loader2 className="size-3.5 shrink-0 animate-spin text-blue-500" />
-                )}
-                {(task.status === "completed" || task.status === "processing") && (
+                ) : task.status === "uploading" ? (
+                  <Loader2 className="size-3.5 shrink-0 animate-spin text-blue-500" />
+                ) : task.status === "completed" ||
+                  task.status === "processing" ? (
                   <CheckCircle className="size-3.5 shrink-0 text-green-500" />
-                )}
-                {task.status === "failed" && (
+                ) : task.status === "failed" ? (
                   <AlertCircle className="size-3.5 shrink-0 text-red-500" />
-                )}
+                ) : null}
               </div>
 
               {task.status === "failed" && task.error && (
@@ -88,13 +116,25 @@ export function VideoUploadToast() {
               )}
 
               {task.status === "failed" && (
-                <button
-                  type="button"
-                  onClick={() => removeTask(task.uploadId)}
-                  className="text-xs text-red-500 hover:text-red-700"
-                >
-                  Dismiss
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleRetry(task.uploadId)}
+                    disabled={isRetrying}
+                    className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-700 disabled:opacity-50"
+                  >
+                    <RotateCcw className="size-3" />
+                    Retry
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeTask(task.uploadId)}
+                    disabled={isRetrying}
+                    className="text-xs text-red-500 hover:text-red-700 disabled:opacity-50"
+                  >
+                    Dismiss
+                  </button>
+                </div>
               )}
             </div>
           )

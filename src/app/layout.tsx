@@ -37,7 +37,7 @@ export default function RootLayout({
     >
       <body>
         <Providers>{children}</Providers>
-        <Toaster />
+        <Toaster expand={true} />
       </body>
     </html>
   )

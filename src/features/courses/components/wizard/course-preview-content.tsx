@@ -6,7 +6,7 @@ import { CoursePreviewSidebar } from "@/features/courses/components/wizard/cours
 import { Users, Star } from "lucide-react"
 
 export function CoursePreviewContent() {
-  const sections = useCourseWizardStore((s) => s.sections)
+  const mods = useCourseWizardStore((s) => s.modules)
   const level = useCourseWizardStore((s) => s.level)
   const language = useCourseWizardStore((s) => s.language)
   const duration = useCourseWizardStore((s) => s.duration)
@@ -14,10 +14,12 @@ export function CoursePreviewContent() {
   const instructorName = useCourseWizardStore((s) => s.instructorName)
   const instructorSpecialty = useCourseWizardStore((s) => s.instructorSpecialty)
   const aboutInstructor = useCourseWizardStore((s) => s.aboutInstructor)
-  const instructorPhotoPreview = useCourseWizardStore((s) => s.instructorPhotoPreview)
+  const instructorPhotoPreview = useCourseWizardStore(
+    (s) => s.instructorPhotoPreview
+  )
   const overview = useCourseWizardStore((s) => s.overview)
 
-  const lectureCount = sections.reduce((acc, s) => acc + s.lectures.length, 0)
+  const topicCount = mods.reduce((acc, m) => acc + m.topics.length, 0)
   const overviewText = overview
     ? (overview.content ?? [])
         .map((n: any) => n.content?.map((c: any) => c.text).join(" "))
@@ -31,7 +33,7 @@ export function CoursePreviewContent() {
 
   return (
     <section className="bg-white py-10 text-ma-text lg:py-12">
-      <div className="mx-auto flex flex-col-reverse gap-10 lg:grid lg:grid-cols-[0.6fr_0.5fr] lg:items-start lg:gap-30">
+      <div className="mx-auto flex w-full flex-col-reverse gap-10 lg:grid lg:grid-cols-[0.6fr_0.5fr] lg:items-start lg:gap-30">
         <div className="flex w-full max-w-[598px] flex-col gap-[30px]">
           {/* Overview */}
           <section className="flex flex-col gap-4">
@@ -49,22 +51,22 @@ export function CoursePreviewContent() {
               Course Module
             </h2>
             <div className="flex flex-col gap-4">
-              {sections.length > 0 ? (
-                sections.map((sec, i) => (
+              {mods.length > 0 ? (
+                mods.map((mod, i) => (
                   <div
-                    key={sec.id}
+                    key={mod.id}
                     className={`rounded-2xl border border-[#d9d9d9] px-5 pt-[17px] pb-5 ${i === 0 ? "bg-[#f5f5f5]" : "bg-white"}`}
                   >
                     <h3 className="text-sm font-bold text-ma-text sm:text-base">
-                      {sec.title || "Untitled Section"}
+                      {mod.title || "Untitled Module"}
                     </h3>
-                    {sec.lectures.length > 0 && (
+                    {mod.topics.length > 0 && (
                       <div className="mt-4 text-sm text-ma-text sm:text-[15px]">
                         <p>Topics:</p>
                         <ul className="list-disc pl-5">
-                          {sec.lectures.map((lec) => (
-                            <li key={lec.id}>
-                              {lec.title || "Untitled Lecture"}
+                          {mod.topics.map((top) => (
+                            <li key={top.id}>
+                              {top.title || "Untitled Topic"}
                             </li>
                           ))}
                         </ul>
@@ -111,10 +113,10 @@ export function CoursePreviewContent() {
                     "Experienced professional with expertise in this field."}
                 </p>
                 <div className="my-auto flex flex-nowrap items-center gap-4 text-[10px] font-medium text-[#6b7280] sm:text-sm">
-                  <span className="inline-flex items-center gap-1">
+                  <span className="inline-flex items-center gap-1 text-nowrap">
                     <Users className="size-3.5 sm:size-5" />0 students
                   </span>
-                  <span className="my-auto inline-flex items-center gap-1">
+                  <span className="my-auto inline-flex flex-nowrap items-center gap-1 text-nowrap">
                     <Star className="size-3.5 fill-[#ff9d00] text-[#ff9d00] sm:size-5" />
                     0.0 (0 reviews)
                   </span>
@@ -126,7 +128,7 @@ export function CoursePreviewContent() {
 
         <CoursePreviewSidebar
           totalDuration={totalDuration}
-          lectureCount={lectureCount}
+          lectureCount={topicCount}
           levelCapitalized={levelCapitalized}
           languageDisplay={languageDisplay}
         />

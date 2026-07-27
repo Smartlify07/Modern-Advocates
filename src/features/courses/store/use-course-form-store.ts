@@ -68,7 +68,7 @@ export interface CourseFormStore {
     price: number
     discountedPrice: number | null
     thumbnailUrl: string | null
-    modules: {
+      modules: {
       id: string
       title: string
       order: number
@@ -78,7 +78,9 @@ export interface CourseFormStore {
         type: string
         description: unknown
         order: number
+        videoUrl: string | null
         videoId: string | null
+        videoTitle: string | null
       }[]
     }[]
   }) => void
@@ -294,8 +296,9 @@ export const useCourseFormStore = create<CourseFormStore>((set, get) => ({
           id: topic.id,
           title: topic.title,
           type: topic.type as "video" | "text" | "video_and_text",
-          videoUrl: topic.videoId ?? null,
+          videoUrl: topic.videoUrl ?? null,
           videoId: topic.videoId ?? null,
+          videoTitle: topic.videoTitle ?? null,
           description: topic.description as Topic["description"],
           order: topic.order,
         })),

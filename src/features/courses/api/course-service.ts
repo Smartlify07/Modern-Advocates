@@ -1,14 +1,13 @@
 import type { CourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
 import type { VideoUploadStore } from "@/features/courses/store/use-video-upload-store"
-import {
-  uploadInChunks,
-  type ChunkedUploadConfig,
-} from "@/shared/lib/cloudinary-upload"
+import { uploadToStorage, type StorageUploadConfig } from "@/shared/lib/storage-upload"
 import {
   savePendingUpload,
   updatePendingUpload,
   removePendingUpload,
 } from "@/features/courses/hooks/use-pending-uploads"
+import { cacheFile, removeCachedFile } from "@/features/videos/lib/file-cache"
+import { getVideoDuration } from "@/features/videos/lib/get-video-duration"
 
 export const DURATION_UNITS = ["Minutes", "Hours", "Days", "Weeks"] as const
 export type DurationUnit = (typeof DURATION_UNITS)[number]
@@ -37,6 +36,7 @@ export interface TopicPayload {
   type: "text" | "video" | "video_and_text"
   description: string | null
   order: number
+  videoTitle?: string | null
 }
 
 export interface CreateCoursePayload {
@@ -146,16 +146,17 @@ export function buildCoursePayload(
         : null,
     isFree: !store.originalPrice,
     status: status ?? "draft",
-    modules: store.sections.map((s, si) => ({
-      id: s.id,
-      title: s.title,
-      order: si,
-      topics: s.lectures.map((l, li) => ({
-        id: l.id,
-        title: l.title,
-        type: l.mediaType === "video" ? "video_and_text" : "text",
-        description: l.notesContent || null,
-        order: li,
+    modules: store.modules.map((m, mi) => ({
+      id: m.id,
+      title: m.title,
+      order: mi,
+      topics: m.topics.map((t, ti) => ({
+        id: t.id,
+        title: t.title,
+        type: t.type,
+        description: t.description ?? null,
+        order: ti,
+        videoTitle: t.videoTitle ?? null,
       })),
     })),
   }
@@ -189,12 +190,13 @@ async function getSignedUploadConfig(
   courseId: string,
   moduleId: string,
   topicId: string,
-  title: string
-): Promise<ChunkedUploadConfig & { videoId: string }> {
+  title: string,
+  mimeType: string,
+): Promise<StorageUploadConfig> {
   const res = await fetch("/api/videos/sign-upload", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ courseId, moduleId, topicId, title }),
+    body: JSON.stringify({ courseId, moduleId, topicId, title, mimeType }),
   })
 
   if (!res.ok) {
@@ -214,8 +216,10 @@ export async function uploadSingleVideoWithTracking(
   courseTitle: string,
   store: VideoUploadStore
 ): Promise<void> {
-  const config = await getSignedUploadConfig(courseId, moduleId, topicId, title)
+  const config = await getSignedUploadConfig(courseId, moduleId, topicId, title, videoFile.type)
   const uploadId = config.videoId
+
+  cacheFile(uploadId, videoFile)
 
   store.addTask({
     uploadId,
@@ -224,6 +228,7 @@ export async function uploadSingleVideoWithTracking(
     fileName: videoFile.name,
     totalBytes: videoFile.size,
     status: "uploading",
+    retryMeta: { courseId, moduleId, topicId, title },
   })
 
   savePendingUpload({
@@ -240,22 +245,37 @@ export async function uploadSingleVideoWithTracking(
   })
 
   try {
-    await uploadInChunks(videoFile, config, (progress) => {
+    await uploadToStorage(videoFile, config, (progress) => {
       store.updateProgress(uploadId, progress.bytesUploaded)
       updatePendingUpload(uploadId, progress.bytesUploaded)
     })
 
-    store.completeTask(uploadId, "processing")
+    const duration = await getVideoDuration(videoFile)
+
+    const finalizeRes = await fetch(`/api/videos/${config.videoId}/finalize`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ storageKey: config.storageKey, duration }),
+    })
+
+    if (!finalizeRes.ok) {
+      const errBody = await finalizeRes.json().catch(() => null)
+      throw new Error(errBody?.error ?? "Failed to finalize upload")
+    }
+
+    store.completeTask(uploadId, "completed")
     removePendingUpload(uploadId)
+    removeCachedFile(uploadId)
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Upload failed"
     store.failTask(uploadId, msg)
+    console.error(err)
     throw err
   }
 }
 
 export function uploadCourseVideos(
-  sections: CourseWizardStore["sections"],
+  modules: CourseWizardStore["modules"],
   moduleIdMap: Map<string, string>,
   topicIdMap: Map<string, string>,
   courseId: string,
@@ -263,25 +283,25 @@ export function uploadCourseVideos(
   store: VideoUploadStore
 ): Promise<void>[] {
   const uploads: Promise<void>[] = []
-  for (const section of sections) {
-    const moduleId = moduleIdMap.get(section.id)
+  for (const mod of modules) {
+    const moduleId = moduleIdMap.get(mod.id)
     if (!moduleId) continue
-    for (const lecture of section.lectures) {
-      if (!lecture.videoFile) continue
-      const topicId = topicIdMap.get(lecture.id)
+    for (const topic of mod.topics) {
+      if (!topic.videoFile) continue
+      const topicId = topicIdMap.get(topic.id)
       if (!topicId) continue
       uploads.push(
         uploadSingleVideoWithTracking(
-          lecture.videoFile,
+          topic.videoFile,
           moduleId,
           topicId,
           courseId,
-          lecture.title,
+          topic.videoTitle ?? topic.title,
           courseTitle,
           store
         ).catch((err) => {
           console.error(
-            `Failed to upload video for lecture "${lecture.title}":`,
+            `Failed to upload video for topic "${topic.title}":`,
             err
           )
         })

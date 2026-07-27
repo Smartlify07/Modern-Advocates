@@ -5,7 +5,10 @@ import { db } from "@/infrastructure/database/client"
 import { courseVideos } from "@/infrastructure/database/schema/video"
 import { requireInstructorOrAdmin } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
-import { generateUploadSignature } from "@/infrastructure/cloudinary/signatures"
+import {
+  generatePresignedUploadUrl,
+  generatePresignedDownloadUrl,
+} from "@/infrastructure/storage/service"
 import {
   createVideoRecord,
   getVideoByTopicId,
@@ -20,6 +23,7 @@ const schema = z.object({
   topicId: z.string().uuid(),
   title: z.string().min(1).max(255),
   description: z.string().max(2000).optional(),
+  mimeType: z.string().min(1).max(255),
 })
 
 export async function POST(request: Request) {
@@ -36,7 +40,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const { courseId, moduleId, topicId, title, description } = parsed.data
+    const { courseId, moduleId, topicId, title, description, mimeType } = parsed.data
 
     if (user.role !== "admin") {
       const owns = await verifyInstructorOwnership(courseId, user.id)
@@ -69,16 +73,18 @@ export async function POST(request: Request) {
       videoId = video.id
     }
 
-    const uploadConfig = generateUploadSignature({
-      courseId,
-      moduleId,
-      topicId,
-      videoId,
-    })
+    const ext = mimeType.split("/")[1] ?? "mp4"
+    const storageKey = `course-videos/${courseId}/${moduleId}/${topicId}/${videoId}.${ext}`
+    const [uploadUrl, publicUrl] = await Promise.all([
+      generatePresignedUploadUrl(storageKey, mimeType),
+      generatePresignedDownloadUrl(storageKey),
+    ])
 
     return NextResponse.json({
-      ...uploadConfig,
+      uploadUrl,
+      publicUrl,
       videoId,
+      storageKey,
     })
   } catch (error) {
     if (error instanceof UnauthorizedError) {
@@ -88,7 +94,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
     Sentry.captureException(error)
-    console.error(error)
+  console.error(error, "Error at signing")
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

@@ -28,7 +28,7 @@ export const courseVideos = pgTable(
       .references(() => courseTopics.id, { onDelete: "cascade" }),
     title: text("title").notNull(),
     description: text("description"),
-    cloudinaryPublicId: text("cloudinary_public_id"),
+    storageKey: text("storage_key"),
     playbackUrl: text("playback_url"),
     thumbnailUrl: text("thumbnail_url"),
     duration: integer("duration"),

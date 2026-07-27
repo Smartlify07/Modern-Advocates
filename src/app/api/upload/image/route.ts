@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server"
 import { requireInstructorOrAdmin } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
-import { cloudinary } from "@/infrastructure/cloudinary/config"
 import * as Sentry from "@sentry/nextjs"
+import { uploadImageAsset, ImageUploadError } from "@/shared/lib/upload-image"
 
 export async function POST(request: Request) {
   try {
@@ -15,44 +15,29 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 })
     }
 
-    if (!file.type.startsWith("image/")) {
-      return NextResponse.json({ error: "File must be an image" }, { status: 400 })
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json(
-        { error: "File must be less than 5MB" },
-        { status: 400 },
-      )
-    }
-
-    const buffer = Buffer.from(await file.arrayBuffer())
-
-    const result = await new Promise<{ secure_url: string }>((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder: "course-thumbnails",
-          resource_type: "image",
-          transformation: [{ width: 1280, height: 720, crop: "fill", quality: "auto" }],
-        },
-        (error, result) => {
-          if (error) reject(error)
-          else resolve(result as { secure_url: string })
-        },
-      )
-
-      uploadStream.end(buffer)
+    const url = await uploadImageAsset({
+      file,
+      maxSize: 5 * 1024 * 1024,
+      keyPrefix: "course-thumbnails/",
     })
 
-    return NextResponse.json({ url: result.secure_url })
+    return NextResponse.json({ url })
   } catch (error) {
+    if (error instanceof ImageUploadError) {
+      return NextResponse.json({ error: error.message }, { status: 400 })
+    }
+    console.error(error)
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     if (error instanceof ForbiddenError) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
+
     Sentry.captureException(error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
