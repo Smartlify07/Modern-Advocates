@@ -63,7 +63,9 @@ export function ThumbnailUpload() {
             <span className="font-normal text-primary">Supported format:</span>{" "}
             <span className="font-normal text-primary">
               .jpg, .jpeg, or .png
-            </span>
+            </span>{" "}
+            <br />
+            <span className="font-normal text-primary">Max File Size: 5mb</span>
           </p>
           <input
             ref={inputRef}
