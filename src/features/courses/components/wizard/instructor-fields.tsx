@@ -106,7 +106,7 @@ export function InstructorFields() {
               <button
                 type="button"
                 onClick={() => setInstructorPhoto(null)}
-                className="absolute -right-2 -top-2 flex size-6 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600"
+                className="absolute -right-2 -top-2 flex size-6 items-center justify-center rounded-full border bg-white text-slate-500 hover:bg-slate-100"
               >
                 <XIcon className="size-3.5" />
               </button>

@@ -211,7 +211,7 @@ export default function EditCoursePage() {
             <Button
               variant="outline"
               onClick={handleCancel}
-              className="h-12 rounded-[8px] px-4 py-2"
+              className="h-12 w-[156px] rounded-[8px] px-4 py-2"
             >
               Cancel
             </Button>
@@ -238,7 +238,7 @@ export default function EditCoursePage() {
           <Button
             variant="outline"
             onClick={handleCancel}
-            className="h-[44px] rounded-[8px]"
+            className="h-[44px] w-[156px] rounded-[8px]"
           >
             Cancel
           </Button>
