@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
@@ -9,7 +9,6 @@ import { useSaveCourse } from "@/features/courses/hooks/use-course-mutations"
 import { Stepper } from "@/shared/ui/stepper"
 import { Button } from "@/shared/ui/button"
 import { BasicInfoStep } from "@/features/courses/components/wizard/basic-info-step"
-import { SaveDraftDialog } from "@/app/(admin)/admin/courses/_components/save-draft-dialog"
 import { AdvanceInfoStep } from "@/features/courses/components/wizard/advance-info-step"
 import { CurriculumStep } from "@/features/courses/components/wizard/curriculum-step"
 import { PublishStep } from "@/features/courses/components/wizard/publish-step"
@@ -94,7 +93,6 @@ export default function EditCoursePage() {
   const store = useCourseWizardStore.getState
   const saveCourse = useSaveCourse()
   const initialized = useRef(false)
-  const [saveDialogOpen, setSaveDialogOpen] = useState(false)
 
   const { data: course, isLoading } = useQuery({
     queryKey: ["course", courseId],
@@ -106,6 +104,8 @@ export default function EditCoursePage() {
     enabled: !!courseId,
     refetchOnWindowFocus: false,
   })
+
+  const courseStatus = course?.status as "draft" | "published" | undefined
 
   useEffect(() => {
     if (course && !initialized.current && !isLoading) {
@@ -133,11 +133,6 @@ export default function EditCoursePage() {
   }
 
   const handleSaveAndClose = () => {
-    setSaveDialogOpen(true)
-  }
-
-  const handleSaveConfirmed = () => {
-    setSaveDialogOpen(false)
     saveCourse.mutate({
       store: store(),
       options: {
@@ -189,19 +184,21 @@ export default function EditCoursePage() {
         <h1 className="text-xl font-semibold lg:text-[36px]">
           {wizardSteps[currentStep].title}
         </h1>
-        <Button
-          variant="ghost"
-          onClick={handleSaveAndClose}
-          disabled={isPending}
-          className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
-        >
-          {isPending ? (
-            <Loader2 className="mr-1 size-4 animate-spin" />
-          ) : (
-            <XIcon className="mr-1 size-4" />
-          )}
-          Save & Close
-        </Button>
+        {courseStatus === "draft" && (
+          <Button
+            variant="ghost"
+            onClick={handleSaveAndClose}
+            disabled={isPending}
+            className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
+          >
+            {isPending ? (
+              <Loader2 className="mr-1 size-4 animate-spin" />
+            ) : (
+              <XIcon className="mr-1 size-4" />
+            )}
+            Save & Close
+          </Button>
+        )}
       </div>
 
       {currentStep === 0 && <BasicInfoStep />}
@@ -239,20 +236,15 @@ export default function EditCoursePage() {
           >
             {isPending ? (
               <Loader2 className="mr-1 size-4 animate-spin" />
-            ) : (
+            ) : courseStatus === "draft" ? (
               <SendIcon className="mr-1 size-4" />
+            ) : (
+              <SaveIcon className="mr-1 size-4" />
             )}
-            {isPending ? "Saving..." : "Publish"}
+            {isPending ? "Saving..." : courseStatus === "draft" ? "Save & Publish" : "Save changes"}
           </Button>
         )}
       </div>
-
-      <SaveDraftDialog
-        open={saveDialogOpen}
-        onOpenChange={setSaveDialogOpen}
-        onConfirm={handleSaveConfirmed}
-        isPending={isPending}
-      />
     </div>
   )
 }
