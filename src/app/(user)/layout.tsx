@@ -1,20 +1,18 @@
 import { redirect } from "next/navigation"
-import { headers } from "next/headers"
-import { auth } from "@/infrastructure/auth/auth"
 import DashboardNavbar from "@/features/user-dashboard/components/dashboard-navbar"
 import { Footer } from "@/features/marketing/components/footer"
+import { requireSession } from "@/infrastructure/auth/helpers"
+import { isAdminRole } from "@/infrastructure/auth/roles"
 
 export default async function UserLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const { user } = await requireSession()
 
-  if (!session) {
-    redirect("/login")
+  if (isAdminRole(user.role)) {
+    redirect("/admin")
   }
 
   return (

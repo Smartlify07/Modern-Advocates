@@ -1,18 +1,15 @@
 import { redirect } from "next/navigation"
-import { headers } from "next/headers"
-import { auth } from "@/infrastructure/auth/auth"
 import { isManagerOrAdmin } from "@/infrastructure/auth/roles"
+import { getSessionSafe } from "@/infrastructure/auth/helpers"
 
 export default async function CreateLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const session = await getSessionSafe()
 
-  if (!isManagerOrAdmin(session?.user.role)) {
+  if (!session || !isManagerOrAdmin(session.user.role)) {
     redirect("/admin")
   }
 

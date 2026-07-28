@@ -1,12 +1,11 @@
 import { Suspense } from "react"
 import { redirect } from "next/navigation"
-import { headers } from "next/headers"
 import { eq, and } from "drizzle-orm"
 import { validate as isValidUUID } from "uuid"
-import { auth } from "@/infrastructure/auth/auth"
 import { db } from "@/infrastructure/database/client"
 import { enrollments } from "@/infrastructure/database/schema/course"
 import { CheckoutContent } from "@/features/user-dashboard/components/checkout-content"
+import { getSessionSafe } from "@/infrastructure/auth/helpers"
 
 export default async function CheckoutPage({
   searchParams,
@@ -18,7 +17,7 @@ export default async function CheckoutPage({
   const courseId = Array.isArray(rawCourseId) ? rawCourseId[0] : (typeof rawCourseId === "string" ? rawCourseId : undefined)
 
   if (courseId && isValidUUID(courseId)) {
-    const session = await auth.api.getSession({ headers: await headers() })
+    const session = await getSessionSafe()
 
     if (session) {
       const existing = await db

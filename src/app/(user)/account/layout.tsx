@@ -24,7 +24,7 @@ export default function AccountLayout({
 }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { data: session, isPending, refetch } = authClient.useSession()
+  const { data: session, error: sessionError, isPending, refetch } = authClient.useSession()
 
   const handleLogout = () => {
     router.replace("/auth/signout")
@@ -32,9 +32,14 @@ export default function AccountLayout({
 
   return (
     <AccountSessionContext.Provider
-      value={{ user: session?.user, isPending, refetchSession: refetch }}
+      value={{ user: session?.user, isPending, error: sessionError, refetchSession: refetch }}
     >
       <div className="px-4 py-8 lg:mx-auto lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
+        {sessionError && (
+          <div className="mb-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            Failed to load session. Please try refreshing the page.
+          </div>
+        )}
         <h1 className="mb-8 text-2xl font-bold tracking-tight text-ma-text">
           Account
         </h1>
