@@ -61,7 +61,11 @@ export function TopicRow({
 
   const handleSetType = (type: Topic["type"]) => {
     pendingTypeRef.current = type
-    updateTopic(moduleId, topic.id, { type })
+    if (type === "text" && !topic.description) {
+      updateTopic(moduleId, topic.id, { type, description: " " })
+    } else {
+      updateTopic(moduleId, topic.id, { type })
+    }
     if (type !== "text") {
       setTimeout(() => videoInputRef.current?.click(), 0)
     }
