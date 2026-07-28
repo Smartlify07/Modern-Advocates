@@ -6,8 +6,8 @@ import { useSearchParams, useRouter } from "next/navigation"
 import { VideoPlayer } from "@/features/videos/components/video-player"
 import { TutorCard } from "@/features/marketing/components/tutor-card"
 import { ReviewCard } from "@/features/marketing/components/review-card"
-import { CourseInformationCard } from "@/features/marketing/components/course-information-card"
 import { Skeleton } from "@/shared/ui/skeleton"
+import { authClient } from "@/infrastructure/auth/client"
 
 type Topic = {
   id: string
@@ -21,6 +21,7 @@ type Review = {
   id: string
   body: string | null
   rating: number
+  studentId: string
   studentName: string | null
   studentImage: string | null
 }
@@ -61,6 +62,10 @@ export function CoursePlayerContent({
   const searchParams = useSearchParams()
   const router = useRouter()
   const queryClient = useQueryClient()
+  const { data: session } = authClient.useSession()
+  const myReviews = course.reviews.filter(
+    (r) => r.studentId === session?.user?.id
+  )
 
   const selectedTopic = findTopic(course.modules, selectedTopicId)
   const isVideoTopic = selectedTopic?.format === "video"
@@ -194,7 +199,7 @@ export function CoursePlayerContent({
   )
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       {selectedTopicId && isVideoTopic ? (
         !selectedVideoId ? (
           <div className="flex aspect-video items-center justify-center rounded-lg bg-muted text-muted-foreground">
@@ -218,7 +223,7 @@ export function CoursePlayerContent({
           </div>
         ) : null
       ) : selectedTopicId && selectedTopic && !isVideoTopic ? (
-        <div className="rounded-lg border bg-white p-6">
+        <div className="border bg-white px-14 py-6">
           <h2 className="mb-4 text-xl font-bold text-ma-text">
             {selectedTopic.title}
           </h2>
@@ -231,7 +236,7 @@ export function CoursePlayerContent({
       )}
 
       {selectedTopicId && (
-        <div className="flex items-center justify-between px-14">
+        <div className="flex items-center justify-between border-b border-[#e5e7eb] px-4 pb-4 lg:px-14">
           <div className="flex gap-2">
             <button
               type="button"
@@ -264,7 +269,7 @@ export function CoursePlayerContent({
         </div>
       )}
 
-      <div className="flex gap-6 border-b border-[#e5e7eb] px-14">
+      <div className="flex gap-6 border-b border-[#e5e7eb] px-4 lg:px-14">
         <button
           onClick={() => setTab("overview")}
           className={`pb-2 text-sm font-medium ${tab === "overview" ? "border-b-2 border-ma-text text-ma-text" : "text-[#6b7280]"}`}
@@ -279,43 +284,24 @@ export function CoursePlayerContent({
         </button>
       </div>
 
-      <div className="mt-10 grid flex-col gap-7.5 px-4 lg:ml-[calc(max(100px,(100vw-1080px)/2))] lg:w-[600px] lg:px-0">
+      <div className="my-10 grid flex-col gap-7.5 px-4 lg:px-14">
         {tab === "overview" ? (
           <>
             <div>
               <h1 className="text-2xl font-bold text-primary">
                 {selectedTopic?.title ?? course.title}
               </h1>
-              <p className="mt-4 text-base leading-relaxed text-primary">
-                {selectedTopic?.content ??
-                  course.overview ??
-                  "No description available."}
-              </p>
             </div>
-
-            <CourseInformationCard course={course} />
-
-            {!selectedTopicId && (
-              <div className="flex flex-col gap-5">
-                <h2 className="text-2xl font-bold text-ma-text">
-                  Meet your tutor
-                </h2>
-                <TutorCard
-                  tutor={course.tutor}
-                  enrollmentCount={course.enrollmentCount}
-                  avgRating={course.avgRating}
-                  reviewCount={course.reviewCount}
-                />
-              </div>
-            )}
           </>
         ) : (
           <div className="grid gap-5">
             <h2 className="text-2xl font-bold text-ma-text">Student Reviews</h2>
-            {(course.reviews?.length ?? 0) > 0 ? (
-              course.reviews?.map((r) => <ReviewCard key={r.id} review={r} />)
+            {myReviews.length > 0 ? (
+              myReviews.map((r) => <ReviewCard key={r.id} review={r} />)
             ) : (
-              <p className="text-base text-[#6b7280]">No reviews yet.</p>
+              <div className="w-full rounded-lg border border-[#d9d9d9] py-12 text-center">
+                <p className="text-base text-[#6b7280]">No reviews yet.</p>
+              </div>
             )}
           </div>
         )}
