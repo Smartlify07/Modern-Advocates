@@ -1,5 +1,6 @@
 import type { JSONContent } from "@tiptap/react"
 
+export type CourseStatus = "draft" | "published" | "archived"
 export type TopicType = "video" | "text" | "video_and_text"
 
 export interface Topic {

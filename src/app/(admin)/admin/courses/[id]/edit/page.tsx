@@ -24,6 +24,7 @@ import {
   Loader2,
 } from "lucide-react"
 import type { Step } from "@/shared/ui/stepper"
+import type { CourseStatus } from "@/features/courses/types"
 import { Skeleton } from "@/shared/ui/skeleton"
 
 const wizardSteps: Step[] = [
@@ -105,7 +106,7 @@ export default function EditCoursePage() {
     refetchOnWindowFocus: false,
   })
 
-  const courseStatus = course?.status as "draft" | "published" | "archived" | undefined
+  const courseStatus = course?.status as CourseStatus | undefined
 
   useEffect(() => {
     if (course && !initialized.current && !isLoading) {

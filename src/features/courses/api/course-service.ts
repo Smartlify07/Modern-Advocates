@@ -1,4 +1,5 @@
 import type { CourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
+import type { CourseStatus } from "@/features/courses/types"
 import type { VideoUploadStore } from "@/features/courses/store/use-video-upload-store"
 import { uploadToStorage, type StorageUploadConfig } from "@/shared/lib/storage-upload"
 import {
@@ -54,7 +55,7 @@ export interface CreateCoursePayload {
   price: number
   discountedPrice?: number | null
   isFree: boolean
-  status: "draft" | "published" | "archived"
+  status: CourseStatus
   modules: ModulePayload[]
 }
 
@@ -89,7 +90,7 @@ export interface UpdateCoursePayload {
   price?: number
   discountedPrice?: number | null
   isFree?: boolean
-  status?: "draft" | "published" | "archived"
+  status?: CourseStatus
   modules?: ModulePayload[]
 }
 
@@ -119,7 +120,7 @@ export function minutesToDuration(
 export function buildCoursePayload(
   store: CourseWizardStore,
   thumbnailUrl?: string,
-  status?: "draft" | "published" | "archived",
+  status?: CourseStatus,
   instructorImageUrl?: string | null
 ): CreateCoursePayload {
   return {

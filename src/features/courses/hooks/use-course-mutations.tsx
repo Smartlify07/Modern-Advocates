@@ -12,6 +12,7 @@ import {
 } from "@/features/courses/api/course-service"
 import { useVideoUploadStore } from "@/features/courses/store/use-video-upload-store"
 import { VideoUploadToast } from "@/features/courses/components/video-upload-toast"
+import type { CourseStatus } from "@/features/courses/types"
 import type { CourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
 
 export function useCreateCourse() {
@@ -66,7 +67,7 @@ export function useUpdateCourse() {
 }
 
 interface SaveCourseOptions {
-  status: "draft" | "published" | "archived"
+  status: CourseStatus
   onSuccess?: (result: CourseResponse) => void
   courseId?: string
   toastMessage?: string

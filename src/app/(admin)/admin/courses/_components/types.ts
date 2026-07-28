@@ -1,8 +1,10 @@
+import type { CourseStatus } from "@/features/courses/types"
+
 export interface Course {
   id: string
   title: string | null
   level: string | null
-  status: "draft" | "published" | "archived"
+  status: CourseStatus
   price: number
   discountedPrice: number | null
   isFree: boolean
