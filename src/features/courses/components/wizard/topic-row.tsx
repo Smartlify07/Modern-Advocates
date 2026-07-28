@@ -31,8 +31,8 @@ export function TopicRow({
   const pendingTypeRef = useRef<Topic["type"]>("video")
 
   const hasVideo = !!topic.videoFile || !!topic.videoId
-  const showPopover = !hasVideo && topic.type !== "text"
-  const showTextarea = topic.type === "text"
+  const showPopover = !hasVideo && !topic.description
+  const showTextarea = topic.type === "text" && !!topic.description
   const videoLabel =
     topic.videoFile?.name || topic.videoTitle || topic.title || "Video"
 
