@@ -6,6 +6,7 @@ import type { LucideIcon } from "lucide-react"
 export interface Step {
   title: string
   icon: LucideIcon
+  contentTitle?: string
 }
 
 interface StepperProps {

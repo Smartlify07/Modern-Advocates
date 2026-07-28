@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
+import type { CourseStatus } from "@/features/courses/types"
 import { Button } from "@/shared/ui/button"
 import { Field, FieldLabel } from "@/shared/ui/field"
 import {
@@ -63,7 +64,7 @@ export function PublishActions({ canPublish }: Props) {
   const thumbnailPreview = useCourseFormStore((s) => s.thumbnailPreview)
 
   const submitCourse = useCallback(
-    async (status: "draft" | "published") => {
+    async (status: CourseStatus) => {
       setPublishing(true)
       setPublishError(null)
 

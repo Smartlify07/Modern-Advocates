@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { LoaderCircle } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/shared/utils"
@@ -18,7 +18,7 @@ import { Controller, useForm } from "react-hook-form"
 import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { AuthCodeForm } from "@/features/auth/components/auth-code-form"
 import { AuthGoogleButton } from "@/features/auth/components/auth-google-button"
 import { authClient } from "@/infrastructure/auth/client"
@@ -35,6 +35,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [loginEmail, setLoginEmail] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -44,6 +45,13 @@ export function LoginForm({
       email: "",
     },
   })
+
+  useEffect(() => {
+    if (searchParams.get("error") === "session_failed") {
+      setError("Session could not be loaded. Please sign in again.")
+      toast.error("Session could not be loaded. Please sign in again.")
+    }
+  }, [searchParams])
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setLoading(true)
