@@ -42,6 +42,7 @@ export default function AdminTeamsPage() {
       return r.json()
     },
     onSuccess: () => {
+      setPage(1)
       queryClient.invalidateQueries({ queryKey: ["admin-team"] })
       toast.success("Invitation cancelled")
     },

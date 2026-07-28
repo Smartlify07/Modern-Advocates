@@ -75,7 +75,7 @@ export default function InviteAcceptContent() {
 
       const session = await authClient.getSession()
 
-      if (result.userExists && session?.data?.user) {
+      if (result.userExists && session?.data?.user && session.data.user.email === result.email) {
         setStep({ type: "authenticated", email: result.email, role: result.role })
       } else if (result.userExists && !session?.data?.user) {
         setStep({ type: "login", email: result.email, role: result.role })
@@ -134,30 +134,34 @@ export default function InviteAcceptContent() {
   const handleSignupSubmitCode = async (code: string) => {
     if (!signupStep) return
     setSignupError(null)
-    const { error: signInError } = await authClient.signIn.emailOtp({
-      email: signupStep.email,
-      otp: code,
-      name: signupStep.name,
-    })
-    if (signInError) {
-      setSignupError("Failed to sign in. Please try again.")
-      return
-    }
+    try {
+      const { error: signInError } = await authClient.signIn.emailOtp({
+        email: signupStep.email,
+        otp: code,
+        name: signupStep.name,
+      })
+      if (signInError) {
+        setSignupError("Failed to sign in. Please try again.")
+        return
+      }
 
-    const r = await fetch("/api/admin/team/invite/accept", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token: token!.trim() }),
-    })
-    if (!r.ok) {
-      const { error } = await r.json()
-      toast.error(error ?? "Failed to accept invitation")
-      return
-    }
+      const r = await fetch("/api/admin/team/invite/accept", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: token!.trim() }),
+      })
+      if (!r.ok) {
+        const { error } = await r.json()
+        toast.error(error ?? "Failed to accept invitation")
+        return
+      }
 
-    setStep({ type: "accepted" })
-    toast.success("Welcome to the team!")
-    router.push("/admin/dashboard")
+      setStep({ type: "accepted" })
+      toast.success("Welcome to the team!")
+      router.push("/admin/dashboard")
+    } catch {
+      setSignupError("Something went wrong. Please try again.")
+    }
   }
 
   const handleSignupResendCode = async () => {
@@ -192,38 +196,42 @@ export default function InviteAcceptContent() {
   const handleLoginSubmitCode = async (code: string) => {
     if (!loginEmail) return
     setLoginError(null)
-    const { error: verifyError } = await authClient.emailOtp.checkVerificationOtp({
-      email: loginEmail,
-      otp: code,
-      type: "sign-in",
-    })
-    if (verifyError) {
-      setLoginError(verifyError.message ?? "Invalid or expired code.")
-      return
-    }
-    const { error: signInError } = await authClient.signIn.emailOtp({
-      email: loginEmail,
-      otp: code,
-    })
-    if (signInError) {
-      setLoginError("Failed to sign in. Please try again.")
-      return
-    }
+    try {
+      const { error: verifyError } = await authClient.emailOtp.checkVerificationOtp({
+        email: loginEmail,
+        otp: code,
+        type: "sign-in",
+      })
+      if (verifyError) {
+        setLoginError(verifyError.message ?? "Invalid or expired code.")
+        return
+      }
+      const { error: signInError } = await authClient.signIn.emailOtp({
+        email: loginEmail,
+        otp: code,
+      })
+      if (signInError) {
+        setLoginError("Failed to sign in. Please try again.")
+        return
+      }
 
-    const r = await fetch("/api/admin/team/invite/accept", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token: token!.trim() }),
-    })
-    if (!r.ok) {
-      const { error } = await r.json()
-      toast.error(error ?? "Failed to accept invitation")
-      return
-    }
+      const r = await fetch("/api/admin/team/invite/accept", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: token!.trim() }),
+      })
+      if (!r.ok) {
+        const { error } = await r.json()
+        toast.error(error ?? "Failed to accept invitation")
+        return
+      }
 
-    setStep({ type: "accepted" })
-    toast.success("Welcome to the team!")
-    router.push("/admin/dashboard")
+      setStep({ type: "accepted" })
+      toast.success("Welcome to the team!")
+      router.push("/admin/dashboard")
+    } catch {
+      setLoginError("Something went wrong. Please try again.")
+    }
   }
 
   const handleLoginResendCode = async () => {

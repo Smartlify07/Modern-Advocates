@@ -4,7 +4,7 @@ import { user } from "@/infrastructure/database/schema/auth"
 import { auth } from "@/infrastructure/auth/auth"
 import { ForbiddenError } from "@/infrastructure/auth/errors"
 import { sendTeamInviteEmail } from "@/infrastructure/email/send"
-import { eq, like, or, and, sql, desc, count } from "drizzle-orm"
+import { eq, like, or, and, sql, desc, count, lt } from "drizzle-orm"
 import { headers } from "next/headers"
 import crypto from "crypto"
 
@@ -94,9 +94,7 @@ export async function listTeamMembers(
       .from(teamMembers)
       .innerJoin(user, eq(teamMembers.userId, user.id))
       .where(activeWhere)
-      .orderBy(desc(teamMembers.createdAt))
-      .limit(pageSize)
-      .offset(offset),
+      .orderBy(desc(teamMembers.createdAt)),
     db
       .select({
         id: teamInvites.id,
@@ -106,9 +104,7 @@ export async function listTeamMembers(
       })
       .from(teamInvites)
       .where(pendingWhere)
-      .orderBy(desc(teamInvites.createdAt))
-      .limit(pageSize)
-      .offset(offset),
+      .orderBy(desc(teamInvites.createdAt)),
     db
       .select({ total: count() })
       .from(teamMembers)
@@ -179,6 +175,17 @@ export async function inviteTeamMember(data: {
   if (memberExists) {
     throw new Error("User is already an active team member")
   }
+
+  await db
+    .update(teamInvites)
+    .set({ status: "cancelled" })
+    .where(
+      and(
+        eq(teamInvites.email, email),
+        eq(teamInvites.status, "pending"),
+        lt(teamInvites.expiresAt, new Date())
+      )
+    )
 
   const existingPending = await db
     .select({ id: teamInvites.id })
@@ -276,108 +283,112 @@ export async function validateInviteToken(rawToken: string) {
   }
 }
 
-export async function acceptInvite(rawToken: string) {
+export async function acceptInvite(rawToken: string, authenticatedUserId: string) {
   const hash = hashToken(rawToken)
 
-  const invite = await db
-    .select()
-    .from(teamInvites)
-    .where(and(eq(teamInvites.token, hash), eq(teamInvites.status, "pending")))
-    .then((r) => r[0])
+  return await db.transaction(async (tx) => {
+    const invite = await tx
+      .select()
+      .from(teamInvites)
+      .where(and(eq(teamInvites.token, hash), eq(teamInvites.status, "pending")))
+      .then((r) => r[0])
 
-  if (!invite) {
-    throw new Error("Invalid or expired invitation token")
-  }
+    if (!invite) {
+      throw new Error("Invalid or expired invitation token")
+    }
 
-  if (invite.expiresAt && invite.expiresAt < new Date()) {
-    await db
-      .update(teamInvites)
-      .set({ status: "cancelled" })
-      .where(eq(teamInvites.id, invite.id))
-    throw new Error("This invitation has expired")
-  }
+    if (invite.expiresAt && invite.expiresAt < new Date()) {
+      await tx
+        .update(teamInvites)
+        .set({ status: "cancelled" })
+        .where(eq(teamInvites.id, invite.id))
+      throw new Error("This invitation has expired")
+    }
 
-  const existingUser = await db
-    .select({ id: user.id, name: user.name, email: user.email, updatedAt: user.updatedAt })
-    .from(user)
-    .where(eq(user.email, invite.email))
-    .then((r) => r[0])
+    const existingUser = await tx
+      .select({ id: user.id, name: user.name, email: user.email, updatedAt: user.updatedAt })
+      .from(user)
+      .where(eq(user.id, authenticatedUserId))
+      .then((r) => r[0])
 
-  if (!existingUser) {
-    throw new Error("You must create an account before accepting this invitation")
-  }
+    if (!existingUser || existingUser.email !== invite.email) {
+      throw new Error("This invitation was sent to a different email address")
+    }
 
-  const alreadyMember = await db
-    .select({ id: teamMembers.id })
-    .from(teamMembers)
-    .where(eq(teamMembers.userId, existingUser.id))
-    .then((r) => r[0])
+    const alreadyMember = await tx
+      .select({ id: teamMembers.id })
+      .from(teamMembers)
+      .where(eq(teamMembers.userId, existingUser.id))
+      .then((r) => r[0])
 
-  if (alreadyMember) {
-    await db
+    if (alreadyMember) {
+      await tx
+        .update(teamInvites)
+        .set({ status: "accepted" })
+        .where(eq(teamInvites.id, invite.id))
+
+      return {
+        id: alreadyMember.id,
+        name: existingUser.name,
+        email: existingUser.email,
+        role: invite.role,
+        status: "Active" as const,
+        lastLogin: existingUser.updatedAt?.toISOString() ?? null,
+      }
+    }
+
+    const [member] = await tx
+      .insert(teamMembers)
+      .values({
+        userId: existingUser.id,
+        role: invite.role,
+        invitedById: invite.invitedById,
+      })
+      .returning()
+
+    await tx
       .update(teamInvites)
       .set({ status: "accepted" })
       .where(eq(teamInvites.id, invite.id))
 
+    const memberRole = teamRoleToAuthRole[invite.role] as "admin" | "manager" | "editor" | undefined
+    if (memberRole) {
+      await tx
+        .update(user)
+        .set({ role: memberRole })
+        .where(eq(user.id, existingUser.id))
+    }
+
     return {
-      id: alreadyMember.id,
+      id: member.id,
       name: existingUser.name,
       email: existingUser.email,
-      role: invite.role,
+      role: member.role,
       status: "Active" as const,
       lastLogin: existingUser.updatedAt?.toISOString() ?? null,
     }
-  }
-
-  const [member] = await db
-    .insert(teamMembers)
-    .values({
-      userId: existingUser.id,
-      role: invite.role,
-      invitedById: invite.invitedById,
-    })
-    .returning()
-
-  await db
-    .update(teamInvites)
-    .set({ status: "accepted" })
-    .where(eq(teamInvites.id, invite.id))
-
-  const memberRole = teamRoleToAuthRole[invite.role] as "admin" | "manager" | "editor" | undefined
-  if (memberRole) {
-    await db
-      .update(user)
-      .set({ role: memberRole })
-      .where(eq(user.id, existingUser.id))
-  }
-
-  return {
-    id: member.id,
-    name: existingUser.name,
-    email: existingUser.email,
-    role: member.role,
-    status: "Active" as const,
-    lastLogin: existingUser.updatedAt?.toISOString() ?? null,
-  }
+  })
 }
 
 export async function cancelInvite(id: string) {
-  const invite = await db
-    .select()
-    .from(teamInvites)
-    .where(and(eq(teamInvites.id, id), eq(teamInvites.status, "pending")))
-    .then((r) => r[0])
+  return await db.transaction(async (tx) => {
+    const invite = await tx
+      .select()
+      .from(teamInvites)
+      .where(and(eq(teamInvites.id, id), eq(teamInvites.status, "pending")))
+      .then((r) => r[0])
 
-  if (!invite) {
-    throw new Error("Pending invitation not found")
-  }
+    if (!invite) {
+      throw new Error("Pending invitation not found")
+    }
 
-  await db
-    .update(teamInvites)
-    .set({ status: "cancelled" })
-    .where(eq(teamInvites.id, id))
+    await tx
+      .update(teamInvites)
+      .set({ status: "cancelled" })
+      .where(eq(teamInvites.id, id))
 
-  return { success: true }
+    return { success: true }
+  })
 }
 
 export async function updateTeamMemberRole(id: string, role: string) {
