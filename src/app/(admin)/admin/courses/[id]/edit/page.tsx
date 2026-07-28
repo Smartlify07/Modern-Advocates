@@ -115,6 +115,10 @@ export default function EditCoursePage() {
     }
   }, [course, isLoading, initialize, setCourseId])
 
+  const handleCancel = () => {
+    router.push("/admin/courses")
+  }
+
   const handlePrevious = () => {
     if (currentStep > 0) {
       const newStep = currentStep - 1
@@ -187,21 +191,32 @@ export default function EditCoursePage() {
         <h1 className="text-xl font-semibold lg:text-[36px]">
           {wizardSteps[currentStep]?.contentTitle ?? wizardSteps[currentStep].title}
         </h1>
-        {courseStatus === "draft" && (
-          <Button
-            variant="ghost"
-            onClick={handleSaveAndClose}
-            disabled={isPending}
-            className="h-12 rounded-[8px] bg-ma-admin-primary/10 px-4 py-2 text-primary hover:bg-ma-admin-primary hover:text-white"
-          >
-            {isPending ? (
-              <Loader2 className="mr-1 size-4 animate-spin" />
-            ) : (
-              <XIcon className="mr-1 size-4" />
-            )}
-            Save & Close
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          {courseStatus === "draft" && (
+            <Button
+              variant="ghost"
+              onClick={handleSaveAndClose}
+              disabled={isPending}
+              className="h-12 rounded-[8px] bg-ma-admin-primary/10 px-4 py-2 text-primary hover:bg-ma-admin-primary hover:text-white"
+            >
+              {isPending ? (
+                <Loader2 className="mr-1 size-4 animate-spin" />
+              ) : (
+                <XIcon className="mr-1 size-4" />
+              )}
+              Save & Close
+            </Button>
+          )}
+          {currentStep > 0 && (
+            <Button
+              variant="outline"
+              onClick={handleCancel}
+              className="h-12 rounded-[8px] px-4 py-2"
+            >
+              Cancel
+            </Button>
+          )}
+        </div>
       </div>
 
       {currentStep === 0 && <BasicInfoStep />}
@@ -220,7 +235,13 @@ export default function EditCoursePage() {
             Previous
           </Button>
         ) : (
-          <div />
+          <Button
+            variant="outline"
+            onClick={handleCancel}
+            className="h-[44px] rounded-[8px]"
+          >
+            Cancel
+          </Button>
         )}
         {currentStep < wizardSteps.length - 1 && (
           <Button
