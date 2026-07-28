@@ -105,7 +105,7 @@ export default function EditCoursePage() {
     refetchOnWindowFocus: false,
   })
 
-  const courseStatus = course?.status as "draft" | "published" | undefined
+  const courseStatus = course?.status as "draft" | "published" | "archived" | undefined
 
   useEffect(() => {
     if (course && !initialized.current && !isLoading) {
@@ -144,10 +144,11 @@ export default function EditCoursePage() {
   }
 
   const handlePublish = () => {
+    const targetStatus = courseStatus === "archived" ? "archived" : "published"
     saveCourse.mutate({
       store: store(),
       options: {
-        status: "published",
+        status: targetStatus,
         courseId,
         onSuccess: () => { resetForm(); router.push("/admin/courses") },
       },
