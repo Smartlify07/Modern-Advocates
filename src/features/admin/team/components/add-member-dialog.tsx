@@ -43,7 +43,7 @@ export function AddMemberDialog({ open, onOpenChange }: AddMemberDialogProps) {
       onOpenChange(false)
       setEmail("")
       setRole("Editor")
-      toast.success("Team member added")
+      toast.success("Invite sent")
     },
     onError: (err) => {
       toast.error(err.message)
@@ -54,7 +54,7 @@ export function AddMemberDialog({ open, onOpenChange }: AddMemberDialogProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="px-7.5 py-4 sm:max-w-xl [&>button]:end-7.5 [&>button]:top-4 [&>button]:rounded-[8px]">
         <DialogHeader className="-mx-7.5 border-b px-7.5 pb-4">
-          <DialogTitle className="text-base">Add Team Member</DialogTitle>
+          <DialogTitle className="text-base">Invite Team Member</DialogTitle>
         </DialogHeader>
         <div className="space-y-7.5">
           <p className="text-sm text-muted-foreground">
@@ -102,7 +102,7 @@ export function AddMemberDialog({ open, onOpenChange }: AddMemberDialogProps) {
             disabled={isPending || !email.trim()}
           >
             {isPending ? <Loader2Icon className="size-4 animate-spin" /> : null}
-            Add Member
+            Send Invite
           </Button>
         </DialogFooter>
       </DialogContent>

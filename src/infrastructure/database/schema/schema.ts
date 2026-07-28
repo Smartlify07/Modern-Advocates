@@ -16,7 +16,7 @@ import {
   videoProgressRelations,
 } from "./video"
 import { donations, donationType } from "./donation"
-import { teamMembers, teamRole, teamMembersRelations } from "./team"
+import { teamMembers, teamRole, teamInvites, teamInviteStatus, teamMembersRelations, teamInvitesRelations } from "./team"
 import { contacts, ticketStatus } from "./contact"
 
 export const schema = {
@@ -44,6 +44,9 @@ export const schema = {
   teamMembers,
   teamRole,
   teamMembersRelations,
+  teamInvites,
+  teamInviteStatus,
+  teamInvitesRelations,
   contacts,
   ticketStatus,
 }

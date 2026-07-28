@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 import { TeamTable } from "@/features/admin/team/components/team-table"
 import { TeamFilterBar } from "@/features/admin/team/components/team-filter-bar"
 import { AddMemberDialog } from "@/features/admin/team/components/add-member-dialog"
@@ -28,6 +29,31 @@ export default function AdminTeamsPage() {
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
+
+  const queryClient = useQueryClient()
+
+  const cancelInviteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const r = await fetch(`/api/admin/team/${id}/cancel`, { method: "POST" })
+      if (!r.ok) {
+        const { error } = await r.json()
+        throw new Error(error ?? "Failed to cancel invitation")
+      }
+      return r.json()
+    },
+    onSuccess: () => {
+      setPage(1)
+      queryClient.invalidateQueries({ queryKey: ["admin-team"] })
+      toast.success("Invitation cancelled")
+    },
+    onError: (err) => {
+      toast.error(err.message)
+    },
+  })
+
+  const handleCancelInvite = useCallback((member: TeamMember) => {
+    cancelInviteMutation.mutate(member.id)
+  }, [cancelInviteMutation])
 
   const { data, isLoading } = useQuery<ListTeamMembersResponse>({
     queryKey: ["admin-team", search, typeFilter, page],
@@ -73,6 +99,7 @@ export default function AdminTeamsPage() {
         <TeamTable
           members={members}
           onEdit={(m) => { setSelectedMember(m); setEditDialogOpen(true) }}
+          onCancelInvite={handleCancelInvite}
           isLoading={isLoading}
           total={total}
           role={role}

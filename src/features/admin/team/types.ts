@@ -1,8 +1,8 @@
 export interface TeamMember {
   id: string
-  name: string
+  name: string | null
   email: string
   role: "Admin" | "Manager" | "Editor"
-  status: "Active"
-  lastLogin: string
+  status: "Active" | "Pending"
+  lastLogin: string | null
 }

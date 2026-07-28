@@ -3,7 +3,7 @@ import { requirePermission } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import {
   listTeamMembers,
-  addTeamMember,
+  inviteTeamMember,
 } from "@/features/admin/team/services/team-service"
 import * as Sentry from "@sentry/nextjs"
 import type { ListTeamMembersParams } from "@/features/admin/team/services/team-service"
@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
     if (error instanceof Error) {
+      console.error(error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
     Sentry.captureException(error)
@@ -56,7 +57,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const member = await addTeamMember({
+    const member = await inviteTeamMember({
       email: body.email.trim(),
       role: body.role,
       invitedById: currentUser.id,
