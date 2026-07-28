@@ -160,7 +160,7 @@ export function TopicRow({
               placeholder="Write your notes here..."
               className="min-h-20 w-full resize-y rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             />
-            {topic.description.trim() && (
+            {topic.description && (
               <button
                 type="button"
                 onClick={() =>
