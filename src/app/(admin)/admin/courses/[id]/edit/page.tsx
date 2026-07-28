@@ -192,7 +192,7 @@ export default function EditCoursePage() {
             variant="ghost"
             onClick={handleSaveAndClose}
             disabled={isPending}
-            className="h-12 rounded-[8px] bg-ma-admin-primary/20 px-4 py-2 text-ma-admin-primary hover:bg-ma-admin-primary hover:text-white"
+            className="h-12 rounded-[8px] bg-ma-admin-primary/10 px-4 py-2 text-primary hover:bg-ma-admin-primary hover:text-white"
           >
             {isPending ? (
               <Loader2 className="mr-1 size-4 animate-spin" />
