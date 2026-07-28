@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from "react"
 import Image from "next/image"
 import { useCourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
 import { Button } from "@/shared/ui/button"
-import { UploadIcon, ImageIcon } from "lucide-react"
+import { UploadIcon, ImageIcon, XIcon } from "lucide-react"
 
 export function ThumbnailUpload() {
   const thumbnail = useCourseWizardStore((s) => s.thumbnail)
@@ -47,6 +47,13 @@ export function ThumbnailUpload() {
               className="rounded-lg object-cover"
               unoptimized
             />
+            <button
+              type="button"
+              onClick={() => setThumbnail(null)}
+              className="absolute -right-2 -top-2 flex size-6 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600"
+            >
+              <XIcon className="size-3.5" />
+            </button>
           </div>
         ) : (
           <div className="flex size-[228px] items-center justify-center rounded-lg border-2 border-dashed border-slate-200 bg-slate-50">

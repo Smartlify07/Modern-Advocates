@@ -5,7 +5,7 @@ import Image from "next/image"
 import { useCourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
 import { Input } from "@/shared/ui/input"
 import { Button } from "@/shared/ui/button"
-import { UploadIcon, ImageIcon } from "lucide-react"
+import { UploadIcon, ImageIcon, XIcon } from "lucide-react"
 
 export function InstructorFields() {
   const instructorName = useCourseWizardStore((s) => s.instructorName)
@@ -103,6 +103,13 @@ export function InstructorFields() {
                 className="object-cover"
                 unoptimized
               />
+              <button
+                type="button"
+                onClick={() => setInstructorPhoto(null)}
+                className="absolute -right-2 -top-2 flex size-6 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600"
+              >
+                <XIcon className="size-3.5" />
+              </button>
             </div>
           ) : (
             <div className="flex h-25 w-30 shrink-0 items-center justify-center bg-slate-50">
