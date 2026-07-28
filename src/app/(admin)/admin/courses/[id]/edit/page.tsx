@@ -30,7 +30,7 @@ const wizardSteps: Step[] = [
   { title: "Basic Information", icon: Layers },
   { title: "Advance Information", icon: ClipboardList },
   { title: "Curriculum", icon: MonitorPlay },
-  { title: "Publish Course", icon: CirclePlay },
+  { title: "Publish Course", contentTitle: "Course Overview", icon: CirclePlay },
 ]
 
 function CourseWizardSkeleton() {
@@ -182,7 +182,7 @@ export default function EditCoursePage() {
 
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <h1 className="text-xl font-semibold lg:text-[36px]">
-          {wizardSteps[currentStep].title}
+          {wizardSteps[currentStep]?.contentTitle ?? wizardSteps[currentStep].title}
         </h1>
         {courseStatus === "draft" && (
           <Button
