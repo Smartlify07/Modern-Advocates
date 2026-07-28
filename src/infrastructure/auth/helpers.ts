@@ -1,5 +1,6 @@
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
+import * as Sentry from "@sentry/nextjs"
 import { auth } from "./auth"
 import { UnauthorizedError, ForbiddenError } from "./errors"
 import { isAdminRole, isManagerOrAdmin } from "./roles"
@@ -9,10 +10,20 @@ type PermissionInput = {
   [K in keyof Statement]?: Statement[K][number][]
 }
 
+export async function getSessionSafe() {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    })
+    return session
+  } catch (error) {
+    Sentry.captureException(error)
+    return null
+  }
+}
+
 export async function requireAdmin() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const session = await getSessionSafe()
 
   if (!session) {
     throw new UnauthorizedError()
@@ -26,15 +37,13 @@ export async function requireAdmin() {
 }
 
 export async function requireInstructorOrAdmin() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const session = await getSessionSafe()
 
   if (!session) {
     throw new UnauthorizedError()
   }
 
-  if (session.user.role !== "instructor" && session.user.role !== "admin" && session.user.role !== "manager") {
+  if (session.user.role !== "instructor" && session.user.role !== "admin" && session.user.role !== "manager" && session.user.role !== "editor") {
     throw new ForbiddenError()
   }
 
@@ -42,15 +51,13 @@ export async function requireInstructorOrAdmin() {
 }
 
 export async function requireManagerOrAdmin() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const session = await getSessionSafe()
 
   if (!session) {
     throw new UnauthorizedError()
   }
 
-  if (!isManagerOrAdmin(session.user.role)) {
+  if (!isManagerOrAdmin(session.user.role) && session.user.role !== "editor") {
     throw new ForbiddenError()
   }
 
@@ -58,12 +65,10 @@ export async function requireManagerOrAdmin() {
 }
 
 export async function requireSession() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const session = await getSessionSafe()
 
   if (!session) {
-    redirect("/login")
+    redirect("/login?error=session_failed")
   }
 
   return { user: session.user }
@@ -72,9 +77,7 @@ export async function requireSession() {
 export async function requirePermission(
   permissions: PermissionInput,
 ) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const session = await getSessionSafe()
 
   if (!session) {
     throw new UnauthorizedError()

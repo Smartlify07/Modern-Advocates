@@ -5,12 +5,14 @@ import { createContext, useContext } from "react"
 interface AccountSessionValue {
   user: { name?: string | null; email?: string | null; image?: string | null } | undefined
   isPending: boolean
+  error: Error | null
   refetchSession: () => Promise<unknown>
 }
 
 const AccountSessionContext = createContext<AccountSessionValue>({
   user: undefined,
   isPending: true,
+  error: null,
   refetchSession: async () => {},
 })
 

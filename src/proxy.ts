@@ -19,7 +19,7 @@ export function proxy(request: NextRequest) {
     (p) => pathname === p || pathname.startsWith(`${p}/`),
   )
 
-  if (sessionCookie && isAuthPage) {
+  if (sessionCookie && isAuthPage && !request.nextUrl.searchParams.has("error")) {
     return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 
