@@ -119,7 +119,7 @@ export function minutesToDuration(
 export function buildCoursePayload(
   store: CourseWizardStore,
   thumbnailUrl?: string,
-  status?: "draft" | "published",
+  status?: "draft" | "published" | "archived",
   instructorImageUrl?: string | null
 ): CreateCoursePayload {
   return {
