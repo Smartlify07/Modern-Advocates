@@ -54,7 +54,7 @@ export interface CreateCoursePayload {
   price: number
   discountedPrice?: number | null
   isFree: boolean
-  status: "draft" | "published"
+  status: "draft" | "published" | "archived"
   modules: ModulePayload[]
 }
 
