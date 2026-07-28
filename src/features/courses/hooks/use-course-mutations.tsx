@@ -66,9 +66,10 @@ export function useUpdateCourse() {
 }
 
 interface SaveCourseOptions {
-  status: "draft" | "published"
+  status: "draft" | "published" | "archived"
   onSuccess?: (result: CourseResponse) => void
   courseId?: string
+  toastMessage?: string
 }
 
 export function useSaveCourse() {
@@ -104,11 +105,11 @@ export function useSaveCourse() {
       }
     },
     onSuccess: (result, { store, options }) => {
-      toast.success(
+      toast.success(options.toastMessage ?? (
         options.status === "published"
           ? "Course published successfully"
-          : "Saved to your drafts",
-      )
+          : "Saved to your drafts"
+      ))
 
       if (
         result &&

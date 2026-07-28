@@ -145,10 +145,12 @@ export default function EditCoursePage() {
 
   const handlePublish = () => {
     const targetStatus = courseStatus === "archived" ? "archived" : "published"
+    const toastMessage = courseStatus === "draft" ? "Saved and Published" : "Changes Saved"
     saveCourse.mutate({
       store: store(),
       options: {
         status: targetStatus,
+        toastMessage,
         courseId,
         onSuccess: () => { resetForm(); router.push("/admin/courses") },
       },
