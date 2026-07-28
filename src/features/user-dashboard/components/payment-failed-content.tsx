@@ -1,15 +1,18 @@
 import { RefreshCw, X } from "lucide-react"
 import { TransactionDetails } from "./transaction-details"
+import type { TransactionDetailsData } from "@/features/user-dashboard/types/checkout"
 
 export function PaymentFailedContent({
   mode,
   title,
   description,
+  transactionDetails,
   onRetry,
 }: {
   mode: "payment" | "enrollment"
   title?: string | null
   description?: string | null
+  transactionDetails?: TransactionDetailsData | null
   onRetry?: () => void
 }) {
   return (
@@ -31,13 +34,15 @@ export function PaymentFailedContent({
         </p>
       </div>
 
-      <TransactionDetails
-        referenceNumber="000085752257"
-        date="Mar 22, 2023"
-        time="07:15 AM"
-        paymentMethod="Credit Card"
-        amount="$ 100.00"
-      />
+      {transactionDetails && (
+        <TransactionDetails
+          referenceNumber={transactionDetails.referenceNumber}
+          date={transactionDetails.date}
+          time={transactionDetails.time}
+          paymentMethod={transactionDetails.paymentMethod}
+          amount={transactionDetails.amount}
+        />
+      )}
 
       <button
         type="button"

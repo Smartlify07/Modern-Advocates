@@ -11,6 +11,7 @@ export function FreeCheckoutView({
   paymentState,
   modalOpen,
   errorMessage,
+  getTransactionDetails,
   onRetry,
   onModalChange,
 }: {
@@ -18,6 +19,7 @@ export function FreeCheckoutView({
   paymentState: PaymentState
   modalOpen: boolean
   errorMessage: FormattedStripeError | null
+  getTransactionDetails: () => import("@/features/user-dashboard/types/checkout").TransactionDetailsData | null
   onRetry: () => void
   onModalChange: (open: boolean) => void
 }) {
@@ -38,12 +40,14 @@ export function FreeCheckoutView({
             mode="enrollment"
             title={errorMessage?.title}
             description={errorMessage?.description}
+            transactionDetails={getTransactionDetails()}
             onRetry={onRetry}
           />
         ) : (
           <PaymentSuccessContent
             amount="Free"
             polling={false}
+            transactionDetails={getTransactionDetails()}
             onRedirect={
               paymentState === "enrollment_complete"
                 ? () => router.replace("/my-learning")
