@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
@@ -9,7 +9,6 @@ import { useSaveCourse } from "@/features/courses/hooks/use-course-mutations"
 import { Stepper } from "@/shared/ui/stepper"
 import { Button } from "@/shared/ui/button"
 import { BasicInfoStep } from "@/features/courses/components/wizard/basic-info-step"
-import { SaveDraftDialog } from "@/app/(admin)/admin/courses/_components/save-draft-dialog"
 import { AdvanceInfoStep } from "@/features/courses/components/wizard/advance-info-step"
 import { CurriculumStep } from "@/features/courses/components/wizard/curriculum-step"
 import { PublishStep } from "@/features/courses/components/wizard/publish-step"
@@ -25,13 +24,14 @@ import {
   Loader2,
 } from "lucide-react"
 import type { Step } from "@/shared/ui/stepper"
+import type { CourseStatus } from "@/features/courses/types"
 import { Skeleton } from "@/shared/ui/skeleton"
 
 const wizardSteps: Step[] = [
   { title: "Basic Information", icon: Layers },
   { title: "Advance Information", icon: ClipboardList },
   { title: "Curriculum", icon: MonitorPlay },
-  { title: "Publish Course", icon: CirclePlay },
+  { title: "Publish Course", contentTitle: "Course Overview", icon: CirclePlay },
 ]
 
 function CourseWizardSkeleton() {
@@ -94,7 +94,6 @@ export default function EditCoursePage() {
   const store = useCourseWizardStore.getState
   const saveCourse = useSaveCourse()
   const initialized = useRef(false)
-  const [saveDialogOpen, setSaveDialogOpen] = useState(false)
 
   const { data: course, isLoading } = useQuery({
     queryKey: ["course", courseId],
@@ -107,6 +106,8 @@ export default function EditCoursePage() {
     refetchOnWindowFocus: false,
   })
 
+  const courseStatus = course?.status as CourseStatus | undefined
+
   useEffect(() => {
     if (course && !initialized.current && !isLoading) {
       initialize(course)
@@ -114,6 +115,10 @@ export default function EditCoursePage() {
       initialized.current = true
     }
   }, [course, isLoading, initialize, setCourseId])
+
+  const handleCancel = () => {
+    router.push("/admin/courses")
+  }
 
   const handlePrevious = () => {
     if (currentStep > 0) {
@@ -133,11 +138,6 @@ export default function EditCoursePage() {
   }
 
   const handleSaveAndClose = () => {
-    setSaveDialogOpen(true)
-  }
-
-  const handleSaveConfirmed = () => {
-    setSaveDialogOpen(false)
     saveCourse.mutate({
       store: store(),
       options: {
@@ -149,10 +149,13 @@ export default function EditCoursePage() {
   }
 
   const handlePublish = () => {
+    const targetStatus = courseStatus === "archived" ? "archived" : "published"
+    const toastMessage = courseStatus === "draft" ? "Saved and Published" : "Changes Saved"
     saveCourse.mutate({
       store: store(),
       options: {
-        status: "published",
+        status: targetStatus,
+        toastMessage,
         courseId,
         onSuccess: () => { resetForm(); router.push("/admin/courses") },
       },
@@ -187,21 +190,34 @@ export default function EditCoursePage() {
 
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <h1 className="text-xl font-semibold lg:text-[36px]">
-          {wizardSteps[currentStep].title}
+          {wizardSteps[currentStep]?.contentTitle ?? wizardSteps[currentStep].title}
         </h1>
-        <Button
-          variant="ghost"
-          onClick={handleSaveAndClose}
-          disabled={isPending}
-          className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
-        >
-          {isPending ? (
-            <Loader2 className="mr-1 size-4 animate-spin" />
-          ) : (
-            <XIcon className="mr-1 size-4" />
+        <div className="flex items-center gap-2">
+          {courseStatus === "draft" && (
+            <Button
+              variant="ghost"
+              onClick={handleSaveAndClose}
+              disabled={isPending}
+              className="h-12 rounded-[8px] bg-ma-admin-primary/10 px-4 py-2 text-primary hover:bg-ma-admin-primary hover:text-white"
+            >
+              {isPending ? (
+                <Loader2 className="mr-1 size-4 animate-spin" />
+              ) : (
+                <XIcon className="mr-1 size-4" />
+              )}
+              Save & Close
+            </Button>
           )}
-          Save & Close
-        </Button>
+          {currentStep > 0 && (
+            <Button
+              variant="outline"
+              onClick={handleCancel}
+              className="h-12 w-[156px] rounded-[8px] px-4 py-2"
+            >
+              Cancel
+            </Button>
+          )}
+        </div>
       </div>
 
       {currentStep === 0 && <BasicInfoStep />}
@@ -220,7 +236,13 @@ export default function EditCoursePage() {
             Previous
           </Button>
         ) : (
-          <div />
+          <Button
+            variant="outline"
+            onClick={handleCancel}
+            className="h-[44px] w-[156px] rounded-[8px]"
+          >
+            Cancel
+          </Button>
         )}
         {currentStep < wizardSteps.length - 1 && (
           <Button
@@ -239,20 +261,15 @@ export default function EditCoursePage() {
           >
             {isPending ? (
               <Loader2 className="mr-1 size-4 animate-spin" />
-            ) : (
+            ) : courseStatus === "draft" ? (
               <SendIcon className="mr-1 size-4" />
+            ) : (
+              <SaveIcon className="mr-1 size-4" />
             )}
-            {isPending ? "Saving..." : "Publish"}
+            {isPending ? "Saving..." : courseStatus === "draft" ? "Save & Publish" : "Save changes"}
           </Button>
         )}
       </div>
-
-      <SaveDraftDialog
-        open={saveDialogOpen}
-        onOpenChange={setSaveDialogOpen}
-        onConfirm={handleSaveConfirmed}
-        isPending={isPending}
-      />
     </div>
   )
 }
