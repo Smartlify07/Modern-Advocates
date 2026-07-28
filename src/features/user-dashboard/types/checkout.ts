@@ -20,6 +20,14 @@ export type OrderSummaryCourseData = {
   isFree?: boolean
 }
 
+export type TransactionDetailsData = {
+  referenceNumber: string
+  date: string
+  time: string
+  paymentMethod: string
+  amount: string
+}
+
 export interface CheckoutPaymentState {
   orderId: string | null
   clientSecret: string | null

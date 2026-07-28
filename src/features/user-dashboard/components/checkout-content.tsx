@@ -23,6 +23,7 @@ export function CheckoutContent() {
     errorMessage,
     paymentReady,
     formKey,
+    getTransactionDetails,
     setPaymentReady,
     initPayment,
     handleFreeCourse,
@@ -56,6 +57,7 @@ export function CheckoutContent() {
         paymentState={paymentState}
         modalOpen={modalOpen}
         errorMessage={errorMessage}
+        getTransactionDetails={getTransactionDetails}
         onRetry={() => handleRetry(courseId)}
         onModalChange={handleModalChange}
       />
@@ -73,6 +75,7 @@ export function CheckoutContent() {
       errorMessage={errorMessage}
       paymentReady={paymentReady}
       formKey={formKey}
+      getTransactionDetails={getTransactionDetails}
       getStripePromise={getStripePromise}
       onPay={handlePay}
       onRetry={() => handleRetry(courseId)}

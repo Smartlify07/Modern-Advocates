@@ -7,7 +7,11 @@ import { PaymentReceiptModal } from "@/features/user-dashboard/components/paymen
 import { PaymentSuccessContent } from "@/features/user-dashboard/components/payment-success-content"
 import { PaymentFailedContent } from "@/features/user-dashboard/components/payment-failed-content"
 import { CheckoutSkeleton } from "@/features/user-dashboard/components/checkout-skeleton"
-import type { OrderSummaryCourseData, PaymentState, CheckoutFormHandle } from "@/features/user-dashboard/types/checkout"
+import type {
+  OrderSummaryCourseData,
+  PaymentState,
+  CheckoutFormHandle,
+} from "@/features/user-dashboard/types/checkout"
 import type { FormattedStripeError } from "@/features/orders/services/stripe-errors"
 
 export function PaidCheckoutView({
@@ -20,6 +24,7 @@ export function PaidCheckoutView({
   errorMessage,
   paymentReady,
   formKey,
+  getTransactionDetails,
   getStripePromise,
   onPay,
   onRetry,
@@ -35,6 +40,9 @@ export function PaidCheckoutView({
   errorMessage: FormattedStripeError | null
   paymentReady: boolean
   formKey: number
+  getTransactionDetails: () =>
+    | import("@/features/user-dashboard/types/checkout").TransactionDetailsData
+    | null
   getStripePromise: () => Promise<import("@stripe/stripe-js").Stripe | null>
   onPay: (formRef: React.RefObject<CheckoutFormHandle | null>) => Promise<void>
   onRetry: () => void
@@ -43,7 +51,7 @@ export function PaidCheckoutView({
 }) {
   const router = useRouter()
   const formRef = useRef<CheckoutFormHandle>(null)
-  const displayPrice = (course.discountedPrice ?? course.price).toFixed(2)
+  const displayPrice = course.discountedPrice ?? course.price
 
   if (!clientSecret || !orderId) {
     return <CheckoutSkeleton />
@@ -53,7 +61,11 @@ export function PaidCheckoutView({
     <>
       <Elements stripe={getStripePromise()} options={{ clientSecret }}>
         <div className="mt-8 grid gap-8 md:grid-cols-2 lg:gap-12">
-          <CheckoutForm key={formKey} ref={formRef} onReadyChange={onReadyChange} />
+          <CheckoutForm
+            key={formKey}
+            ref={formRef}
+            onReadyChange={onReadyChange}
+          />
           <div>
             <OrderSummaryCard
               course={course}
@@ -72,12 +84,14 @@ export function PaidCheckoutView({
             mode="payment"
             title={errorMessage?.title}
             description={errorMessage?.description}
+            transactionDetails={getTransactionDetails()}
             onRetry={onRetry}
           />
         ) : (
           <PaymentSuccessContent
             amount={`$ ${displayPrice} USD`}
             polling={false}
+            transactionDetails={getTransactionDetails()}
             onRedirect={
               paymentState === "enrollment_complete"
                 ? () => router.replace("/my-learning")
