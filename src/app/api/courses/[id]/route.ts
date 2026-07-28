@@ -164,6 +164,7 @@ export async function GET(
         id: reviews.id,
         body: reviews.body,
         rating: reviews.rating,
+        studentId: reviews.studentId,
         studentName: user.name,
         studentImage: user.image,
       })

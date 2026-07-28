@@ -153,7 +153,7 @@ export function CourseModuleSidebar({
   }
 
   return (
-    <aside className="sticky top-0 max-h-[calc(100vh-8rem)] overflow-y-auto border border-[#d9d9d9] bg-white px-2 py-5">
+    <aside className="sticky top-0 self-start h-screen overflow-y-auto border border-[#d9d9d9] bg-white px-2 py-5">
       <h2 className="text-2xl font-bold text-ma-text">Course Module</h2>
 
       <div className="mt-5 flex flex-col gap-3">

@@ -41,7 +41,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
       params.delete("t")
       router.push(`?${params.toString()}`, { scroll: false })
     },
-    [searchParams, router],
+    [searchParams, router]
   )
 
   const {
@@ -130,38 +130,6 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
             <div className="mt-10 flex min-h-125 flex-col gap-7.5 px-4 lg:ml-[calc(max(100px,(100vw-1080px)/2))] lg:w-[600px] lg:px-0">
               <div>
                 <Skeleton className="h-8 w-3/4" />
-                <div className="mt-4 space-y-3">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-1/2" />
-                </div>
-              </div>
-
-              <div className="w-full rounded-2xl border border-[#d9d9d9] bg-white px-4 pt-4 pr-3.5 pb-[25px]">
-                <Skeleton className="h-7 w-48" />
-                <div className="mt-6 flex flex-col">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i}>
-                      <div className="flex items-center justify-between gap-4 py-0">
-                        <div className="inline-flex items-center gap-2">
-                          <Skeleton className="size-5 shrink-0" />
-                          <Skeleton className="h-4 w-20" />
-                        </div>
-                        <Skeleton className="h-4 w-24" />
-                      </div>
-                      <div
-                        className={
-                          i < 4
-                            ? "my-4 border-t border-dashed border-[#d9d9d9]"
-                            : "mt-4 border-t border-dashed border-[#d9d9d9]"
-                        }
-                      />
-                    </div>
-                  ))}
-                  <div className="mt-6">
-                    <Skeleton className="h-[53px] w-full rounded-[60px]" />
-                  </div>
-                </div>
               </div>
 
               <div className="flex flex-col gap-5">
@@ -243,7 +211,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
   if (!course) notFound()
 
   return (
-    <div className="mx-auto py-8">
+    <div className="mx-auto pt-8">
       <div className="grid gap-0 md:grid-cols-[2.2fr_0.8fr]">
         <CoursePlayerContent
           course={course}

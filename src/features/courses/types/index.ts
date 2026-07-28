@@ -25,6 +25,7 @@ export interface CourseApiReview {
   id: string
   body: string | null
   rating: number
+  studentId: string
   studentName: string | null
   studentImage: string | null
 }
