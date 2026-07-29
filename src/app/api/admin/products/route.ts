@@ -16,7 +16,7 @@ export async function GET() {
         id: courses.id,
         name: courses.title,
         imageUrl: courses.thumbnailUrl,
-        salesPrice: courses.price,
+        salesPrice: sql<string>`COALESCE(AVG(CASE WHEN ${orders.paymentStatus} = 'paid' THEN ${orders.amount} END), ${courses.price})`,
         status: courses.status,
         sales: sql<string>`COALESCE(COUNT(DISTINCT CASE WHEN ${orders.paymentStatus} = 'paid' THEN ${orders.id} END), 0)`,
         revenue: sql<string>`COALESCE(SUM(CASE WHEN ${orders.paymentStatus} = 'paid' THEN ${orders.amount} ELSE 0 END), 0)`,
@@ -28,6 +28,7 @@ export async function GET() {
 
     const products = raw.map((p) => ({
       ...p,
+      salesPrice: Number(p.salesPrice),
       sales: Number(p.sales),
       revenue: Number(p.revenue),
     }))

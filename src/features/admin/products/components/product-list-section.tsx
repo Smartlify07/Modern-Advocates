@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { ProductTable } from "./product-table"
 import type { Product } from "@/features/admin/products/types"
 
@@ -10,9 +11,12 @@ export function ProductListSection({ products }: ProductListSectionProps) {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold">Product List</h2>
-        <span className="cursor-pointer text-lg/[24px] text-[#6B7280] underline underline-offset-2">
+        <Link
+          href="/admin/products/sales"
+          className="text-lg/[24px] text-[#6B7280] underline underline-offset-2"
+        >
           See all
-        </span>
+        </Link>
       </div>
       <ProductTable products={products} />
     </div>
