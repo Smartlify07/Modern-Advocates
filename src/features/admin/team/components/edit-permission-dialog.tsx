@@ -76,7 +76,7 @@ export function EditPermissionDialog({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-team"] })
       handleOpenChange(false)
-      toast.success("Team member removed")
+      toast.success(`You've removed ${member!.name} from your team`)
     },
     onError: (err) => {
       toast.error(err.message)
