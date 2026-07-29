@@ -33,18 +33,18 @@ export default function AdminTeamsPage() {
   const queryClient = useQueryClient()
 
   const cancelInviteMutation = useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async ({ id, email }: { id: string; email: string }) => {
       const r = await fetch(`/api/admin/team/${id}/cancel`, { method: "POST" })
       if (!r.ok) {
         const { error } = await r.json()
         throw new Error(error ?? "Failed to cancel invitation")
       }
-      return r.json()
+      return { email }
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       setPage(1)
       queryClient.invalidateQueries({ queryKey: ["admin-team"] })
-      toast.success("Invitation cancelled")
+      toast.success(`Invitation for ${variables.email} has been cancelled`)
     },
     onError: (err) => {
       toast.error(err.message)
@@ -52,7 +52,7 @@ export default function AdminTeamsPage() {
   })
 
   const handleCancelInvite = useCallback((member: TeamMember) => {
-    cancelInviteMutation.mutate(member.id)
+    cancelInviteMutation.mutate({ id: member.id, email: member.email })
   }, [cancelInviteMutation])
 
   const { data, isLoading } = useQuery<ListTeamMembersResponse>({

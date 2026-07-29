@@ -272,6 +272,14 @@ export async function validateInviteToken(rawToken: string) {
         .then((r) => r[0])
     : null
 
+  const invitedByUser = invite.invitedById
+    ? await db
+        .select({ name: user.name, email: user.email })
+        .from(user)
+        .where(eq(user.id, invite.invitedById))
+        .then((r) => r[0])
+    : null
+
   return {
     valid: true as const,
     email: invite.email,
@@ -280,6 +288,8 @@ export async function validateInviteToken(rawToken: string) {
     alreadyMember: !!alreadyMember,
     userId: existingUser?.id ?? null,
     userName: existingUser?.name ?? null,
+    invitedByName: invitedByUser?.name ?? null,
+    invitedByEmail: invitedByUser?.email ?? null,
   }
 }
 
@@ -368,6 +378,27 @@ export async function acceptInvite(rawToken: string, authenticatedUserId: string
       lastLogin: existingUser.updatedAt?.toISOString() ?? null,
     }
   })
+}
+
+export async function declineInvite(rawToken: string) {
+  const hash = hashToken(rawToken)
+
+  const invite = await db
+    .select()
+    .from(teamInvites)
+    .where(and(eq(teamInvites.token, hash), eq(teamInvites.status, "pending")))
+    .then((r) => r[0])
+
+  if (!invite) {
+    throw new Error("Invalid or expired invitation token")
+  }
+
+  await db
+    .update(teamInvites)
+    .set({ status: "declined" })
+    .where(eq(teamInvites.id, invite.id))
+
+  return { success: true }
 }
 
 export async function cancelInvite(id: string) {
