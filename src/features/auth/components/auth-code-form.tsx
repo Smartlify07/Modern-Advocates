@@ -34,6 +34,8 @@ type AuthCodeFormProps = React.ComponentProps<"div"> & {
   onDifferentAccount?: () => void
   onResendCode?: () => void
   onSubmitCode?: (code: string) => void | Promise<void>
+  hideSwitch?: boolean
+  hideResendSeparator?: boolean
 }
 
 export function AuthCodeForm({
@@ -44,6 +46,8 @@ export function AuthCodeForm({
   onDifferentAccount,
   onResendCode,
   onSubmitCode,
+  hideSwitch,
+  hideResendSeparator,
   ...props
 }: AuthCodeFormProps) {
   const [pending, setPending] = useState(false)
@@ -134,7 +138,7 @@ export function AuthCodeForm({
             <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </Button>
 
-          <FieldSeparator className="my-0 w-full [&_[data-slot=field-separator-content]]:bg-white">
+          {hideResendSeparator ? (
             <button
               type="button"
               onClick={onResendCode}
@@ -142,28 +146,40 @@ export function AuthCodeForm({
             >
               Resend code
             </button>
-          </FieldSeparator>
+          ) : (
+            <FieldSeparator className="my-0 w-full [&_[data-slot=field-separator-content]]:bg-white">
+              <button
+                type="button"
+                onClick={onResendCode}
+                className="text-lg leading-normal font-medium text-ma-text underline underline-offset-2"
+              >
+                Resend code
+              </button>
+            </FieldSeparator>
+          )}
         </FieldGroup>
       </form>
 
-      <div className="flex w-full items-center justify-center rounded-md bg-[#f5f5f5] px-[30px] py-[50px]">
-        {onDifferentAccount ? (
-          <button
-            type="button"
-            onClick={onDifferentAccount}
-            className="text-lg leading-normal font-semibold text-ma-text underline underline-offset-2"
-          >
-            {switchLabel}
-          </button>
-        ) : (
-          <Link
-            href={mode === "login" ? "/login" : "/signup"}
-            className="text-lg leading-normal font-semibold text-ma-text underline underline-offset-2"
-          >
-            {switchLabel}
-          </Link>
-        )}
-      </div>
+      {!hideSwitch && (
+        <div className="flex w-full items-center justify-center rounded-md bg-[#f5f5f5] px-[30px] py-[50px]">
+          {onDifferentAccount ? (
+            <button
+              type="button"
+              onClick={onDifferentAccount}
+              className="text-lg leading-normal font-semibold text-ma-text underline underline-offset-2"
+            >
+              {switchLabel}
+            </button>
+          ) : (
+            <Link
+              href={mode === "login" ? "/login" : "/signup"}
+              className="text-lg leading-normal font-semibold text-ma-text underline underline-offset-2"
+            >
+              {switchLabel}
+            </Link>
+          )}
+        </div>
+      )}
 
       <FieldDescription className="sr-only">
         Use the code sent to your email address to continue.

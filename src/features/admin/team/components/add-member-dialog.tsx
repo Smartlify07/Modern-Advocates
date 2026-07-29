@@ -43,7 +43,7 @@ export function AddMemberDialog({ open, onOpenChange }: AddMemberDialogProps) {
       onOpenChange(false)
       setEmail("")
       setRole("Editor")
-      toast.success("Invite sent")
+      toast.success(`An invite has been sent to ${email} to join the ModernAdvocates Team`)
     },
     onError: (err) => {
       toast.error(err.message)

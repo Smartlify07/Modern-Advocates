@@ -8,6 +8,7 @@ export const teamInviteStatus = pgEnum("team_invite_status", [
   "pending",
   "accepted",
   "cancelled",
+  "declined",
 ])
 
 export const teamMembers = pgTable("team_members", {
