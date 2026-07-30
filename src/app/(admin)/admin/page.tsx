@@ -22,6 +22,11 @@ import { useUsers, useSuspendUser, useActivateUser, useDeleteUser } from "@/feat
 import type { User as UserType } from "@/features/admin/users/types"
 import { AlertCircleIcon, RefreshCwIcon } from "lucide-react"
 import { authClient } from "@/infrastructure/auth/client"
+import {
+  ErrorState,
+  ErrorStateTitle,
+  ErrorStateAction,
+} from "@/shared/ui/error-state"
 
 function TableSkeleton() {
   return (
@@ -49,19 +54,6 @@ function TableSkeleton() {
         ))}
       </TableBody>
     </Table>
-  )
-}
-
-function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
-  return (
-    <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-red-200 bg-red-50 py-12">
-      <AlertCircleIcon className="size-8 text-red-500" />
-      <p className="text-sm text-red-600">{message}</p>
-      <Button variant="outline" size="sm" onClick={onRetry}>
-        <RefreshCwIcon className="size-4" />
-        Try again
-      </Button>
-    </div>
   )
 }
 
@@ -111,10 +103,18 @@ export default function AdminDashboardPage() {
         {sessionPending || isLoading ? (
           <TableSkeleton />
         ) : isError ? (
-          <ErrorState
-            message={error?.message ?? "Failed to load users"}
-            onRetry={() => refetch()}
-          />
+          <ErrorState className="rounded-lg border border-red-200 bg-red-50 py-12">
+            <AlertCircleIcon className="size-8 text-red-500" />
+            <ErrorStateTitle className="text-sm font-normal text-red-600">
+              {error?.message ?? "Failed to load users"}
+            </ErrorStateTitle>
+            <ErrorStateAction>
+              <Button variant="outline" size="sm" onClick={() => refetch()}>
+                <RefreshCwIcon className="size-4" />
+                Try again
+              </Button>
+            </ErrorStateAction>
+          </ErrorState>
         ) : (
           <UserTable
             users={data?.users ?? []}

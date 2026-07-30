@@ -1,9 +1,10 @@
 "use client"
 
-import { Suspense, useEffect, useState } from "react"
+import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { CheckCircle, LoaderCircle } from "lucide-react"
+import { useQuery } from "@tanstack/react-query"
 
 import { Button } from "@/shared/ui/button"
 import type { Donation } from "@/features/admin/donations/types"
@@ -11,34 +12,23 @@ import type { Donation } from "@/features/admin/donations/types"
 function DonationSuccessContent() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get("session_id")
-  const [donation, setDonation] = useState<Donation | null>(null)
-  const [loading, setLoading] = useState(!!sessionId)
-  const [error, setError] = useState<string | null>(
-    !sessionId ? "No session ID provided" : null,
-  )
 
-  useEffect(() => {
-    if (!sessionId) return
+  const { data, isLoading, error } = useQuery<{ donation: Donation }>({
+    queryKey: ["donation-success", sessionId],
+    queryFn: async () => {
+      const res = await fetch(`/api/donations/success?session_id=${sessionId}`)
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error ?? "Failed to verify donation")
+      }
+      return res.json()
+    },
+    enabled: !!sessionId,
+  })
 
-    fetch(`/api/donations/success?session_id=${sessionId}`)
-      .then(async (res) => {
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}))
-          throw new Error(body.error ?? "Failed to verify donation")
-        }
-        return res.json()
-      })
-      .then((data) => {
-        setDonation(data.donation)
-        setLoading(false)
-      })
-      .catch((err) => {
-        setError(err.message)
-        setLoading(false)
-      })
-  }, [sessionId])
+  const donation = data?.donation ?? null
 
-  if (loading) {
+  if (isLoading) {
     return (
       <main className="flex min-h-[60vh] items-center justify-center bg-white">
         <div className="flex flex-col items-center gap-4">
@@ -53,7 +43,7 @@ function DonationSuccessContent() {
     return (
       <main className="flex min-h-[60vh] items-center justify-center bg-white">
         <div className="flex flex-col items-center gap-4 text-center">
-          <p className="text-lg text-red-600">{error}</p>
+          <p className="text-lg text-red-600">{error.message ?? "No session ID provided"}</p>
           <Button asChild>
             <Link href="/donation">Try Again</Link>
           </Button>

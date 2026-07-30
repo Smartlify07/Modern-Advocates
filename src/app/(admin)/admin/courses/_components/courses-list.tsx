@@ -1,8 +1,15 @@
 "use client"
 
 import { Skeleton } from "@/shared/ui/skeleton"
+import { Button } from "@/shared/ui/button"
 import CourseCardItem from "./course-card-item"
 import type { Course } from "./types"
+import {
+  ErrorState,
+  ErrorStateTitle,
+  ErrorStateDescription,
+  ErrorStateAction,
+} from "@/shared/ui/error-state"
 
 export default function CoursesList({
   courses,
@@ -41,18 +48,17 @@ export default function CoursesList({
 
   if (isError)
     return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-4 rounded-xl bg-muted/50 py-32">
-        <h3 className="text-lg font-semibold">Failed to load courses</h3>
-        <p className="max-w-md text-sm text-muted-foreground">
+      <ErrorState className="rounded-xl bg-muted/50 py-32">
+        <ErrorStateTitle>Failed to load courses</ErrorStateTitle>
+        <ErrorStateDescription>
           {error instanceof Error ? error.message : "Something went wrong"}
-        </p>
-        <button
-          onClick={() => refetch()}
-          className="rounded-lg bg-ma-admin-primary px-6 py-2.5 text-sm font-medium text-white hover:bg-ma-admin-primary/90"
-        >
-          Try Again
-        </button>
-      </div>
+        </ErrorStateDescription>
+        <ErrorStateAction>
+          <Button onClick={() => refetch()}>
+            Try Again
+          </Button>
+        </ErrorStateAction>
+      </ErrorState>
     )
 
   if (courses.length === 0)

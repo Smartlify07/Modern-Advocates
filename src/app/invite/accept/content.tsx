@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { authClient } from "@/infrastructure/auth/client"
 import { useOtpAuth } from "./use-otp-auth"
@@ -29,6 +29,68 @@ export default function InviteAcceptContent() {
   const [copied, setCopied] = useState(false)
 
   const otp = useOtpAuth()
+
+  const validateQuery = useQuery({
+    queryKey: ["invite-validate", token],
+    queryFn: async () => {
+      const r = await fetch(
+        `/api/admin/team/invite/validate?token=${encodeURIComponent(token!.trim())}`
+      )
+      if (!r.ok) throw new Error("Failed to validate invitation. Please try again.")
+      return r.json() as Promise<ValidateResult>
+    },
+    enabled: !!token?.trim(),
+    retry: false,
+  })
+
+  const { data: session } = authClient.useSession()
+
+  useEffect(() => {
+    if (!token?.trim()) {
+      setStep({ type: "invalid", error: "No invitation token provided." })
+      return
+    }
+    if (validateQuery.isLoading) return
+    if (validateQuery.isError || !validateQuery.data) {
+      setStep({
+        type: "invalid",
+        error: "Failed to validate invitation. Please try again.",
+      })
+      return
+    }
+    const result = validateQuery.data
+    if (!result.valid) {
+      setStep({
+        type: "invalid",
+        error: result.expired
+          ? "This invitation has expired. Please ask your admin to send a new one."
+          : "Woops, this invitation link is invalid or has already been used.",
+      })
+      return
+    }
+    if (!result.email || !result.role) {
+      setStep({ type: "invalid", error: "Invalid invitation data." })
+      return
+    }
+    if (result.alreadyMember) {
+      setStep({
+        type: "invalid",
+        error: "You are already a member of this team.",
+      })
+      return
+    }
+    const data = {
+      email: result.email,
+      role: result.role,
+      invitedByName: result.invitedByName,
+      invitedByEmail: result.invitedByEmail,
+    }
+    if (result.userExists && session?.user?.email === result.email)
+      setStep({ type: "authenticated", ...data })
+    else if (result.userExists && !session?.user)
+      setStep({ type: "login", ...data })
+    else setStep({ type: "signup", ...data })
+  }, [token, validateQuery.data, validateQuery.isLoading, validateQuery.isError, session])
 
   const acceptMutation = useMutation({
     mutationFn: () =>
@@ -72,63 +134,7 @@ export default function InviteAcceptContent() {
     onError: (err: Error) => toast.error(err.message),
   })
 
-  const validate = useCallback(async () => {
-    if (!token?.trim()) {
-      setStep({ type: "invalid", error: "No invitation token provided." })
-      return
-    }
-    try {
-      const r = await fetch(
-        `/api/admin/team/invite/validate?token=${encodeURIComponent(token.trim())}`
-      )
-      const result: ValidateResult = await r.json()
-      if (!result.valid) {
-        setStep({
-          type: "invalid",
-          error: result.expired
-            ? "This invitation has expired. Please ask your admin to send a new one."
-            : "Woops, this invitation link is invalid or has already been used.",
-        })
-        return
-      }
-      if (!result.email || !result.role) {
-        setStep({ type: "invalid", error: "Invalid invitation data." })
-        return
-      }
-      if (result.alreadyMember) {
-        setStep({
-          type: "invalid",
-          error: "You are already a member of this team.",
-        })
-        return
-      }
-      const session = await authClient.getSession()
-      const data = {
-        email: result.email,
-        role: result.role,
-        invitedByName: result.invitedByName,
-        invitedByEmail: result.invitedByEmail,
-      }
-      if (
-        result.userExists &&
-        session?.data?.user &&
-        session.data.user.email === result.email
-      )
-        setStep({ type: "authenticated", ...data })
-      else if (result.userExists && !session?.data?.user)
-        setStep({ type: "login", ...data })
-      else setStep({ type: "signup", ...data })
-    } catch {
-      setStep({
-        type: "invalid",
-        error: "Failed to validate invitation. Please try again.",
-      })
-    }
-  }, [token])
 
-  useEffect(() => {
-    validate()
-  }, [validate])
 
   const handleLoginSendOtp = () => {
     if (step.type === "login") otp.sendOtp(step.email)

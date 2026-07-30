@@ -8,6 +8,11 @@ import {
   type Course,
 } from "@/features/courses/components/course-card"
 import { cn } from "@/shared/utils"
+import {
+  ErrorState,
+  ErrorStateTitle,
+  ErrorStateDescription,
+} from "@/shared/ui/error-state"
 
 export default function MyLearningPage() {
   const {
@@ -60,14 +65,14 @@ export default function MyLearningPage() {
 
   if (isError) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 px-4 py-20 text-center">
-        <h2 className="text-2xl font-bold text-ma-text">
+      <ErrorState>
+        <ErrorStateTitle className="text-2xl font-bold text-ma-text">
           Failed to load your courses
-        </h2>
-        <p className="max-w-md text-[#6b7280]">
+        </ErrorStateTitle>
+        <ErrorStateDescription className="text-[#6b7280]">
           {error instanceof Error ? error.message : "Something went wrong"}
-        </p>
-      </div>
+        </ErrorStateDescription>
+      </ErrorState>
     )
   }
 
