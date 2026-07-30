@@ -4,6 +4,10 @@ import { useCallback, useEffect } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useSearchParams, useRouter, notFound } from "next/navigation"
 import { Skeleton } from "@/shared/ui/skeleton"
+import {
+  ErrorState,
+  ErrorStateDescription,
+} from "@/shared/ui/error-state"
 import { CoursePlayerContent } from "@/features/user-dashboard/components/course-player-content"
 import { CourseModuleSidebar } from "@/features/user-dashboard/components/course-module-sidebar"
 import type { CourseApiResponse } from "@/features/courses/types"
@@ -200,11 +204,11 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
 
   if (isError) {
     return (
-      <div className="mx-auto flex items-center justify-center py-20">
-        <p className="text-destructive">
+      <ErrorState>
+        <ErrorStateDescription className="text-destructive">
           {error instanceof Error ? error.message : "Failed to load course."}
-        </p>
-      </div>
+        </ErrorStateDescription>
+      </ErrorState>
     )
   }
 

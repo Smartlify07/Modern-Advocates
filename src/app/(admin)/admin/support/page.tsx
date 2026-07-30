@@ -11,6 +11,12 @@ import { ViewTicketDialog } from "@/features/admin/support/components/view-ticke
 import { useSupportTickets, useUpdateTicketStatus, useDeleteTicket } from "@/features/admin/support/hooks/use-support"
 import { RefreshCwIcon, AlertCircleIcon } from "lucide-react"
 import type { Ticket } from "@/features/admin/support/types"
+import {
+  ErrorState,
+  ErrorStateTitle,
+  ErrorStateDescription,
+  ErrorStateAction,
+} from "@/shared/ui/error-state"
 
 interface ApiTicket {
   id: string
@@ -26,22 +32,6 @@ function mapTicket(t: ApiTicket): Ticket {
   const d = new Date(t.createdAt)
   const date = `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`
   return { id: t.id, name: t.name, email: t.email, phone: t.phone, message: t.message, status: t.status, date }
-}
-
-function TicketsError({ onRetry }: { onRetry: () => void }) {
-  return (
-    <div className="flex flex-col items-center gap-4 py-20">
-      <div className="flex size-12 items-center justify-center rounded-full bg-red-100">
-        <AlertCircleIcon className="size-6 text-red-600" />
-      </div>
-      <p className="text-lg font-semibold">Failed to load tickets</p>
-      <p className="text-sm text-muted-foreground">Something went wrong. Please try again.</p>
-      <Button variant="outline" className="gap-2" onClick={onRetry}>
-        <RefreshCwIcon className="size-4" />
-        Try Again
-      </Button>
-    </div>
-  )
 }
 
 export default function AdminSupportPage() {
@@ -120,7 +110,21 @@ export default function AdminSupportPage() {
       {isLoading ? (
         <TableSkeleton />
       ) : isError ? (
-        <TicketsError onRetry={() => refetch()} />
+        <ErrorState>
+          <div className="flex size-12 items-center justify-center rounded-full bg-red-100">
+            <AlertCircleIcon className="size-6 text-red-600" />
+          </div>
+          <ErrorStateTitle>Failed to load tickets</ErrorStateTitle>
+          <ErrorStateDescription>
+            Something went wrong. Please try again.
+          </ErrorStateDescription>
+          <ErrorStateAction>
+            <Button variant="outline" className="gap-2" onClick={() => refetch()}>
+              <RefreshCwIcon className="size-4" />
+              Try Again
+            </Button>
+          </ErrorStateAction>
+        </ErrorState>
       ) : (
         <>
           <SupportTable

@@ -10,6 +10,13 @@ import {
 } from "@/features/courses/components/course-card"
 import { authClient } from "@/infrastructure/auth/client"
 import { cn } from "@/shared/utils"
+import { Button } from "@/shared/ui/button"
+import {
+  ErrorState,
+  ErrorStateTitle,
+  ErrorStateDescription,
+  ErrorStateAction,
+} from "@/shared/ui/error-state"
 
 export default function UserDashboardPage() {
   const { data: session } = authClient.useSession()
@@ -96,25 +103,26 @@ export default function UserDashboardPage() {
           ))}
         </div>
       ) : isError ? (
-        <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
-          <h2 className="text-2xl font-bold text-ma-text">
+        <ErrorState>
+          <ErrorStateTitle className="text-2xl font-bold text-ma-text">
             Failed to load courses
-          </h2>
-          <p className="max-w-md text-muted-foreground">
+          </ErrorStateTitle>
+          <ErrorStateDescription>
             {errorObj instanceof Error
               ? errorObj.message
               : "Something went wrong"}
-          </p>
-          <button
-            onClick={() => {
-              refetch()
-              refetchEnrollments()
-            }}
-            className="rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-white hover:bg-primary/90"
-          >
-            Try Again
-          </button>
-        </div>
+          </ErrorStateDescription>
+          <ErrorStateAction>
+            <Button
+              onClick={() => {
+                refetch()
+                refetchEnrollments()
+              }}
+            >
+              Try Again
+            </Button>
+          </ErrorStateAction>
+        </ErrorState>
       ) : (
         <div className="grid justify-items-center gap-5 md:grid-cols-2 lg:grid-cols-3">
           {courses?.map((course) => {
