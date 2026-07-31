@@ -73,6 +73,14 @@ interface SaveCourseOptions {
   toastMessage?: string
 }
 
+function showVideoUploadToast() {
+  const toastId = toast.custom(
+    () => <VideoUploadToast onClose={() => toast.dismiss(toastId)} />,
+    { duration: Infinity }
+  )
+  return { dismiss: () => toast.dismiss(toastId) }
+}
+
 export function useSaveCourse() {
   const createCourse = useCreateCourse()
   const updateCourse = useUpdateCourse()
@@ -127,9 +135,8 @@ export function useSaveCourse() {
           }
         }
 
-        const toastId = toast.custom(() => <VideoUploadToast />, {
-          duration: Infinity,
-        })
+        useVideoUploadStore.getState().clearAll()
+        const uploadToast = showVideoUploadToast()
 
         const uploads = uploadCourseVideos(
           store.modules,
@@ -141,20 +148,18 @@ export function useSaveCourse() {
         )
 
         if (uploads.length === 0) {
-          toast.dismiss(toastId)
+          uploadToast.dismiss()
           return
         }
 
         Promise.allSettled(uploads).then((results) => {
           const allDone = results.every((r) => r.status === "fulfilled")
           if (allDone) {
-            toast.dismiss(toastId)
+            uploadToast.dismiss()
             toast.success("All videos uploaded")
           } else {
-            toast.dismiss(toastId)
-            toast.custom(() => <VideoUploadToast />, {
-              duration: Infinity,
-            })
+            uploadToast.dismiss()
+            showVideoUploadToast()
           }
         })
       }
