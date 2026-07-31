@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { cacheFile, getCachedFile, removeCachedFile } from "@/features/videos/lib/file-cache"
+import { getCachedFile, removeCachedFile } from "@/features/videos/lib/file-cache"
 import { getVideoDuration } from "@/features/videos/lib/get-video-duration"
 import type { StorageUploadConfig } from "@/shared/lib/storage-upload"
 
@@ -31,7 +31,7 @@ export interface VideoUploadStore {
   completeTask: (uploadId: string, status: "processing" | "completed") => void
   failTask: (uploadId: string, error: string) => void
   removeTask: (uploadId: string) => void
-  clearCompleted: () => void
+  clearAll: () => void
   hasActiveUploads: () => boolean
   retryUpload: (uploadId: string) => Promise<void>
 }
@@ -41,7 +41,10 @@ export const useVideoUploadStore = create<VideoUploadStore>((set, get) => ({
 
   addTask: (task) =>
     set((state) => ({
-      tasks: [...state.tasks, { ...task, bytesUploaded: 0 }],
+      tasks: [
+        ...state.tasks.filter((t) => t.status !== "completed"),
+        { ...task, bytesUploaded: 0 },
+      ],
     })),
 
   updateProgress: (uploadId, bytesUploaded) =>
@@ -74,12 +77,11 @@ export const useVideoUploadStore = create<VideoUploadStore>((set, get) => ({
     }))
   },
 
-  clearCompleted: () =>
-    set((state) => ({
-      tasks: state.tasks.filter(
-        (t) => t.status !== "completed" && t.status !== "failed",
-      ),
-    })),
+  clearAll: () => {
+    const { tasks } = get()
+    tasks.forEach((t) => removeCachedFile(t.uploadId))
+    set({ tasks: [] })
+  },
 
   hasActiveUploads: () =>
     get().tasks.some((t) => t.status === "uploading"),
