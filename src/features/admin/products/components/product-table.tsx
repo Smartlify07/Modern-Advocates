@@ -45,7 +45,7 @@ export function ProductTable({ products }: ProductTableProps) {
       <div className="rounded-t-2xl">
         <Table>
           <TableHeader className="rounded-t-2xl">
-            <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
+            <TableRow className="rounded-t-2xl bg-ma-surface-2 hover:bg-ma-surface-2">
               <TableHead className="w-[280px]">Product</TableHead>
               <TableHead className="w-[140px]">Sales Price</TableHead>
               <TableHead className="w-[100px]">Status</TableHead>
@@ -57,11 +57,11 @@ export function ProductTable({ products }: ProductTableProps) {
             {products.map((product) => {
               const disp = statusDisplay(product.status)
               return (
-                <TableRow className="hover:bg-[#F5F7FA]" key={product.id}>
+                <TableRow className="hover:bg-ma-bg" key={product.id}>
                   <TableCell><span className="font-normal">{product.name}</span></TableCell>
                   <TableCell className="text-primary">${product.salesPrice.toFixed(2)} USD</TableCell>
                   <TableCell>
-                    <Badge variant="secondary" className={`rounded-[8px] font-normal ${disp.class}`}>
+                    <Badge variant="secondary" className={`rounded-8 font-normal ${disp.class}`}>
                       {disp.label}
                     </Badge>
                   </TableCell>
@@ -73,7 +73,7 @@ export function ProductTable({ products }: ProductTableProps) {
                   <TableCell className="text-center">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon-sm" className="size-6 rounded-full border border-[#141B34]">
+                        <Button variant="ghost" size="icon-sm" className="size-6 rounded-full border border-ma-border-strong">
                           <MoreHorizontalIcon className="size-3" />
                         </Button>
                       </DropdownMenuTrigger>

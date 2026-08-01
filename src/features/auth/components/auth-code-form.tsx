@@ -85,7 +85,7 @@ export function AuthCodeForm({
         <h1 className="text-4xl leading-normal font-extrabold text-ma-text">
           Check your inbox
         </h1>
-        <p className="max-w-[442px] text-lg leading-normal text-[#6b7280]">
+        <p className="max-w-[442px] text-lg leading-normal text-muted-foreground">
           Enter the 6-digit code we sent to{" "}
           <span className="font-medium text-ma-text">{email}</span> to finish
           your {flowLabel}.
@@ -110,10 +110,10 @@ export function AuthCodeForm({
                     autoComplete="one-time-code"
                     aria-invalid={fieldState.invalid}
                     placeholder="6-digit code"
-                    className="h-11 rounded-md border-[#6b7280] px-5 py-5 pr-14 text-lg placeholder:text-[#6b7280]"
+                    className="h-11 rounded-md border-input px-5 py-5 pr-14 text-lg placeholder:text-muted-foreground"
                   />
                   <Lock
-                    className="pointer-events-none absolute top-1/2 right-5 size-6 -translate-y-1/2 text-[#6b7280]"
+                    className="pointer-events-none absolute top-1/2 right-5 size-6 -translate-y-1/2 text-muted-foreground"
                     aria-hidden="true"
                   />
                 </div>
@@ -129,13 +129,13 @@ export function AuthCodeForm({
           <Button
             type="submit"
             disabled={pending}
-            className="group relative h-[53px] w-full overflow-hidden rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white disabled:opacity-60"
+            className="group relative h-pill w-full overflow-hidden rounded-pill bg-ma-text px-5 py-4 text-base font-semibold text-white disabled:opacity-60"
           >
             <span className="relative z-10 inline-flex items-center gap-2">
               {pending && <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />}
               {actionLabel}
             </span>
-            <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <div className="pointer-events-none absolute inset-0 rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </Button>
 
           {hideResendSeparator ? (
@@ -161,7 +161,7 @@ export function AuthCodeForm({
       </form>
 
       {!hideSwitch && (
-        <div className="flex w-full items-center justify-center rounded-md bg-[#f5f5f5] px-[30px] py-[50px]">
+        <div className="flex w-full items-center justify-center rounded-md bg-ma-surface-2 px-[30px] py-[50px]">
           {onDifferentAccount ? (
             <button
               type="button"

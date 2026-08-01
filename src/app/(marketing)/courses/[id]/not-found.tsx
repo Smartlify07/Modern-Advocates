@@ -6,7 +6,7 @@ export default function CourseNotFound() {
       <h2 className="text-4xl font-bold text-ma-text lg:text-5xl">
         Course not found
       </h2>
-      <p className="text-[#6b7280]">
+      <p className="text-muted-foreground">
         The course you're looking for doesn't exist or has been removed.
       </p>
       <Link

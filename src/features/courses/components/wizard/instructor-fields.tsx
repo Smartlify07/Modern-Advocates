@@ -55,7 +55,7 @@ export function InstructorFields() {
             onChange={(e) => setInstructorName(e.target.value)}
             placeholder="Instructor name"
             maxLength={120}
-            className="h-[44px] rounded-[8px]"
+            className="h-11 rounded-8"
           />
           <p className="mt-1 text-right text-xs text-slate-400">
             {instructorName.length}/120
@@ -70,7 +70,7 @@ export function InstructorFields() {
             onChange={(e) => setInstructorSpecialty(e.target.value)}
             placeholder="Software Engineer"
             maxLength={120}
-            className="h-[44px] rounded-[8px]"
+            className="h-11 rounded-8"
           />
           <p className="mt-1 text-right text-xs text-slate-400">
             {instructorSpecialty.length}/120
@@ -144,7 +144,7 @@ export function InstructorFields() {
             <Button
               type="button"
               variant="ghost"
-              className="h-[44px] w-fit flex-row-reverse rounded-[8px] bg-slate-100 text-primary hover:bg-slate-200"
+              className="h-11 w-fit flex-row-reverse rounded-8 bg-slate-100 text-primary hover:bg-slate-200"
               onClick={() => inputRef.current?.click()}
             >
               <UploadIcon className="mr-1 size-4" />

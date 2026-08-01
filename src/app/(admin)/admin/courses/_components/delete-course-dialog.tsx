@@ -39,7 +39,7 @@ export function DeleteCourseDialog({
             </div>
           </div>
           <p className="text-[30px] font-semibold">Delete this course?</p>
-          <p className="text-left align-middle text-sm tracking-[-1.5%] text-muted-foreground">
+          <p className="text-left align-middle text-sm tracking-tight-md text-muted-foreground">
             This action cannot be undone. All modules, topics, enrollments, and
             reviews associated with this course will be permanently deleted.
           </p>
@@ -47,7 +47,7 @@ export function DeleteCourseDialog({
         <DialogFooter className="-mx-7.5 border-t-0 bg-white px-7.5 pb-4 sm:justify-start">
           <Button
             variant="outline"
-            className="h-[53px] flex-1 rounded-button-medium px-6 py-4"
+            className="h-pill flex-1 rounded-button-medium px-6 py-4"
             onClick={() => onOpenChange(false)}
             disabled={isPending}
           >
@@ -55,7 +55,7 @@ export function DeleteCourseDialog({
           </Button>
           <Button
             variant="destructive"
-            className="h-[53px] flex-1 rounded-button-medium px-6 py-4"
+            className="h-pill flex-1 rounded-button-medium px-6 py-4"
             onClick={() => {
               if (course && !isPending) onConfirm(course)
             }}

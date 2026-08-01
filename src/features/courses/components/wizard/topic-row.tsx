@@ -97,7 +97,7 @@ export function TopicRow({
             updateTopic(moduleId, topic.id, { title: e.target.value })
           }
           placeholder="Topic name"
-          className="h-[44px] rounded-[8px] text-sm"
+          className="h-11 rounded-8 text-sm"
         />
       </div>
 

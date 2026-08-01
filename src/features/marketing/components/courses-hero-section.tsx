@@ -18,11 +18,11 @@ export function CoursesHeroSection() {
     <section className="bg-white py-20 pb-20 text-ma-text sm:pt-25 sm:pb-25 lg:pt-18">
       <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="mx-auto max-w-200 text-center">
-          <p className="text-base leading-normal font-medium tracking-[0.1em] text-[#6b7280] uppercase">
+          <p className="text-base leading-normal font-medium tracking-[0.1em] text-muted-foreground uppercase">
             Courses
           </p>
 
-          <h1 className="mt-7.5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold text-balance text-ma-text sm:text-[60px] sm:leading-[70px] lg:tracking-[-5%]">
+          <h1 className="mt-7.5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold text-balance text-ma-text sm:text-[60px] sm:leading-[70px] lg:tracking-tight-xl">
             Build the Skills That Keep You Moving Forward
           </h1>
 
@@ -40,7 +40,7 @@ export function CoursesHeroSection() {
                   key={i}
                   className="flex w-full flex-col gap-5 sm:max-w-[334px]"
                 >
-                  <Skeleton className="h-[254px] rounded-[24px]" />
+                  <Skeleton className="h-[254px] rounded-card-2" />
                   <div className="flex flex-col gap-2 px-2.5">
                     <Skeleton className="h-7 w-3/4" />
                     <Skeleton className="h-4 w-1/2" />

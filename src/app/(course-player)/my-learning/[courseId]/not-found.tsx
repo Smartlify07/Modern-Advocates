@@ -6,7 +6,7 @@ export default function CoursePlayerNotFound() {
       <h2 className="text-4xl font-bold text-ma-text lg:text-5xl">
         Course not found
       </h2>
-      <p className="text-[#6b7280]">
+      <p className="text-muted-foreground">
         This course is no longer available or you may not have access to it.
       </p>
       <Link

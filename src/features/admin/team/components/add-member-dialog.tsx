@@ -52,14 +52,14 @@ export function AddMemberDialog({ open, onOpenChange }: AddMemberDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="px-7.5 py-4 sm:max-w-xl [&>button]:end-7.5 [&>button]:top-4 [&>button]:rounded-[8px]">
+      <DialogContent className="px-7.5 py-4 sm:max-w-xl [&>button]:end-7.5 [&>button]:top-4 [&>button]:rounded-8">
         <DialogHeader className="-mx-7.5 border-b px-7.5 pb-4">
           <DialogTitle className="text-base">Invite Team Member</DialogTitle>
         </DialogHeader>
         <div className="space-y-7.5">
           <p className="text-sm text-muted-foreground">
             Category:{" "}
-            <span className="align-middle text-xl font-medium tracking-[-1.5%] text-ma-admin-primary">
+            <span className="align-middle text-xl font-medium tracking-tight-md text-ma-admin-primary">
               Team
             </span>
           </p>
@@ -68,7 +68,7 @@ export function AddMemberDialog({ open, onOpenChange }: AddMemberDialogProps) {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-[53px] p-5"
+            className="h-pill p-5"
           />
           <div className="flex flex-col gap-7.5">
             <span className="text-lg font-medium">Assign Role</span>
@@ -91,13 +91,13 @@ export function AddMemberDialog({ open, onOpenChange }: AddMemberDialogProps) {
         <DialogFooter className="-mx-7.5 border-t-0 bg-white px-7.5 pb-4 sm:justify-start">
           <Button
             variant="outline"
-            className="h-[53px] flex-1 rounded-button-medium px-6 py-4"
+            className="h-pill flex-1 rounded-button-medium px-6 py-4"
             onClick={() => onOpenChange(false)}
           >
             Cancel
           </Button>
           <Button
-            className="h-[53px] flex-1 rounded-button-medium bg-ma-admin-primary px-6 py-4 text-white hover:bg-ma-admin-primary/80"
+            className="h-pill flex-1 rounded-button-medium bg-ma-admin-primary px-6 py-4 text-white hover:bg-ma-admin-primary/80"
             onClick={() => mutate()}
             disabled={isPending || !email.trim()}
           >

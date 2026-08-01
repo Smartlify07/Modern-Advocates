@@ -41,7 +41,7 @@ export function SupportTable({ tickets, onView, onDelete }: SupportTableProps) {
     <div className="rounded-t-2xl">
       <Table>
         <TableHeader className="rounded-t-2xl">
-          <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
+          <TableRow className="rounded-t-2xl bg-ma-surface-2 hover:bg-ma-surface-2">
             <TableHead className="w-[180px]">Name</TableHead>
             <TableHead className="w-[240px]">Email</TableHead>
             <TableHead className="w-[260px]">Message</TableHead>
@@ -64,7 +64,7 @@ export function SupportTable({ tickets, onView, onDelete }: SupportTableProps) {
             </TableRow>
           ) : (
             tickets.map((ticket) => (
-              <TableRow className="hover:bg-[#F5F7FA]" key={ticket.id}>
+              <TableRow className="hover:bg-ma-bg" key={ticket.id}>
                 <TableCell>
                   <span className="font-normal">{ticket.name}</span>
                 </TableCell>
@@ -77,7 +77,7 @@ export function SupportTable({ tickets, onView, onDelete }: SupportTableProps) {
                 <TableCell>
                   <Badge
                     variant="secondary"
-                    className={cn("rounded-[8px] font-normal", statusStyles[ticket.status])}
+                    className={cn("rounded-8 font-normal", statusStyles[ticket.status])}
                   >
                     {ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1)}
                   </Badge>
@@ -91,7 +91,7 @@ export function SupportTable({ tickets, onView, onDelete }: SupportTableProps) {
                       <Button
                         variant="ghost"
                         size="icon-sm"
-                        className="size-6 rounded-full border border-[#141B34]"
+                        className="size-6 rounded-full border border-ma-border-strong"
                       >
                         <MoreHorizontalIcon className="size-3" />
                       </Button>

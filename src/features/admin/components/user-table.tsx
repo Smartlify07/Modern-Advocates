@@ -40,7 +40,7 @@ export function UserTable({ users, onSuspend, onActivate, onDelete, userRole }: 
     <div className="rounded-t-2xl">
       <Table>
         <TableHeader className="rounded-t-2xl">
-          <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
+          <TableRow className="rounded-t-2xl bg-ma-surface-2 hover:bg-ma-surface-2">
             <TableHead className="w-[220px]">User</TableHead>
             <TableHead className="w-[280px]">Email</TableHead>
             <TableHead className="w-[140px] text-center">Course Enrolled</TableHead>
@@ -51,7 +51,7 @@ export function UserTable({ users, onSuspend, onActivate, onDelete, userRole }: 
         </TableHeader>
         <TableBody>
           {users.map((user) => (
-            <TableRow className="hover:bg-[#F5F7FA]" key={user.id}>
+            <TableRow className="hover:bg-ma-bg" key={user.id}>
               <TableCell>
                 <span className="font-normal">{user.name}</span>
               </TableCell>
@@ -68,7 +68,7 @@ export function UserTable({ users, onSuspend, onActivate, onDelete, userRole }: 
                     user.status === "active"
                       ? "bg-green-700/10 text-green-700"
                       : "bg-amber-100 text-amber-800",
-                    "rounded-[8px] font-normal"
+                    "rounded-8 font-normal"
                   )}
                 >
                   {user.status === "active" ? "Active" : "Suspended"}
@@ -86,7 +86,7 @@ export function UserTable({ users, onSuspend, onActivate, onDelete, userRole }: 
                       <Button
                         variant="ghost"
                         size="icon-sm"
-                        className="ring- size-6 rounded-full border border-[#141B34]"
+                        className="ring- size-6 rounded-full border border-ma-border-strong"
                       >
                         <MoreHorizontalIcon className="size-3" />
                       </Button>

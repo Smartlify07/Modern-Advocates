@@ -13,7 +13,7 @@ export function ProductListSection({ products }: ProductListSectionProps) {
         <h2 className="text-lg font-bold">Product List</h2>
         <Link
           href="/admin/products/sales"
-          className="text-lg/[24px] text-[#6B7280] underline underline-offset-2"
+          className="text-lg/[24px] text-muted-foreground underline underline-offset-2"
         >
           See all
         </Link>

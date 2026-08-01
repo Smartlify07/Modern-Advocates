@@ -146,7 +146,7 @@ export function SignupForm({
                     id={field.name}
                     aria-invalid={fieldState.invalid}
                     placeholder="Full Name"
-                    className="h-11 rounded-md border-[#6b7280] px-5 py-5 placeholder:text-[#6b7280] md:text-lg"
+                    className="h-11 rounded-md border-input px-5 py-5 placeholder:text-muted-foreground md:text-lg"
                   />
                   <FieldError errors={[fieldState.error]} />
                 </Field>
@@ -167,7 +167,7 @@ export function SignupForm({
                     type="email"
                     aria-invalid={fieldState.invalid}
                     placeholder="Email"
-                    className="h-11 rounded-md border-[#6b7280] px-5 py-5 placeholder:text-[#6b7280] md:text-lg"
+                    className="h-11 rounded-md border-input px-5 py-5 placeholder:text-muted-foreground md:text-lg"
                   />
                   <FieldError errors={[fieldState.error]} />
                 </Field>
@@ -179,16 +179,16 @@ export function SignupForm({
             <Button
               type="submit"
               disabled={loading}
-              className="group relative h-[53px] w-full overflow-hidden rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white disabled:opacity-60"
+              className="group relative h-pill w-full overflow-hidden rounded-pill bg-ma-text px-5 py-4 text-base font-semibold text-white disabled:opacity-60"
             >
               <span className="relative z-10 inline-flex items-center gap-2">
                 {loading && <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />}
                 Continue
               </span>
-              <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              <div className="pointer-events-none absolute inset-0 rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             </Button>
 
-            <FieldSeparator className="my-0 w-full text-base/[100%] text-[#6b7280] md:text-lg [&_[data-slot=field-separator-content]]:bg-white [&_[data-slot=field-separator-content]]:px-[15px]">
+            <FieldSeparator className="my-0 w-full text-base/[100%] text-muted-foreground md:text-lg [&_[data-slot=field-separator-content]]:bg-white [&_[data-slot=field-separator-content]]:px-[15px]">
               other sign up option
             </FieldSeparator>
           </div>
@@ -197,7 +197,7 @@ export function SignupForm({
         </FieldGroup>
       </form>
 
-      <FieldDescription className="text-center text-[15px] leading-normal text-[#6b7280]">
+      <FieldDescription className="text-center text-[15px] leading-normal text-muted-foreground">
         By signing up, you agree to our{" "}
         <Link
           href="/terms"
@@ -215,8 +215,8 @@ export function SignupForm({
         .
       </FieldDescription>
 
-      <div className="flex w-full flex-wrap items-center justify-center gap-2.5 rounded-md bg-[#f5f5f5] px-[30px] py-[50px] text-lg leading-normal">
-        <FieldDescription className="text-center text-base/[100%] leading-normal text-[#6b7280] md:text-lg">
+      <div className="flex w-full flex-wrap items-center justify-center gap-2.5 rounded-md bg-ma-surface-2 px-[30px] py-[50px] text-lg leading-normal">
+        <FieldDescription className="text-center text-base/[100%] leading-normal text-muted-foreground md:text-lg">
           Already have an account?
         </FieldDescription>
         <Link

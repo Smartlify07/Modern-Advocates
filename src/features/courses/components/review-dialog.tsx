@@ -133,13 +133,13 @@ export function ReviewDialog({
                   key={star}
                   type="button"
                   onClick={() => setRating(star)}
-                  className="cursor-pointer [&:hover_svg]:fill-[#FFA62F] [&:hover_svg]:text-[#FFA62F] [&:hover~button_svg]:fill-[#FFA62F] [&:hover~button_svg]:text-[#FFA62F]"
+                  className="cursor-pointer [&:hover_svg]:fill-ma-star [&:hover_svg]:text-ma-star [&:hover~button_svg]:fill-ma-star [&:hover~button_svg]:text-ma-star"
                 >
                   <Star
                     className={cn(
                       "size-12 transition-[fill,color]",
                       rating >= star
-                        ? "fill-[#FFA62F] text-[#FFA62F]"
+                        ? "fill-ma-star text-ma-star"
                         : "text-muted-foreground"
                     )}
                   />
@@ -161,7 +161,7 @@ export function ReviewDialog({
               placeholder="Share your thoughts"
               defaultValue=""
               rows={4}
-              className="w-full resize-none rounded-lg border px-3 py-2 text-sm ring-0 outline-none placeholder:text-[#6B7280] focus:ring-2 focus:ring-ring"
+              className="w-full resize-none rounded-lg border px-3 py-2 text-sm ring-0 outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
             />
           </Field>
         </div>

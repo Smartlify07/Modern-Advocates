@@ -39,7 +39,7 @@ export function DeleteUserDialog({
             </div>
           </div>
           <p className="text-[30px] font-semibold">Delete this user?</p>
-          <p className="text-left align-middle text-sm tracking-[-1.5%] text-muted-foreground">
+          <p className="text-left align-middle text-sm tracking-tight-md text-muted-foreground">
             This action is permanent and cannot be undone. The user will be
             removed from the system and all their data including enrollments,
             course progress, certificates, and purchase history will be
@@ -49,7 +49,7 @@ export function DeleteUserDialog({
         <DialogFooter className="-mx-7.5 border-t-0 px-7.5 pb-4 sm:justify-start">
           <Button
             variant="outline"
-            className="h-[53px] flex-1 rounded-button-medium px-6 py-4"
+            className="h-pill flex-1 rounded-button-medium px-6 py-4"
             onClick={() => onOpenChange(false)}
             disabled={isPending}
           >
@@ -57,7 +57,7 @@ export function DeleteUserDialog({
           </Button>
           <Button
             variant="destructive"
-            className="h-[53px] flex-1 rounded-button-medium px-6 py-4"
+            className="h-pill flex-1 rounded-button-medium px-6 py-4"
             onClick={() => {
               if (user && !isPending) onConfirm(user)
             }}

@@ -12,7 +12,7 @@ export default function CoursePlayerError({
       <h2 className="text-2xl font-bold text-ma-text">
         Something went wrong
       </h2>
-      <p className="text-[#6b7280]">
+      <p className="text-muted-foreground">
         {error.message || "An unexpected error occurred while loading this course."}
       </p>
       <button

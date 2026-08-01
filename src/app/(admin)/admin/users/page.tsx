@@ -35,7 +35,7 @@ function TableSkeleton() {
   return (
     <Table>
       <TableHeader className="rounded-t-2xl">
-        <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
+        <TableRow className="rounded-t-2xl bg-ma-surface-2 hover:bg-ma-surface-2">
           <TableHead className="w-[220px]">User</TableHead>
           <TableHead className="w-[280px]">Email</TableHead>
           <TableHead className="w-[140px] text-center">Course Enrolled</TableHead>

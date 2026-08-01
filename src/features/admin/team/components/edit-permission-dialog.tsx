@@ -96,12 +96,12 @@ export function EditPermissionDialog({
           <Input
             value={member?.name ?? ""}
             readOnly
-            className="h-[53px] bg-muted/50 p-5"
+            className="h-pill bg-muted/50 p-5"
           />
           <Input
             value={member?.email ?? ""}
             readOnly
-            className="h-[53px] bg-muted/50 p-5"
+            className="h-pill bg-muted/50 p-5"
           />
           <div className="flex flex-col gap-3">
             <span className="text-sm font-semibold">Assign Role</span>
@@ -139,7 +139,7 @@ export function EditPermissionDialog({
         <DialogFooter className="-mx-7.5 border-t-0 bg-white px-7.5 pb-4 sm:justify-start">
           <Button
             variant="outline"
-            className="h-[53px] flex-1 rounded-button-medium px-6 py-4"
+            className="h-pill flex-1 rounded-button-medium px-6 py-4"
             onClick={() => handleOpenChange(false)}
           >
             Cancel
@@ -147,7 +147,7 @@ export function EditPermissionDialog({
           {isRemove ? (
             <Button
               variant="destructive"
-              className="h-[53px] flex-1 rounded-button-medium px-6 py-4"
+              className="h-pill flex-1 rounded-button-medium px-6 py-4"
               onClick={() => removeMutation.mutate()}
               disabled={isPending}
             >
@@ -156,7 +156,7 @@ export function EditPermissionDialog({
             </Button>
           ) : (
             <Button
-              className="h-[53px] flex-1 rounded-button-medium bg-ma-admin-primary px-6 py-4 text-white hover:bg-ma-admin-primary/80"
+              className="h-pill flex-1 rounded-button-medium bg-ma-admin-primary px-6 py-4 text-white hover:bg-ma-admin-primary/80"
               onClick={() => updateMutation.mutate()}
               disabled={isPending}
             >

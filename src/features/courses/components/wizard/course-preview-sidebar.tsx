@@ -21,7 +21,7 @@ export function CoursePreviewSidebar({
   ]
 
   return (
-    <aside className="rounded-2xl border border-[#d9d9d9] bg-white px-4 pt-4 pb-[25px] lg:w-[335px] lg:max-w-[335px]">
+    <aside className="rounded-2xl border border-ma-border-light bg-white px-4 pt-4 pb-[25px] lg:w-[335px] lg:max-w-[335px]">
       <h2 className="text-xl font-extrabold text-ma-text sm:text-2xl">
         Course information
       </h2>
@@ -29,11 +29,11 @@ export function CoursePreviewSidebar({
         {infoItems.map((item) => (
           <div
             key={item.label}
-            className="border-dashed border-[#d9d9d9] py-4 not-last:border-b first:pt-0 first:pb-4 last:pb-0"
+            className="border-dashed border-ma-border-light py-4 not-last:border-b first:pt-0 first:pb-4 last:pb-0"
           >
             <div className="flex items-center justify-between gap-4 py-0">
               <span className="inline-flex items-center gap-2 text-base font-medium text-ma-text">
-                <item.icon className="size-5 shrink-0 text-[#6b7280]" />
+                <item.icon className="size-5 shrink-0 text-muted-foreground" />
                 {item.label}
               </span>
               <span className="text-base font-medium whitespace-nowrap text-ma-text">

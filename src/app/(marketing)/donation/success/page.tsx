@@ -56,10 +56,10 @@ function DonationSuccessContent() {
     <main className="flex min-h-[60vh] items-center justify-center bg-white">
       <div className="flex flex-col items-center gap-6 px-4 text-center">
         <CheckCircle className="size-16 text-green-500" />
-        <h1 className="text-4xl font-extrabold tracking-[-5%] text-ma-text">
+        <h1 className="text-4xl font-extrabold tracking-tight-xl text-ma-text">
           Thank you, {donation?.donorName}!
         </h1>
-        <p className="max-w-md text-lg text-[#6b7280]">
+        <p className="max-w-md text-lg text-muted-foreground">
           Your donation of{" "}
           <span className="font-semibold text-ma-text">
             ${Number(donation?.amount ?? 0).toFixed(2)} USD
@@ -67,9 +67,9 @@ function DonationSuccessContent() {
           has been received. Your support helps us make a real impact.
         </p>
           <Link href="/">
-            <Button className="group relative h-13 w-40 overflow-hidden rounded-[60px] bg-ma-text text-base font-semibold text-white">
+            <Button className="group relative h-13 w-40 overflow-hidden rounded-pill bg-ma-text text-base font-semibold text-white">
               <span className="relative z-10">Back to Home</span>
-              <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              <div className="pointer-events-none absolute inset-0 rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             </Button>
           </Link>
       </div>

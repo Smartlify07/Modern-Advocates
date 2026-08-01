@@ -91,10 +91,10 @@ export function ContactHeroSection({
       <div className="mx-auto grid items-start gap-14 px-4 lg:max-w-7xl lg:grid-cols-[444px_1fr] lg:gap-[88px] lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-5 lg:gap-[30px]">
-            <p className="text-base leading-normal font-medium tracking-[0.1em] text-[#6b7280] uppercase">
+            <p className="text-base leading-normal font-medium tracking-[0.1em] text-muted-foreground uppercase">
               Contact
             </p>
-            <h1 className="font-sans text-[28px]/[100%] leading-[1.15] font-extrabold text-balance text-ma-text sm:leading-[70px] lg:text-[55px] lg:tracking-[-5%]">
+            <h1 className="font-sans text-[28px]/[100%] leading-[1.15] font-extrabold text-balance text-ma-text sm:leading-[70px] lg:text-[55px] lg:tracking-tight-xl">
               Reach out today
             </h1>
             <p className="max-w-[444px] text-base leading-normal text-ma-text lg:text-lg">
@@ -112,13 +112,13 @@ export function ContactHeroSection({
                 className="flex items-start gap-5 text-base font-medium text-ma-text underline underline-offset-2 transition-colors hover:text-ma-text/70"
                 aria-label={`${method.label}: ${method.value}`}
               >
-                <method.icon className="mt-0.5 size-6 shrink-0 text-[#6b7280]" />
+                <method.icon className="mt-0.5 size-6 shrink-0 text-muted-foreground" />
                 <span>{method.value}</span>
               </a>
             ))}
 
             <address className="flex items-start gap-5 text-base leading-normal text-ma-text not-italic">
-              <MapPin className="mt-0.5 size-6 shrink-0 text-[#6b7280]" />
+              <MapPin className="mt-0.5 size-6 shrink-0 text-muted-foreground" />
               <span>
                 2695 N. Military Trail Suite 22-1012
                 <br />
@@ -130,7 +130,7 @@ export function ContactHeroSection({
 
             <div className="flex items-center gap-[9px] text-lg">
               <p>Social media:</p>
-              <div className="flex items-center gap-2 text-[#6d63ff]">
+              <div className="flex items-center gap-2 text-ma-glow-violet">
                 {socialLinks.map((social) => (
                   <span
                     key={social.label}
@@ -154,7 +154,7 @@ export function ContactHeroSection({
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="rounded-[24px] bg-[#f5f5f5] px-4 py-7.5 lg:p-[30px]"
+          className="rounded-card-2 bg-ma-surface-2 px-4 py-7.5 lg:p-[30px]"
         >
           <div className="flex flex-col gap-5">
             <Controller
@@ -171,7 +171,7 @@ export function ContactHeroSection({
                     autoComplete="name"
                     placeholder="Justine Ryan"
                     aria-invalid={fieldState.invalid}
-                    className="h-9 rounded-md border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base placeholder:text-[#6b7280]"
+                    className="h-9 rounded-md border-border bg-white px-2.5 py-2.5 text-base placeholder:text-muted-foreground"
                   />
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
@@ -194,7 +194,7 @@ export function ContactHeroSection({
                       autoComplete="email"
                       placeholder="example@gmail.com"
                       aria-invalid={fieldState.invalid}
-                      className="h-9 rounded-md border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base placeholder:text-[#6b7280]"
+                      className="h-9 rounded-md border-border bg-white px-2.5 py-2.5 text-base placeholder:text-muted-foreground"
                     />
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
@@ -216,7 +216,7 @@ export function ContactHeroSection({
                       autoComplete="tel"
                       placeholder="+10000023045"
                       aria-invalid={fieldState.invalid}
-                      className="h-9 rounded-md border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base placeholder:text-[#6b7280]"
+                      className="h-9 rounded-md border-border bg-white px-2.5 py-2.5 text-base placeholder:text-muted-foreground"
                     />
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
@@ -237,7 +237,7 @@ export function ContactHeroSection({
                     id={field.name}
                     placeholder="Type your message..."
                     aria-invalid={fieldState.invalid}
-                    className="h-[180px] w-full min-w-0 resize-none rounded-md border border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base transition-colors outline-none placeholder:text-[#6b7280] focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20"
+                    className="h-[180px] w-full min-w-0 resize-none rounded-md border border-border bg-white px-2.5 py-2.5 text-base transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20"
                   />
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
@@ -247,7 +247,7 @@ export function ContactHeroSection({
             <Button
               type="submit"
               disabled={submitting}
-              className="group relative mt-1 h-[53px] w-full overflow-hidden rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white disabled:opacity-60"
+              className="group relative mt-1 h-pill w-full overflow-hidden rounded-pill bg-ma-text px-5 py-4 text-base font-semibold text-white disabled:opacity-60"
             >
               <span className="relative z-10 inline-flex items-center gap-2.5">
                 {submitting && <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />}
@@ -257,7 +257,7 @@ export function ContactHeroSection({
                   aria-hidden="true"
                 />
               </span>
-              <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              <div className="pointer-events-none absolute inset-0 rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             </Button>
           </div>
         </form>

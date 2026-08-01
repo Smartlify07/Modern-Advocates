@@ -55,7 +55,7 @@ export function CoursePreviewContent() {
                 mods.map((mod, i) => (
                   <div
                     key={mod.id}
-                    className={`rounded-2xl border border-[#d9d9d9] px-5 pt-[17px] pb-5 ${i === 0 ? "bg-[#f5f5f5]" : "bg-white"}`}
+                    className={`rounded-2xl border border-ma-border-light px-5 pt-[17px] pb-5 ${i === 0 ? "bg-ma-surface-2" : "bg-white"}`}
                   >
                     <h3 className="text-sm font-bold text-ma-text sm:text-base">
                       {mod.title || "Untitled Module"}
@@ -75,7 +75,7 @@ export function CoursePreviewContent() {
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-[#6b7280]">No modules added yet.</p>
+                <p className="text-sm text-muted-foreground">No modules added yet.</p>
               )}
             </div>
           </section>
@@ -85,7 +85,7 @@ export function CoursePreviewContent() {
             <h2 className="text-xl font-extrabold text-ma-text sm:text-2xl">
               Meet your tutor
             </h2>
-            <article className="flex gap-5 rounded-2xl bg-[#f5f5f5] p-4">
+            <article className="flex gap-5 rounded-2xl bg-ma-surface-2 p-4">
               <div className="relative flex h-[120px] min-w-[106px] shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-slate-200 sm:h-[190px] sm:w-[190px]">
                 {instructorPhotoPreview ? (
                   <Image
@@ -112,12 +112,12 @@ export function CoursePreviewContent() {
                   {aboutInstructor ||
                     "Experienced professional with expertise in this field."}
                 </p>
-                <div className="my-auto flex flex-nowrap items-center gap-4 text-[10px] font-medium text-[#6b7280] sm:text-sm">
+                <div className="my-auto flex flex-nowrap items-center gap-4 text-[10px] font-medium text-muted-foreground sm:text-sm">
                   <span className="inline-flex items-center gap-1 text-nowrap">
                     <Users className="size-3.5 sm:size-5" />0 students
                   </span>
                   <span className="my-auto inline-flex flex-nowrap items-center gap-1 text-nowrap">
-                    <Star className="size-3.5 fill-[#ff9d00] text-[#ff9d00] sm:size-5" />
+                    <Star className="size-3.5 fill-ma-star text-ma-star sm:size-5" />
                     0.0 (0 reviews)
                   </span>
                 </div>

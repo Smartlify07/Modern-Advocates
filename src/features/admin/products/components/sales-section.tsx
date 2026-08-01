@@ -11,7 +11,7 @@ import { periodFromDateOption, type ChartDataPoint, type SalesSummary } from "@/
 
 function EarningsSkeleton() {
   return (
-    <Card className="gap-0 border border-[#E5E7EB] shadow-none ring-0">
+    <Card className="gap-0 border border-border shadow-none ring-0">
       <CardContent className="flex flex-col gap-13 px-4">
         <Skeleton className="h-4 w-32" />
         <div className="flex flex-col gap-2">

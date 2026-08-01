@@ -116,11 +116,11 @@ export default function AccountPage() {
         <div className="flex flex-col gap-5">
           <div className="space-y-2">
             <Skeleton className="h-4 w-20" />
-            <Skeleton className="h-11 w-full rounded-[8px]" />
+            <Skeleton className="h-11 w-full rounded-8" />
           </div>
           <div className="space-y-2">
             <Skeleton className="h-4 w-14" />
-            <Skeleton className="h-11 w-full rounded-[8px]" />
+            <Skeleton className="h-11 w-full rounded-8" />
           </div>
         </div>
         <Skeleton className="h-8 w-[70px] rounded-lg" />

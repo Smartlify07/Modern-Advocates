@@ -20,7 +20,7 @@ export function DonationsTable({ donations }: DonationsTableProps) {
     <div className="rounded-t-2xl">
       <Table>
         <TableHeader className="rounded-t-2xl">
-          <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#F5F5F5]">
+          <TableRow className="rounded-t-2xl bg-ma-surface-2 hover:bg-ma-surface-2">
             <TableHead className="w-[220px]">Name</TableHead>
             <TableHead className="w-[280px]">Email</TableHead>
             <TableHead className="w-[120px]">Amount</TableHead>
@@ -29,7 +29,7 @@ export function DonationsTable({ donations }: DonationsTableProps) {
         </TableHeader>
         <TableBody>
           {donations.map((d) => (
-            <TableRow className="hover:bg-[#F5F7FA]" key={d.id}>
+            <TableRow className="hover:bg-ma-bg" key={d.id}>
               <TableCell className="font-normal">{d.donorName}</TableCell>
               <TableCell className="text-muted-foreground">
                 {d.donorEmail}

@@ -19,14 +19,14 @@ export function SearchExportRow({
         <SearchIcon className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           placeholder={placeholder}
-          className="h-[44px] w-[300px] rounded-[8px] pl-9"
+          className="h-11 w-[300px] rounded-8 pl-9"
           value={value}
           onChange={(e) => onChange(e.target.value)}
         />
       </div>
       <Button
         variant="outline"
-        className="h-[44px] min-w-[115px] gap-2.5 rounded-[8px] border-ma-admin-primary bg-white text-ma-admin-primary hover:bg-ma-admin-primary hover:text-white"
+        className="h-11 min-w-[115px] gap-2.5 rounded-8 border-ma-admin-primary bg-white text-ma-admin-primary hover:bg-ma-admin-primary hover:text-white"
       >
         Export
         <UploadIcon className="size-4" />

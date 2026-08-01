@@ -48,7 +48,7 @@ export function Faq() {
       <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="grid gap-12 lg:grid-cols-[425px_1fr] lg:gap-[77px]">
           <div>
-            <h2 className="max-w-[425px] font-sans text-[28px]/[100%] font-extrabold text-primary lg:text-[40px]/[60px] lg:tracking-[-5%]">
+            <h2 className="max-w-[425px] font-sans text-[28px]/[100%] font-extrabold text-primary lg:text-[40px]/[60px] lg:tracking-tight-xl">
               Got questions? we&apos;ve got answers
             </h2>
             <p className="mt-7.5 max-w-[425px] text-base leading-normal text-primary lg:text-[18px]">
@@ -61,7 +61,7 @@ export function Faq() {
             {faqs.map((faq, i) => (
               <div
                 key={i}
-                className="rounded-3xl border border-[#d9d9d9] bg-white p-5 transition-colors hover:border-ma-text/35 lg:py-7.5"
+                className="rounded-3xl border border-ma-border-light bg-white p-5 transition-colors hover:border-ma-text/35 lg:py-7.5"
               >
                 <button
                   type="button"

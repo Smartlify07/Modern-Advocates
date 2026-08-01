@@ -84,7 +84,7 @@ export function ThumbnailUpload() {
           <Button
             type="button"
             variant="ghost"
-            className="h-[44px] w-fit flex-row-reverse rounded-[8px] bg-slate-100 text-primary hover:bg-slate-200"
+            className="h-11 w-fit flex-row-reverse rounded-8 bg-slate-100 text-primary hover:bg-slate-200"
             onClick={() => inputRef.current?.click()}
           >
             <UploadIcon className="mr-1 size-4" />

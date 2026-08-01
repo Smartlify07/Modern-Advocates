@@ -38,19 +38,19 @@ export const CheckoutForm = forwardRef<CheckoutFormHandle, { onReadyChange?: (re
 
     return (
       <div className="flex flex-col gap-6">
-        <p className="text-sm font-bold tracking-[0.1em] text-[#6b7280] uppercase">
+        <p className="text-sm font-bold tracking-[0.1em] text-muted-foreground uppercase">
           Checkout
         </p>
 
         <div className="flex flex-col gap-4">
           <h3 className="text-base font-bold text-ma-text">Billing Information</h3>
           <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-3 rounded-xl border border-[#e5e7eb] bg-white p-3">
-              <User className="size-5 text-[#6b7280]" />
+            <div className="flex items-center gap-3 rounded-xl border border-border bg-white p-3">
+              <User className="size-5 text-muted-foreground" />
               <span className="text-sm text-ma-text">{session?.user.name ?? "—"}</span>
             </div>
-            <div className="flex items-center gap-3 rounded-xl border border-[#e5e7eb] bg-white p-3">
-              <Mail className="size-5 text-[#6b7280]" />
+            <div className="flex items-center gap-3 rounded-xl border border-border bg-white p-3">
+              <Mail className="size-5 text-muted-foreground" />
               <span className="text-sm text-ma-text">{session?.user.email ?? "—"}</span>
             </div>
           </div>
@@ -58,7 +58,7 @@ export const CheckoutForm = forwardRef<CheckoutFormHandle, { onReadyChange?: (re
 
         <div className="flex flex-col gap-4">
           <h3 className="text-base font-bold text-ma-text">Payment Method</h3>
-          <div className="rounded-xl border border-[#e5e7eb] bg-white p-4">
+          <div className="rounded-xl border border-border bg-white p-4">
             <PaymentElement onChange={(e) => onReadyChange?.(e.complete)} />
           </div>
         </div>
