@@ -14,9 +14,5 @@ export default async function AdminLayout({
     redirect("/login")
   }
 
-  return (
-    <AdminLayoutClient userName={user.name} role={user.role}>
-      {children}
-    </AdminLayoutClient>
-  )
+  return <AdminLayoutClient>{children}</AdminLayoutClient>
 }
