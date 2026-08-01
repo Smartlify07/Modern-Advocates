@@ -46,8 +46,15 @@ export default function AdminLayoutClient({
                   />
                   <span className="absolute end-1.5 top-1.5 size-2 rounded-full bg-[#D8727D]" />
                 </Button>
-                <UserCircle2 stroke="#6B7280" strokeWidth={1.5} />
-                <h2 className="text-primary">{userName}</h2>
+                <button
+                  type="button"
+                  onClick={() => router.push("/admin/profile")}
+                  className="flex cursor-pointer items-center gap-2"
+                  aria-label="Go to profile"
+                >
+                  <UserCircle2 stroke="#6B7280" strokeWidth={1.5} />
+                  <h2 className="text-primary">{userName}</h2>
+                </button>
               </div>
             </div>
           </header>
