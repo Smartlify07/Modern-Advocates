@@ -54,7 +54,7 @@ export function PaginationBar({ page, total, pageSize, onPageChange }: Paginatio
                 <PaginationLink
                   isActive={p === page}
                   onClick={(e) => { e.preventDefault(); onPageChange(p) }}
-                  className={p === page ? "bg-[#7C3AED] text-white hover:bg-[#7C3AED]/80" : undefined}
+                  className={p === page ? "bg-ma-admin-primary text-white hover:bg-ma-admin-primary/80" : undefined}
                 >
                   {p}
                 </PaginationLink>

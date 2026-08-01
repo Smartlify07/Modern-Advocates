@@ -20,9 +20,9 @@ export function CourseDetailHeroSection({ course, breadcrumbHref = "/courses" }:
   const displayPrice = course.discountedPrice ?? course.price
 
   return (
-    <section className="bg-[#f5f5f5] py-10 text-ma-text sm:py-[90px] lg:py-16">
-      <div className="mx-auto grid gap-5 rounded-[24px] px-4 lg:max-w-7xl lg:grid-cols-2 lg:px-25 2xl:max-w-360 2xl:px-50">
-        <div className="relative min-h-[360px] overflow-hidden rounded-[24px] sm:min-h-[428px]">
+    <section className="bg-ma-surface-2 py-10 text-ma-text sm:py-[90px] lg:py-16">
+      <div className="mx-auto grid gap-5 rounded-card-2 px-4 lg:max-w-7xl lg:grid-cols-2 lg:px-25 2xl:max-w-360 2xl:px-50">
+        <div className="relative min-h-[360px] overflow-hidden rounded-card-2 sm:min-h-[428px]">
           {course.thumbnailUrl ? (
             <Image src={course.thumbnailUrl} alt={`${course.title} thumbnail`} fill priority sizes="(min-width: 1024px) 510px, calc(100vw - 48px)" className="object-cover" />
           ) : (
@@ -33,8 +33,8 @@ export function CourseDetailHeroSection({ course, breadcrumbHref = "/courses" }:
         <div className="flex flex-col justify-between px-0 py-2 lg:min-h-107 lg:px-2.5 lg:py-0">
           <div className="flex flex-col gap-5">
             <nav aria-label="Breadcrumb" className="hidden flex-wrap items-center gap-1 text-base leading-normal font-medium lg:flex">
-              <Link href={breadcrumbHref} className="text-[#6b7280] transition-colors hover:text-ma-text">Course</Link>
-              <ChevronRight className="size-4 text-[#6b7280]" aria-hidden />
+              <Link href={breadcrumbHref} className="text-muted-foreground transition-colors hover:text-ma-text">Course</Link>
+              <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
               <span className="text-ma-text">{course.title}</span>
             </nav>
 
@@ -46,15 +46,15 @@ export function CourseDetailHeroSection({ course, breadcrumbHref = "/courses" }:
 
           <div className="mt-5 flex flex-col gap-4 lg:mt-0">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded-md border border-[#e5e7eb] p-[5px] text-sm leading-normal font-medium text-[#6b7280]">
-                <Users className="size-5 text-[#6b7280]" aria-hidden />
+              <span className="inline-flex items-center gap-1 rounded-md border border-border p-[5px] text-sm leading-normal font-medium text-muted-foreground">
+                <Users className="size-5 text-muted-foreground" aria-hidden />
                 {course.enrollmentCount} Students Enrolled
               </span>
-              <span className="inline-flex items-center gap-1 rounded-md border border-[#e5e7eb] p-[5px] text-sm leading-normal font-medium text-[#6b7280]">
-                <Star className="size-5 fill-[#ff9d00] text-[#ff9d00]" aria-hidden />
+              <span className="inline-flex items-center gap-1 rounded-md border border-border p-[5px] text-sm leading-normal font-medium text-muted-foreground">
+                <Star className="size-5 fill-ma-star text-ma-star" aria-hidden />
                 {course.avgRating.toFixed(1)}
               </span>
-              <span className="inline-flex items-center rounded-md border border-[#e5e7eb] px-[5px] py-1.5 text-sm leading-normal font-medium text-[#6b7280]">
+              <span className="inline-flex items-center rounded-md border border-border px-[5px] py-1.5 text-sm leading-normal font-medium text-muted-foreground">
                 {course.reviewCount} ratings
               </span>
             </div>
@@ -62,7 +62,7 @@ export function CourseDetailHeroSection({ course, breadcrumbHref = "/courses" }:
             <div className="flex flex-wrap items-baseline gap-2.5 leading-normal font-medium">
               <p className="text-2xl text-ma-text">$ {displayPrice.toFixed(2)} USD</p>
               {course.discountedPrice && (
-                <p className="text-base text-[#6b7280] line-through">$ {course.price.toFixed(2)} USD</p>
+                <p className="text-base text-muted-foreground line-through">$ {course.price.toFixed(2)} USD</p>
               )}
             </div>
 

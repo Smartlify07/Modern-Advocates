@@ -73,7 +73,7 @@ export function PaidCheckoutView({
               processing={paymentState === "processing"}
               disabled={paymentState !== "ready" || !paymentReady}
             />
-            <p className="mt-4 text-xs text-[#6b7280]">Course ID: {courseId}</p>
+            <p className="mt-4 text-xs text-muted-foreground">Course ID: {courseId}</p>
           </div>
         </div>
       </Elements>

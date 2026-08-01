@@ -21,7 +21,7 @@ const SupportSection = () => {
           </p>
         </div>
 
-        <div className="mx-auto mt-10 grid gap-4 rounded-2xl bg-[#f5f5f5] p-4 lg:mt-15.5">
+        <div className="mx-auto mt-10 grid gap-4 rounded-2xl bg-ma-surface-2 p-4 lg:mt-15.5">
           <div className="grid gap-4 lg:grid-cols-2">
             <SupportCard
               title="AI Education"

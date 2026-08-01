@@ -12,7 +12,7 @@ function Root({ href, children }: RootProps) {
   return (
     <Link
       href={href}
-      className="group flex w-full flex-col gap-5 rounded-[24px] border border-[#d9d9d9] bg-white px-2.5 pt-2.5 pb-7.5 transition-colors duration-300 hover:bg-gray-50 sm:max-w-[334px]"
+      className="group flex w-full flex-col gap-5 rounded-card-2 border border-ma-border-light bg-white px-2.5 pt-2.5 pb-7.5 transition-colors duration-300 hover:bg-gray-50 sm:max-w-[334px]"
     >
       {children}
     </Link>
@@ -21,7 +21,7 @@ function Root({ href, children }: RootProps) {
 
 function Thumbnail({ src, alt }: { src: string | null; alt: string }) {
   return (
-    <div className="relative h-[254px] overflow-hidden rounded-[24px]">
+    <div className="relative h-[254px] overflow-hidden rounded-card-2">
       {src ? (
         <Image
           src={src}
@@ -72,21 +72,21 @@ function Title({
 
 function Tutor({ name }: { name: string | null }) {
   return (
-    <p className="text-sm leading-normal font-medium text-[#6b7280]">{name}</p>
+    <p className="text-sm leading-normal font-medium text-muted-foreground">{name}</p>
   )
 }
 
 function Rating({ avg, count }: { avg: number; count: number }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <span className="inline-flex items-center gap-1 rounded-md border border-[#e5e7eb] p-[5px] text-sm leading-normal font-medium text-[#6b7280]">
+      <span className="inline-flex items-center gap-1 rounded-md border border-border p-[5px] text-sm leading-normal font-medium text-muted-foreground">
         <Star
-          className="size-5 fill-[#ff9d00] text-[#ff9d00]"
+          className="size-5 fill-ma-star text-ma-star"
           aria-hidden="true"
         />
         {Number(avg).toFixed(1)}
       </span>
-      <span className="inline-flex items-center rounded-md border border-[#e5e7eb] px-[5px] py-1.5 text-sm leading-normal font-medium text-[#6b7280]">
+      <span className="inline-flex items-center rounded-md border border-border px-[5px] py-1.5 text-sm leading-normal font-medium text-muted-foreground">
         {count} ratings
       </span>
     </div>
@@ -107,7 +107,7 @@ function Price({
     <div className="flex flex-wrap items-baseline gap-2.5 leading-normal font-medium">
       <p className="text-xl text-ma-text">$ {displayPrice.toFixed(2)} USD</p>
       {originalPrice && (
-        <p className="text-base text-[#6b7280] line-through">
+        <p className="text-base text-muted-foreground line-through">
           $ {originalPrice.toFixed(2)} USD
         </p>
       )}
@@ -137,7 +137,7 @@ function DisplayPrice({
   className?: string
 }) {
   return (
-    <p className={cn("text-base text-[#6b7280] line-through", className)}>
+    <p className={cn("text-base text-muted-foreground line-through", className)}>
       $ {displayPrice?.toFixed(2)} USD
     </p>
   )
@@ -156,12 +156,12 @@ function Progress({ value }: { value: number }) {
 
 function ContinueButton() {
   return (
-    <span className="relative inline-flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white">
+    <span className="relative inline-flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-pill bg-ma-text px-5 py-4 text-base font-semibold text-white">
       <span className="relative z-10 inline-flex items-center gap-2.5">
         Continue Learning
         <ArrowRight className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" />
       </span>
-      <span className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+      <span className="pointer-events-none absolute inset-0 rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
     </span>
   )
 }

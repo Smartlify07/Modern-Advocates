@@ -104,7 +104,7 @@ export function MissionBridgeSection() {
         </div>
 
         <div
-          className="mt-15 flex gap-5 overflow-x-auto rounded-2xl bg-[#F5F5F5] p-5 transition-[grid-template-columns] duration-500 lg:grid lg:h-[400px] lg:max-h-[400px] lg:grid-cols-[2fr_1fr] lg:overflow-visible"
+          className="mt-15 flex gap-5 overflow-x-auto rounded-2xl bg-ma-surface-2 p-5 transition-[grid-template-columns] duration-500 lg:grid lg:h-[400px] lg:max-h-[400px] lg:grid-cols-[2fr_1fr] lg:overflow-visible"
           style={{
             gridTemplateColumns: hovered === "second" ? "1fr 2fr" : undefined,
           }}

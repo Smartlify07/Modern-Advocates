@@ -40,7 +40,7 @@ export function SupportFilterBar({
         <SearchIcon className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           placeholder="Search by customer name, ticket ID, or subject..."
-          className="h-[44px] w-full rounded-[8px] pl-9"
+          className="h-11 w-full rounded-8 pl-9"
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
         />
@@ -49,13 +49,13 @@ export function SupportFilterBar({
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
-            className="h-[44px] w-[176px] justify-between rounded-[8px] bg-white"
+            className="h-11 w-[176px] justify-between rounded-8 bg-white"
           >
             {activeLabel}
             <ChevronDownIcon className="size-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="rounded-[8px]" align="end">
+        <DropdownMenuContent className="rounded-8" align="end">
           <DropdownMenuRadioGroup
             className="space-y-1"
             value={filter}
@@ -65,7 +65,7 @@ export function SupportFilterBar({
               <DropdownMenuRadioItem
                 key={opt.value}
                 value={opt.value}
-                className="rounded-[8px] p-2 data-[state=checked]:bg-[#7C3AED] data-[state=checked]:text-primary-foreground [&_svg]:hidden"
+                className="rounded-8 p-2 data-[state=checked]:bg-ma-admin-primary data-[state=checked]:text-primary-foreground [&_svg]:hidden"
               >
                 {opt.label}
               </DropdownMenuRadioItem>

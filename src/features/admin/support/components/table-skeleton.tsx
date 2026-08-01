@@ -12,7 +12,7 @@ export function TableSkeleton() {
   return (
     <Table>
       <TableHeader>
-        <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
+        <TableRow className="rounded-t-2xl bg-ma-surface-2 hover:bg-ma-surface-2">
           <TableHead>Name</TableHead>
           <TableHead>Email</TableHead>
           <TableHead>Message</TableHead>

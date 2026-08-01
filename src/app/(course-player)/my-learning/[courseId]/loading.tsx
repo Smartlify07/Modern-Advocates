@@ -4,7 +4,7 @@ export default function CoursePlayerLoading() {
       <div className="grid gap-0 md:grid-cols-[2.2fr_0.8fr]">
         <div className="flex flex-col gap-6">
           <div className="aspect-video w-full animate-pulse rounded-xl bg-gray-200" />
-          <div className="mx-3 flex gap-6 border-b border-[#e5e7eb] pb-2">
+          <div className="mx-3 flex gap-6 border-b border-border pb-2">
             <div className="h-5 w-16 animate-pulse rounded bg-gray-200" />
             <div className="h-5 w-16 animate-pulse rounded bg-gray-200" />
           </div>
@@ -19,7 +19,7 @@ export default function CoursePlayerLoading() {
             </div>
           </div>
         </div>
-        <aside className="border border-[#d9d9d9] bg-white px-2 py-5">
+        <aside className="border border-ma-border-light bg-white px-2 py-5">
           <div className="h-8 w-44 animate-pulse rounded bg-gray-200" />
         </aside>
       </div>

@@ -33,22 +33,22 @@ export default function CoursesToolbar({
         />
         <Input
           placeholder="Search courses..."
-          className="h-[44px] max-w-[300px] rounded-[8px] pl-14 text-sm placeholder:text-sm"
+          className="h-11 max-w-[300px] rounded-8 pl-14 text-sm placeholder:text-sm"
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
         />
       </div>
       <Select value={filter} onValueChange={(v) => onFilterChange(v as Filter)}>
-        <SelectTrigger className="w-40 rounded-[8px] data-[size=default]:h-[44px]">
+        <SelectTrigger className="w-40 rounded-8 data-[size=default]:h-11">
           <SelectValue />
         </SelectTrigger>
         <SelectContent
           side="bottom"
-          className="min-w-40 translate-x-0 rounded-[8px]"
+          className="min-w-40 translate-x-0 rounded-8"
         >
           {filterOptions.map((option) => (
             <SelectItem
-              className="rounded-[8px] p-2"
+              className="rounded-8 p-2"
               key={option}
               value={option}
             >

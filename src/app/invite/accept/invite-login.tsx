@@ -71,7 +71,7 @@ export function InviteLogin({
             <Input
               value={email}
               readOnly
-              className="h-11 rounded-md border-[#6b7280] bg-muted/50 px-5 py-5 text-lg"
+              className="h-11 rounded-md border-input bg-muted/50 px-5 py-5 text-lg"
             />
             <Button
               className="h-11 w-full"

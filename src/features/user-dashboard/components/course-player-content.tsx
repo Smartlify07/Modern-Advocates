@@ -236,13 +236,13 @@ export function CoursePlayerContent({
       )}
 
       {selectedTopicId && (
-        <div className="flex items-center justify-between border-b border-[#e5e7eb] px-4 pb-4 lg:px-14">
+        <div className="flex items-center justify-between border-b border-border px-4 pb-4 lg:px-14">
           <div className="flex gap-2">
             <button
               type="button"
               disabled={!prevTopicId}
               onClick={() => prevTopicId && onSelectTopic?.(prevTopicId)}
-              className="rounded-[8px] border border-primary px-4 py-2 text-sm font-medium text-ma-text transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-8 border border-primary px-4 py-2 text-sm font-medium text-ma-text transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
             >
               Previous
             </button>
@@ -250,7 +250,7 @@ export function CoursePlayerContent({
               type="button"
               disabled={!nextTopicId}
               onClick={() => nextTopicId && onSelectTopic?.(nextTopicId)}
-              className="rounded-[8px] border border-primary px-4 py-2 text-sm font-medium text-ma-text transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-8 border border-primary px-4 py-2 text-sm font-medium text-ma-text transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
             >
               Next
             </button>
@@ -258,7 +258,7 @@ export function CoursePlayerContent({
           <button
             type="button"
             onClick={handleCompleteToggle}
-            className={`rounded-[8px] px-6 py-2 text-sm font-medium transition-colors ${
+            className={`rounded-8 px-6 py-2 text-sm font-medium transition-colors ${
               isCompleted
                 ? "bg-green-700 text-white hover:bg-green-800"
                 : "bg-primary text-white hover:opacity-90"
@@ -269,16 +269,16 @@ export function CoursePlayerContent({
         </div>
       )}
 
-      <div className="flex gap-6 border-b border-[#e5e7eb] px-4 lg:px-14">
+      <div className="flex gap-6 border-b border-border px-4 lg:px-14">
         <button
           onClick={() => setTab("overview")}
-          className={`pb-2 text-sm font-medium ${tab === "overview" ? "border-b-2 border-ma-text text-ma-text" : "text-[#6b7280]"}`}
+          className={`pb-2 text-sm font-medium ${tab === "overview" ? "border-b-2 border-ma-text text-ma-text" : "text-muted-foreground"}`}
         >
           Overview
         </button>
         <button
           onClick={() => setTab("reviews")}
-          className={`pb-2 text-sm font-medium ${tab === "reviews" ? "border-b-2 border-ma-text text-ma-text" : "text-[#6b7280]"}`}
+          className={`pb-2 text-sm font-medium ${tab === "reviews" ? "border-b-2 border-ma-text text-ma-text" : "text-muted-foreground"}`}
         >
           Reviews
         </button>
@@ -299,8 +299,8 @@ export function CoursePlayerContent({
             {myReviews.length > 0 ? (
               myReviews.map((r) => <ReviewCard key={r.id} review={r} />)
             ) : (
-              <div className="w-full rounded-lg border border-[#d9d9d9] py-12 text-center">
-                <p className="text-base text-[#6b7280]">No reviews yet.</p>
+              <div className="w-full rounded-lg border border-ma-border-light py-12 text-center">
+                <p className="text-base text-muted-foreground">No reviews yet.</p>
               </div>
             )}
           </div>

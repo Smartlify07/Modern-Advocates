@@ -6,7 +6,7 @@ const AboutOurValuesSection = () => {
   return (
     <section id="about" className="bg-white py-12.5 lg:py-25">
       <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
-        <p className="mb-5 text-center text-sm leading-normal font-medium tracking-[10%] text-[#6b7280] uppercase sm:text-base">
+        <p className="mb-5 text-center text-sm leading-normal font-medium tracking-[10%] text-muted-foreground uppercase sm:text-base">
           OUR VALUES{" "}
         </p>
         <div className="mx-auto text-center">
@@ -22,7 +22,7 @@ const AboutOurValuesSection = () => {
           </p>
         </div>
 
-        <div className="mx-auto mt-15.5 grid gap-4 rounded-2xl bg-[#f5f5f5] p-4">
+        <div className="mx-auto mt-15.5 grid gap-4 rounded-2xl bg-ma-surface-2 p-4">
           <div className="grid gap-4 lg:grid-cols-2">
             <SupportCard
               title="AI Education"

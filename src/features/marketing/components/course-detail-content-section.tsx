@@ -81,7 +81,7 @@ export function CourseDetailContentSection({
                 <ReviewCard key={review.id} review={review} />
               ))
             ) : (
-              <p className="text-base text-[#6b7280]">
+              <p className="text-base text-muted-foreground">
                 No reviews yet. Be the first to review this course!
               </p>
             )}

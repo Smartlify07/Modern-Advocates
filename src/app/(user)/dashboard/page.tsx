@@ -87,7 +87,7 @@ export default function UserDashboardPage() {
               key={i}
               className="flex w-full flex-col gap-5 sm:max-w-[334px]"
             >
-              <Skeleton className="h-[254px] rounded-[24px]" />
+              <Skeleton className="h-[254px] rounded-card-2" />
               <div className="flex flex-col gap-2 px-2.5">
                 <Skeleton className="h-7 w-3/4" />
                 <Skeleton className="h-4 w-1/2" />

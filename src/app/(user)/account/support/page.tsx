@@ -73,7 +73,7 @@ export default function AccountSupportPage() {
     <main className="w-full overflow-hidden bg-white text-ma-text">
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full rounded-[24px] bg-[#f5f5f5] px-4 py-7.5 lg:w-[600px] lg:p-[30px]"
+        className="w-full rounded-card-2 bg-ma-surface-2 px-4 py-7.5 lg:w-[600px] lg:p-[30px]"
       >
         <div className="flex flex-col gap-5">
           <Controller
@@ -93,7 +93,7 @@ export default function AccountSupportPage() {
                   autoComplete="name"
                   placeholder="Justine Ryan"
                   aria-invalid={fieldState.invalid}
-                  className="h-11 rounded-md border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base placeholder:text-[#6b7280]"
+                  className="h-11 rounded-md border-border bg-white px-2.5 py-2.5 text-base placeholder:text-muted-foreground"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -121,7 +121,7 @@ export default function AccountSupportPage() {
                     autoComplete="email"
                     placeholder="example@gmail.com"
                     aria-invalid={fieldState.invalid}
-                    className="h-11 rounded-md border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base placeholder:text-[#6b7280]"
+                    className="h-11 rounded-md border-border bg-white px-2.5 py-2.5 text-base placeholder:text-muted-foreground"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -148,7 +148,7 @@ export default function AccountSupportPage() {
                     autoComplete="tel"
                     placeholder="+10000023045"
                     aria-invalid={fieldState.invalid}
-                    className="h-11 rounded-md border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base placeholder:text-[#6b7280]"
+                    className="h-11 rounded-md border-border bg-white px-2.5 py-2.5 text-base placeholder:text-muted-foreground"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -174,7 +174,7 @@ export default function AccountSupportPage() {
                   id={field.name}
                   placeholder="Type your message..."
                   aria-invalid={fieldState.invalid}
-                  className="h-[180px] w-full min-w-0 resize-none rounded-md border border-[#e5e7eb] bg-white px-2.5 py-2.5 text-base transition-colors outline-none placeholder:text-[#6b7280] focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20"
+                  className="h-[180px] w-full min-w-0 resize-none rounded-md border border-border bg-white px-2.5 py-2.5 text-base transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -186,7 +186,7 @@ export default function AccountSupportPage() {
           <Button
             type="submit"
             disabled={submitting}
-            className="group relative mt-1 h-[53px] w-full overflow-hidden rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white disabled:opacity-60"
+            className="group relative mt-1 h-pill w-full overflow-hidden rounded-pill bg-ma-text px-5 py-4 text-base font-semibold text-white disabled:opacity-60"
           >
             <span className="relative z-10 inline-flex items-center gap-2.5">
               {submitting && (
@@ -201,7 +201,7 @@ export default function AccountSupportPage() {
                 aria-hidden="true"
               />
             </span>
-            <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <div className="pointer-events-none absolute inset-0 rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </Button>
         </div>
       </form>{" "}

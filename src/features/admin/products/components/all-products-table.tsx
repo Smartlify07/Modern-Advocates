@@ -23,7 +23,7 @@ export function AllProductsTable({ products }: AllProductsTableProps) {
     <div className="rounded-t-2xl">
       <Table>
         <TableHeader className="rounded-t-2xl">
-          <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
+          <TableRow className="rounded-t-2xl bg-ma-surface-2 hover:bg-ma-surface-2">
             <TableHead className="w-[280px]">Product</TableHead>
             <TableHead className="w-[120px] text-center">Sales Price</TableHead>
             <TableHead className="w-[100px] text-center">Status</TableHead>
@@ -35,11 +35,11 @@ export function AllProductsTable({ products }: AllProductsTableProps) {
           {products.map((p) => {
             const disp = statusDisplay(p.status)
             return (
-              <TableRow className="hover:bg-[#F5F7FA]" key={p.id}>
+              <TableRow className="hover:bg-ma-bg" key={p.id}>
                 <TableCell className="font-normal">{p.name}</TableCell>
                 <TableCell className="text-center text-primary">${p.salesPrice.toFixed(2)}</TableCell>
                 <TableCell className="text-center">
-                  <Badge variant="secondary" className={`rounded-[8px] font-normal ${disp.class}`}>
+                  <Badge variant="secondary" className={`rounded-8 font-normal ${disp.class}`}>
                     {disp.label}
                   </Badge>
                 </TableCell>
@@ -51,7 +51,7 @@ export function AllProductsTable({ products }: AllProductsTableProps) {
                 <TableCell className="text-center">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon-sm" className="size-6 rounded-full border border-[#141B34]">
+                      <Button variant="ghost" size="icon-sm" className="size-6 rounded-full border border-ma-border-strong">
                         <MoreHorizontalIcon className="size-3" />
                       </Button>
                     </DropdownMenuTrigger>

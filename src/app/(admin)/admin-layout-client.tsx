@@ -32,18 +32,18 @@ export default function AdminLayoutClient({
                   />
                   <Input
                     placeholder="Search for anything..."
-                    className="h-[44px] rounded-button-medium bg-[#f5f5f5] px-14 text-sm placeholder:text-sm"
+                    className="h-11 rounded-button-medium bg-ma-surface-2 px-14 text-sm placeholder:text-sm"
                   />
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Button variant="ghost" size="icon" className="relative" onClick={() => router.push("/admin/support")}>
                   <BellIcon
-                    stroke="#6B7280"
+                    stroke="var(--muted-foreground)"
                     strokeWidth={1.5}
                     className="size-5"
                   />
-                  <span className="absolute end-1.5 top-1.5 size-2 rounded-full bg-[#D8727D]" />
+                  <span className="absolute end-1.5 top-1.5 size-2 rounded-full bg-destructive" />
                 </Button>
                 <button
                   type="button"
@@ -51,7 +51,7 @@ export default function AdminLayoutClient({
                   className="flex cursor-pointer items-center gap-2"
                   aria-label="Go to profile"
                 >
-                  <UserCircle2 stroke="#6B7280" strokeWidth={1.5} />
+                  <UserCircle2 stroke="var(--muted-foreground)" strokeWidth={1.5} />
                   <h2 className="text-primary">{userName}</h2>
                 </button>
               </div>

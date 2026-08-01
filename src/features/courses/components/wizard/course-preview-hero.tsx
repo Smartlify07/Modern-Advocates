@@ -22,7 +22,7 @@ export function CoursePreviewHero() {
   return (
     <section className="py-8 text-ma-text">
       <div className="mx-auto grid gap-5 lg:grid-cols-2">
-        <div className="relative min-h-[250px] overflow-hidden rounded-[24px] sm:min-h-[250px] lg:h-[250px]">
+        <div className="relative min-h-[250px] overflow-hidden rounded-card-2 sm:min-h-[250px] lg:h-[250px]">
           {thumbnailPreview ? (
             <Image
               src={thumbnailPreview}
@@ -67,14 +67,14 @@ export function CoursePreviewHero() {
 
           <div className="mt-5 flex flex-col gap-4">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded-md border border-[#e5e7eb] p-[5px] text-sm font-medium text-[#6b7280]">
-                <Users className="size-5 text-[#6b7280]" />0 Students Enrolled
+              <span className="inline-flex items-center gap-1 rounded-md border border-border p-[5px] text-sm font-medium text-muted-foreground">
+                <Users className="size-5 text-muted-foreground" />0 Students Enrolled
               </span>
-              <span className="inline-flex items-center gap-1 rounded-md border border-[#e5e7eb] p-[5px] text-sm font-medium text-[#6b7280]">
-                <Star className="size-5 fill-[#ff9d00] text-[#ff9d00]" />
+              <span className="inline-flex items-center gap-1 rounded-md border border-border p-[5px] text-sm font-medium text-muted-foreground">
+                <Star className="size-5 fill-ma-star text-ma-star" />
                 0.0
               </span>
-              <span className="inline-flex items-center rounded-md border border-[#e5e7eb] px-[5px] py-1.5 text-sm font-medium text-[#6b7280]">
+              <span className="inline-flex items-center rounded-md border border-border px-[5px] py-1.5 text-sm font-medium text-muted-foreground">
                 0 ratings
               </span>
             </div>
@@ -84,7 +84,7 @@ export function CoursePreviewHero() {
                 $ {displayPrice.toFixed(2)} USD
               </p>
               {showStrikedOriginal && numericSale > 0 && numericPrice > 0 && (
-                <p className="text-base text-[#6b7280] line-through">
+                <p className="text-base text-muted-foreground line-through">
                   $ {numericPrice.toFixed(2)} USD
                 </p>
               )}

@@ -25,7 +25,7 @@ export function InviteDeclined({
           </div>
 
           <div className="text-center">
-            <h2 className="text-xl font-semibold tracking-[-3%] text-foreground">
+            <h2 className="text-xl font-semibold tracking-tight-lg text-foreground">
               Invitation Declined
             </h2>
             <div className="mt-2 text-sm text-muted-foreground">

@@ -7,7 +7,7 @@ interface ProductEarningsCardProps {
 
 export function ProductEarningsCard({ totalRevenue, periodLabel }: ProductEarningsCardProps) {
   return (
-    <Card className="gap-0 border border-[#E5E7EB] shadow-none ring-0">
+    <Card className="gap-0 border border-border shadow-none ring-0">
       <CardContent className="flex flex-col gap-13 px-4">
         <CardTitle className="text-base font-medium">
           Product Earnings

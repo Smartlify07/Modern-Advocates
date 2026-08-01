@@ -17,8 +17,8 @@ export function PaymentFailedContent({
 }) {
   return (
     <div className="flex flex-col items-center gap-6">
-      <div className="flex size-20 items-center justify-center rounded-full bg-[#FEE2E1]">
-        <div className="flex size-10 items-center justify-center rounded-full bg-[#F62323]">
+      <div className="flex size-20 items-center justify-center rounded-full bg-destructive/10">
+        <div className="flex size-10 items-center justify-center rounded-full bg-destructive">
           <X className="size-8 text-white" />
         </div>
       </div>
@@ -27,7 +27,7 @@ export function PaymentFailedContent({
         <h2 className="text-2xl font-semibold text-ma-text">
           {title ?? (mode === "payment" ? "Payment Failed" : "Enrollment Failed")}
         </h2>
-        <p className="mt-3 text-base tracking-[-1.5%] text-[#6b7280]">
+        <p className="mt-3 text-base tracking-tight-md text-muted-foreground">
           {description ?? (mode === "payment"
             ? "Transaction could not be processed"
             : "Could not complete enrollment")}
@@ -47,7 +47,7 @@ export function PaymentFailedContent({
       <button
         type="button"
         onClick={onRetry}
-        className="flex w-full items-center justify-center gap-2 rounded-[60px] bg-[#F62323] px-6 py-4 text-base font-medium tracking-[-0.8%] text-white transition-colors"
+        className="flex w-full items-center justify-center gap-2 rounded-pill bg-destructive px-6 py-4 text-base font-medium tracking-[-0.8%] text-white transition-colors"
       >
         <RefreshCw className="size-5" />
         {mode === "payment" ? "Retry Payment" : "Retry Enrollment"}

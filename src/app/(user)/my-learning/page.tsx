@@ -46,7 +46,7 @@ export default function MyLearningPage() {
               key={i}
               className="flex w-full flex-col gap-5 sm:max-w-[334px]"
             >
-              <Skeleton className="h-[254px] rounded-[24px]" />
+              <Skeleton className="h-[254px] rounded-card-2" />
               <div className="flex flex-col gap-2 px-2.5">
                 <Skeleton className="h-7 w-3/4" />
                 <Skeleton className="h-4 w-1/2" />
@@ -69,7 +69,7 @@ export default function MyLearningPage() {
         <ErrorStateTitle className="text-2xl font-bold text-ma-text">
           Failed to load your courses
         </ErrorStateTitle>
-        <ErrorStateDescription className="text-[#6b7280]">
+        <ErrorStateDescription className="text-muted-foreground">
           {error instanceof Error ? error.message : "Something went wrong"}
         </ErrorStateDescription>
       </ErrorState>
@@ -80,7 +80,7 @@ export default function MyLearningPage() {
     return (
       <div className="mx-auto flex flex-col items-center justify-center gap-6 px-4 py-20 text-center">
         <h2 className="text-2xl font-bold text-ma-text">No enrollments yet</h2>
-        <p className="max-w-md text-[#6b7280]">
+        <p className="max-w-md text-muted-foreground">
           You haven&apos;t enrolled in any courses yet. Browse our catalog and
           start your learning journey today.
         </p>
