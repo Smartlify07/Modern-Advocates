@@ -77,12 +77,12 @@ export function InviteSignup({
               placeholder="Full Name"
               value={signupName}
               onChange={(e) => onNameChange(e.target.value)}
-              className="h-11 rounded-md border-[#6b7280] px-5 py-5 text-lg placeholder:text-[#6b7280]"
+              className="h-11 rounded-md border-input px-5 py-5 text-lg placeholder:text-muted-foreground"
             />
             <Input
               value={email}
               readOnly
-              className="h-11 rounded-md border-[#6b7280] bg-muted/50 px-5 py-5 text-lg"
+              className="h-11 rounded-md border-input bg-muted/50 px-5 py-5 text-lg"
             />
             <Button
               className="h-11 w-full"

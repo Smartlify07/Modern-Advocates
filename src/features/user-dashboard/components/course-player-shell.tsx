@@ -126,7 +126,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
           <div className="flex flex-col gap-6">
             <Skeleton className="aspect-video w-full rounded-xl" />
 
-            <div className="mx-3 flex gap-6 border-b border-[#e5e7eb] pb-2">
+            <div className="mx-3 flex gap-6 border-b border-border pb-2">
               <Skeleton className="h-5 w-16" />
               <Skeleton className="h-5 w-16" />
             </div>
@@ -138,7 +138,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
 
               <div className="flex flex-col gap-5">
                 <Skeleton className="h-8 w-48" />
-                <div className="flex gap-5 rounded-2xl bg-[#f5f5f5] p-4">
+                <div className="flex gap-5 rounded-2xl bg-ma-surface-2 p-4">
                   <Skeleton className="h-[190px] w-[106px] shrink-0 rounded-[10px] sm:w-[190px]" />
                   <div className="flex w-full flex-col gap-4 sm:gap-[22px]">
                     <div className="flex flex-col gap-1">
@@ -159,13 +159,13 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
             </div>
           </div>
 
-          <aside className="border border-[#d9d9d9] bg-white px-2 py-5">
+          <aside className="border border-ma-border-light bg-white px-2 py-5">
             <Skeleton className="h-8 w-44" />
             <div className="mt-5 flex flex-col gap-3">
               {[1, 2, 3].map((mod) => (
                 <div
                   key={mod}
-                  className="border-b border-b-[#e5e7eb] last:border-b-0"
+                  className="border-b border-b-border last:border-b-0"
                 >
                   <div className="flex w-full items-center justify-between px-5 py-3">
                     <div className="flex-1">
@@ -176,7 +176,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
                     </div>
                     <Skeleton className="size-4 shrink-0" />
                   </div>
-                  <div className="flex flex-col gap-1 border-t border-[#e5e7eb] py-2">
+                  <div className="flex flex-col gap-1 border-t border-border py-2">
                     {[1, 2, 3].map((topic) => (
                       <div
                         key={topic}

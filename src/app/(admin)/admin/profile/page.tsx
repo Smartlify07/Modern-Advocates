@@ -123,7 +123,7 @@ export default function AdminProfilePage() {
 
   return (
     <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
-      <h1 className="text-4xl/[100%] font-semibold tracking-[-3%]">Account</h1>
+      <h1 className="text-4xl leading-none font-semibold tracking-tight-lg">Account</h1>
 
       {isPending ? (
         <div className="flex w-full flex-col gap-12 rounded-xl bg-white">
@@ -137,14 +137,14 @@ export default function AdminProfilePage() {
           <div className="flex flex-col gap-5">
             <div className="space-y-2">
               <Skeleton className="h-4 w-20" />
-              <Skeleton className="h-11 w-full rounded-[8px]" />
+              <Skeleton className="h-11 w-full rounded-8" />
             </div>
             <div className="space-y-2">
               <Skeleton className="h-4 w-14" />
-              <Skeleton className="h-11 w-full rounded-[8px]" />
+              <Skeleton className="h-11 w-full rounded-8" />
             </div>
           </div>
-          <Skeleton className="h-11 w-40 rounded-[8px]" />
+          <Skeleton className="h-11 w-40 rounded-8" />
         </div>
       ) : (
         <div className="flex w-full flex-col gap-12 rounded-xl bg-white">
@@ -172,7 +172,7 @@ export default function AdminProfilePage() {
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={saving}
-                className="flex items-center gap-2 rounded-[8px] border border-input bg-background px-3.5 py-2 text-sm font-medium text-ma-text transition-colors hover:bg-muted disabled:opacity-50"
+                className="flex items-center gap-2 rounded-8 border border-input bg-background px-3.5 py-2 text-sm font-medium text-ma-text transition-colors hover:bg-muted disabled:opacity-50"
               >
                 <Upload className="size-4" />
                 Upload Photo
@@ -199,7 +199,7 @@ export default function AdminProfilePage() {
                 onChange={(e) => setEditedName(e.target.value)}
                 placeholder="Your full name"
                 aria-invalid={isNameBlank}
-                className="h-11 rounded-[8px]"
+                className="h-11 rounded-8"
               />
               {isNameBlank && <FieldError>Name is required</FieldError>}
             </Field>
@@ -211,7 +211,7 @@ export default function AdminProfilePage() {
                 type="email"
                 value={user?.email ?? ""}
                 disabled
-                className="h-11 rounded-[8px] bg-muted/50"
+                className="h-11 rounded-8 bg-muted/50"
               />
             </Field>
           </FieldGroup>
@@ -219,7 +219,7 @@ export default function AdminProfilePage() {
           <div>
             <Button
               onClick={handleSave}
-              className="h-11 w-full rounded-[8px] bg-ma-admin-primary text-white hover:bg-ma-admin-primary/90 lg:w-40"
+              className="h-11 w-full rounded-8 bg-ma-admin-primary text-white hover:bg-ma-admin-primary/90 lg:w-40"
               disabled={!hasChanges || saving || isNameBlank}
             >
               {saving ? "Saving..." : "Save"}

@@ -60,7 +60,7 @@ export function CourseInformationCard({
   console.log(course)
 
   return (
-    <aside className="w-full rounded-2xl border border-[#d9d9d9] bg-white px-4 pt-4 pr-3.5 pb-[25px] lg:top-8">
+    <aside className="w-full rounded-2xl border border-ma-border-light bg-white px-4 pt-4 pr-3.5 pb-[25px] lg:top-8">
       <h2 className="leading/[100%]-normal text-xl font-extrabold text-ma-text sm:text-2xl">
         Course information
       </h2>
@@ -70,7 +70,7 @@ export function CourseInformationCard({
           <div key={item.label}>
             <div className="flex items-center justify-between gap-4 py-0">
               <span className="inline-flex items-center gap-2 text-base leading-normal font-medium text-ma-text">
-                <item.icon className="size-5 shrink-0 text-[#6b7280]" />
+                <item.icon className="size-5 shrink-0 text-muted-foreground" />
                 {item.label}
               </span>
               <span className="text-base leading-normal font-medium whitespace-nowrap text-ma-text">
@@ -81,8 +81,8 @@ export function CourseInformationCard({
             <div
               className={
                 index < infoItems.length - 1
-                  ? "my-4 border-t border-dashed border-[#d9d9d9]"
-                  : "mt-4 border-t border-dashed border-[#d9d9d9]"
+                  ? "my-4 border-t border-dashed border-ma-border-light"
+                  : "mt-4 border-t border-dashed border-ma-border-light"
               }
             />
           </div>

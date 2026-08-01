@@ -9,7 +9,7 @@ export function PageHeader({ title, backHref = "/admin/products" }: PageHeaderPr
       <Link href={backHref}>
         <ArrowLeftIcon className="size-5 cursor-pointer text-muted-foreground" />
       </Link>
-      <h1 className="text-4xl/[100%] font-semibold tracking-[-3%]">{title}</h1>
+      <h1 className="text-4xl leading-none font-semibold tracking-tight-lg">{title}</h1>
     </div>
   )
 }

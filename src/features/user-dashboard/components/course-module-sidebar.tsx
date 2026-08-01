@@ -153,7 +153,7 @@ export function CourseModuleSidebar({
   }
 
   return (
-    <aside className="sticky top-0 self-start h-screen overflow-y-auto border border-[#d9d9d9] bg-white px-2 py-5">
+    <aside className="sticky top-0 self-start h-screen overflow-y-auto border border-ma-border-light bg-white px-2 py-5">
       <h2 className="text-2xl font-bold text-ma-text">Course Module</h2>
 
       <div className="mt-5 flex flex-col gap-3">
@@ -167,7 +167,7 @@ export function CourseModuleSidebar({
           return (
             <div
               key={mod.id}
-              className="border-b border-b-[#e5e7eb] last:border-b-0"
+              className="border-b border-b-border last:border-b-0"
             >
               <button
                 type="button"
@@ -178,7 +178,7 @@ export function CourseModuleSidebar({
                   <p className="text-sm font-semibold text-ma-text 2xl:text-base">
                     {weekLabel}
                   </p>
-                  <p className="mt-2 text-xs text-[#6b7280] 2xl:text-sm">
+                  <p className="mt-2 text-xs text-muted-foreground 2xl:text-sm">
                     {done}/{total} |{" "}
                     {modTopics.some((t) => t.duration)
                       ? formatDuration(
@@ -191,12 +191,12 @@ export function CourseModuleSidebar({
                   </p>
                 </div>
                 <ChevronDown
-                  className={`size-4 text-[#6b7280] transition-transform ${isOpen ? "rotate-180" : ""}`}
+                  className={`size-4 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`}
                 />
               </button>
 
               {isOpen && (
-                <div className="flex flex-col gap-1 border-t border-[#e5e7eb] py-2">
+                <div className="flex flex-col gap-1 border-t border-border py-2">
                   {modTopics.map((topic) => {
                     const isSelected = selectedTopicId === topic.id
                     return (
@@ -228,7 +228,7 @@ export function CourseModuleSidebar({
                             {topic.title}
                           </div>
                           <div className="flex items-center gap-2">
-                            <VideoIcon className="size-4 text-[#6B7280]" />
+                            <VideoIcon className="size-4 text-muted-foreground" />
                             <span className="text-xs text-primary">
                               {topic.duration
                                 ? formatDuration(topic.duration)

@@ -21,7 +21,7 @@ export function StatCard({
   href,
 }: StatCardProps) {
   const valueNode = (
-    <div className="font-semibold lg:text-4xl/[100%] 2xl:text-[40px]/[100%]">
+    <div className="font-semibold lg:text-4xl leading-none 2xl:text-[40px]/[100%]">
       {formatCompactValue(value, prefix)}
     </div>
   )
@@ -29,7 +29,7 @@ export function StatCard({
   return (
     <Card
       size="sm"
-      className="gap-0 rounded-[16px] border border-[#E5E7EB] py-4 shadow-none ring-0"
+      className="gap-0 rounded-[16px] border border-border py-4 shadow-none ring-0"
     >
       <CardContent className="px-4">
         <div className="flex items-start justify-between">

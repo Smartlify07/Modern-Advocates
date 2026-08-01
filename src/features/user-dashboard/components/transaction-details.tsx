@@ -25,7 +25,7 @@ export function TransactionDetails({
     <div className="flex w-full shrink-0 flex-col gap-6">
       {details.map((row) => (
         <div key={row.label} className="flex justify-between text-sm">
-          <span className="text-[#6b7280]">{row.label}</span>
+          <span className="text-muted-foreground">{row.label}</span>
           <span className="font-medium text-ma-text">{row.value}</span>
         </div>
       ))}

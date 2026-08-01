@@ -13,11 +13,11 @@ export function AboutHeroSection() {
     <section className="bg-white py-12.5 text-ma-text lg:py-25">
       <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="mx-auto max-w-200 text-center">
-          <p className="text-base leading-normal font-medium tracking-[10%] text-[#6b7280] uppercase">
+          <p className="text-base leading-normal font-medium tracking-[10%] text-muted-foreground uppercase">
             About us
           </p>
 
-          <h1 className="mt-7.5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold tracking-[-5%] text-balance text-primary sm:leading-[70px] lg:text-[60px]">
+          <h1 className="mt-7.5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold tracking-tight-xl text-balance text-primary sm:leading-[70px] lg:text-[60px]">
             This Organization Exists Now Because It Didn&apos;t When I Needed
             It.
           </h1>
@@ -39,7 +39,7 @@ export function AboutHeroSection() {
 
             <div className="flex w-36 flex-col items-start gap-0.5">
               <div className="flex w-full items-center gap-[9px]">
-                <div className="flex gap-0 text-[#ff9d00]" aria-hidden="true">
+                <div className="flex gap-0 text-ma-star" aria-hidden="true">
                   {Array.from({ length: 5 }).map((_, index) => (
                     <Star key={index} className="size-5 fill-current" />
                   ))}
@@ -56,7 +56,7 @@ export function AboutHeroSection() {
         </div>
 
         <div className="mt-22.5 grid gap-5 lg:grid-cols-2">
-          <div className="relative min-h-[424px] overflow-hidden rounded-[24px] bg-ma-bg sm:min-h-[550px] lg:min-h-[420px]">
+          <div className="relative min-h-[424px] overflow-hidden rounded-card-2 bg-ma-bg sm:min-h-[550px] lg:min-h-[420px]">
             <Image
               src="/figma-about/founder.png"
               alt="Melanie Reyes, founder of ModernAdvocates Inc."
@@ -67,7 +67,7 @@ export function AboutHeroSection() {
             />
           </div>
 
-          <article className="flex min-h-[550px] flex-col rounded-[24px] bg-[#f5f5f5] px-4 py-7.5 sm:p-[30px] lg:p-7">
+          <article className="flex min-h-[550px] flex-col rounded-card-2 bg-ma-surface-2 px-4 py-7.5 sm:p-[30px] lg:p-7">
             <div>
               <h2 className="text-[30px] leading-normal font-semibold text-ma-text sm:text-4xl sm:text-[32px]">
                 Melanie Reyes

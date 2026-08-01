@@ -37,8 +37,8 @@ export function ArchiveCourseDialog({
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center gap-4">
-          <div className="flex size-20 items-center justify-center rounded-full bg-[#A38524]/10">
-            <div className="flex size-10 items-center justify-center rounded-full bg-[#A38524]">
+          <div className="flex size-20 items-center justify-center rounded-full bg-ma-warning/10">
+            <div className="flex size-10 items-center justify-center rounded-full bg-ma-warning">
               {mode === "archive" ? (
                 <ArchiveIcon className="size-5 text-white" />
               ) : (
@@ -51,7 +51,7 @@ export function ArchiveCourseDialog({
               ? "Archive this course?"
               : "Unarchive this course?"}
           </p>
-          <p className="text-left align-middle text-sm tracking-[-1.5%] text-muted-foreground">
+          <p className="text-left align-middle text-sm tracking-tight-md text-muted-foreground">
             {mode === "archive"
               ? "This course will be archived and no longer visible to students. You can unarchive it anytime."
               : "This course will be restored and visible to students again."}
@@ -60,14 +60,14 @@ export function ArchiveCourseDialog({
         <DialogFooter className="-mx-7.5 border-t-0 bg-white px-7.5 pb-4 sm:justify-start">
           <Button
             variant="outline"
-            className="h-[53px] flex-1 rounded-button-medium px-6 py-4"
+            className="h-pill flex-1 rounded-button-medium px-6 py-4"
             onClick={() => onOpenChange(false)}
             disabled={isPending}
           >
             Cancel
           </Button>
           <Button
-            className="h-[53px] flex-1 rounded-button-medium bg-[#A38524] px-6 py-4 text-white hover:bg-[#A38524]/80"
+            className="h-pill flex-1 rounded-button-medium bg-ma-warning px-6 py-4 text-white hover:bg-ma-warning/80"
             onClick={() => {
               if (course && !isPending) onConfirm(course)
             }}

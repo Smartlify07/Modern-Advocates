@@ -122,7 +122,7 @@ export default function AdminCoursesPage() {
         </h1>
         <Button
           asChild
-          className="h-[44px] rounded-[8px] bg-ma-admin-primary px-4 py-2.5 text-white hover:bg-ma-admin-primary"
+          className="h-11 rounded-8 bg-ma-admin-primary px-4 py-2.5 text-white hover:bg-ma-admin-primary"
         >
           <Link href="/admin/courses/new">Create New Courses</Link>
         </Button>

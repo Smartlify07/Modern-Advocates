@@ -43,7 +43,7 @@ export function CheckoutContent() {
   if (!courseId) {
     return (
       <div className="mt-8 text-center">
-        <p className="text-lg text-[#6b7280]">No course selected.</p>
+        <p className="text-lg text-muted-foreground">No course selected.</p>
       </div>
     )
   }

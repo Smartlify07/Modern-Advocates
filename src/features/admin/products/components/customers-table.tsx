@@ -10,7 +10,7 @@ export function CustomersTable({ customers }: CustomersTableProps) {
     <div className="rounded-t-2xl">
       <Table>
         <TableHeader className="rounded-t-2xl">
-          <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
+          <TableRow className="rounded-t-2xl bg-ma-surface-2 hover:bg-ma-surface-2">
             <TableHead className="w-[280px]">Customer name</TableHead>
             <TableHead className="w-[320px]">Customer email</TableHead>
             <TableHead className="text-center">Courses Purchased</TableHead>
@@ -20,7 +20,7 @@ export function CustomersTable({ customers }: CustomersTableProps) {
         </TableHeader>
         <TableBody>
           {customers.map((c) => (
-            <TableRow className="hover:bg-[#F5F7FA]" key={c.id}>
+            <TableRow className="hover:bg-ma-bg" key={c.id}>
               <TableCell className="font-normal">{c.name}</TableCell>
               <TableCell className="text-muted-foreground">{c.email}</TableCell>
               <TableCell className="text-center">{c.courseCount}</TableCell>

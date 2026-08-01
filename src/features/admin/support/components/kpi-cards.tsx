@@ -14,9 +14,9 @@ const kpiData = [
   {
     label: "Total Tickets",
     value: "totalTickets" as const,
-    bg: "bg-[#E4E0F2] text-ma-admin-primary",
+    bg: "bg-ma-admin-primary/10 text-ma-admin-primary",
   },
-  { label: "Open", value: "open" as const, bg: "bg-[#E0E9F2] text-[#448AFF]" },
+  { label: "Open", value: "open" as const, bg: "bg-ma-info-bg text-ma-info" },
   {
     label: "Pending",
     value: "pending" as const,
@@ -25,7 +25,7 @@ const kpiData = [
   {
     label: "Resolved",
     value: "resolved" as const,
-    bg: "bg-[#E0F2E1] text-[#2E7D32]",
+    bg: "bg-ma-success-bg text-ma-success",
   },
 ]
 
@@ -44,7 +44,7 @@ export function KpiCards({
         <Card
           key={kpi.label}
           size="sm"
-          className="gap-0 rounded-[16px] border border-[#E5E7EB] py-4 shadow-none ring-0"
+          className="gap-0 rounded-[16px] border border-border py-4 shadow-none ring-0"
         >
           <CardContent className="px-4">
             <div className="flex items-start justify-between">
@@ -52,7 +52,7 @@ export function KpiCards({
                 <CardTitle className="text-base/[100%] font-normal text-muted-foreground">
                   {kpi.label}
                 </CardTitle>
-                <div className="mt-1 font-semibold lg:text-4xl/[100%] 2xl:text-[40px]/[100%]">
+                <div className="mt-1 font-semibold lg:text-4xl leading-none 2xl:text-[40px]/[100%]">
                   {isLoading ? (
                     <Skeleton className="h-9 w-16" />
                   ) : (

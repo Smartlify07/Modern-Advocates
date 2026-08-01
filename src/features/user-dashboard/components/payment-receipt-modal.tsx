@@ -21,7 +21,7 @@ export function PaymentReceiptModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="p-0 sm:max-w-[600px]" showCloseButton={false}>
-        <DialogHeader className="flex flex-row items-center justify-between border-b border-b-[#E9EAF0] px-7.5 py-4">
+        <DialogHeader className="flex flex-row items-center justify-between border-b border-b-border px-7.5 py-4">
           <DialogTitle className="font-sans text-base/[100%] font-medium text-ma-text">
             Receipt
           </DialogTitle>
@@ -30,7 +30,7 @@ export function PaymentReceiptModal({
               type="button"
               className="flex size-4.5 items-center justify-center rounded-full hover:bg-gray-100"
             >
-              <X className="size-4.5 text-[#6b7280]" />
+              <X className="size-4.5 text-muted-foreground" />
             </button>
           </DialogClose>
         </DialogHeader>
