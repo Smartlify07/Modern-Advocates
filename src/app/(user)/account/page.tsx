@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { Upload } from "lucide-react"
+import { Upload, X } from "lucide-react"
 import { toast } from "sonner"
 
 import { authClient } from "@/infrastructure/auth/client"
@@ -18,12 +18,17 @@ export default function AccountPage() {
   const [editedName, setEditedName] = useState<string | null>(null)
   const [pendingFile, setPendingFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [removeImage, setRemoveImage] = useState(false)
   const [saving, setSaving] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const displayImage = previewUrl ?? user?.image ?? null
+  const displayImage = removeImage
+    ? null
+    : previewUrl ?? user?.image ?? null
   const hasChanges =
-    (editedName !== null && editedName !== user?.name) || pendingFile !== null
+    (editedName !== null && editedName !== user?.name) ||
+    pendingFile !== null ||
+    (removeImage && !!user?.image)
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -37,6 +42,16 @@ export default function AccountPage() {
     if (previewUrl) URL.revokeObjectURL(previewUrl)
     setPendingFile(file)
     setPreviewUrl(URL.createObjectURL(file))
+    setRemoveImage(false)
+  }
+
+  const handleRemoveImage = () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl)
+      setPreviewUrl(null)
+    }
+    setPendingFile(null)
+    setRemoveImage(true)
   }
 
   const handleSave = async () => {
@@ -66,12 +81,13 @@ export default function AccountPage() {
 
       await authClient.updateUser({
         name: editedName ?? user?.name ?? undefined,
-        image: imageUrl,
+        image: removeImage ? null : imageUrl,
       })
 
       await refetchSession()
 
       setPendingFile(null)
+      setRemoveImage(false)
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl)
         setPreviewUrl(null)
@@ -121,6 +137,17 @@ export default function AccountPage() {
             className="size-20"
             fallbackClassName="text-4xl"
           />
+          {displayImage && (
+            <button
+              type="button"
+              onClick={handleRemoveImage}
+              disabled={saving}
+              aria-label="Remove photo"
+              className="absolute -bottom-1.5 -end-1.5 flex size-6 items-center justify-center rounded-full border border-input bg-white text-ma-text transition-colors hover:bg-muted disabled:opacity-50"
+            >
+              <X className="size-3.5" />
+            </button>
+          )}
         </div>
         <div>
           <button

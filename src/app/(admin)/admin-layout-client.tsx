@@ -1,6 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { authClient } from "@/infrastructure/auth/client"
 import { SidebarNavigation } from "@/features/platform/components/sidebar-navigation"
 import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar"
 import { TooltipProvider } from "@/shared/ui/tooltip"
@@ -10,18 +11,16 @@ import { BellIcon, SearchIcon, UserCircle2 } from "lucide-react"
 
 export default function AdminLayoutClient({
   children,
-  userName,
-  role,
 }: {
   children: React.ReactNode
-  userName: string
-  role: string | null | undefined
 }) {
   const router = useRouter()
+  const { data: session } = authClient.useSession()
+  const userName = session?.user?.name ?? ""
   return (
     <TooltipProvider>
       <SidebarProvider>
-        <SidebarNavigation role={role ?? undefined} />
+        <SidebarNavigation role={session?.user?.role ?? undefined} />
         <SidebarInset>
           <header className="border-b px-7.5 py-4">
             <div className="mx-auto flex shrink-0 items-center justify-between gap-2 lg:max-w-7xl 2xl:max-w-360">
