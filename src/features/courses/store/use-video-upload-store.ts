@@ -2,6 +2,7 @@ import { create } from "zustand"
 import { getCachedFile, removeCachedFile } from "@/features/videos/lib/file-cache"
 import { getVideoDuration } from "@/features/videos/lib/get-video-duration"
 import type { StorageUploadConfig } from "@/shared/lib/storage-upload"
+import { apiFetch } from "@/shared/lib/api-fetch"
 
 export type UploadStatus = "uploading" | "processing" | "completed" | "failed"
 
@@ -96,18 +97,13 @@ export const useVideoUploadStore = create<VideoUploadStore>((set, get) => ({
     const { courseId, moduleId, topicId, title } = task.retryMeta
 
     try {
-      const res = await fetch("/api/videos/sign-upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ courseId, moduleId, topicId, title, mimeType: file.type }),
-      })
-
-      if (!res.ok) {
-        const err = await res.json()
-        throw new Error(err.error ?? "Failed to get upload config")
-      }
-
-      const config: StorageUploadConfig = await res.json()
+      const config: StorageUploadConfig = await apiFetch<StorageUploadConfig>(
+        "/api/videos/sign-upload",
+        {
+          method: "POST",
+          body: { courseId, moduleId, topicId, title, mimeType: file.type },
+        },
+      )
       const newUploadId = config.videoId
 
       // Replace old task with new one using the fresh videoId
@@ -145,16 +141,10 @@ export const useVideoUploadStore = create<VideoUploadStore>((set, get) => ({
 
       const duration = await getVideoDuration(file)
 
-      const finalizeRes = await fetch(`/api/videos/${newUploadId}/finalize`, {
+      await apiFetch(`/api/videos/${newUploadId}/finalize`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ storageKey: config.storageKey, duration }),
+        body: { storageKey: config.storageKey, duration },
       })
-
-      if (!finalizeRes.ok) {
-        const err = await finalizeRes.json()
-        throw new Error(err.error ?? "Failed to finalize upload")
-      }
 
       get().completeTask(newUploadId, "completed")
       removeCachedFile(uploadId)

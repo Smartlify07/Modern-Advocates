@@ -11,6 +11,7 @@ import Image from "next/image"
 import { Button } from "@/shared/ui/button"
 import { Field, FieldError, FieldLabel } from "@/shared/ui/field"
 import { Input } from "@/shared/ui/input"
+import { apiFetch } from "@/shared/lib/api-fetch"
 
 const contactFormSchema = z.object({
   name: z.string().min(1, "Full name is required"),
@@ -63,24 +64,15 @@ export function ContactHeroSection({
   async function onSubmit(data: z.infer<typeof contactFormSchema>) {
     setSubmitting(true)
     try {
-      const res = await fetch("/api/contact", {
+      await apiFetch("/api/contact", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: data,
       })
-
-      const result = await res.json()
-
-      if (!res.ok) {
-        toast.error(result.error ?? "Failed to send message")
-        setSubmitting(false)
-        return
-      }
 
       toast.success("Your message has been sent successfully!")
       form.reset()
-    } catch {
-      toast.error("Something went wrong. Please try again.")
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Something went wrong. Please try again.")
     } finally {
       setSubmitting(false)
     }

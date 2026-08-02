@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import {
   buildCoursePayload,
   uploadThumbnail,
@@ -20,16 +21,10 @@ export function useCreateCourse() {
 
   return useMutation({
     mutationFn: async (payload: CreateCoursePayload): Promise<CourseResponse> => {
-      const res = await fetch("/api/courses", {
+      return apiFetch<CourseResponse>("/api/courses", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: payload,
       })
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}))
-        throw new Error(body.error ?? "Failed to create course")
-      }
-      return res.json()
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
@@ -48,16 +43,10 @@ export function useUpdateCourse() {
       courseId: string
       payload: UpdateCoursePayload
     }): Promise<CourseResponse> => {
-      const res = await fetch(`/api/courses/${courseId}`, {
+      return apiFetch<CourseResponse>(`/api/courses/${courseId}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: payload,
       })
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}))
-        throw new Error(body.error ?? "Failed to update course")
-      }
-      return res.json()
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["admin-courses"] })

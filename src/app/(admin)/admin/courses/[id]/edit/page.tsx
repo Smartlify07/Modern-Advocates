@@ -24,8 +24,9 @@ import {
   Loader2,
 } from "lucide-react"
 import type { Step } from "@/shared/ui/stepper"
-import type { CourseStatus } from "@/features/courses/types"
+import type { CourseStatus, CourseApiResponse } from "@/features/courses/types"
 import { Skeleton } from "@/shared/ui/skeleton"
+import { apiFetch } from "@/shared/lib/api-fetch"
 
 const wizardSteps: Step[] = [
   { title: "Basic Information", icon: Layers },
@@ -97,11 +98,7 @@ export default function EditCoursePage() {
 
   const { data: course, isLoading } = useQuery({
     queryKey: ["course", courseId],
-    queryFn: () =>
-      fetch(`/api/courses/${courseId}`).then((r) => {
-        if (!r.ok) throw new Error("Failed to fetch course")
-        return r.json()
-      }),
+    queryFn: () => apiFetch<CourseApiResponse>(`/api/courses/${courseId}`),
     enabled: !!courseId,
     refetchOnWindowFocus: false,
   })

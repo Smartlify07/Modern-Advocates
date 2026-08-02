@@ -10,6 +10,7 @@ import * as z from "zod"
 import { Field, FieldError, FieldLabel } from "@/shared/ui/field"
 import { Button } from "@/shared/ui/button"
 import { Input } from "@/shared/ui/input"
+import { apiFetch } from "@/shared/lib/api-fetch"
 
 const donationTypes = ["Fixed Donation", "Tier Donation", "Monthly Pay"] as const
 const donationAmounts = [100, 200, 1000]
@@ -50,28 +51,19 @@ export function DonationSupportSection() {
   async function onSubmit(data: z.infer<typeof donationFormSchema>) {
     setSubmitting(true)
     try {
-      const res = await fetch("/api/donations", {
+      const result = await apiFetch<{ url: string }>("/api/donations", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: {
           amount: data.amount,
           donorName: data.donorName,
           donorEmail: data.donorEmail,
           donationType: donationTypeMap[data.donationType] ?? "fixed",
-        }),
+        },
       })
 
-      const result = await res.json()
-
-      if (!res.ok) {
-        toast.error(result.error ?? "Failed to start donation")
-        setSubmitting(false)
-        return
-      }
-
       window.location.href = result.url
-    } catch {
-      toast.error("Something went wrong. Please try again.")
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Something went wrong. Please try again.")
       setSubmitting(false)
     }
   }

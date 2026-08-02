@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import { TeamTable } from "@/features/admin/team/components/team-table"
 import { TeamFilterBar } from "@/features/admin/team/components/team-filter-bar"
 import { AddMemberDialog } from "@/features/admin/team/components/add-member-dialog"
@@ -34,11 +35,7 @@ export default function AdminTeamsPage() {
 
   const cancelInviteMutation = useMutation({
     mutationFn: async ({ id, email }: { id: string; email: string }) => {
-      const r = await fetch(`/api/admin/team/${id}/cancel`, { method: "POST" })
-      if (!r.ok) {
-        const { error } = await r.json()
-        throw new Error(error ?? "Failed to cancel invitation")
-      }
+      await apiFetch(`/api/admin/team/${id}/cancel`, { method: "POST" })
       return { email }
     },
     onSuccess: (_data, variables) => {
@@ -63,10 +60,7 @@ export default function AdminTeamsPage() {
       if (typeFilter !== "all") params.set("role", typeFilter)
       params.set("page", String(page))
       params.set("pageSize", String(PAGE_SIZE))
-      return fetch(`/api/admin/team?${params}`).then((r) => {
-        if (!r.ok) throw new Error("Failed to fetch team members")
-        return r.json()
-      })
+      return apiFetch<ListTeamMembersResponse>(`/api/admin/team?${params}`)
     },
     refetchOnWindowFocus: false,
   })

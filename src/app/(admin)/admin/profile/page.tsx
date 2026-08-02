@@ -16,6 +16,7 @@ import {
 } from "@/shared/ui/field"
 import { Button } from "@/shared/ui/button"
 import { Skeleton } from "@/shared/ui/skeleton"
+import { apiFetch } from "@/shared/lib/api-fetch"
 
 const nameSchema = z.string().trim().min(1, "Name is required")
 
@@ -83,17 +84,10 @@ export default function AdminProfilePage() {
         const formData = new FormData()
         formData.append("file", pendingFile)
 
-        const res = await fetch("/api/user/avatar", {
+        const { url } = await apiFetch<{ url: string }>("/api/user/avatar", {
           method: "POST",
           body: formData,
         })
-
-        if (!res.ok) {
-          const err = await res.json()
-          throw new Error(err.error ?? "Upload failed")
-        }
-
-        const { url } = await res.json()
         imageUrl = url
       }
 

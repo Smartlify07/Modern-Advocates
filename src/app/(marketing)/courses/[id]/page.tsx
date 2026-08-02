@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 
 import { CourseDetailHeroSection } from "@/features/marketing/components/course-detail-hero-section"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import { CourseDetailContentSection } from "@/features/marketing/components/course-detail-content-section"
 import type { CourseApiResponse, CourseApiReview } from "@/features/courses/types"
 
@@ -34,12 +35,13 @@ async function fetchCourse(id: string): Promise<CourseApiResponse | null> {
   if (!origin) {
     throw new Error("NEXT_PUBLIC_APP_URL is not configured")
   }
-  const res = await fetch(`${origin}/api/courses/${id}`, {
-    cache: "no-store",
-  })
-
-  if (!res.ok) return null
-  return res.json()
+  try {
+    return await apiFetch<CourseApiResponse>(`${origin}/api/courses/${id}`, {
+      cache: "no-store",
+    })
+  } catch {
+    return null
+  }
 }
 
 export default async function CourseDetailPage({

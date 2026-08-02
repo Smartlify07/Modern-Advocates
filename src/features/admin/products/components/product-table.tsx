@@ -13,6 +13,7 @@ import {
 import { MoreHorizontalIcon, ArchiveIcon, ChartSpline } from "lucide-react"
 import { ArchiveCourseDialog } from "@/app/(admin)/admin/courses/_components/archive-course-dialog"
 import type { Product } from "@/features/admin/products/types"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import { getStatusColor } from "@/shared/utils"
 
 interface ProductTableProps { products: Product[] }
@@ -34,8 +35,7 @@ export function ProductTable({ products }: ProductTableProps) {
   const archiveMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const endpoint = status === "archived" ? "unarchive" : "archive"
-      const r = await fetch(`/api/courses/${id}/${endpoint}`, { method: "PATCH" })
-      if (!r.ok) throw new Error(`Failed to ${endpoint} product`)
+      await apiFetch(`/api/courses/${id}/${endpoint}`, { method: "PATCH" })
     },
     onSuccess: (_data, vars) => {
       queryClient.invalidateQueries({ queryKey: ["admin-products"] })

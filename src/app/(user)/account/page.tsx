@@ -10,6 +10,7 @@ import { Input } from "@/shared/ui/input"
 import { Label } from "@/shared/ui/label"
 import { Button } from "@/shared/ui/button"
 import { Skeleton } from "@/shared/ui/skeleton"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import { useAccountSession } from "./_context"
 
 export default function AccountPage() {
@@ -65,17 +66,10 @@ export default function AccountPage() {
         const formData = new FormData()
         formData.append("file", pendingFile)
 
-        const res = await fetch("/api/user/avatar", {
+        const { url } = await apiFetch<{ url: string }>("/api/user/avatar", {
           method: "POST",
           body: formData,
         })
-
-        if (!res.ok) {
-          const err = await res.json()
-          throw new Error(err.error ?? "Upload failed")
-        }
-
-        const { url } = await res.json()
         imageUrl = url
       }
 

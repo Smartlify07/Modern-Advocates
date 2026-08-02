@@ -1,6 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import { useParams } from "next/navigation"
 import { PageHeader } from "@/features/admin/products/components/page-header"
 import { SalesSummaryCards } from "@/features/admin/products/components/sales-summary-cards"
@@ -14,6 +15,13 @@ interface SaleDetailItem {
   amount: number | string
 }
 
+interface SaleDetailResponse {
+  product: { id: string; title: string }
+  sales: SaleDetailItem[]
+  totalSales: number
+  totalRevenue: number
+}
+
 export default function SaleDetailPage() {
   const params = useParams()
   const productId = params.productId as string
@@ -21,9 +29,11 @@ export default function SaleDetailPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin-sale-detail", productId],
     queryFn: async () => {
-      const r = await fetch(`/api/admin/sales/${productId}`)
-      if (!r.ok) return null
-      return r.json()
+      try {
+        return await apiFetch<SaleDetailResponse>(`/api/admin/sales/${productId}`)
+      } catch {
+        return null
+      }
     },
     enabled: !!productId,
   })
@@ -50,7 +60,7 @@ export default function SaleDetailPage() {
     )
   }
 
-  const sales = (data.sales as SaleDetailItem[]).map((s) => ({
+  const sales = data.sales.map((s) => ({
     id: s.id,
     productId,
     product: data.product.title,

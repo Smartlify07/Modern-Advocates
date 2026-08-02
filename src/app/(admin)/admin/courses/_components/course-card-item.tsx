@@ -19,6 +19,7 @@ import {
   Trash2Icon,
 } from "lucide-react"
 import { CourseCard } from "@/features/courses/components/course-card"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import { ArchiveCourseDialog } from "./archive-course-dialog"
 import { DeleteCourseDialog } from "./delete-course-dialog"
 import type { Course } from "./types"
@@ -33,12 +34,10 @@ export default function CourseCardItem({ course }: { course: Course }) {
   const queryClient = useQueryClient()
 
   const archiveMutation = useMutation({
-    mutationFn: async () => {
-      const res = await fetch(`/api/courses/${course.id}/archive`, {
+    mutationFn: () =>
+      apiFetch(`/api/courses/${course.id}/archive`, {
         method: "PATCH",
-      })
-      if (!res.ok) throw new Error("Failed to archive course")
-    },
+      }),
     onSuccess: () => {
       toast.success("Course archived")
       queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
@@ -53,12 +52,10 @@ export default function CourseCardItem({ course }: { course: Course }) {
   })
 
   const unarchiveMutation = useMutation({
-    mutationFn: async () => {
-      const res = await fetch(`/api/courses/${course.id}/unarchive`, {
+    mutationFn: () =>
+      apiFetch(`/api/courses/${course.id}/unarchive`, {
         method: "PATCH",
-      })
-      if (!res.ok) throw new Error("Failed to unarchive course")
-    },
+      }),
     onSuccess: () => {
       toast.success("Course unarchived")
       queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
@@ -73,15 +70,10 @@ export default function CourseCardItem({ course }: { course: Course }) {
   })
 
   const deleteMutation = useMutation({
-    mutationFn: async () => {
-      const res = await fetch(`/api/courses/${course.id}`, {
+    mutationFn: () =>
+      apiFetch(`/api/courses/${course.id}`, {
         method: "DELETE",
-      })
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}))
-        throw new Error(body.error ?? "Failed to delete course")
-      }
-    },
+      }),
     onSuccess: () => {
       toast.success("Course deleted")
       queryClient.invalidateQueries({ queryKey: ["admin-courses"] })

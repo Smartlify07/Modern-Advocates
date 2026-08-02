@@ -3,6 +3,7 @@
 import { useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Skeleton } from "@/shared/ui/skeleton"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import { UserAvatar } from "@/shared/ui/user-avatar"
 import {
   CourseCard,
@@ -32,11 +33,7 @@ export default function UserDashboardPage() {
     refetch,
   } = useQuery<Course[]>({
     queryKey: ["user-courses"],
-    queryFn: async () => {
-      const res = await fetch("/api/courses/featured")
-      if (!res.ok) throw new Error("Failed to fetch courses")
-      return res.json()
-    },
+    queryFn: () => apiFetch<Course[]>("/api/courses/featured"),
     refetchOnWindowFocus: false,
   })
 
@@ -48,11 +45,7 @@ export default function UserDashboardPage() {
     refetch: refetchEnrollments,
   } = useQuery<Course[]>({
     queryKey: ["user-enrollments"],
-    queryFn: async () => {
-      const res = await fetch("/api/enrollments")
-      if (!res.ok) throw new Error("Failed to fetch enrollments")
-      return res.json()
-    },
+    queryFn: () => apiFetch<Course[]>("/api/enrollments"),
     refetchOnWindowFocus: false,
   })
 
