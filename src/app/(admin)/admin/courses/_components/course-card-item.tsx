@@ -20,6 +20,7 @@ import {
 } from "lucide-react"
 import { CourseCard } from "@/features/courses/components/course-card"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { ArchiveCourseDialog } from "./archive-course-dialog"
 import { DeleteCourseDialog } from "./delete-course-dialog"
 import type { Course } from "./types"
@@ -40,7 +41,7 @@ export default function CourseCardItem({ course }: { course: Course }) {
       }),
     onSuccess: () => {
       toast.success("Course archived")
-      queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.courses })
     },
     onError: (err) => {
       console.error(err)
@@ -58,7 +59,7 @@ export default function CourseCardItem({ course }: { course: Course }) {
       }),
     onSuccess: () => {
       toast.success("Course unarchived")
-      queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.courses })
     },
     onError: (err) => {
       console.error(err)
@@ -76,7 +77,7 @@ export default function CourseCardItem({ course }: { course: Course }) {
       }),
     onSuccess: () => {
       toast.success("Course deleted")
-      queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.courses })
     },
     onError: (err) => {
       console.error(err)

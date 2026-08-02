@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { PageHeader } from "@/features/admin/products/components/page-header"
 import { SearchExportRow } from "@/features/admin/products/components/search-export-row"
 import { SalesSummaryCards } from "@/features/admin/products/components/sales-summary-cards"
@@ -18,7 +19,7 @@ export default function AllSalesPage() {
   const [page, setPage] = useState(1)
 
   const { data, isLoading } = useQuery<{ sales: SaleTransaction[]; summary: SalesSummary }>({
-    queryKey: ["admin-sales"],
+    queryKey: queryKeys.admin.sales,
     queryFn: () => apiFetch<{ sales: SaleTransaction[]; summary: SalesSummary }>("/api/admin/sales?period=all"),
   })
 

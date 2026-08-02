@@ -27,6 +27,7 @@ import type { Step } from "@/shared/ui/stepper"
 import type { CourseStatus, CourseApiResponse } from "@/features/courses/types"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 
 const wizardSteps: Step[] = [
   { title: "Basic Information", icon: Layers },
@@ -97,10 +98,9 @@ export default function EditCoursePage() {
   const initialized = useRef(false)
 
   const { data: course, isLoading } = useQuery({
-    queryKey: ["course", courseId],
+    queryKey: queryKeys.course.detail(courseId),
     queryFn: () => apiFetch<CourseApiResponse>(`/api/courses/${courseId}`),
     enabled: !!courseId,
-    refetchOnWindowFocus: false,
   })
 
   const courseStatus = course?.status as CourseStatus | undefined

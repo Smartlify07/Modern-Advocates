@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { Skeleton } from "@/shared/ui/skeleton"
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
@@ -45,9 +46,8 @@ export default function AdminDonationsPage() {
   const [page, setPage] = useState(1)
 
   const { data: donations = [], isLoading } = useQuery<Donation[]>({
-    queryKey: ["admin-donations"],
+    queryKey: queryKeys.admin.donations,
     queryFn: () => apiFetch<Donation[]>("/api/admin/donations"),
-    refetchOnWindowFocus: false,
   })
 
   const filtered = useMemo(() => {

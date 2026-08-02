@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
 import { Button } from "@/shared/ui/button"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { PlusIcon, UploadCloudIcon, XIcon } from "lucide-react"
 import { usePendingUploads } from "@/features/courses/hooks/use-pending-uploads"
 import CoursesToolbar from "./_components/courses-toolbar"
@@ -98,9 +99,8 @@ export default function AdminCoursesPage() {
     error,
     refetch,
   } = useQuery<Course[]>({
-    queryKey: ["admin-courses"],
+    queryKey: queryKeys.admin.courses,
     queryFn: () => apiFetch<Course[]>("/api/courses"),
-    refetchOnWindowFocus: false,
   })
 
   const filtered = useMemo(

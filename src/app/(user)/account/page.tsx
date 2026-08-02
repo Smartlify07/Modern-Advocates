@@ -11,10 +11,10 @@ import { Label } from "@/shared/ui/label"
 import { Button } from "@/shared/ui/button"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { apiFetch } from "@/shared/lib/api-fetch"
-import { useAccountSession } from "./_context"
+import { useSession } from "@/shared/hooks/use-session"
 
 export default function AccountPage() {
-  const { user, isPending, refetchSession } = useAccountSession()
+  const { user, isPending, refetch } = useSession()
 
   const [editedName, setEditedName] = useState<string | null>(null)
   const [pendingFile, setPendingFile] = useState<File | null>(null)
@@ -78,7 +78,7 @@ export default function AccountPage() {
         image: removeImage ? null : imageUrl,
       })
 
-      await refetchSession()
+      await refetch()
 
       setPendingFile(null)
       setRemoveImage(false)

@@ -9,7 +9,8 @@ import {
   CourseCard,
   type Course,
 } from "@/features/courses/components/course-card"
-import { authClient } from "@/infrastructure/auth/client"
+import { useSession } from "@/shared/hooks/use-session"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { cn } from "@/shared/utils"
 import { Button } from "@/shared/ui/button"
 import {
@@ -20,7 +21,7 @@ import {
 } from "@/shared/ui/error-state"
 
 export default function UserDashboardPage() {
-  const { data: session } = authClient.useSession()
+  const { data: session } = useSession()
   const user = session?.user
 
   const firstName = user?.name?.split(" ")[0] ?? "User"
@@ -32,9 +33,8 @@ export default function UserDashboardPage() {
     error: coursesErrorObj,
     refetch,
   } = useQuery<Course[]>({
-    queryKey: ["user-courses"],
+    queryKey: queryKeys.userCourses,
     queryFn: () => apiFetch<Course[]>("/api/courses/featured"),
-    refetchOnWindowFocus: false,
   })
 
   const {
@@ -44,9 +44,8 @@ export default function UserDashboardPage() {
     error: enrollmentsErrorObj,
     refetch: refetchEnrollments,
   } = useQuery<Course[]>({
-    queryKey: ["user-enrollments"],
+    queryKey: queryKeys.userEnrollments,
     queryFn: () => apiFetch<Course[]>("/api/enrollments"),
-    refetchOnWindowFocus: false,
   })
 
   const isLoading = coursesLoading || enrollmentsLoading

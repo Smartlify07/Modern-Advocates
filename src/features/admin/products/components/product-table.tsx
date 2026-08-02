@@ -15,6 +15,7 @@ import { ArchiveCourseDialog } from "@/app/(admin)/admin/courses/_components/arc
 import type { Product } from "@/features/admin/products/types"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { getStatusColor } from "@/shared/utils"
+import { queryKeys } from "@/shared/lib/query-keys"
 
 interface ProductTableProps { products: Product[] }
 
@@ -38,7 +39,7 @@ export function ProductTable({ products }: ProductTableProps) {
       await apiFetch(`/api/courses/${id}/${endpoint}`, { method: "PATCH" })
     },
     onSuccess: (_data, vars) => {
-      queryClient.invalidateQueries({ queryKey: ["admin-products"] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.products })
       toast.success(vars.status === "archived" ? "Product unarchived" : "Product archived")
     },
     onError: (err: Error) => toast.error(err.message),

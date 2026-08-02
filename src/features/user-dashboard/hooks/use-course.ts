@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import type { OrderSummaryCourseData } from "@/features/user-dashboard/types/checkout"
 
 export function useCourse(courseId: string | null) {
   return useQuery<OrderSummaryCourseData>({
-    queryKey: ["course-summary", courseId],
+    queryKey: queryKeys.courseSummary(courseId),
     queryFn: async () => {
       const c = await apiFetch<{
         title: string

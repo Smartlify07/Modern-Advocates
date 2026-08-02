@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { toast } from "sonner"
 import {
   Dialog,
@@ -33,7 +34,7 @@ export function AddMemberDialog({ open, onOpenChange }: AddMemberDialogProps) {
         body: { email: email.trim(), role },
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-team"] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.team.all })
       onOpenChange(false)
       setEmail("")
       setRole("Editor")

@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import {
   CourseCard,
   type Course,
@@ -22,9 +23,8 @@ export default function MyLearningPage() {
     isError,
     error,
   } = useQuery<Course[]>({
-    queryKey: ["my-learning"],
+    queryKey: queryKeys.myLearning,
     queryFn: () => apiFetch<Course[]>("/api/enrollments"),
-    refetchOnWindowFocus: false,
   })
 
   if (isLoading) {

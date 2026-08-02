@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import {
   buildCoursePayload,
   uploadThumbnail,
@@ -27,7 +28,7 @@ export function useCreateCourse() {
       })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.courses })
     },
   })
 }
@@ -49,8 +50,8 @@ export function useUpdateCourse() {
       })
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
-      queryClient.invalidateQueries({ queryKey: ["course", variables.courseId] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.courses })
+      queryClient.invalidateQueries({ queryKey: queryKeys.course.detail(variables.courseId) })
     },
   })
 }

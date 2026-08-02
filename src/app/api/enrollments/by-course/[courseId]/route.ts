@@ -1,18 +1,17 @@
-import { NextResponse } from "next/server"
+import { NextResponse, type NextRequest } from "next/server"
 import { eq, and } from "drizzle-orm"
 
 import { db } from "@/infrastructure/database/client"
 import { enrollments, topicCompletions } from "@/infrastructure/database/schema/course"
 import { requireSession } from "@/infrastructure/auth/helpers"
-import { UnauthorizedError } from "@/infrastructure/auth/errors"
 import { isValidUuid } from "@/shared/utils"
-import * as Sentry from "@sentry/nextjs"
+import { apiHandler } from "@/shared/lib/api-handler"
 
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ courseId: string }> },
-) {
-  try {
+export const GET = apiHandler(
+  async (
+    _request: NextRequest,
+    { params }: { params: Promise<{ courseId: string }> },
+  ) => {
     const { user: currentUser } = await requireSession()
     const { courseId } = await params
 
@@ -43,11 +42,5 @@ export async function GET(
     const completedTopicIds = rows.map((r) => r.topicId)
 
     return NextResponse.json({ ...enrollment, completedTopicIds })
-  } catch (error) {
-    if (error instanceof UnauthorizedError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
-    }
-    Sentry.captureException(error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
-  }
-}
+  },
+)

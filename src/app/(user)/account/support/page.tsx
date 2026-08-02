@@ -6,8 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import * as z from "zod"
 
-import { authClient } from "@/infrastructure/auth/client"
-import { useAccountSession } from "../_context"
+import { useSession } from "@/shared/hooks/use-session"
 import { Button } from "@/shared/ui/button"
 import { Field, FieldError, FieldLabel } from "@/shared/ui/field"
 import { Input } from "@/shared/ui/input"
@@ -21,7 +20,7 @@ const contactFormSchema = z.object({
 })
 
 export default function AccountSupportPage() {
-  const { user, isPending } = useAccountSession()
+  const { user } = useSession()
 
   const form = useForm<z.infer<typeof contactFormSchema>>({
     resolver: zodResolver(contactFormSchema),

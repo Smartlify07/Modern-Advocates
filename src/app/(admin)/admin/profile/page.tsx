@@ -5,6 +5,7 @@ import { Upload, X } from "lucide-react"
 import { toast } from "sonner"
 import * as z from "zod"
 
+import { useSession } from "@/shared/hooks/use-session"
 import { authClient } from "@/infrastructure/auth/client"
 import { UserAvatar } from "@/shared/ui/user-avatar"
 import { Input } from "@/shared/ui/input"
@@ -21,7 +22,7 @@ import { apiFetch } from "@/shared/lib/api-fetch"
 const nameSchema = z.string().trim().min(1, "Name is required")
 
 export default function AdminProfilePage() {
-  const { data: session, isPending, refetch } = authClient.useSession()
+  const { data: session, isPending, refetch } = useSession()
   const user = session?.user
 
   const [editedName, setEditedName] = useState<string | null>(null)

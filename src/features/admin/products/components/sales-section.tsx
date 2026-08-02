@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { Card, CardContent } from "@/shared/ui/card"
 import { DateFilter } from "./date-filter"
@@ -40,7 +41,7 @@ export function SalesSection() {
   const period = periodFromDateOption(selectedDate)
 
   const { data: chartData = [], isLoading: chartLoading } = useQuery<ChartDataPoint[]>({
-    queryKey: ["admin-sales-stats", period],
+    queryKey: queryKeys.admin.salesStats(period),
     queryFn: () => apiFetch<ChartDataPoint[]>(`/api/admin/sales/stats?period=${period}`),
   })
 

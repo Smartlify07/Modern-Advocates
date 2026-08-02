@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { toast } from "sonner"
 import {
   Dialog,
@@ -47,7 +48,7 @@ export function EditPermissionDialog({
         body: { role },
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-team"] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.team.all })
       handleOpenChange(false)
       toast.success("Role updated")
     },
@@ -62,7 +63,7 @@ export function EditPermissionDialog({
         method: "DELETE",
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-team"] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.team.all })
       handleOpenChange(false)
       toast.success(`You've removed ${member!.name} from your team`)
     },

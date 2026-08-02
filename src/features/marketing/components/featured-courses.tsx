@@ -7,6 +7,7 @@ import { ArrowRight, Clock, Star } from "lucide-react"
 import { Button } from "@/shared/ui/button"
 import { Card, CardContent, CardTitle } from "@/shared/ui/card"
 import { formatDuration } from "@/shared/utils"
+import { queryKeys } from "@/shared/lib/query-keys"
 import Link from "next/link"
 
 type Course = {
@@ -38,9 +39,8 @@ function formatLevel(level: string) {
 
 export function FeaturedCourses() {
   const { data: courses, isLoading } = useQuery<Course[]>({
-    queryKey: ["featured-courses"],
+    queryKey: queryKeys.featuredCourses,
     queryFn: () => apiFetch<Course[]>("/api/courses/featured"),
-    refetchOnWindowFocus: false,
   })
 
   return (

@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { format } from "date-fns"
 import { CreditCardIcon } from "lucide-react"
 import { formatCurrency } from "@/shared/utils"
@@ -28,9 +29,8 @@ const statusStyles: Record<string, string> = {
 
 export default function AdminTransactionsPage() {
   const { data: transactions = [], isLoading } = useQuery<Transaction[]>({
-    queryKey: ["admin-transactions"],
+    queryKey: queryKeys.admin.transactions,
     queryFn: () => apiFetch<Transaction[]>("/api/admin/transactions"),
-    refetchOnWindowFocus: false,
   })
 
   return (

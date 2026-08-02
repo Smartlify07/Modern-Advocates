@@ -5,7 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { apiFetch } from "@/shared/lib/api-fetch"
-import { authClient } from "@/infrastructure/auth/client"
+import { useSession } from "@/shared/hooks/use-session"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { useOtpAuth } from "./use-otp-auth"
 import type { ValidateResult, AcceptStep } from "./types"
 import { InviteLoading } from "./invite-loading"
@@ -32,7 +33,7 @@ export default function InviteAcceptContent() {
   const otp = useOtpAuth()
 
   const validateQuery = useQuery({
-    queryKey: ["invite-validate", token],
+    queryKey: queryKeys.inviteValidate(token),
     queryFn: () =>
       apiFetch<ValidateResult>(
         `/api/admin/team/invite/validate?token=${encodeURIComponent(token!.trim())}`
@@ -41,7 +42,7 @@ export default function InviteAcceptContent() {
     retry: false,
   })
 
-  const { data: session } = authClient.useSession()
+  const { data: session } = useSession()
 
   useEffect(() => {
     if (!token?.trim()) {

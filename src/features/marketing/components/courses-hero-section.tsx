@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { Skeleton } from "@/shared/ui/skeleton"
 import {
   CourseCard,
@@ -10,9 +11,8 @@ import {
 
 export function CoursesHeroSection() {
   const { data: courses, isLoading } = useQuery<Course[]>({
-    queryKey: ["public-courses"],
+    queryKey: queryKeys.publicCourses,
     queryFn: () => apiFetch<Course[]>(`/api/courses/featured`),
-    refetchOnWindowFocus: false,
   })
 
   return (

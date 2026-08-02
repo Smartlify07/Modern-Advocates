@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { StatCard } from "@/features/admin/components/stat-card"
 import { ShoppingBag, TrendingUp, Users } from "lucide-react"
 import type { Customer } from "@/features/admin/products/types"
@@ -12,7 +13,7 @@ export function KpiSection({
   totalSales: number
 }) {
   const { data: customers = [] } = useQuery<Customer[]>({
-    queryKey: ["admin-customers"],
+    queryKey: queryKeys.admin.customers,
     queryFn: () => apiFetch<Customer[]>("/api/admin/customers"),
   })
 

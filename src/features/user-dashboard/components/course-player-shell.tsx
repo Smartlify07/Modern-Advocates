@@ -11,6 +11,7 @@ import {
 } from "@/shared/ui/error-state"
 import { CoursePlayerContent } from "@/features/user-dashboard/components/course-player-content"
 import { CourseModuleSidebar } from "@/features/user-dashboard/components/course-module-sidebar"
+import { queryKeys } from "@/shared/lib/query-keys"
 import type { CourseApiResponse } from "@/features/courses/types"
 
 function extractText(input: unknown): string {
@@ -55,7 +56,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
     isError,
     error,
   } = useQuery({
-    queryKey: ["course", courseId],
+    queryKey: queryKeys.course.detail(courseId),
     queryFn: async () => {
       let json: CourseApiResponse
       try {

@@ -10,7 +10,8 @@ import { AddMemberDialog } from "@/features/admin/team/components/add-member-dia
 import { EditPermissionDialog } from "@/features/admin/team/components/edit-permission-dialog"
 import { PaginationBar } from "@/features/admin/team/components/pagination-bar"
 import type { TeamMember } from "@/features/admin/team/types"
-import { authClient } from "@/infrastructure/auth/client"
+import { useSession } from "@/shared/hooks/use-session"
+import { queryKeys } from "@/shared/lib/query-keys"
 
 const PAGE_SIZE = 10
 
@@ -22,7 +23,7 @@ interface ListTeamMembersResponse {
 }
 
 export default function AdminTeamsPage() {
-  const { data: session, isPending: sessionPending } = authClient.useSession()
+  const { data: session, isPending: sessionPending } = useSession()
   const role = session?.user?.role
   const [search, setSearch] = useState("")
   const [typeFilter, setTypeFilter] = useState("all")
@@ -40,7 +41,7 @@ export default function AdminTeamsPage() {
     },
     onSuccess: (_data, variables) => {
       setPage(1)
-      queryClient.invalidateQueries({ queryKey: ["admin-team"] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.team.all })
       toast.success(`Invitation for ${variables.email} has been cancelled`)
     },
     onError: (err) => {
@@ -53,7 +54,7 @@ export default function AdminTeamsPage() {
   }, [cancelInviteMutation])
 
   const { data, isLoading } = useQuery<ListTeamMembersResponse>({
-    queryKey: ["admin-team", search, typeFilter, page],
+    queryKey: queryKeys.admin.team.list(search, typeFilter, page),
     queryFn: () => {
       const params = new URLSearchParams()
       if (search) params.set("search", search)
@@ -62,7 +63,6 @@ export default function AdminTeamsPage() {
       params.set("pageSize", String(PAGE_SIZE))
       return apiFetch<ListTeamMembersResponse>(`/api/admin/team?${params}`)
     },
-    refetchOnWindowFocus: false,
   })
 
   const handleSearchChange = useCallback((v: string) => {

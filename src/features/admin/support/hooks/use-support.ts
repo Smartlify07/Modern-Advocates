@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import type { ListSupportTicketsResult } from "@/features/admin/support/services/support-service"
 
 export function useSupportTickets(
@@ -15,7 +16,7 @@ export function useSupportTickets(
   if (params.pageSize) queryString.set("pageSize", String(params.pageSize))
 
   return useQuery<ListSupportTicketsResult>({
-    queryKey: ["admin-support", params],
+    queryKey: queryKeys.admin.support.list(params),
     queryFn: () => apiFetch<ListSupportTicketsResult>(`/api/admin/support?${queryString.toString()}`),
     staleTime: 5 * 60 * 1000,
   })
@@ -29,7 +30,7 @@ export function useUpdateTicketStatus() {
         method: "PATCH",
         body: { status },
       }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-support"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.admin.support.all }),
     onError: (err) => {
       console.error(err)
       toast.error(err instanceof Error ? err.message : "Failed to update ticket status")
@@ -44,7 +45,7 @@ export function useDeleteTicket() {
       apiFetch(`/api/admin/support/${id}`, {
         method: "DELETE",
       }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-support"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.admin.support.all }),
     onError: (err) => {
       console.error(err)
       toast.error(err instanceof Error ? err.message : "Failed to delete ticket")

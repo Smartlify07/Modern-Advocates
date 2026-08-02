@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import type { User, UsersResponse } from "@/features/admin/users/types"
 
 interface UseUsersParams {
@@ -19,7 +20,7 @@ export function useUsers({ search, status, page = 1, pageSize = 10 }: UseUsersPa
   params.set("pageSize", String(pageSize))
 
   return useQuery<UsersResponse>({
-    queryKey: ["admin-users", { search, status, page, pageSize }],
+    queryKey: queryKeys.admin.users.list({ search, status, page, pageSize }),
     queryFn: () => apiFetch<UsersResponse>(`/api/admin/users?${params}`),
   })
 }
@@ -32,7 +33,7 @@ export function useCreateUser() {
         method: "POST",
         body: data,
       }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.admin.users.all }),
   })
 }
 
@@ -41,7 +42,7 @@ export function useSuspendUser() {
   return useMutation({
     mutationFn: (userId: string) =>
       apiFetch(`/api/admin/users/${userId}/suspend`, { method: "PATCH" }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.admin.users.all }),
   })
 }
 
@@ -50,7 +51,7 @@ export function useActivateUser() {
   return useMutation({
     mutationFn: (userId: string) =>
       apiFetch(`/api/admin/users/${userId}/activate`, { method: "PATCH" }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.admin.users.all }),
   })
 }
 
@@ -59,6 +60,6 @@ export function useDeleteUser() {
   return useMutation({
     mutationFn: (userId: string) =>
       apiFetch(`/api/admin/users/${userId}`, { method: "DELETE" }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.admin.users.all }),
   })
 }

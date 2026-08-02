@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { useParams } from "next/navigation"
 import { PageHeader } from "@/features/admin/products/components/page-header"
 import { SalesSummaryCards } from "@/features/admin/products/components/sales-summary-cards"
@@ -27,7 +28,7 @@ export default function SaleDetailPage() {
   const productId = params.productId as string
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-sale-detail", productId],
+    queryKey: queryKeys.admin.saleDetail(productId),
     queryFn: async () => {
       try {
         return await apiFetch<SaleDetailResponse>(`/api/admin/sales/${productId}`)

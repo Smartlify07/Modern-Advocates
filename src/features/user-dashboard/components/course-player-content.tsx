@@ -8,7 +8,8 @@ import { TutorCard } from "@/features/marketing/components/tutor-card"
 import { ReviewCard } from "@/features/marketing/components/review-card"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { apiFetch } from "@/shared/lib/api-fetch"
-import { authClient } from "@/infrastructure/auth/client"
+import { useSession } from "@/shared/hooks/use-session"
+import { queryKeys } from "@/shared/lib/query-keys"
 
 type Topic = {
   id: string
@@ -63,7 +64,7 @@ export function CoursePlayerContent({
   const searchParams = useSearchParams()
   const router = useRouter()
   const queryClient = useQueryClient()
-  const { data: session } = authClient.useSession()
+  const { data: session } = useSession()
   const myReviews = course.reviews.filter(
     (r) => r.studentId === session?.user?.id
   )
@@ -74,7 +75,7 @@ export function CoursePlayerContent({
   const selectedVideoId = selectedTopic?.videoId ?? null
 
   const { data: video, isPending: videoPending } = useQuery({
-    queryKey: ["topic-video", selectedVideoId],
+    queryKey: queryKeys.topicVideo(selectedVideoId),
     queryFn: async () => {
       if (!selectedVideoId) return null
       return apiFetch<{
@@ -111,7 +112,7 @@ export function CoursePlayerContent({
   })()
 
   const { data: enrollmentData } = useQuery({
-    queryKey: ["enrollment-progress", course.id],
+    queryKey: queryKeys.enrollment.progress(course.id),
     queryFn: () =>
       apiFetch<{
         id: string
@@ -143,7 +144,7 @@ export function CoursePlayerContent({
       )
     } finally {
       queryClient.invalidateQueries({
-        queryKey: ["enrollment-progress", course.id],
+        queryKey: queryKeys.enrollment.progress(course.id),
       })
     }
   }, [selectedTopicId, course.id, enrollmentData?.id, queryClient])
@@ -178,7 +179,7 @@ export function CoursePlayerContent({
       const enrollmentData = queryClient.getQueryData<{
         id: string
         completedTopicIds: string[]
-      }>(["enrollment-progress", course.id])
+      }>(queryKeys.enrollment.progress(course.id))
       if (!enrollmentData) return
 
       if (!enrollmentData.completedTopicIds.includes(selectedTopicId)) {
@@ -189,7 +190,7 @@ export function CoursePlayerContent({
       }
 
       queryClient.invalidateQueries({
-        queryKey: ["enrollment-progress", course.id],
+        queryKey: queryKeys.enrollment.progress(course.id),
       })
     },
     [video?.duration, videoIdRef, selectedTopicId, course.id, queryClient]
