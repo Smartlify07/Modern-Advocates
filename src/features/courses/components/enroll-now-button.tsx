@@ -4,6 +4,7 @@ import Link from "next/link"
 import { ArrowRight, Loader2 } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { Button } from "@/shared/ui/button"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import { authClient } from "@/infrastructure/auth/client"
 
 export function EnrollNowButton({
@@ -20,11 +21,13 @@ export function EnrollNowButton({
     enrolled: boolean
   }>({
     queryKey: ["enrollment-check", courseId],
-    queryFn: () =>
-      fetch(`/api/enrollments/check/${courseId}`).then((r) => {
-        if (!r.ok) return { enrolled: false }
-        return r.json()
-      }),
+    queryFn: async () => {
+      try {
+        return await apiFetch<{ enrolled: boolean }>(`/api/enrollments/check/${courseId}`)
+      } catch {
+        return { enrolled: false }
+      }
+    },
     enabled,
   })
 

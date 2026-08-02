@@ -1,10 +1,12 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import { ArrowRight, Clock, Star } from "lucide-react"
 
 import { Button } from "@/shared/ui/button"
 import { Card, CardContent, CardTitle } from "@/shared/ui/card"
+import { formatDuration } from "@/shared/utils"
 import Link from "next/link"
 
 type Course = {
@@ -30,15 +32,6 @@ const gradients = [
   "from-indigo-500/90 to-purple-600/90",
 ]
 
-function formatDuration(minutes: number | null) {
-  if (!minutes) return ""
-  const h = Math.floor(minutes / 60)
-  const m = minutes % 60
-  if (h && m) return `${h}h ${m}m`
-  if (h) return `${h}h`
-  return `${m}m`
-}
-
 function formatLevel(level: string) {
   return level.charAt(0).toUpperCase() + level.slice(1)
 }
@@ -46,7 +39,7 @@ function formatLevel(level: string) {
 export function FeaturedCourses() {
   const { data: courses, isLoading } = useQuery<Course[]>({
     queryKey: ["featured-courses"],
-    queryFn: () => fetch("/api/courses/featured").then((r) => r.json()),
+    queryFn: () => apiFetch<Course[]>("/api/courses/featured"),
     refetchOnWindowFocus: false,
   })
 

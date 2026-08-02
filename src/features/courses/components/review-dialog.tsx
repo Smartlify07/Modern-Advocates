@@ -5,6 +5,7 @@ import { useParams } from "next/navigation"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { SendHorizonal, Star } from "lucide-react"
+import { apiFetch } from "@/shared/lib/api-fetch"
 
 import {
   Dialog,
@@ -48,22 +49,15 @@ export function ReviewDialog({
   const feedbackRef = useRef<HTMLTextAreaElement>(null)
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async () => {
-      const r = await fetch("/api/reviews", {
+    mutationFn: () =>
+      apiFetch(`/api/reviews`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: {
           courseId,
           rating,
           body: feedbackRef.current?.value.trim() || undefined,
-        }),
-      })
-      if (!r.ok) {
-        const { error } = await r.json()
-        throw new Error(error ?? "Failed to submit review")
-      }
-      return r.json()
-    },
+        },
+      }),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ["course", courseId] })
       const prev = queryClient.getQueryData(["course", courseId])

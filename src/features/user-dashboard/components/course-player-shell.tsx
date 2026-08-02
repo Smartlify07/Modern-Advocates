@@ -4,6 +4,7 @@ import { useCallback, useEffect } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useSearchParams, useRouter, notFound } from "next/navigation"
 import { Skeleton } from "@/shared/ui/skeleton"
+import { apiFetch, ApiError } from "@/shared/lib/api-fetch"
 import {
   ErrorState,
   ErrorStateDescription,
@@ -56,10 +57,13 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
   } = useQuery({
     queryKey: ["course", courseId],
     queryFn: async () => {
-      const r = await fetch(`/api/courses/${courseId}`)
-      if (r.status === 404) return null
-      if (!r.ok) throw new Error("Failed to fetch course")
-      const json = (await r.json()) as CourseApiResponse
+      let json: CourseApiResponse
+      try {
+        json = await apiFetch<CourseApiResponse>(`/api/courses/${courseId}`)
+      } catch (err) {
+        if (err instanceof ApiError && err.status === 404) return null
+        throw err
+      }
 
       const reviews = json.reviews ?? []
       const avgRating =

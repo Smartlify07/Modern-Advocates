@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import { PageHeader } from "@/features/admin/products/components/page-header"
 import { SearchExportRow } from "@/features/admin/products/components/search-export-row"
 import { AllProductsTable } from "@/features/admin/products/components/all-products-table"
@@ -14,7 +15,7 @@ const PAGE_SIZE = 10
 export default function AllProductsPage() {
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["admin-products"],
-    queryFn: async () => { const r = await fetch("/api/admin/products"); if (!r.ok) throw new Error("Failed to fetch products"); return r.json() },
+    queryFn: () => apiFetch<Product[]>(`/api/admin/products`),
   })
 
   const [search, setSearch] = useState("")

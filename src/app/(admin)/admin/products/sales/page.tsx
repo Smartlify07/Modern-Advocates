@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import { PageHeader } from "@/features/admin/products/components/page-header"
 import { SearchExportRow } from "@/features/admin/products/components/search-export-row"
 import { SalesSummaryCards } from "@/features/admin/products/components/sales-summary-cards"
@@ -18,7 +19,7 @@ export default function AllSalesPage() {
 
   const { data, isLoading } = useQuery<{ sales: SaleTransaction[]; summary: SalesSummary }>({
     queryKey: ["admin-sales"],
-    queryFn: async () => { const r = await fetch("/api/admin/sales?period=all"); if (!r.ok) throw new Error("Failed to fetch sales"); return r.json() },
+    queryFn: () => apiFetch<{ sales: SaleTransaction[]; summary: SalesSummary }>("/api/admin/sales?period=all"),
   })
 
   const sales = data?.sales ?? []

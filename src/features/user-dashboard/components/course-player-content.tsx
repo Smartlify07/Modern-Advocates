@@ -7,6 +7,7 @@ import { VideoPlayer } from "@/features/videos/components/video-player"
 import { TutorCard } from "@/features/marketing/components/tutor-card"
 import { ReviewCard } from "@/features/marketing/components/review-card"
 import { Skeleton } from "@/shared/ui/skeleton"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import { authClient } from "@/infrastructure/auth/client"
 
 type Topic = {
@@ -76,9 +77,7 @@ export function CoursePlayerContent({
     queryKey: ["topic-video", selectedVideoId],
     queryFn: async () => {
       if (!selectedVideoId) return null
-      const r = await fetch(`/api/videos/${selectedVideoId}`)
-      if (!r.ok) throw new Error("Failed to fetch video")
-      return r.json() as Promise<{
+      return apiFetch<{
         id: string
         playbackUrl: string | null
         thumbnailUrl: string | null
@@ -87,7 +86,7 @@ export function CoursePlayerContent({
         progress: { watchedSeconds: number; completed: boolean }
         title: string
         description: string | null
-      }>
+      }>(`/api/videos/${selectedVideoId}`)
     },
     enabled: !!selectedTopicId && isVideoTopic,
     staleTime: 30 * 60 * 1000,
@@ -113,15 +112,12 @@ export function CoursePlayerContent({
 
   const { data: enrollmentData } = useQuery({
     queryKey: ["enrollment-progress", course.id],
-    queryFn: async () => {
-      const r = await fetch(`/api/enrollments/by-course/${course.id}`)
-      if (!r.ok) throw new Error("Failed to fetch enrollment")
-      return r.json() as Promise<{
+    queryFn: () =>
+      apiFetch<{
         id: string
         progress: number
         completedTopicIds: string[]
-      }>
-    },
+      }>(`/api/enrollments/by-course/${course.id}`),
     enabled: !!course.id,
     staleTime: 30 * 60 * 1000,
   })
@@ -140,13 +136,16 @@ export function CoursePlayerContent({
   const handleCompleteToggle = useCallback(async () => {
     if (!selectedTopicId || !enrollmentData?.id) return
 
-    await fetch(
-      `/api/enrollments/${enrollmentData.id}/topics/${selectedTopicId}`,
-      { method: "POST" }
-    )
-    queryClient.invalidateQueries({
-      queryKey: ["enrollment-progress", course.id],
-    })
+    try {
+      await apiFetch(
+        `/api/enrollments/${enrollmentData.id}/topics/${selectedTopicId}`,
+        { method: "POST" },
+      )
+    } finally {
+      queryClient.invalidateQueries({
+        queryKey: ["enrollment-progress", course.id],
+      })
+    }
   }, [selectedTopicId, course.id, enrollmentData?.id, queryClient])
 
   const handlePause = useCallback(
@@ -156,13 +155,12 @@ export function CoursePlayerContent({
       params.set("t", String(watchedSeconds))
       router.replace(`?${params.toString()}`, { scroll: false })
 
-      fetch(`/api/videos/${videoIdRef.current}/progress`, {
+      apiFetch(`/api/videos/${videoIdRef.current}/progress`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: {
           watchedSeconds,
           duration: video.duration,
-        }),
+        },
       }).catch(() => {})
     },
     [video?.duration, searchParams, router]
@@ -172,10 +170,9 @@ export function CoursePlayerContent({
     async (watchedSeconds: number) => {
       if (!videoIdRef.current || !video?.duration || !selectedTopicId) return
 
-      await fetch(`/api/videos/${videoIdRef.current}/progress`, {
+      await apiFetch(`/api/videos/${videoIdRef.current}/progress`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ watchedSeconds, duration: video.duration }),
+        body: { watchedSeconds, duration: video.duration },
       })
 
       const enrollmentData = queryClient.getQueryData<{
@@ -185,9 +182,9 @@ export function CoursePlayerContent({
       if (!enrollmentData) return
 
       if (!enrollmentData.completedTopicIds.includes(selectedTopicId)) {
-        await fetch(
+        await apiFetch(
           `/api/enrollments/${enrollmentData.id}/topics/${selectedTopicId}`,
-          { method: "POST" }
+          { method: "POST" },
         )
       }
 

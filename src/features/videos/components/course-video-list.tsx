@@ -5,6 +5,7 @@ import { Play, Trash2, Loader2, AlertCircle, Clock } from "lucide-react"
 import { Button } from "@/shared/ui/button"
 import { Card, CardContent } from "@/shared/ui/card"
 import { Badge } from "@/shared/ui/badge"
+import { formatSecondsClock } from "@/shared/utils"
 
 interface VideoItem {
   id: string
@@ -45,13 +46,6 @@ const statusConfig: Record<
     variant: "destructive",
     icon: AlertCircle,
   },
-}
-
-function formatDuration(seconds: number | null): string {
-  if (!seconds) return "--:--"
-  const m = Math.floor(seconds / 60)
-  const s = seconds % 60
-  return `${m}:${s.toString().padStart(2, "0")}`
 }
 
 export function CourseVideoList({
@@ -105,7 +99,7 @@ export function CourseVideoList({
             <CardContent className="p-4">
               <h3 className="truncate font-medium">{video.title}</h3>
               <p className="mt-1 text-sm text-muted-foreground">
-                {formatDuration(video.duration)}
+                {formatSecondsClock(video.duration)}
               </p>
 
               <div className="mt-3 flex gap-2">

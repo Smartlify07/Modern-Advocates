@@ -1,6 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import { Skeleton } from "@/shared/ui/skeleton"
 import {
   CourseCard,
@@ -10,7 +11,7 @@ import {
 export function CoursesHeroSection() {
   const { data: courses, isLoading } = useQuery<Course[]>({
     queryKey: ["public-courses"],
-    queryFn: () => fetch("/api/courses/featured").then((r) => r.json()),
+    queryFn: () => apiFetch<Course[]>(`/api/courses/featured`),
     refetchOnWindowFocus: false,
   })
 

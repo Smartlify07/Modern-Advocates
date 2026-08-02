@@ -3,6 +3,8 @@
 import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { ChevronDown, VideoIcon } from "lucide-react"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { formatDurationFromSeconds } from "@/shared/utils"
 
 type Topic = {
   id: string
@@ -55,15 +57,12 @@ export function CourseModuleSidebar({
 
   const { data: enrollment } = useQuery({
     queryKey,
-    queryFn: async () => {
-      const r = await fetch(`/api/enrollments/by-course/${courseId}`)
-      if (!r.ok) throw new Error(`Failed to fetch enrollment (${r.status})`)
-      return r.json() as Promise<{
+    queryFn: () =>
+      apiFetch<{
         id: string
         progress: number
         completedTopicIds: string[]
-      }>
-    },
+      }>(`/api/enrollments/by-course/${courseId}`),
     enabled: !!courseId,
   })
 
@@ -75,22 +74,19 @@ export function CourseModuleSidebar({
   )
 
   const toggleMutation = useMutation({
-    mutationFn: async ({
+    mutationFn: ({
       enrollmentId,
       topicId,
     }: {
       enrollmentId: string
       topicId: string
-    }) => {
-      const r = await fetch(
+    }) =>
+      apiFetch<{ completed: boolean; progress: number }>(
         `/api/enrollments/${enrollmentId}/topics/${topicId}`,
         {
           method: "POST",
         }
-      )
-      if (!r.ok) throw new Error(`Failed to toggle topic (${r.status})`)
-      return r.json() as Promise<{ completed: boolean; progress: number }>
-    },
+      ),
     onMutate: async ({ topicId }) => {
       await queryClient.cancelQueries({ queryKey })
 
@@ -130,14 +126,7 @@ export function CourseModuleSidebar({
     },
   })
 
-  const formatDuration = (seconds: number | null | undefined): string => {
-    if (!seconds || seconds <= 0) return ""
-    const mins = Math.round(seconds / 60)
-    if (mins < 60) return `${mins}mins`
-    const h = Math.floor(mins / 60)
-    const m = mins % 60
-    return m > 0 ? `${h}hr ${m}mins` : `${h}hr`
-  }
+  const formatDuration = formatDurationFromSeconds
 
   const toggleLesson = (topicId: string) => {
     if (!enrollment?.id) return

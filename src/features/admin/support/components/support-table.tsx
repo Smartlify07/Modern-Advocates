@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/ui/table"
-import { cn } from "@/shared/utils"
+import { cn, getStatusColor } from "@/shared/utils"
 import { MoreHorizontalIcon, EyeIcon, MessageSquareReplyIcon, Trash2Icon } from "lucide-react"
 import type { Ticket } from "../types"
 
@@ -26,12 +26,6 @@ interface SupportTableProps {
   tickets: Ticket[]
   onView?: (ticket: Ticket) => void
   onDelete?: (id: string) => void
-}
-
-const statusStyles: Record<string, string> = {
-  open: "bg-green-700/10 text-green-700",
-  pending: "bg-amber-100 text-amber-800",
-  resolved: "bg-slate-100 text-slate-600",
 }
 
 export function SupportTable({ tickets, onView, onDelete }: SupportTableProps) {
@@ -77,7 +71,7 @@ export function SupportTable({ tickets, onView, onDelete }: SupportTableProps) {
                 <TableCell>
                   <Badge
                     variant="secondary"
-                    className={cn("rounded-8 font-normal", statusStyles[ticket.status])}
+                    className={cn("rounded-8 font-normal", getStatusColor(ticket.status))}
                   >
                     {ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1)}
                   </Badge>
