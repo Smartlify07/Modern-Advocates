@@ -22,7 +22,7 @@ import { DeleteUserDialog } from "@/features/admin/users/components/delete-user-
 import { useUsers, useCreateUser, useSuspendUser, useActivateUser, useDeleteUser } from "@/features/admin/users/hooks/use-users"
 import type { User } from "@/features/admin/users/types"
 import { AlertCircleIcon, RefreshCwIcon } from "lucide-react"
-import { authClient } from "@/infrastructure/auth/client"
+import { useSession } from "@/shared/hooks/use-session"
 import {
   ErrorState,
   ErrorStateTitle,
@@ -61,7 +61,7 @@ function TableSkeleton() {
 }
 
 export default function AdminUsersPage() {
-  const { data: session, isPending: sessionPending } = authClient.useSession()
+  const { data: session, isPending: sessionPending } = useSession()
   const role = session?.user?.role
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")

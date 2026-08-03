@@ -18,22 +18,6 @@ import {
   ErrorStateAction,
 } from "@/shared/ui/error-state"
 
-interface ApiTicket {
-  id: string
-  name: string
-  email: string
-  phone: string | null
-  message: string
-  status: "open" | "pending" | "resolved"
-  createdAt: string
-}
-
-function mapTicket(t: ApiTicket): Ticket {
-  const d = new Date(t.createdAt)
-  const date = `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`
-  return { id: t.id, name: t.name, email: t.email, phone: t.phone, message: t.message, status: t.status, date }
-}
-
 export default function AdminSupportPage() {
   const [search, setSearch] = useState("")
   const [debouncedSearch, setDebouncedSearch] = useState("")
@@ -56,7 +40,7 @@ export default function AdminSupportPage() {
   const statusMutation = useUpdateTicketStatus()
   const deleteMutation = useDeleteTicket()
 
-  const tickets = useMemo(() => (data?.tickets ?? []).map(mapTicket), [data?.tickets])
+  const tickets = data?.tickets ?? []
 
   const kpis = useMemo(() => {
     return {

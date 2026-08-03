@@ -1,6 +1,8 @@
 "use client"
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import type { User, UsersResponse } from "@/features/admin/users/types"
 
 interface UseUsersParams {
@@ -18,8 +20,8 @@ export function useUsers({ search, status, page = 1, pageSize = 10 }: UseUsersPa
   params.set("pageSize", String(pageSize))
 
   return useQuery<UsersResponse>({
-    queryKey: ["admin-users", { search, status, page, pageSize }],
-    queryFn: () => fetch(`/api/admin/users?${params}`).then((r) => r.json()),
+    queryKey: queryKeys.admin.users.list({ search, status, page, pageSize }),
+    queryFn: () => apiFetch<UsersResponse>(`/api/admin/users?${params}`),
   })
 }
 
@@ -27,12 +29,11 @@ export function useCreateUser() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data: { name: string; email: string }) =>
-      fetch("/api/admin/users", {
+      apiFetch("/api/admin/users", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      }).then((r) => r.json()),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
+        body: data,
+      }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.admin.users.all }),
   })
 }
 
@@ -40,8 +41,8 @@ export function useSuspendUser() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (userId: string) =>
-      fetch(`/api/admin/users/${userId}/suspend`, { method: "PATCH" }).then((r) => r.json()),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
+      apiFetch(`/api/admin/users/${userId}/suspend`, { method: "PATCH" }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.admin.users.all }),
   })
 }
 
@@ -49,8 +50,8 @@ export function useActivateUser() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (userId: string) =>
-      fetch(`/api/admin/users/${userId}/activate`, { method: "PATCH" }).then((r) => r.json()),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
+      apiFetch(`/api/admin/users/${userId}/activate`, { method: "PATCH" }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.admin.users.all }),
   })
 }
 
@@ -58,7 +59,7 @@ export function useDeleteUser() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (userId: string) =>
-      fetch(`/api/admin/users/${userId}`, { method: "DELETE" }).then((r) => r.json()),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
+      apiFetch(`/api/admin/users/${userId}`, { method: "DELETE" }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.admin.users.all }),
   })
 }

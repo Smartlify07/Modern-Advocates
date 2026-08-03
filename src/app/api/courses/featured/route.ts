@@ -3,10 +3,11 @@ import { eq, sql, desc } from "drizzle-orm"
 
 import { db } from "@/infrastructure/database/client"
 import { courses, reviews } from "@/infrastructure/database/schema/course"
+import { apiHandler } from "@/shared/lib/api-handler"
 
 export const dynamic = "force-dynamic"
 
-export async function GET() {
+export const GET = apiHandler(async () => {
   const featured = await db
     .select({
       id: courses.id,
@@ -28,4 +29,4 @@ export async function GET() {
     .orderBy(desc(courses.createdAt))
 
   return NextResponse.json(featured)
-}
+})

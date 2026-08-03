@@ -3,12 +3,12 @@
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { LoaderCircle } from "lucide-react"
-import { authClient } from "@/infrastructure/auth/client"
+import { useSession } from "@/shared/hooks/use-session"
 import { isAdminRole } from "@/infrastructure/auth/roles"
 
 export default function AuthCallbackPage() {
   const router = useRouter()
-  const { data: session, isPending } = authClient.useSession()
+  const { data: session, isPending } = useSession()
 
   useEffect(() => {
     if (isPending) return

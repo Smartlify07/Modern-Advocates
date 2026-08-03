@@ -5,14 +5,13 @@ import { db } from "@/infrastructure/database/client"
 import { orders, courses } from "@/infrastructure/database/schema/course"
 import { user } from "@/infrastructure/database/schema/auth"
 import { requireAdmin } from "@/infrastructure/auth/helpers"
-import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
-import * as Sentry from "@sentry/nextjs"
+import { apiHandler } from "@/shared/lib/api-handler"
 
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ productId: string }> }
-) {
-  try {
+export const GET = apiHandler(
+  async (
+    _request: Request,
+    { params }: { params: Promise<{ productId: string }> },
+  ) => {
     await requireAdmin()
     const { productId } = await params
 
@@ -57,14 +56,5 @@ export async function GET(
       totalRevenue: sales.reduce((sum, s) => sum + Number(s.amount), 0),
       totalSales: sales.length,
     })
-  } catch (error) {
-    if (error instanceof UnauthorizedError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
-    }
-    if (error instanceof ForbiddenError) {
-      return NextResponse.json({ error: error.message }, { status: error.status })
-    }
-    Sentry.captureException(error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
-  }
-}
+  },
+)

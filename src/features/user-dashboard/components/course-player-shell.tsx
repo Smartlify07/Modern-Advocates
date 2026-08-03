@@ -4,13 +4,18 @@ import { useCallback, useEffect } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useSearchParams, useRouter, notFound } from "next/navigation"
 import { Skeleton } from "@/shared/ui/skeleton"
+import { apiFetch, ApiError } from "@/shared/lib/api-fetch"
 import {
   ErrorState,
   ErrorStateDescription,
 } from "@/shared/ui/error-state"
 import { CoursePlayerContent } from "@/features/user-dashboard/components/course-player-content"
 import { CourseModuleSidebar } from "@/features/user-dashboard/components/course-module-sidebar"
-import type { CourseApiResponse } from "@/features/courses/types"
+import { queryKeys } from "@/shared/lib/query-keys"
+import type {
+  CourseApiResponse,
+  PlayerCourse,
+} from "@/features/courses/dto"
 
 function extractText(input: unknown): string {
   if (typeof input !== "string") return ""
@@ -54,12 +59,15 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
     isError,
     error,
   } = useQuery({
-    queryKey: ["course", courseId],
-    queryFn: async () => {
-      const r = await fetch(`/api/courses/${courseId}`)
-      if (r.status === 404) return null
-      if (!r.ok) throw new Error("Failed to fetch course")
-      const json = (await r.json()) as CourseApiResponse
+    queryKey: queryKeys.course.detail(courseId),
+    queryFn: async (): Promise<PlayerCourse | null> => {
+      let json: CourseApiResponse
+      try {
+        json = await apiFetch<CourseApiResponse>(`/api/courses/${courseId}`)
+      } catch (err) {
+        if (err instanceof ApiError && err.status === 404) return null
+        throw err
+      }
 
       const reviews = json.reviews ?? []
       const avgRating =

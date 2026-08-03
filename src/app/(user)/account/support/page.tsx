@@ -6,11 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import * as z from "zod"
 
-import { authClient } from "@/infrastructure/auth/client"
-import { useAccountSession } from "../_context"
+import { useSession } from "@/shared/hooks/use-session"
 import { Button } from "@/shared/ui/button"
 import { Field, FieldError, FieldLabel } from "@/shared/ui/field"
 import { Input } from "@/shared/ui/input"
+import { apiFetch } from "@/shared/lib/api-fetch"
 
 const contactFormSchema = z.object({
   name: z.string().min(1, "Full name is required"),
@@ -20,7 +20,7 @@ const contactFormSchema = z.object({
 })
 
 export default function AccountSupportPage() {
-  const { user, isPending } = useAccountSession()
+  const { user } = useSession()
 
   const form = useForm<z.infer<typeof contactFormSchema>>({
     resolver: zodResolver(contactFormSchema),
@@ -47,24 +47,15 @@ export default function AccountSupportPage() {
   async function onSubmit(data: z.infer<typeof contactFormSchema>) {
     setSubmitting(true)
     try {
-      const res = await fetch("/api/contact", {
+      await apiFetch("/api/contact", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: data,
       })
-
-      const result = await res.json()
-
-      if (!res.ok) {
-        toast.error(result.error ?? "Failed to send message")
-        setSubmitting(false)
-        return
-      }
 
       toast.success("Your message has been sent successfully!")
       form.reset()
-    } catch {
-      toast.error("Something went wrong. Please try again.")
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Something went wrong. Please try again.")
     } finally {
       setSubmitting(false)
     }

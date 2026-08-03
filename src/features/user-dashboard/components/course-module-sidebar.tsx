@@ -3,50 +3,23 @@
 import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { ChevronDown, VideoIcon } from "lucide-react"
-
-type Topic = {
-  id: string
-  title: string
-  format?: string
-  duration?: number | null
-  content?: string | null
-}
-type Module = { id: string; title: string; sortOrder: number; topics: Topic[] }
-type Tutor = { name: string | null; image: string | null }
-type CourseData = {
-  id: string
-  title: string
-  overview: string | null
-  thumbnailUrl: string | null
-  duration: number | null
-  level: string
-  language: string
-  avgRating: number
-  reviewCount: number
-  enrollmentCount: number
-  tutor: Tutor
-  modules: Module[]
-  reviews: Array<{
-    id: string
-    body: string | null
-    rating: number
-    studentName: string | null
-    studentImage: string | null
-  }>
-}
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { formatDurationFromSeconds } from "@/shared/utils"
+import { queryKeys } from "@/shared/lib/query-keys"
+import type { PlayerCourse } from "@/features/courses/dto"
 
 export function CourseModuleSidebar({
   course,
   selectedTopicId,
   onSelectTopic,
 }: {
-  course: CourseData
+  course: PlayerCourse
   selectedTopicId: string | null
   onSelectTopic?: (topicId: string) => void
 }) {
   const courseId = course.id
   const queryClient = useQueryClient()
-  const queryKey = ["enrollment-progress", courseId]
+  const queryKey = queryKeys.enrollment.progress(courseId)
   const modules = course.modules
 
   const [openWeeks, setOpenWeeks] = useState<Set<string>>(
@@ -55,15 +28,12 @@ export function CourseModuleSidebar({
 
   const { data: enrollment } = useQuery({
     queryKey,
-    queryFn: async () => {
-      const r = await fetch(`/api/enrollments/by-course/${courseId}`)
-      if (!r.ok) throw new Error(`Failed to fetch enrollment (${r.status})`)
-      return r.json() as Promise<{
+    queryFn: () =>
+      apiFetch<{
         id: string
         progress: number
         completedTopicIds: string[]
-      }>
-    },
+      }>(`/api/enrollments/by-course/${courseId}`),
     enabled: !!courseId,
   })
 
@@ -75,22 +45,19 @@ export function CourseModuleSidebar({
   )
 
   const toggleMutation = useMutation({
-    mutationFn: async ({
+    mutationFn: ({
       enrollmentId,
       topicId,
     }: {
       enrollmentId: string
       topicId: string
-    }) => {
-      const r = await fetch(
+    }) =>
+      apiFetch<{ completed: boolean; progress: number }>(
         `/api/enrollments/${enrollmentId}/topics/${topicId}`,
         {
           method: "POST",
         }
-      )
-      if (!r.ok) throw new Error(`Failed to toggle topic (${r.status})`)
-      return r.json() as Promise<{ completed: boolean; progress: number }>
-    },
+      ),
     onMutate: async ({ topicId }) => {
       await queryClient.cancelQueries({ queryKey })
 
@@ -130,14 +97,7 @@ export function CourseModuleSidebar({
     },
   })
 
-  const formatDuration = (seconds: number | null | undefined): string => {
-    if (!seconds || seconds <= 0) return ""
-    const mins = Math.round(seconds / 60)
-    if (mins < 60) return `${mins}mins`
-    const h = Math.floor(mins / 60)
-    const m = mins % 60
-    return m > 0 ? `${h}hr ${m}mins` : `${h}hr`
-  }
+  const formatDuration = formatDurationFromSeconds
 
   const toggleLesson = (topicId: string) => {
     if (!enrollment?.id) return
@@ -147,7 +107,11 @@ export function CourseModuleSidebar({
   const toggleWeek = (id: string) => {
     setOpenWeeks((prev) => {
       const next = new Set(prev)
-      next.has(id) ? next.delete(id) : next.add(id)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
       return next
     })
   }

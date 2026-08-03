@@ -1,8 +1,11 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { format } from "date-fns"
 import { CreditCardIcon } from "lucide-react"
+import { formatCurrency } from "@/shared/utils"
 
 interface Transaction {
   id: string
@@ -26,9 +29,8 @@ const statusStyles: Record<string, string> = {
 
 export default function AdminTransactionsPage() {
   const { data: transactions = [], isLoading } = useQuery<Transaction[]>({
-    queryKey: ["admin-transactions"],
-    queryFn: () => fetch("/api/admin/transactions").then((r) => r.json()),
-    refetchOnWindowFocus: false,
+    queryKey: queryKeys.admin.transactions,
+    queryFn: () => apiFetch<Transaction[]>("/api/admin/transactions"),
   })
 
   return (
@@ -74,10 +76,7 @@ export default function AdminTransactionsPage() {
                   </td>
                   <td className="p-4">
                     <span className="font-medium tabular-nums">
-                      {new Intl.NumberFormat("en-US", {
-                        style: "currency",
-                        currency: tx.currency,
-                      }).format(tx.amount)}
+                      {formatCurrency(tx.amount, tx.currency)}
                     </span>
                   </td>
                   <td className="p-4">

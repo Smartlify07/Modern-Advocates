@@ -5,6 +5,7 @@ import { Upload, X } from "lucide-react"
 import { toast } from "sonner"
 import * as z from "zod"
 
+import { useSession } from "@/shared/hooks/use-session"
 import { authClient } from "@/infrastructure/auth/client"
 import { UserAvatar } from "@/shared/ui/user-avatar"
 import { Input } from "@/shared/ui/input"
@@ -16,11 +17,12 @@ import {
 } from "@/shared/ui/field"
 import { Button } from "@/shared/ui/button"
 import { Skeleton } from "@/shared/ui/skeleton"
+import { apiFetch } from "@/shared/lib/api-fetch"
 
 const nameSchema = z.string().trim().min(1, "Name is required")
 
 export default function AdminProfilePage() {
-  const { data: session, isPending, refetch } = authClient.useSession()
+  const { data: session, isPending, refetch } = useSession()
   const user = session?.user
 
   const [editedName, setEditedName] = useState<string | null>(null)
@@ -83,17 +85,10 @@ export default function AdminProfilePage() {
         const formData = new FormData()
         formData.append("file", pendingFile)
 
-        const res = await fetch("/api/user/avatar", {
+        const { url } = await apiFetch<{ url: string }>("/api/user/avatar", {
           method: "POST",
           body: formData,
         })
-
-        if (!res.ok) {
-          const err = await res.json()
-          throw new Error(err.error ?? "Upload failed")
-        }
-
-        const { url } = await res.json()
         imageUrl = url
       }
 

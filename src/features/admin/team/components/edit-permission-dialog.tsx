@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { toast } from "sonner"
 import {
   Dialog,
@@ -40,20 +42,13 @@ export function EditPermissionDialog({
   }
 
   const updateMutation = useMutation({
-    mutationFn: async () => {
-      const r = await fetch(`/api/admin/team/${member!.id}`, {
+    mutationFn: () =>
+      apiFetch(`/api/admin/team/${member!.id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role }),
-      })
-      if (!r.ok) {
-        const { error } = await r.json()
-        throw new Error(error ?? "Failed to update role")
-      }
-      return r.json()
-    },
+        body: { role },
+      }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-team"] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.team.all })
       handleOpenChange(false)
       toast.success("Role updated")
     },
@@ -63,18 +58,12 @@ export function EditPermissionDialog({
   })
 
   const removeMutation = useMutation({
-    mutationFn: async () => {
-      const r = await fetch(`/api/admin/team/${member!.id}`, {
+    mutationFn: () =>
+      apiFetch(`/api/admin/team/${member!.id}`, {
         method: "DELETE",
-      })
-      if (!r.ok) {
-        const { error } = await r.json()
-        throw new Error(error ?? "Failed to remove member")
-      }
-      return r.json()
-    },
+      }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-team"] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.team.all })
       handleOpenChange(false)
       toast.success(`You've removed ${member!.name} from your team`)
     },

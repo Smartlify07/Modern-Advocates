@@ -4,57 +4,23 @@ import { useState, useCallback, useRef, useEffect } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useSearchParams, useRouter } from "next/navigation"
 import { VideoPlayer } from "@/features/videos/components/video-player"
-import { TutorCard } from "@/features/marketing/components/tutor-card"
 import { ReviewCard } from "@/features/marketing/components/review-card"
 import { Skeleton } from "@/shared/ui/skeleton"
-import { authClient } from "@/infrastructure/auth/client"
-
-type Topic = {
-  id: string
-  title: string
-  format: string
-  videoId: string | null
-  content: string | null
-}
-type Module = { id: string; title: string; sortOrder: number; topics: Topic[] }
-type Review = {
-  id: string
-  body: string | null
-  rating: number
-  studentId: string
-  studentName: string | null
-  studentImage: string | null
-}
-type Tutor = {
-  name: string | null
-  image: string | null
-  specialty: string | null
-  about: string | null
-}
-
-type CourseData = {
-  id: string
-  title: string
-  overview: string | null
-  thumbnailUrl: string | null
-  duration: number | null
-  durationUnit: string | null
-  level: string
-  language: string
-  avgRating: number
-  reviewCount: number
-  enrollmentCount: number
-  tutor: Tutor
-  modules: Module[]
-  reviews: Review[]
-}
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { useSession } from "@/shared/hooks/use-session"
+import { queryKeys } from "@/shared/lib/query-keys"
+import type {
+  PlayerCourse,
+  PlayerModule,
+  PlayerTopic,
+} from "@/features/courses/dto"
 
 export function CoursePlayerContent({
   course,
   selectedTopicId,
   onSelectTopic,
 }: {
-  course: CourseData
+  course: PlayerCourse
   selectedTopicId: string | null
   onSelectTopic?: (topicId: string) => void
 }) {
@@ -62,7 +28,7 @@ export function CoursePlayerContent({
   const searchParams = useSearchParams()
   const router = useRouter()
   const queryClient = useQueryClient()
-  const { data: session } = authClient.useSession()
+  const { data: session } = useSession()
   const myReviews = course.reviews.filter(
     (r) => r.studentId === session?.user?.id
   )
@@ -73,12 +39,10 @@ export function CoursePlayerContent({
   const selectedVideoId = selectedTopic?.videoId ?? null
 
   const { data: video, isPending: videoPending } = useQuery({
-    queryKey: ["topic-video", selectedVideoId],
+    queryKey: queryKeys.topicVideo(selectedVideoId),
     queryFn: async () => {
       if (!selectedVideoId) return null
-      const r = await fetch(`/api/videos/${selectedVideoId}`)
-      if (!r.ok) throw new Error("Failed to fetch video")
-      return r.json() as Promise<{
+      return apiFetch<{
         id: string
         playbackUrl: string | null
         thumbnailUrl: string | null
@@ -87,7 +51,7 @@ export function CoursePlayerContent({
         progress: { watchedSeconds: number; completed: boolean }
         title: string
         description: string | null
-      }>
+      }>(`/api/videos/${selectedVideoId}`)
     },
     enabled: !!selectedTopicId && isVideoTopic,
     staleTime: 30 * 60 * 1000,
@@ -112,16 +76,13 @@ export function CoursePlayerContent({
   })()
 
   const { data: enrollmentData } = useQuery({
-    queryKey: ["enrollment-progress", course.id],
-    queryFn: async () => {
-      const r = await fetch(`/api/enrollments/by-course/${course.id}`)
-      if (!r.ok) throw new Error("Failed to fetch enrollment")
-      return r.json() as Promise<{
+    queryKey: queryKeys.enrollment.progress(course.id),
+    queryFn: () =>
+      apiFetch<{
         id: string
         progress: number
         completedTopicIds: string[]
-      }>
-    },
+      }>(`/api/enrollments/by-course/${course.id}`),
     enabled: !!course.id,
     staleTime: 30 * 60 * 1000,
   })
@@ -140,13 +101,16 @@ export function CoursePlayerContent({
   const handleCompleteToggle = useCallback(async () => {
     if (!selectedTopicId || !enrollmentData?.id) return
 
-    await fetch(
-      `/api/enrollments/${enrollmentData.id}/topics/${selectedTopicId}`,
-      { method: "POST" }
-    )
-    queryClient.invalidateQueries({
-      queryKey: ["enrollment-progress", course.id],
-    })
+    try {
+      await apiFetch(
+        `/api/enrollments/${enrollmentData.id}/topics/${selectedTopicId}`,
+        { method: "POST" },
+      )
+    } finally {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.enrollment.progress(course.id),
+      })
+    }
   }, [selectedTopicId, course.id, enrollmentData?.id, queryClient])
 
   const handlePause = useCallback(
@@ -156,46 +120,44 @@ export function CoursePlayerContent({
       params.set("t", String(watchedSeconds))
       router.replace(`?${params.toString()}`, { scroll: false })
 
-      fetch(`/api/videos/${videoIdRef.current}/progress`, {
+      apiFetch(`/api/videos/${videoIdRef.current}/progress`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: {
           watchedSeconds,
           duration: video.duration,
-        }),
+        },
       }).catch(() => {})
     },
-    [video?.duration, searchParams, router]
+    [video, searchParams, router]
   )
 
   const handleEnded = useCallback(
     async (watchedSeconds: number) => {
       if (!videoIdRef.current || !video?.duration || !selectedTopicId) return
 
-      await fetch(`/api/videos/${videoIdRef.current}/progress`, {
+      await apiFetch(`/api/videos/${videoIdRef.current}/progress`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ watchedSeconds, duration: video.duration }),
+        body: { watchedSeconds, duration: video.duration },
       })
 
       const enrollmentData = queryClient.getQueryData<{
         id: string
         completedTopicIds: string[]
-      }>(["enrollment-progress", course.id])
+      }>(queryKeys.enrollment.progress(course.id))
       if (!enrollmentData) return
 
       if (!enrollmentData.completedTopicIds.includes(selectedTopicId)) {
-        await fetch(
+        await apiFetch(
           `/api/enrollments/${enrollmentData.id}/topics/${selectedTopicId}`,
-          { method: "POST" }
+          { method: "POST" },
         )
       }
 
       queryClient.invalidateQueries({
-        queryKey: ["enrollment-progress", course.id],
+        queryKey: queryKeys.enrollment.progress(course.id),
       })
     },
-    [video?.duration, videoIdRef, selectedTopicId, course.id, queryClient]
+    [video, selectedTopicId, course.id, queryClient]
   )
 
   return (
@@ -311,9 +273,9 @@ export function CoursePlayerContent({
 }
 
 function findTopic(
-  modules: Module[],
+  modules: PlayerModule[],
   topicId: string | null
-): Topic | undefined {
+): PlayerTopic | undefined {
   if (!topicId) return undefined
   for (const mod of modules) {
     const found = mod.topics.find((t) => t.id === topicId)
@@ -323,7 +285,7 @@ function findTopic(
 }
 
 function getAdjacentTopics(
-  modules: Module[],
+  modules: PlayerModule[],
   currentId: string | null
 ): { prev: string | null; next: string | null } {
   if (!currentId) return { prev: null, next: null }

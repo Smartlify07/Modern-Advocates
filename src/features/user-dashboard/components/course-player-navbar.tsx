@@ -9,6 +9,8 @@ import { Menu, Trophy, X } from "lucide-react"
 
 import { ProfileDropdown } from "@/features/platform/components/profile-dropdown"
 import { ReviewDialog } from "@/features/courses/components/review-dialog"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 
 export default function CoursePlayerNavbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -17,12 +19,9 @@ export default function CoursePlayerNavbar() {
   const courseId = params.courseId as string
 
   const { data: enrollment } = useQuery({
-    queryKey: ["enrollment-progress", courseId],
-    queryFn: async () => {
-      const r = await fetch(`/api/enrollments/by-course/${courseId}`)
-      if (!r.ok) throw new Error(`Failed to fetch enrollment (${r.status})`)
-      return r.json() as Promise<{ id: string; progress: number }>
-    },
+    queryKey: queryKeys.enrollment.progress(courseId),
+    queryFn: () =>
+      apiFetch<{ id: string; progress: number }>(`/api/enrollments/by-course/${courseId}`),
     enabled: !!courseId,
   })
 

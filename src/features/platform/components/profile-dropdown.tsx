@@ -11,8 +11,8 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/shared/ui/hover-card"
-import { authClient } from "@/infrastructure/auth/client"
 import { cn } from "@/shared/utils"
+import { useSession } from "@/shared/hooks/use-session"
 
 interface ProfileDropdownProps {
   className?: string
@@ -28,7 +28,7 @@ export function ProfileDropdown({
   alignOffset = -12,
 }: ProfileDropdownProps) {
   const router = useRouter()
-  const { data: session, isPending } = authClient.useSession()
+  const { data: session, isPending } = useSession()
   const user = session?.user
   const [isDesktop, setIsDesktop] = useState(false)
 

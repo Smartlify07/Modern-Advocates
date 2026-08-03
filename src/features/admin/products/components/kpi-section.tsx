@@ -1,4 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { StatCard } from "@/features/admin/components/stat-card"
 import { ShoppingBag, TrendingUp, Users } from "lucide-react"
 import type { Customer } from "@/features/admin/products/types"
@@ -11,8 +13,8 @@ export function KpiSection({
   totalSales: number
 }) {
   const { data: customers = [] } = useQuery<Customer[]>({
-    queryKey: ["admin-customers"],
-    queryFn: async () => { const r = await fetch("/api/admin/customers"); if (!r.ok) throw new Error("Failed to fetch customers"); return r.json() },
+    queryKey: queryKeys.admin.customers,
+    queryFn: () => apiFetch<Customer[]>("/api/admin/customers"),
   })
 
   return (

@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { PageHeader } from "@/features/admin/products/components/page-header"
 import { SearchExportRow } from "@/features/admin/products/components/search-export-row"
 import { CustomersTable } from "@/features/admin/products/components/customers-table"
@@ -13,8 +15,8 @@ const PAGE_SIZE = 10
 
 export default function AllCustomersPage() {
   const { data: customers = [], isLoading } = useQuery<Customer[]>({
-    queryKey: ["admin-customers"],
-    queryFn: async () => { const r = await fetch("/api/admin/customers"); if (!r.ok) throw new Error("Failed to fetch customers"); return r.json() },
+    queryKey: queryKeys.admin.customers,
+    queryFn: () => apiFetch<Customer[]>("/api/admin/customers"),
   })
 
   const [search, setSearch] = useState("")

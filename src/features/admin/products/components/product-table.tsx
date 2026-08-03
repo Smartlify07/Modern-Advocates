@@ -13,13 +13,20 @@ import {
 import { MoreHorizontalIcon, ArchiveIcon, ChartSpline } from "lucide-react"
 import { ArchiveCourseDialog } from "@/app/(admin)/admin/courses/_components/archive-course-dialog"
 import type { Product } from "@/features/admin/products/types"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { getStatusColor } from "@/shared/utils"
+import { queryKeys } from "@/shared/lib/query-keys"
 
 interface ProductTableProps { products: Product[] }
 
+const productStatusLabels: Record<string, string> = {
+  published: "Live",
+  draft: "Draft",
+  archived: "Archived",
+}
+
 function statusDisplay(status: string) {
-  if (status === "published") return { label: "Live", class: "bg-green-700/10 text-green-700" }
-  if (status === "draft") return { label: "Draft", class: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" }
-  return { label: "Archived", class: "bg-muted text-muted-foreground" }
+  return { label: productStatusLabels[status] ?? status, class: getStatusColor(status) }
 }
 
 export function ProductTable({ products }: ProductTableProps) {
@@ -29,11 +36,10 @@ export function ProductTable({ products }: ProductTableProps) {
   const archiveMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const endpoint = status === "archived" ? "unarchive" : "archive"
-      const r = await fetch(`/api/courses/${id}/${endpoint}`, { method: "PATCH" })
-      if (!r.ok) throw new Error(`Failed to ${endpoint} product`)
+      await apiFetch(`/api/courses/${id}/${endpoint}`, { method: "PATCH" })
     },
     onSuccess: (_data, vars) => {
-      queryClient.invalidateQueries({ queryKey: ["admin-products"] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.products })
       toast.success(vars.status === "archived" ? "Product unarchived" : "Product archived")
     },
     onError: (err: Error) => toast.error(err.message),

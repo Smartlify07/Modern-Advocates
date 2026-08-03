@@ -10,10 +10,11 @@ import { Input } from "@/shared/ui/input"
 import { Label } from "@/shared/ui/label"
 import { Button } from "@/shared/ui/button"
 import { Skeleton } from "@/shared/ui/skeleton"
-import { useAccountSession } from "./_context"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { useSession } from "@/shared/hooks/use-session"
 
 export default function AccountPage() {
-  const { user, isPending, refetchSession } = useAccountSession()
+  const { user, isPending, refetch } = useSession()
 
   const [editedName, setEditedName] = useState<string | null>(null)
   const [pendingFile, setPendingFile] = useState<File | null>(null)
@@ -65,17 +66,10 @@ export default function AccountPage() {
         const formData = new FormData()
         formData.append("file", pendingFile)
 
-        const res = await fetch("/api/user/avatar", {
+        const { url } = await apiFetch<{ url: string }>("/api/user/avatar", {
           method: "POST",
           body: formData,
         })
-
-        if (!res.ok) {
-          const err = await res.json()
-          throw new Error(err.error ?? "Upload failed")
-        }
-
-        const { url } = await res.json()
         imageUrl = url
       }
 
@@ -84,7 +78,7 @@ export default function AccountPage() {
         image: removeImage ? null : imageUrl,
       })
 
-      await refetchSession()
+      await refetch()
 
       setPendingFile(null)
       setRemoveImage(false)

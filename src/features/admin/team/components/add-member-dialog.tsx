@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { toast } from "sonner"
 import {
   Dialog,
@@ -26,20 +28,13 @@ export function AddMemberDialog({ open, onOpenChange }: AddMemberDialogProps) {
   const queryClient = useQueryClient()
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async () => {
-      const r = await fetch("/api/admin/team", {
+    mutationFn: () =>
+      apiFetch("/api/admin/team", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), role }),
-      })
-      if (!r.ok) {
-        const { error } = await r.json()
-        throw new Error(error ?? "Failed to add team member")
-      }
-      return r.json()
-    },
+        body: { email: email.trim(), role },
+      }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-team"] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.team.all })
       onOpenChange(false)
       setEmail("")
       setRole("Editor")

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useVideoUploadStore } from "@/features/courses/store/use-video-upload-store"
 import { uploadToStorage, type StorageUploadConfig } from "@/shared/lib/storage-upload"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import { VideoUploadToast } from "@/features/courses/components/video-upload-toast"
 import { getVideoDuration } from "@/features/videos/lib/get-video-duration"
 import { toast } from "sonner"
@@ -87,16 +88,10 @@ async function getFreshSignedConfig(
   title: string,
   mimeType: string,
 ): Promise<StorageUploadConfig> {
-  const res = await fetch("/api/videos/sign-upload", {
+  return apiFetch<StorageUploadConfig>("/api/videos/sign-upload", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ courseId, moduleId, topicId, title, mimeType }),
+    body: { courseId, moduleId, topicId, title, mimeType },
   })
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error(err.error ?? "Failed to get upload signature")
-  }
-  return res.json()
 }
 
 export function usePendingUploads(courseId?: string) {
@@ -174,19 +169,10 @@ export function usePendingUploads(courseId?: string) {
 
       const duration = await getVideoDuration(file)
 
-      const finalizeRes = await fetch(
-        `/api/videos/${config.videoId}/finalize`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ storageKey: config.storageKey, duration }),
-        }
-      )
-
-      if (!finalizeRes.ok) {
-        const err = await finalizeRes.json()
-        throw new Error(err.error ?? "Failed to finalize upload")
-      }
+      await apiFetch(`/api/videos/${config.videoId}/finalize`, {
+        method: "POST",
+        body: { storageKey: config.storageKey, duration },
+      })
 
       completeTask(config.videoId, "completed")
       removePendingUpload(uploadId)

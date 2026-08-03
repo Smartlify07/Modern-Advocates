@@ -1,34 +1,11 @@
 import { db } from "@/infrastructure/database/client"
 import { contacts } from "@/infrastructure/database/schema/contact"
 import { eq, ilike, or, and, sql, desc } from "drizzle-orm"
-
-export interface ListSupportTicketsParams {
-  search?: string
-  filter?: string
-  page?: number
-  pageSize?: number
-}
-
-export interface TicketDTO {
-  id: string
-  name: string
-  email: string
-  phone: string | null
-  message: string
-  status: "open" | "pending" | "resolved"
-  createdAt: string
-}
-
-export interface ListSupportTicketsResult {
-  tickets: TicketDTO[]
-  total: number
-  open: number
-  pending: number
-  resolved: number
-  page: number
-  pageSize: number
-  totalPages: number
-}
+import type {
+  ListSupportTicketsParams,
+  ListSupportTicketsResult,
+  TicketStatus,
+} from "@/features/admin/support/types"
 
 export async function listSupportTickets(
   params: ListSupportTicketsParams,
@@ -100,7 +77,7 @@ export async function listSupportTickets(
   }
 }
 
-export async function updateTicketStatus(id: string, status: "open" | "pending" | "resolved") {
+export async function updateTicketStatus(id: string, status: TicketStatus) {
   const [updated] = await db
     .update(contacts)
     .set({ status })

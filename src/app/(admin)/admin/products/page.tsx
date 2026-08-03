@@ -1,6 +1,8 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { KpiSection } from "@/features/admin/products/components/kpi-section"
 import { SalesSection } from "@/features/admin/products/components/sales-section"
 import { ProductListSection } from "@/features/admin/products/components/product-list-section"
@@ -9,8 +11,8 @@ import type { Product } from "@/features/admin/products/types"
 
 export default function AdminProductsPage() {
   const { data: products = [], isLoading } = useQuery<Product[]>({
-    queryKey: ["admin-products"],
-    queryFn: async () => { const r = await fetch("/api/admin/products"); if (!r.ok) throw new Error("Failed to fetch products"); return r.json() },
+    queryKey: queryKeys.admin.products,
+    queryFn: () => apiFetch<Product[]>("/api/admin/products"),
   })
 
   return (
