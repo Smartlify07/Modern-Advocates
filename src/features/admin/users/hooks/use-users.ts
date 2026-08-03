@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { queryKeys } from "@/shared/lib/query-keys"
 import type { User, UsersResponse } from "@/features/admin/users/types"
+import type { CreateUserParams } from "@/features/admin/users/services/user-service"
 
 interface UseUsersParams {
   search?: string
@@ -28,7 +29,7 @@ export function useUsers({ search, status, page = 1, pageSize = 10 }: UseUsersPa
 export function useCreateUser() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (data: { name: string; email: string }) =>
+    mutationFn: (data: CreateUserParams) =>
       apiFetch("/api/admin/users", {
         method: "POST",
         body: data,

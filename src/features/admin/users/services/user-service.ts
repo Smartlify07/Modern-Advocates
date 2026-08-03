@@ -105,13 +105,22 @@ export async function listUsers(
   }
 }
 
-export async function createUser(data: { name: string; email: string }) {
+export type AdminRole = "user" | "admin" | "manager" | "editor" | "instructor"
+
+export interface CreateUserParams {
+  name: string
+  email: string
+  password?: string
+  role?: AdminRole
+}
+
+export async function createUser(data: CreateUserParams) {
   return auth.api.createUser({
     body: {
       email: data.email,
       name: data.name,
-      password: crypto.randomUUID(),
-      role: "user",
+      password: data.password ?? crypto.randomUUID(),
+      role: data.role ?? "user",
     },
     headers: await headers(),
   })
