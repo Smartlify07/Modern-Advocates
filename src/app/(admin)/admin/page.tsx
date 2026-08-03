@@ -4,6 +4,8 @@ import { useState, useCallback } from "react"
 import { toast } from "sonner"
 import { Button } from "@/shared/ui/button"
 import { CardTitle } from "@/shared/ui/card"
+import { AdminPageContainer } from "@/shared/ui/admin-page-container"
+import { PageHeader } from "@/shared/ui/page-header"
 import { Skeleton } from "@/shared/ui/skeleton"
 import {
   Table,
@@ -87,12 +89,10 @@ export default function AdminDashboardPage() {
   }, [])
 
   return (
-    <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
+    <AdminPageContainer>
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-4xl leading-none font-semibold tracking-tight-lg">
-            Dashboard
-          </h1>
+          <PageHeader title="Dashboard" />
         </div>
 
         <KpiCards role={role} />
@@ -155,6 +155,6 @@ export default function AdminDashboardPage() {
         }
         isPending={deleteMutation.isPending}
       />
-    </div>
+    </AdminPageContainer>
   )
 }

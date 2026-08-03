@@ -4,7 +4,8 @@ import { useState, useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { queryKeys } from "@/shared/lib/query-keys"
-import { PageHeader } from "@/features/admin/products/components/page-header"
+import { PageHeader } from "@/shared/ui/page-header"
+import { AdminPageContainer } from "@/shared/ui/admin-page-container"
 import { SearchExportRow } from "@/features/admin/products/components/search-export-row"
 import { SalesSummaryCards } from "@/features/admin/products/components/sales-summary-cards"
 import { SalesTransactionsTable } from "@/features/admin/products/components/sales-transactions-table"
@@ -32,7 +33,7 @@ export default function AllSalesPage() {
   )
 
   return (
-    <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
+    <AdminPageContainer>
       <PageHeader title="All Sales" />
       {isLoading ? (
         <>
@@ -54,6 +55,6 @@ export default function AllSalesPage() {
           </div>
         </>
       )}
-    </div>
+    </AdminPageContainer>
   )
 }

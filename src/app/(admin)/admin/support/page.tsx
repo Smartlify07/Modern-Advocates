@@ -6,6 +6,8 @@ import { KpiCards } from "@/features/admin/support/components/kpi-cards"
 import { SupportFilterBar } from "@/features/admin/support/components/support-filter-bar"
 import { SupportTable } from "@/features/admin/support/components/support-table"
 import { PaginationBar } from "@/shared/ui/pagination-bar"
+import { AdminPageContainer } from "@/shared/ui/admin-page-container"
+import { PageHeader } from "@/shared/ui/page-header"
 import { TableSkeleton } from "@/features/admin/support/components/table-skeleton"
 import { ViewTicketDialog } from "@/features/admin/support/components/view-ticket-dialog"
 import { useSupportTickets, useUpdateTicketStatus, useDeleteTicket } from "@/features/admin/support/hooks/use-support"
@@ -67,8 +69,8 @@ export default function AdminSupportPage() {
   }
 
   return (
-    <div className="mx-auto flex flex-col gap-7.5 p-7.5 lg:max-w-7xl 2xl:max-w-360">
-      <h1 className="text-4xl font-bold tracking-tight-lg">Help &amp; Support</h1>
+    <AdminPageContainer className="gap-7.5">
+      <PageHeader title="Help &amp; Support" />
 
       <KpiCards
         totalTickets={kpis.total}
@@ -137,6 +139,6 @@ export default function AdminSupportPage() {
         onStatusChange={handleStatusChange}
         isPending={statusMutation.isPending}
       />
-    </div>
+    </AdminPageContainer>
   )
 }

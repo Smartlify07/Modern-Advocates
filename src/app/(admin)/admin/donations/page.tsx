@@ -11,6 +11,8 @@ import {
 import { DonationsTable } from "@/features/admin/donations/components/donations-table"
 import { SearchExportRow } from "@/features/admin/donations/components/search-export-row"
 import { PaginationBar } from "@/shared/ui/pagination-bar"
+import { AdminPageContainer } from "@/shared/ui/admin-page-container"
+import { PageHeader } from "@/shared/ui/page-header"
 import type { Donation } from "@/features/admin/donations/types"
 
 const ITEMS_PER_PAGE = 10
@@ -73,8 +75,8 @@ export default function AdminDonationsPage() {
   const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
 
   return (
-    <div className="mx-auto flex flex-col gap-7.5 p-7.5 lg:max-w-7xl 2xl:max-w-360">
-      <h1 className="text-4xl font-semibold tracking-tight-lg">Donations</h1>
+    <AdminPageContainer className="gap-7.5">
+      <PageHeader title="Donations" />
 
       <SearchExportRow
         search={search}
@@ -110,6 +112,6 @@ export default function AdminDonationsPage() {
           />
         </>
       )}
-    </div>
+    </AdminPageContainer>
   )
 }

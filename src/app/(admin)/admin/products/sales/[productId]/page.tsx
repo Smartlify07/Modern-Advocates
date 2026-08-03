@@ -4,7 +4,8 @@ import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { queryKeys } from "@/shared/lib/query-keys"
 import { useParams } from "next/navigation"
-import { PageHeader } from "@/features/admin/products/components/page-header"
+import { PageHeader } from "@/shared/ui/page-header"
+import { AdminPageContainer } from "@/shared/ui/admin-page-container"
 import { SalesSummaryCards } from "@/features/admin/products/components/sales-summary-cards"
 import { SalesTransactionsTable } from "@/features/admin/products/components/sales-transactions-table"
 import { SalesSummarySkeleton, TableSkeleton } from "@/features/admin/products/components/products-skeleton"
@@ -41,23 +42,23 @@ export default function SaleDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
+      <AdminPageContainer>
         <PageHeader title="Sale Details" />
         <SalesSummarySkeleton />
         <div className="flex flex-col gap-4">
           <div className="h-6 w-52 rounded bg-muted animate-pulse" />
           <TableSkeleton rows={5} cols={4} />
         </div>
-      </div>
+      </AdminPageContainer>
     )
   }
 
   if (!data) {
     return (
-      <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
+      <AdminPageContainer>
         <PageHeader title="Sale Details" />
         <p className="text-muted-foreground">Product not found</p>
-      </div>
+      </AdminPageContainer>
     )
   }
 
@@ -72,13 +73,13 @@ export default function SaleDetailPage() {
   }))
 
   return (
-    <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
+    <AdminPageContainer>
       <PageHeader title={data.product.title} />
       <SalesSummaryCards sales={data.totalSales} volume={data.totalRevenue} />
       <div className="flex flex-col gap-4">
         <h2 className="text-lg font-bold">Customers who purchased</h2>
         <SalesTransactionsTable sales={sales} />
       </div>
-    </div>
+    </AdminPageContainer>
   )
 }

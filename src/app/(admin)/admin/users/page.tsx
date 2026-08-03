@@ -15,6 +15,7 @@ import {
 import { UserTable } from "@/features/admin/components/user-table"
 import { ControlsRow } from "@/features/admin/users/components/controls-row"
 import { PaginationBar } from "@/shared/ui/pagination-bar"
+import { AdminPageContainer } from "@/shared/ui/admin-page-container"
 import { AddUserDialog } from "@/features/admin/users/components/add-user-dialog"
 import { SuspendUserDialog } from "@/features/admin/users/components/suspend-user-dialog"
 import { ActivateUserDialog } from "@/features/admin/users/components/activate-user-dialog"
@@ -130,7 +131,7 @@ export default function AdminUsersPage() {
   }, [])
 
   return (
-    <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
+    <AdminPageContainer>
       <ControlsRow
         search={search}
         onSearchChange={handleSearchChange}
@@ -213,6 +214,6 @@ export default function AdminUsersPage() {
         }
         isPending={deleteUser.isPending}
       />
-    </div>
+    </AdminPageContainer>
   )
 }
