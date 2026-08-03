@@ -14,7 +14,7 @@ import {
 } from "@/shared/ui/table"
 import { UserTable } from "@/features/admin/components/user-table"
 import { ControlsRow } from "@/features/admin/users/components/controls-row"
-import { PaginationBar } from "@/features/admin/users/components/pagination-bar"
+import { PaginationBar } from "@/shared/ui/pagination-bar"
 import { AddUserDialog } from "@/features/admin/users/components/add-user-dialog"
 import { SuspendUserDialog } from "@/features/admin/users/components/suspend-user-dialog"
 import { ActivateUserDialog } from "@/features/admin/users/components/activate-user-dialog"

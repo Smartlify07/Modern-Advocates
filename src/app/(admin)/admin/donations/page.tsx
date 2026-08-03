@@ -10,7 +10,7 @@ import {
 } from "@/shared/ui/table"
 import { DonationsTable } from "@/features/admin/donations/components/donations-table"
 import { SearchExportRow } from "@/features/admin/donations/components/search-export-row"
-import { PaginationBar } from "@/features/admin/donations/components/pagination-bar"
+import { PaginationBar } from "@/shared/ui/pagination-bar"
 import type { Donation } from "@/features/admin/donations/types"
 
 const ITEMS_PER_PAGE = 10

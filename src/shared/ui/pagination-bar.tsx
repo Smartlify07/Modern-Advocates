@@ -28,9 +28,7 @@ export function PaginationBar({ page, total, pageSize, onPageChange }: Paginatio
   } else {
     pages.push(1)
     if (page > 3) pages.push("ellipsis")
-    for (let i = Math.max(2, page - 1); i <= Math.min(totalPages - 1, page + 1); i++) {
-      pages.push(i)
-    }
+    for (let i = Math.max(2, page - 1); i <= Math.min(totalPages - 1, page + 1); i++) pages.push(i)
     if (page < totalPages - 2) pages.push("ellipsis")
     pages.push(totalPages)
   }
@@ -38,7 +36,7 @@ export function PaginationBar({ page, total, pageSize, onPageChange }: Paginatio
   return (
     <div className="flex items-center justify-between">
       <p className="text-sm text-muted-foreground">
-        Showing {start} – {end} of {total}
+        Showing {start} &ndash; {end} of {total}
       </p>
       <Pagination className="mx-0 w-auto">
         <PaginationContent>

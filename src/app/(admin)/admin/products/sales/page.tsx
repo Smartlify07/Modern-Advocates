@@ -8,7 +8,7 @@ import { PageHeader } from "@/features/admin/products/components/page-header"
 import { SearchExportRow } from "@/features/admin/products/components/search-export-row"
 import { SalesSummaryCards } from "@/features/admin/products/components/sales-summary-cards"
 import { SalesTransactionsTable } from "@/features/admin/products/components/sales-transactions-table"
-import { PaginationBar } from "@/features/admin/products/components/pagination-bar"
+import { PaginationBar } from "@/shared/ui/pagination-bar"
 import { SalesSummarySkeleton, SearchExportSkeleton, TableSkeleton } from "@/features/admin/products/components/products-skeleton"
 import type { SaleTransaction, SalesSummary } from "@/features/admin/products/types"
 

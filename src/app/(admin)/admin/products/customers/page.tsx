@@ -7,7 +7,7 @@ import { queryKeys } from "@/shared/lib/query-keys"
 import { PageHeader } from "@/features/admin/products/components/page-header"
 import { SearchExportRow } from "@/features/admin/products/components/search-export-row"
 import { CustomersTable } from "@/features/admin/products/components/customers-table"
-import { PaginationBar } from "@/features/admin/products/components/pagination-bar"
+import { PaginationBar } from "@/shared/ui/pagination-bar"
 import { SearchExportSkeleton, TableSkeleton } from "@/features/admin/products/components/products-skeleton"
 import type { Customer } from "@/features/admin/products/types"
 
