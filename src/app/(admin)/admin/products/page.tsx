@@ -8,6 +8,8 @@ import { SalesSection } from "@/features/admin/products/components/sales-section
 import { ProductListSection } from "@/features/admin/products/components/product-list-section"
 import { KpiSectionSkeleton, ProductListSectionSkeleton } from "@/features/admin/products/components/products-skeleton"
 import type { Product } from "@/features/admin/products/types"
+import { AdminPageContainer } from "@/shared/ui/admin-page-container"
+import { PageHeader } from "@/shared/ui/page-header"
 
 export default function AdminProductsPage() {
   const { data: products = [], isLoading } = useQuery<Product[]>({
@@ -16,9 +18,9 @@ export default function AdminProductsPage() {
   })
 
   return (
-    <div className="mx-auto flex flex-col gap-7.5 p-7.5 lg:max-w-7xl 2xl:max-w-360">
+    <AdminPageContainer className="gap-7.5">
       <div className="flex flex-col gap-5">
-        <h1 className="text-4xl font-semibold tracking-tight-lg">Products</h1>
+        <PageHeader title="Products" />
         {isLoading ? (
           <KpiSectionSkeleton />
         ) : (
@@ -30,6 +32,6 @@ export default function AdminProductsPage() {
       </div>
       <SalesSection />
       {isLoading ? <ProductListSectionSkeleton /> : <ProductListSection products={products} />}
-    </div>
+    </AdminPageContainer>
   )
 }

@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import {
   Dialog,
   DialogContent,
@@ -9,13 +8,14 @@ import {
   DialogFooter,
 } from "@/shared/ui/dialog"
 import { Button } from "@/shared/ui/button"
-import { Input } from "@/shared/ui/input"
 import { Loader2Icon } from "lucide-react"
+import { CreateUserForm, CREATE_USER_FORM_ID } from "@/features/admin/users/components/create-user-form"
+import type { CreateUserParams } from "@/features/admin/users/services/user-service"
 
 interface AddUserDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSubmit: (data: { name: string; email: string }) => void
+  onSubmit: (data: CreateUserParams) => void
   isPending: boolean
 }
 
@@ -25,16 +25,6 @@ export function AddUserDialog({
   onSubmit,
   isPending,
 }: AddUserDialogProps) {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-
-  const handleSubmit = () => {
-    if (!name.trim() || !email.trim() || isPending) return
-    onSubmit({ name: name.trim(), email: email.trim() })
-    setName("")
-    setEmail("")
-  }
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="px-7.5 py-4 sm:max-w-xl [&>button]:end-7.5">
@@ -48,19 +38,7 @@ export function AddUserDialog({
               User
             </span>
           </p>
-          <Input
-            placeholder="Full Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="h-pill p-5"
-          />
-          <Input
-            placeholder="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="h-pill p-5"
-          />
+          <CreateUserForm onSubmit={onSubmit} isPending={isPending} />
         </div>
         <DialogFooter className="-mx-7.5 border-t-0 px-7.5 pb-4 sm:justify-start">
           <Button
@@ -72,8 +50,9 @@ export function AddUserDialog({
             Cancel
           </Button>
           <Button
+            type="submit"
+            form={CREATE_USER_FORM_ID}
             className="h-pill flex-1 rounded-button-medium bg-ma-admin-primary px-6 py-4 text-white hover:bg-ma-admin-primary/80"
-            onClick={handleSubmit}
             disabled={isPending}
           >
             {isPending ? <Loader2Icon className="size-5 animate-spin" /> : "Add User"}

@@ -77,6 +77,8 @@ File: `src/app/globals.css`
 - `CourseWizardShell` (create|edit)
 - `CreateUserForm` (decision 5)
 
+**Status (2026-08-04):** P5 done on `refactor/frontend-p5-reusable-components`. Committed: `shared/ui/pagination-bar.tsx` (5→1), `shared/ui/confirm-dialog.tsx` (6→1), `shared/ui/page-header.tsx` + `shared/ui/admin-page-container.tsx` (rewired all admin pages), `shared/ui/table-skeleton.tsx` + `shared/ui/data-table-skeleton.tsx` (6→1, deleted team/support feature skeletons, migrated products-skeleton), `shared/ui/status-badge.tsx`, `shared/ui/empty-state.tsx`, `shared/ui/stat-card.tsx` (moved `features/admin/components/stat-card`), marketing atoms `MarketingButton`/`MarketingContainer`/`SectionHeading`/`useContactForm` (rewired login/signup/auth-code/contact-hero/donation-support/account-support), `CreateUserForm` + extended `/api/admin/users` POST with optional `password`/`role` (`AdminRole` union). Deferred: `usePagination()` (pages mix client-slice and server-query pagination), `AdminListPage`/`useListPage`, users↔dashboard and all-products↔product-table page merges, and `CourseWizardShell` — lower value and higher risk; revisit in a later phase.
+
 ### P6 — Data flow & stores
 
 - Merge form store into wizard store; break `course-service`↔store circular import

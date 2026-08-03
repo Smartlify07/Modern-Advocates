@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useCourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
 import { useSaveCourse } from "@/features/courses/hooks/use-course-mutations"
 import { Stepper } from "@/shared/ui/stepper"
+import { AdminPageContainer } from "@/shared/ui/admin-page-container"
 import { Button } from "@/shared/ui/button"
 import { BasicInfoStep } from "@/features/courses/components/wizard/basic-info-step"
 import { SaveDraftDialog } from "@/app/(admin)/admin/courses/_components/save-draft-dialog"
@@ -79,7 +80,7 @@ export default function CreateCoursePage() {
   const isPending = saveCourse.isPending
 
   return (
-    <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
+    <AdminPageContainer>
       <Stepper
         steps={wizardSteps}
         currentStep={currentStep}
@@ -155,6 +156,6 @@ export default function CreateCoursePage() {
         onConfirm={handleSaveConfirmed}
         isPending={isPending}
       />
-    </div>
+    </AdminPageContainer>
   )
 }

@@ -18,6 +18,8 @@ import {
 import { Button } from "@/shared/ui/button"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { AdminPageContainer } from "@/shared/ui/admin-page-container"
+import { PageHeader } from "@/shared/ui/page-header"
 
 const nameSchema = z.string().trim().min(1, "Name is required")
 
@@ -117,8 +119,8 @@ export default function AdminProfilePage() {
   }
 
   return (
-    <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
-      <h1 className="text-4xl leading-none font-semibold tracking-tight-lg">Account</h1>
+    <AdminPageContainer>
+      <PageHeader title="Account" />
 
       {isPending ? (
         <div className="flex w-full flex-col gap-12 rounded-xl bg-white">
@@ -222,6 +224,6 @@ export default function AdminProfilePage() {
           </div>
         </div>
       )}
-    </div>
+    </AdminPageContainer>
   )
 }

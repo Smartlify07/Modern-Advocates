@@ -1,6 +1,5 @@
 "use client"
 
-import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import {
   DropdownMenu,
@@ -18,7 +17,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/ui/table"
-import { cn, formatDate, getStatusColor } from "@/shared/utils"
+import { StatusBadge } from "@/shared/ui/status-badge"
+import { formatDate } from "@/shared/utils"
 import { MoreHorizontalIcon, EyeIcon, MessageSquareReplyIcon, Trash2Icon } from "lucide-react"
 import type { Ticket } from "../types"
 
@@ -69,12 +69,7 @@ export function SupportTable({ tickets, onView, onDelete }: SupportTableProps) {
                   {ticket.message}
                 </TableCell>
                 <TableCell>
-                  <Badge
-                    variant="secondary"
-                    className={cn("rounded-8 font-normal", getStatusColor(ticket.status))}
-                  >
-                    {ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1)}
-                  </Badge>
+                  <StatusBadge status={ticket.status} />
                 </TableCell>
                 <TableCell className="text-muted-foreground">
                   {formatDate(ticket.createdAt)}

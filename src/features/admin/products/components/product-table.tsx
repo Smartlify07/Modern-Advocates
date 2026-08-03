@@ -2,7 +2,6 @@ import Link from "next/link"
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
-import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger,
@@ -10,11 +9,11 @@ import {
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/shared/ui/table"
-import { MoreHorizontalIcon, ArchiveIcon, ChartSpline } from "lucide-react"
-import { ArchiveCourseDialog } from "@/app/(admin)/admin/courses/_components/archive-course-dialog"
+import { StatusBadge } from "@/shared/ui/status-badge"
+import { MoreHorizontalIcon, ArchiveIcon, RotateCcwIcon, ChartSpline } from "lucide-react"
+import { ConfirmDialog } from "@/shared/ui/confirm-dialog"
 import type { Product } from "@/features/admin/products/types"
 import { apiFetch } from "@/shared/lib/api-fetch"
-import { getStatusColor } from "@/shared/utils"
 import { queryKeys } from "@/shared/lib/query-keys"
 
 interface ProductTableProps { products: Product[] }
@@ -23,10 +22,6 @@ const productStatusLabels: Record<string, string> = {
   published: "Live",
   draft: "Draft",
   archived: "Archived",
-}
-
-function statusDisplay(status: string) {
-  return { label: productStatusLabels[status] ?? status, class: getStatusColor(status) }
 }
 
 export function ProductTable({ products }: ProductTableProps) {
@@ -61,15 +56,15 @@ export function ProductTable({ products }: ProductTableProps) {
           </TableHeader>
           <TableBody>
             {products.map((product) => {
-              const disp = statusDisplay(product.status)
               return (
                 <TableRow className="hover:bg-ma-bg" key={product.id}>
                   <TableCell><span className="font-normal">{product.name}</span></TableCell>
                   <TableCell className="text-primary">${product.salesPrice.toFixed(2)} USD</TableCell>
                   <TableCell>
-                    <Badge variant="secondary" className={`rounded-8 font-normal ${disp.class}`}>
-                      {disp.label}
-                    </Badge>
+                    <StatusBadge
+                      status={product.status}
+                      label={productStatusLabels[product.status] ?? product.status}
+                    />
                   </TableCell>
                   <TableCell>
                     <Link href={`/admin/products/sales/${product.id}`} className="cursor-pointer text-blue-600 underline underline-offset-2">
@@ -102,11 +97,20 @@ export function ProductTable({ products }: ProductTableProps) {
           </TableBody>
         </Table>
       </div>
-      <ArchiveCourseDialog
+      <ConfirmDialog
         open={!!archiveProduct}
         onOpenChange={(o) => { if (!o) setArchiveProduct(null) }}
-        course={archiveProduct as any}
-        mode={archiveProduct?.status === "archived" ? "unarchive" : "archive"}
+        title={archiveProduct?.status === "archived" ? "Unarchive Product" : "Archive Product"}
+        heading={archiveProduct?.status === "archived" ? "Unarchive this product?" : "Archive this product?"}
+        description={
+          archiveProduct?.status === "archived"
+            ? "This product will be restored and visible to students again."
+            : "This product will be archived and no longer visible to students. You can unarchive it anytime."
+        }
+        confirmLabel={archiveProduct?.status === "archived" ? "Unarchive Product" : "Archive Product"}
+        variant="warning"
+        icon={archiveProduct?.status === "archived" ? RotateCcwIcon : ArchiveIcon}
+        preventCloseWhilePending
         onConfirm={() => { if (archiveProduct) archiveMutation.mutate({ id: archiveProduct.id, status: archiveProduct.status }) }}
         isPending={archiveMutation.isPending}
       />

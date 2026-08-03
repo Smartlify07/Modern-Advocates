@@ -1,5 +1,6 @@
 import { Skeleton } from "@/shared/ui/skeleton"
 import { Card, CardContent } from "@/shared/ui/card"
+import { TableSkeleton } from "@/shared/ui/table-skeleton"
 
 export function KpiSectionSkeleton() {
   return (
@@ -49,35 +50,6 @@ export function SalesSectionSkeleton() {
   )
 }
 
-export function TableSkeleton({ rows = 5, cols = 5 }: { rows?: number; cols?: number }) {
-  return (
-    <div className="rounded-t-2xl">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="rounded-t-2xl bg-ma-surface-2">
-            {Array.from({ length: cols }).map((_, i) => (
-              <th key={i} className="p-4">
-                <Skeleton className="h-4 w-20" />
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {Array.from({ length: rows }).map((_, r) => (
-            <tr key={r} className="border-b">
-              {Array.from({ length: cols }).map((_, c) => (
-                <td key={c} className="p-4">
-                  <Skeleton className={`h-4 ${c === 0 ? "w-48" : c === cols - 1 ? "w-12" : "w-24"}`} />
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
-}
-
 export function SalesSummarySkeleton() {
   return (
     <div className="grid gap-4 md:grid-cols-2">
@@ -98,15 +70,6 @@ export function SalesSummarySkeleton() {
   )
 }
 
-export function SearchExportSkeleton() {
-  return (
-    <div className="flex items-center justify-between">
-      <Skeleton className="h-11 w-[300px] rounded-8" />
-      <Skeleton className="h-11 w-[115px] rounded-8" />
-    </div>
-  )
-}
-
 export function ProductListSectionSkeleton() {
   return (
     <div className="flex flex-col gap-4">
@@ -114,7 +77,15 @@ export function ProductListSectionSkeleton() {
         <Skeleton className="h-6 w-28" />
         <Skeleton className="h-5 w-12" />
       </div>
-      <TableSkeleton rows={4} cols={5} />
+      <TableSkeleton
+        columns={[
+          { label: "Product", headClassName: "w-[280px]", skeletonClassName: "w-48" },
+          { label: "Sales Price", headClassName: "w-[140px]", skeletonClassName: "w-20" },
+          { label: "Status", headClassName: "w-[100px]", skeletonClassName: "w-20" },
+          { label: "Sales", headClassName: "w-[80px]", skeletonClassName: "w-12" },
+          { label: "Actions", headClassName: "w-[80px] text-center", center: true, skeletonClassName: "size-6 rounded-full" },
+        ]}
+      />
     </div>
   )
 }
