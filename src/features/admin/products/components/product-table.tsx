@@ -10,8 +10,8 @@ import {
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/shared/ui/table"
-import { MoreHorizontalIcon, ArchiveIcon, ChartSpline } from "lucide-react"
-import { ArchiveCourseDialog } from "@/app/(admin)/admin/courses/_components/archive-course-dialog"
+import { MoreHorizontalIcon, ArchiveIcon, RotateCcwIcon, ChartSpline } from "lucide-react"
+import { ConfirmDialog } from "@/shared/ui/confirm-dialog"
 import type { Product } from "@/features/admin/products/types"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { getStatusColor } from "@/shared/utils"
@@ -102,11 +102,20 @@ export function ProductTable({ products }: ProductTableProps) {
           </TableBody>
         </Table>
       </div>
-      <ArchiveCourseDialog
+      <ConfirmDialog
         open={!!archiveProduct}
         onOpenChange={(o) => { if (!o) setArchiveProduct(null) }}
-        course={archiveProduct as any}
-        mode={archiveProduct?.status === "archived" ? "unarchive" : "archive"}
+        title={archiveProduct?.status === "archived" ? "Unarchive Product" : "Archive Product"}
+        heading={archiveProduct?.status === "archived" ? "Unarchive this product?" : "Archive this product?"}
+        description={
+          archiveProduct?.status === "archived"
+            ? "This product will be restored and visible to students again."
+            : "This product will be archived and no longer visible to students. You can unarchive it anytime."
+        }
+        confirmLabel={archiveProduct?.status === "archived" ? "Unarchive Product" : "Archive Product"}
+        variant="warning"
+        icon={archiveProduct?.status === "archived" ? RotateCcwIcon : ArchiveIcon}
+        preventCloseWhilePending
         onConfirm={() => { if (archiveProduct) archiveMutation.mutate({ id: archiveProduct.id, status: archiveProduct.status }) }}
         isPending={archiveMutation.isPending}
       />
