@@ -9,7 +9,7 @@ import { AdminPageContainer } from "@/shared/ui/admin-page-container"
 import { SearchExportRow } from "@/features/admin/products/components/search-export-row"
 import { CustomersTable } from "@/features/admin/products/components/customers-table"
 import { PaginationBar } from "@/shared/ui/pagination-bar"
-import { SearchExportSkeleton, TableSkeleton } from "@/features/admin/products/components/products-skeleton"
+import { DataTableSkeleton } from "@/shared/ui/data-table-skeleton"
 import type { Customer } from "@/features/admin/products/types"
 
 const PAGE_SIZE = 10
@@ -32,10 +32,15 @@ export default function AllCustomersPage() {
     <AdminPageContainer>
       <PageHeader title="All Customers" />
       {isLoading ? (
-        <>
-          <SearchExportSkeleton />
-          <TableSkeleton rows={5} cols={5} />
-        </>
+        <DataTableSkeleton
+          columns={[
+            { label: "Customer name", headClassName: "w-[280px]", skeletonClassName: "w-48" },
+            { label: "Customer email", headClassName: "w-[320px]", skeletonClassName: "w-56" },
+            { label: "Courses Purchased", headClassName: "text-center", center: true, skeletonClassName: "w-12" },
+            { label: "Total Spent", headClassName: "text-center", center: true, skeletonClassName: "w-16" },
+            { label: "Last Purchase", headClassName: "text-center", center: true, skeletonClassName: "w-24" },
+          ]}
+        />
       ) : (
         <>
           <SearchExportRow placeholder="Search customer..." value={search} onChange={setSearch} />

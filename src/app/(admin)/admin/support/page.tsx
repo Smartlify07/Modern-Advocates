@@ -8,7 +8,7 @@ import { SupportTable } from "@/features/admin/support/components/support-table"
 import { PaginationBar } from "@/shared/ui/pagination-bar"
 import { AdminPageContainer } from "@/shared/ui/admin-page-container"
 import { PageHeader } from "@/shared/ui/page-header"
-import { TableSkeleton } from "@/features/admin/support/components/table-skeleton"
+import { TableSkeleton } from "@/shared/ui/table-skeleton"
 import { ViewTicketDialog } from "@/features/admin/support/components/view-ticket-dialog"
 import { useSupportTickets, useUpdateTicketStatus, useDeleteTicket } from "@/features/admin/support/hooks/use-support"
 import { RefreshCwIcon, AlertCircleIcon } from "lucide-react"
@@ -94,7 +94,16 @@ export default function AdminSupportPage() {
       />
 
       {isLoading ? (
-        <TableSkeleton />
+        <TableSkeleton
+          columns={[
+            { label: "Name", headClassName: "w-[200px]", skeletonClassName: "w-32" },
+            { label: "Email", headClassName: "w-[240px]", skeletonClassName: "w-44" },
+            { label: "Message", headClassName: "w-[280px]", skeletonClassName: "w-36" },
+            { label: "Status", headClassName: "w-[100px]", skeletonClassName: "h-5 w-16 rounded-full" },
+            { label: "Date", headClassName: "w-[120px]", skeletonClassName: "w-20" },
+            { label: "Action", headClassName: "w-[80px]", center: true, skeletonClassName: "size-6 rounded-full" },
+          ]}
+        />
       ) : isError ? (
         <ErrorState>
           <div className="flex size-12 items-center justify-center rounded-full bg-red-100">

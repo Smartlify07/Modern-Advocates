@@ -9,7 +9,7 @@ import { AdminPageContainer } from "@/shared/ui/admin-page-container"
 import { SearchExportRow } from "@/features/admin/products/components/search-export-row"
 import { AllProductsTable } from "@/features/admin/products/components/all-products-table"
 import { PaginationBar } from "@/shared/ui/pagination-bar"
-import { SearchExportSkeleton, TableSkeleton } from "@/features/admin/products/components/products-skeleton"
+import { DataTableSkeleton } from "@/shared/ui/data-table-skeleton"
 import type { Product } from "@/features/admin/products/types"
 
 const PAGE_SIZE = 10
@@ -32,10 +32,15 @@ export default function AllProductsPage() {
     <AdminPageContainer>
       <PageHeader title="All Products" />
       {isLoading ? (
-        <>
-          <SearchExportSkeleton />
-          <TableSkeleton rows={5} cols={5} />
-        </>
+        <DataTableSkeleton
+          columns={[
+            { label: "Product", headClassName: "w-[280px]", skeletonClassName: "w-48" },
+            { label: "Sales Price", headClassName: "w-[120px] text-center", center: true, skeletonClassName: "w-20" },
+            { label: "Status", headClassName: "w-[100px] text-center", center: true, skeletonClassName: "w-20" },
+            { label: "Sales", headClassName: "w-[80px] text-center", center: true, skeletonClassName: "w-12" },
+            { label: "Actions", headClassName: "w-[80px] text-center", center: true, skeletonClassName: "size-6 rounded-full" },
+          ]}
+        />
       ) : (
         <>
           <SearchExportRow placeholder="Search product..." value={search} onChange={setSearch} />

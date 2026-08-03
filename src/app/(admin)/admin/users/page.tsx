@@ -3,15 +3,7 @@
 import { useState, useCallback, useMemo } from "react"
 import { toast } from "sonner"
 import { Button } from "@/shared/ui/button"
-import { Skeleton } from "@/shared/ui/skeleton"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/shared/ui/table"
+import { TableSkeleton } from "@/shared/ui/table-skeleton"
 import { UserTable } from "@/features/admin/components/user-table"
 import { ControlsRow } from "@/features/admin/users/components/controls-row"
 import { PaginationBar } from "@/shared/ui/pagination-bar"
@@ -31,35 +23,6 @@ import {
 } from "@/shared/ui/error-state"
 
 const PAGE_SIZE = 10
-
-function TableSkeleton() {
-  return (
-    <Table>
-      <TableHeader className="rounded-t-2xl">
-        <TableRow className="rounded-t-2xl bg-ma-surface-2 hover:bg-ma-surface-2">
-          <TableHead className="w-[220px]">User</TableHead>
-          <TableHead className="w-[280px]">Email</TableHead>
-          <TableHead className="w-[140px] text-center">Course Enrolled</TableHead>
-          <TableHead className="w-[100px]">Status</TableHead>
-          <TableHead className="w-[160px]">Last Login</TableHead>
-          <TableHead className="w-[80px] text-center">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <TableRow key={i}>
-            <TableCell><Skeleton className="h-6 w-32" /></TableCell>
-            <TableCell><Skeleton className="h-6 w-44" /></TableCell>
-            <TableCell className="text-center"><Skeleton className="mx-auto h-6 w-12" /></TableCell>
-            <TableCell><Skeleton className="h-6 w-16" /></TableCell>
-            <TableCell><Skeleton className="h-6 w-24" /></TableCell>
-            <TableCell className="text-center"><Skeleton className="mx-auto h-6 w-6 rounded-full" /></TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  )
-}
 
 export default function AdminUsersPage() {
   const { data: session, isPending: sessionPending } = useSession()
@@ -143,7 +106,16 @@ export default function AdminUsersPage() {
 
       <div className="flex flex-col gap-8">
         {sessionPending || isLoading ? (
-          <TableSkeleton />
+          <TableSkeleton
+            columns={[
+              { label: "User", headClassName: "w-[220px]" },
+              { label: "Email", headClassName: "w-[280px]" },
+              { label: "Course Enrolled", headClassName: "w-[140px] text-center", center: true, skeletonClassName: "w-12" },
+              { label: "Status", headClassName: "w-[100px]", skeletonClassName: "w-16" },
+              { label: "Last Login", headClassName: "w-[160px]", skeletonClassName: "w-24" },
+              { label: "Actions", headClassName: "w-[80px] text-center", center: true, skeletonClassName: "size-6 rounded-full" },
+            ]}
+          />
         ) : isError ? (
           <ErrorState className="rounded-lg border border-red-200 bg-red-50 py-12">
             <AlertCircleIcon className="size-8 text-red-500" />

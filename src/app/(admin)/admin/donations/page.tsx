@@ -4,10 +4,7 @@ import { useState, useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { queryKeys } from "@/shared/lib/query-keys"
-import { Skeleton } from "@/shared/ui/skeleton"
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/shared/ui/table"
+import { TableSkeleton } from "@/shared/ui/table-skeleton"
 import { DonationsTable } from "@/features/admin/donations/components/donations-table"
 import { SearchExportRow } from "@/features/admin/donations/components/search-export-row"
 import { PaginationBar } from "@/shared/ui/pagination-bar"
@@ -16,31 +13,6 @@ import { PageHeader } from "@/shared/ui/page-header"
 import type { Donation } from "@/features/admin/donations/types"
 
 const ITEMS_PER_PAGE = 10
-
-function TableSkeleton() {
-  return (
-    <Table>
-      <TableHeader className="rounded-t-2xl">
-        <TableRow className="rounded-t-2xl bg-ma-surface-2 hover:bg-ma-surface-2">
-          <TableHead className="w-[220px]">Name</TableHead>
-          <TableHead className="w-[280px]">Email</TableHead>
-          <TableHead className="w-[120px]">Amount</TableHead>
-          <TableHead className="w-[160px]">Donation Type</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <TableRow key={i}>
-            <TableCell><Skeleton className="h-6 w-32" /></TableCell>
-            <TableCell><Skeleton className="h-6 w-44" /></TableCell>
-            <TableCell><Skeleton className="h-6 w-20" /></TableCell>
-            <TableCell><Skeleton className="h-6 w-28" /></TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  )
-}
 
 export default function AdminDonationsPage() {
   const [search, setSearch] = useState("")
@@ -86,7 +58,14 @@ export default function AdminDonationsPage() {
       />
 
       {isLoading ? (
-        <TableSkeleton />
+        <TableSkeleton
+          columns={[
+            { label: "Name", headClassName: "w-[220px]" },
+            { label: "Email", headClassName: "w-[280px]" },
+            { label: "Amount", headClassName: "w-[120px]", skeletonClassName: "w-20" },
+            { label: "Donation Type", headClassName: "w-[160px]", skeletonClassName: "w-28" },
+          ]}
+        />
       ) : filtered.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-2 py-20">
           {donations.length === 0 ? (

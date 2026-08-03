@@ -8,7 +8,8 @@ import { PageHeader } from "@/shared/ui/page-header"
 import { AdminPageContainer } from "@/shared/ui/admin-page-container"
 import { SalesSummaryCards } from "@/features/admin/products/components/sales-summary-cards"
 import { SalesTransactionsTable } from "@/features/admin/products/components/sales-transactions-table"
-import { SalesSummarySkeleton, TableSkeleton } from "@/features/admin/products/components/products-skeleton"
+import { SalesSummarySkeleton } from "@/features/admin/products/components/products-skeleton"
+import { TableSkeleton } from "@/shared/ui/table-skeleton"
 
 interface SaleDetailItem {
   id: string
@@ -47,7 +48,14 @@ export default function SaleDetailPage() {
         <SalesSummarySkeleton />
         <div className="flex flex-col gap-4">
           <div className="h-6 w-52 rounded bg-muted animate-pulse" />
-          <TableSkeleton rows={5} cols={4} />
+          <TableSkeleton
+            columns={[
+              { label: "Customer name", headClassName: "w-[200px]", skeletonClassName: "w-32" },
+              { label: "Customer email", headClassName: "w-[240px]", skeletonClassName: "w-40" },
+              { label: "Date", headClassName: "w-[160px]", skeletonClassName: "w-24" },
+              { label: "Amount", headClassName: "w-[120px]", skeletonClassName: "w-16" },
+            ]}
+          />
         </div>
       </AdminPageContainer>
     )

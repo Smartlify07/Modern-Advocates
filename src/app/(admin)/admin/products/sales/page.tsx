@@ -10,7 +10,8 @@ import { SearchExportRow } from "@/features/admin/products/components/search-exp
 import { SalesSummaryCards } from "@/features/admin/products/components/sales-summary-cards"
 import { SalesTransactionsTable } from "@/features/admin/products/components/sales-transactions-table"
 import { PaginationBar } from "@/shared/ui/pagination-bar"
-import { SalesSummarySkeleton, SearchExportSkeleton, TableSkeleton } from "@/features/admin/products/components/products-skeleton"
+import { SalesSummarySkeleton } from "@/features/admin/products/components/products-skeleton"
+import { DataTableSkeleton } from "@/shared/ui/data-table-skeleton"
 import type { SaleTransaction, SalesSummary } from "@/features/admin/products/types"
 
 const PAGE_SIZE = 10
@@ -38,8 +39,15 @@ export default function AllSalesPage() {
       {isLoading ? (
         <>
           <SalesSummarySkeleton />
-          <SearchExportSkeleton />
-          <TableSkeleton rows={5} cols={5} />
+          <DataTableSkeleton
+            columns={[
+              { label: "Product", headClassName: "w-[200px]", skeletonClassName: "w-32" },
+              { label: "Customer name", headClassName: "w-[200px]", skeletonClassName: "w-32" },
+              { label: "Customer email", headClassName: "w-[260px]", skeletonClassName: "w-44" },
+              { label: "Transaction Date", headClassName: "w-[180px]", skeletonClassName: "w-28" },
+              { label: "Amount", headClassName: "w-[120px]", skeletonClassName: "w-16" },
+            ]}
+          />
         </>
       ) : (
         <>
