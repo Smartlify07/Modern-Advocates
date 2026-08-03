@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 
 import { cn } from "@/shared/utils"
-import { Button } from "@/shared/ui/button"
+import { MarketingButton } from "@/shared/ui/marketing-button"
 import {
   Field,
   FieldDescription,
@@ -126,17 +126,14 @@ export function AuthCodeForm({
             <p className="text-sm text-red-500">{error}</p>
           )}
 
-          <Button
+          <MarketingButton
             type="submit"
             disabled={pending}
-            className="group relative h-pill w-full overflow-hidden rounded-pill bg-ma-text px-5 py-4 text-base font-semibold text-white disabled:opacity-60"
+            className="w-full"
           >
-            <span className="relative z-10 inline-flex items-center gap-2">
-              {pending && <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />}
-              {actionLabel}
-            </span>
-            <div className="pointer-events-none absolute inset-0 rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-          </Button>
+            {pending && <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />}
+            {actionLabel}
+          </MarketingButton>
 
           {hideResendSeparator ? (
             <button

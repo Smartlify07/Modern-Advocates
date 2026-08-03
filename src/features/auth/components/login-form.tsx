@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { LoaderCircle } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/shared/utils"
-import { Button } from "@/shared/ui/button"
+import { MarketingButton } from "@/shared/ui/marketing-button"
 import {
   Field,
   FieldDescription,
@@ -164,17 +164,14 @@ export function LoginForm({
 
             {error && <p className="text-sm text-red-500">{error}</p>}
 
-            <Button
+            <MarketingButton
               type="submit"
               disabled={loading}
-              className="group relative h-pill w-full overflow-hidden rounded-pill bg-ma-text px-5 py-4 text-base font-semibold text-white disabled:opacity-60"
+              className="w-full"
             >
-              <span className="relative z-10 inline-flex items-center gap-2">
-                {loading && <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />}
-                Continue
-              </span>
-              <div className="pointer-events-none absolute inset-0 rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-            </Button>
+              {loading && <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />}
+              Continue
+            </MarketingButton>
 
             <FieldSeparator className="my-0 w-full text-muted-foreground md:text-lg [&_[data-slot=field-separator-content]]:bg-white [&_[data-slot=field-separator-content]]:px-[15px]">
               other log in option
