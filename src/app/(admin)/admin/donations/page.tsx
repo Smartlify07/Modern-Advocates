@@ -10,6 +10,11 @@ import { SearchExportRow } from "@/features/admin/donations/components/search-ex
 import { PaginationBar } from "@/shared/ui/pagination-bar"
 import { AdminPageContainer } from "@/shared/ui/admin-page-container"
 import { PageHeader } from "@/shared/ui/page-header"
+import {
+  EmptyState,
+  EmptyStateTitle,
+  EmptyStateDescription,
+} from "@/shared/ui/empty-state"
 import type { Donation } from "@/features/admin/donations/types"
 
 const ITEMS_PER_PAGE = 10
@@ -67,19 +72,23 @@ export default function AdminDonationsPage() {
           ]}
         />
       ) : filtered.length === 0 ? (
-        <div className="flex flex-1 flex-col items-center justify-center gap-2 py-20">
+        <EmptyState className="gap-2 py-20">
           {donations.length === 0 ? (
             <>
-              <p className="text-lg font-medium">No donations yet</p>
-              <p className="text-sm text-muted-foreground">Donations will appear here once supporters contribute.</p>
+              <EmptyStateTitle className="text-lg font-medium">No donations yet</EmptyStateTitle>
+              <EmptyStateDescription className="text-sm">
+                Donations will appear here once supporters contribute.
+              </EmptyStateDescription>
             </>
           ) : (
             <>
-              <p className="text-lg font-medium">No donations found</p>
-              <p className="text-sm text-muted-foreground">There are no donations matching your criteria.</p>
+              <EmptyStateTitle className="text-lg font-medium">No donations found</EmptyStateTitle>
+              <EmptyStateDescription className="text-sm">
+                There are no donations matching your criteria.
+              </EmptyStateDescription>
             </>
           )}
-        </div>
+        </EmptyState>
       ) : (
         <>
           <DonationsTable donations={paginated} />

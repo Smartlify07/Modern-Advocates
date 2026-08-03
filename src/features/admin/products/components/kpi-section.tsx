@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { queryKeys } from "@/shared/lib/query-keys"
-import { StatCard } from "@/features/admin/components/stat-card"
+import { StatCard } from "@/shared/ui/stat-card"
 import { ShoppingBag, TrendingUp, Users } from "lucide-react"
 import type { Customer } from "@/features/admin/products/types"
 
