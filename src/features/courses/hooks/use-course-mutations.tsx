@@ -10,8 +10,8 @@ import {
   uploadCourseVideos,
   type CreateCoursePayload,
   type UpdateCoursePayload,
-  type CourseResponse,
 } from "@/features/courses/api/course-service"
+import type { CourseSaveResult } from "@/features/courses/dto"
 import { useVideoUploadStore } from "@/features/courses/store/use-video-upload-store"
 import { VideoUploadToast } from "@/features/courses/components/video-upload-toast"
 import type { CourseStatus } from "@/features/courses/types"
@@ -21,8 +21,8 @@ export function useCreateCourse() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (payload: CreateCoursePayload): Promise<CourseResponse> => {
-      return apiFetch<CourseResponse>("/api/courses", {
+    mutationFn: async (payload: CreateCoursePayload): Promise<CourseSaveResult> => {
+      return apiFetch<CourseSaveResult>("/api/courses", {
         method: "POST",
         body: payload,
       })
@@ -43,8 +43,8 @@ export function useUpdateCourse() {
     }: {
       courseId: string
       payload: UpdateCoursePayload
-    }): Promise<CourseResponse> => {
-      return apiFetch<CourseResponse>(`/api/courses/${courseId}`, {
+    }): Promise<CourseSaveResult> => {
+      return apiFetch<CourseSaveResult>(`/api/courses/${courseId}`, {
         method: "PATCH",
         body: payload,
       })
@@ -58,7 +58,7 @@ export function useUpdateCourse() {
 
 interface SaveCourseOptions {
   status: CourseStatus
-  onSuccess?: (result: CourseResponse) => void
+  onSuccess?: (result: CourseSaveResult) => void
   courseId?: string
   toastMessage?: string
 }
@@ -82,7 +82,7 @@ export function useSaveCourse() {
     }: {
       store: CourseWizardStore
       options: SaveCourseOptions
-    }): Promise<CourseResponse> => {
+    }): Promise<CourseSaveResult> => {
       let thumbnailUrl: string | undefined
       let instructorImageUrl: string | null = null
 

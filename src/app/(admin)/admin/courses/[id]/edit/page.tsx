@@ -24,7 +24,8 @@ import {
   Loader2,
 } from "lucide-react"
 import type { Step } from "@/shared/ui/stepper"
-import type { CourseStatus, CourseApiResponse } from "@/features/courses/types"
+import type { CourseStatus } from "@/features/courses/types"
+import type { CourseApiResponse } from "@/features/courses/dto"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { queryKeys } from "@/shared/lib/query-keys"

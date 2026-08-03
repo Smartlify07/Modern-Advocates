@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { CourseDetailHeroSection } from "@/features/marketing/components/course-detail-hero-section"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { CourseDetailContentSection } from "@/features/marketing/components/course-detail-content-section"
-import type { CourseApiResponse, CourseApiReview } from "@/features/courses/types"
+import type { CourseApiResponse, CourseApiReview } from "@/features/courses/dto"
 
 interface TiptapNode {
   type?: string

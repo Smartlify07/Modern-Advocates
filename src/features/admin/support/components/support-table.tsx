@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/ui/table"
-import { cn, getStatusColor } from "@/shared/utils"
+import { cn, formatDate, getStatusColor } from "@/shared/utils"
 import { MoreHorizontalIcon, EyeIcon, MessageSquareReplyIcon, Trash2Icon } from "lucide-react"
 import type { Ticket } from "../types"
 
@@ -77,7 +77,7 @@ export function SupportTable({ tickets, onView, onDelete }: SupportTableProps) {
                   </Badge>
                 </TableCell>
                 <TableCell className="text-muted-foreground">
-                  {ticket.date}
+                  {formatDate(ticket.createdAt)}
                 </TableCell>
                 <TableCell className="text-center">
                   <DropdownMenu>

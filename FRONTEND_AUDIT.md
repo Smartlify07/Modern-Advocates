@@ -167,14 +167,14 @@ The `fetch → res.ok → body.error → throw` pattern is hand-rolled in 20+ pl
 
 | Domain | Representations |
 |---|---|
-| Course | `CourseApiResponse` (`features/courses/types`), admin `Course` (`admin/courses/_components/types.ts`), marketing `Course` (`course-card.tsx:169`), inline `featured-courses.tsx`, inline `CourseData` in `course-player-content.tsx` **and** `course-module-sidebar.tsx`, per-component `CourseHeroData`/`CourseContentData`, `OrderSummaryCourseData` — **5+ shapes** |
+| Course | **Resolved (P4, 2026-08-03)** — consolidated into `features/courses/dto.ts`: `CourseApiResponse` (+ nested), `CourseSaveResult`, `CourseListItem` (featured/enrollments rows), `PlayerCourse` family. Remaining local-only shapes: admin-list `Course` (`admin/courses/_components/types.ts`), marketing `CourseDetailHeroData`/`CourseDetailContentData`, `OrderSummaryCourseData` (UI contract). |
 | Order / Transaction | `Order` in `shared/api/orders.ts`, inline `Transaction` in `transactions/page.tsx:7-18`, Drizzle `$inferSelect` in `order-service.ts` — **4** |
 | Enrollment | `shared/api/orders.ts`, pgEnum, inline API returns — **3** |
 | User | `users/types.ts`, `user-service.ts:14-22` (`UserListItem` — identical fields), better-auth schema — **3** |
 | TeamMember | `team/types.ts:1-8` and `team-service.ts:36-43` — identical fields defined twice |
-| Support ticket | `support/types.ts` (`date`), `support-service.ts:12-20` (`createdAt`), inline `ApiTicket`+`mapTicket` adapter in `support/page.tsx:21-35` — **3** with field drift |
-| Donation | Drizzle schema has `currency`/`stripeCheckoutSessionId`/`updatedAt`; client `donations/types.ts` omits all three — and the public `donation/success/page.tsx` imports the *admin* `Donation` type |
-| Topic | `features/courses/types` (`videoUrl`, `description: JSONContent`) vs wizard store (`videoFile`, `description: string`) — **split-brain**, `initialize()` must hand-convert |
+| Support ticket | **Resolved (P4, 2026-08-03)** — single `Ticket` (uses `createdAt`) + `ListSupportTicketsParams`/`ListSupportTicketsResult` in `support/types.ts`; server service and client hook both import from it; inline `ApiTicket`+`mapTicket` adapter deleted. |
+| Donation | Drizzle schema has `currency`/`stripeCheckoutSessionId`/`updatedAt`; client `donations/types.ts` omits all three — verified as an intentional client subset, no field drift in what it does use |
+| Topic | **Partially resolved (P4)** — dead `Topic`/`Module` interfaces in `features/courses/types` deleted (zero importers); only the wizard store's own `Topic`/`Module` (with wizard-only `videoFile`) remain; `initialize()` still hand-converts |
 
 API responses also mix number types: `courses/[id]` returns `price` as `string`; `admin/sales/route.ts` does not coerce `amount` so pages must `Number()` it (`sales/[productId]/page.tsx:60`).
 
@@ -415,3 +415,55 @@ The fix phase is tracked in `REFACTOR_PLAN.md`. Decisions locked on 2026-08-01:
 | 5 | User creation | Consolidate onto `/api/admin/users`; drop `admin/create` |
 | 6 | Two course stores | Merge into wizard store, delete legacy tree |
 | 7 | KPI badge palette | Semantic `--ma-success/-warning/-info` tokens |
+
+---
+
+## 11. Work Log — P4 Client DTO Consolidation (2026-08-03)
+
+Branch: `refactor/frontend-p4-shared-infra` (tip `cf9d737`). Not yet committed/merged; **`npm run build` not yet completed** (timed out twice, then aborted).
+
+### Course domain — new single source `src/features/courses/dto.ts`
+
+- Moved `CourseApiResponse` + `CourseApiReview`/`CourseApiModule`/`CourseApiTopic` out of `features/courses/types/index.ts` into `dto.ts`.
+- Renamed the *mutation result* `CourseResponse` (in `course-service.ts`) → `CourseSaveResult` (DTO). This was the misleading-name collision; `CourseApiResponse` kept its name deliberately (renaming to `CourseDetail` would churn 6 importers for no clarity gain).
+- Added `CourseListItem` — one shape for `/api/courses/featured` **and** `/api/enrollments` rows (featured fields + optional `progress`).
+- Added player-view types `PlayerCourse`/`PlayerModule`/`PlayerTopic`/`PlayerTutor`/`PlayerReview`.
+- `features/courses/types/index.ts` reduced to `CourseStatus` + `TopicType`; deleted dead `Topic`/`Module` interfaces (verified zero importers).
+- `course-service.ts`: deleted dead `getCourse()` — it was mis-typed to the save-result shape while hitting the **detail** endpoint `/api/courses/[id]`; zero callers.
+
+### Player trio migrated to shared types
+
+- `course-player-shell.tsx`: `queryFn` returns `Promise<PlayerCourse | null>` (null = 404 → `notFound()`).
+- `course-player-content.tsx`: deleted local `Topic`/`Module`/`Review`/`Tutor`/`CourseData` (~38 lines); uses `PlayerCourse`/`PlayerModule`/`PlayerTopic`; removed unused `TutorCard` import; fixed two **pre-existing** `react-hooks/preserve-manual-memoization` errors by aligning `useCallback` deps with compiler-inferred deps (`video` instead of `video?.duration`; dropped `videoIdRef` ref from deps).
+- `course-module-sidebar.tsx`: deleted local types (~30 lines); uses `PlayerCourse`; replaced leftover ad-hoc key `["enrollment-progress", courseId]` with `queryKeys.enrollment.progress(courseId)`; fixed a `no-unused-expressions` ternary in `toggleWeek`.
+
+### List types
+
+- `course-card.tsx`: `export type Course = CourseListItem` (marketing `Course` type deleted; consumers unchanged).
+- `featured-courses.tsx`: local `Course` → `CourseListItem`.
+
+### Importers of `CourseApiResponse`/`CourseApiReview` re-pointed to `dto.ts`
+
+- `(marketing)/courses/[id]/page.tsx`, `(user)/dashboard/course/[id]/page.tsx`, `(admin)/admin/courses/[id]/edit/page.tsx` (`CourseStatus` stays in `types`), wizard store (`TopicType` stays in `types`).
+
+### Support ticket — one contract in `features/admin/support/types.ts`
+
+- `Ticket` now uses `createdAt` (was `date`); added `ListSupportTicketsParams`/`ListSupportTicketsResult`.
+- `support-service.ts`: removed duplicate `TicketDTO` + the two `ListSupportTickets*` interfaces; imports from `types.ts`; `updateTicketStatus` takes `TicketStatus`.
+- `use-support.ts` and `api/admin/support/route.ts` now import the contract from `types.ts`, not the server service (removes a client→server coupling).
+- `support/page.tsx`: deleted inline `ApiTicket` + `mapTicket` adapter; tickets flow through directly.
+- `support-table.tsx`: formats `createdAt` via `formatDate` — **user-visible change**: date column now renders `Mon DD, YYYY` instead of `M/D/YYYY`.
+
+### Not done (deliberate scope trims / remaining)
+
+- `Suspense` around `useSearchParams` in the player shell (separate P4 item, §3.6) — deferred.
+- Admin-list `Course` (`admin/courses/_components/types.ts`) left in place — already single-sourced within the admin feature.
+- `OrderSummaryCourseData` (checkout.ts) left as a UI contract.
+- Donation `Donation` type left as-is — verified it already matches the API response fields it uses.
+- The two byte-identical course-detail RSC pages (marketing vs dashboard) are **not** merged (that's P6).
+
+### Verification status
+
+- `npx tsc --noEmit` — clean.
+- `npx eslint` on all 19 changed files — clean (0 problems).
+- `npm run build` — **INCOMPLETE**; timed out after 10 min with buffered output, second run aborted by user. Re-run to completion before committing.

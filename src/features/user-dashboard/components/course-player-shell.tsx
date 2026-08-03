@@ -12,7 +12,10 @@ import {
 import { CoursePlayerContent } from "@/features/user-dashboard/components/course-player-content"
 import { CourseModuleSidebar } from "@/features/user-dashboard/components/course-module-sidebar"
 import { queryKeys } from "@/shared/lib/query-keys"
-import type { CourseApiResponse } from "@/features/courses/types"
+import type {
+  CourseApiResponse,
+  PlayerCourse,
+} from "@/features/courses/dto"
 
 function extractText(input: unknown): string {
   if (typeof input !== "string") return ""
@@ -57,7 +60,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
     error,
   } = useQuery({
     queryKey: queryKeys.course.detail(courseId),
-    queryFn: async () => {
+    queryFn: async (): Promise<PlayerCourse | null> => {
       let json: CourseApiResponse
       try {
         json = await apiFetch<CourseApiResponse>(`/api/courses/${courseId}`)

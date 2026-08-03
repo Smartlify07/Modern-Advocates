@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireAdmin } from "@/infrastructure/auth/helpers"
 import { listSupportTickets } from "@/features/admin/support/services/support-service"
-import type { ListSupportTicketsParams } from "@/features/admin/support/services/support-service"
+import type { ListSupportTicketsParams } from "@/features/admin/support/types"
 import { apiHandler } from "@/shared/lib/api-handler"
 
 export const GET = apiHandler(async (request: NextRequest) => {

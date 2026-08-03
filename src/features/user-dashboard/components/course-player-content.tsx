@@ -4,59 +4,23 @@ import { useState, useCallback, useRef, useEffect } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useSearchParams, useRouter } from "next/navigation"
 import { VideoPlayer } from "@/features/videos/components/video-player"
-import { TutorCard } from "@/features/marketing/components/tutor-card"
 import { ReviewCard } from "@/features/marketing/components/review-card"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { useSession } from "@/shared/hooks/use-session"
 import { queryKeys } from "@/shared/lib/query-keys"
-
-type Topic = {
-  id: string
-  title: string
-  format: string
-  videoId: string | null
-  content: string | null
-}
-type Module = { id: string; title: string; sortOrder: number; topics: Topic[] }
-type Review = {
-  id: string
-  body: string | null
-  rating: number
-  studentId: string
-  studentName: string | null
-  studentImage: string | null
-}
-type Tutor = {
-  name: string | null
-  image: string | null
-  specialty: string | null
-  about: string | null
-}
-
-type CourseData = {
-  id: string
-  title: string
-  overview: string | null
-  thumbnailUrl: string | null
-  duration: number | null
-  durationUnit: string | null
-  level: string
-  language: string
-  avgRating: number
-  reviewCount: number
-  enrollmentCount: number
-  tutor: Tutor
-  modules: Module[]
-  reviews: Review[]
-}
+import type {
+  PlayerCourse,
+  PlayerModule,
+  PlayerTopic,
+} from "@/features/courses/dto"
 
 export function CoursePlayerContent({
   course,
   selectedTopicId,
   onSelectTopic,
 }: {
-  course: CourseData
+  course: PlayerCourse
   selectedTopicId: string | null
   onSelectTopic?: (topicId: string) => void
 }) {
@@ -164,7 +128,7 @@ export function CoursePlayerContent({
         },
       }).catch(() => {})
     },
-    [video?.duration, searchParams, router]
+    [video, searchParams, router]
   )
 
   const handleEnded = useCallback(
@@ -193,7 +157,7 @@ export function CoursePlayerContent({
         queryKey: queryKeys.enrollment.progress(course.id),
       })
     },
-    [video?.duration, videoIdRef, selectedTopicId, course.id, queryClient]
+    [video, selectedTopicId, course.id, queryClient]
   )
 
   return (
@@ -309,9 +273,9 @@ export function CoursePlayerContent({
 }
 
 function findTopic(
-  modules: Module[],
+  modules: PlayerModule[],
   topicId: string | null
-): Topic | undefined {
+): PlayerTopic | undefined {
   if (!topicId) return undefined
   for (const mod of modules) {
     const found = mod.topics.find((t) => t.id === topicId)
@@ -321,7 +285,7 @@ function findTopic(
 }
 
 function getAdjacentTopics(
-  modules: Module[],
+  modules: PlayerModule[],
   currentId: string | null
 ): { prev: string | null; next: string | null } {
   if (!currentId) return { prev: null, next: null }

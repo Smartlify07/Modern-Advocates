@@ -60,22 +60,6 @@ export interface CreateCoursePayload {
   modules: ModulePayload[]
 }
 
-export interface CourseResponse {
-  id: string
-  modules: Array<{
-    id: string
-    clientId: string
-    title: string
-    sortOrder: number
-    topics: Array<{
-      id: string
-      clientId: string
-      title: string
-      sortOrder: number
-    }>
-  }>
-}
-
 export interface UpdateCoursePayload {
   title?: string
   thumbnailUrl?: string | null
@@ -173,10 +157,6 @@ export async function uploadThumbnail(file: File): Promise<string> {
     body: formData,
   })
   return data.url
-}
-
-export async function getCourse(courseId: string): Promise<CourseResponse> {
-  return apiFetch<CourseResponse>(`/api/courses/${courseId}`)
 }
 
 async function getSignedUploadConfig(

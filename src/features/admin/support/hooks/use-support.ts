@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { queryKeys } from "@/shared/lib/query-keys"
-import type { ListSupportTicketsResult } from "@/features/admin/support/services/support-service"
+import type { ListSupportTicketsResult } from "@/features/admin/support/types"
 
 export function useSupportTickets(
   params: { search?: string; filter?: string; page?: number; pageSize?: number } = {},

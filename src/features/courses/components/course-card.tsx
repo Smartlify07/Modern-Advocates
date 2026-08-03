@@ -2,6 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Star, ArrowRight } from "lucide-react"
 import { cn } from "@/shared/utils"
+import type { CourseListItem } from "@/features/courses/dto"
 
 type RootProps = {
   href: string
@@ -166,17 +167,7 @@ function ContinueButton() {
   )
 }
 
-export type Course = {
-  id: string
-  title: string
-  thumbnailUrl: string | null
-  instructorName: string | null
-  avgRating: number
-  reviewCount: number
-  price: number
-  discountedPrice: number | null
-  progress?: number
-}
+export type Course = CourseListItem
 
 export const CourseCard = {
   Root,

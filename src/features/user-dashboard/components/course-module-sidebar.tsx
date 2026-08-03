@@ -5,50 +5,21 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { ChevronDown, VideoIcon } from "lucide-react"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { formatDurationFromSeconds } from "@/shared/utils"
-
-type Topic = {
-  id: string
-  title: string
-  format?: string
-  duration?: number | null
-  content?: string | null
-}
-type Module = { id: string; title: string; sortOrder: number; topics: Topic[] }
-type Tutor = { name: string | null; image: string | null }
-type CourseData = {
-  id: string
-  title: string
-  overview: string | null
-  thumbnailUrl: string | null
-  duration: number | null
-  level: string
-  language: string
-  avgRating: number
-  reviewCount: number
-  enrollmentCount: number
-  tutor: Tutor
-  modules: Module[]
-  reviews: Array<{
-    id: string
-    body: string | null
-    rating: number
-    studentName: string | null
-    studentImage: string | null
-  }>
-}
+import { queryKeys } from "@/shared/lib/query-keys"
+import type { PlayerCourse } from "@/features/courses/dto"
 
 export function CourseModuleSidebar({
   course,
   selectedTopicId,
   onSelectTopic,
 }: {
-  course: CourseData
+  course: PlayerCourse
   selectedTopicId: string | null
   onSelectTopic?: (topicId: string) => void
 }) {
   const courseId = course.id
   const queryClient = useQueryClient()
-  const queryKey = ["enrollment-progress", courseId]
+  const queryKey = queryKeys.enrollment.progress(courseId)
   const modules = course.modules
 
   const [openWeeks, setOpenWeeks] = useState<Set<string>>(
@@ -136,7 +107,11 @@ export function CourseModuleSidebar({
   const toggleWeek = (id: string) => {
     setOpenWeeks((prev) => {
       const next = new Set(prev)
-      next.has(id) ? next.delete(id) : next.add(id)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
       return next
     })
   }

@@ -8,21 +8,8 @@ import { Button } from "@/shared/ui/button"
 import { Card, CardContent, CardTitle } from "@/shared/ui/card"
 import { formatDuration } from "@/shared/utils"
 import { queryKeys } from "@/shared/lib/query-keys"
+import type { CourseListItem } from "@/features/courses/dto"
 import Link from "next/link"
-
-type Course = {
-  id: string
-  title: string
-  overview: string | null
-  thumbnailUrl: string | null
-  level: "beginner" | "intermediate" | "advanced"
-  price: number
-  discountedPrice: number | null
-  duration: number | null
-  instructorName: string | null
-  avgRating: number
-  reviewCount: number
-}
 
 const gradients = [
   "from-violet-500/90 to-fuchsia-600/90",
@@ -38,9 +25,9 @@ function formatLevel(level: string) {
 }
 
 export function FeaturedCourses() {
-  const { data: courses, isLoading } = useQuery<Course[]>({
+  const { data: courses, isLoading } = useQuery<CourseListItem[]>({
     queryKey: queryKeys.featuredCourses,
-    queryFn: () => apiFetch<Course[]>("/api/courses/featured"),
+    queryFn: () => apiFetch<CourseListItem[]>("/api/courses/featured"),
   })
 
   return (
