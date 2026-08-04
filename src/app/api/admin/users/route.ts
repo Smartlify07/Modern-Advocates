@@ -53,6 +53,8 @@ export async function POST(request: Request) {
     const newUser = await createUser({
       name: body.name.trim(),
       email: body.email.trim(),
+      password: typeof body.password === "string" && body.password.trim() ? body.password : undefined,
+      role: typeof body.role === "string" && body.role.trim() ? body.role : undefined,
     })
     return NextResponse.json(newUser, { status: 201 })
   } catch (error) {

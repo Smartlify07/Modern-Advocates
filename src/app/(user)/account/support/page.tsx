@@ -1,36 +1,17 @@
 "use client"
 import { ArrowRight, LoaderCircle } from "lucide-react"
-import { useEffect, useState } from "react"
-import { Controller, useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { toast } from "sonner"
-import * as z from "zod"
+import { useEffect } from "react"
+import { Controller } from "react-hook-form"
 
 import { useSession } from "@/shared/hooks/use-session"
-import { Button } from "@/shared/ui/button"
+import { useContactForm } from "@/shared/hooks/use-contact-form"
+import { MarketingButton } from "@/shared/ui/marketing-button"
 import { Field, FieldError, FieldLabel } from "@/shared/ui/field"
 import { Input } from "@/shared/ui/input"
-import { apiFetch } from "@/shared/lib/api-fetch"
-
-const contactFormSchema = z.object({
-  name: z.string().min(1, "Full name is required"),
-  email: z.email("Please enter a valid email address"),
-  phone: z.string().optional(),
-  message: z.string().min(1, "Message is required"),
-})
 
 export default function AccountSupportPage() {
   const { user } = useSession()
-
-  const form = useForm<z.infer<typeof contactFormSchema>>({
-    resolver: zodResolver(contactFormSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      message: "",
-    },
-  })
+  const { form, submitting, onSubmit } = useContactForm()
 
   useEffect(() => {
     if (user) {
@@ -42,24 +23,6 @@ export default function AccountSupportPage() {
       })
     }
   }, [user, form])
-  const [submitting, setSubmitting] = useState(false)
-
-  async function onSubmit(data: z.infer<typeof contactFormSchema>) {
-    setSubmitting(true)
-    try {
-      await apiFetch("/api/contact", {
-        method: "POST",
-        body: data,
-      })
-
-      toast.success("Your message has been sent successfully!")
-      form.reset()
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Something went wrong. Please try again.")
-    } finally {
-      setSubmitting(false)
-    }
-  }
   return (
     <main className="w-full overflow-hidden bg-white text-ma-text">
       <form
@@ -174,26 +137,23 @@ export default function AccountSupportPage() {
             )}
           />
 
-          <Button
+          <MarketingButton
             type="submit"
             disabled={submitting}
-            className="group relative mt-1 h-pill w-full overflow-hidden rounded-pill bg-ma-text px-5 py-4 text-base font-semibold text-white disabled:opacity-60"
+            className="mt-1 w-full"
           >
-            <span className="relative z-10 inline-flex items-center gap-2.5">
-              {submitting && (
-                <LoaderCircle
-                  className="size-4 animate-spin"
-                  aria-hidden="true"
-                />
-              )}
-              Send your message
-              <ArrowRight
-                className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]"
+            {submitting && (
+              <LoaderCircle
+                className="size-4 animate-spin"
                 aria-hidden="true"
               />
-            </span>
-            <div className="pointer-events-none absolute inset-0 rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-          </Button>
+            )}
+            Send your message
+            <ArrowRight
+              className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]"
+              aria-hidden="true"
+            />
+          </MarketingButton>
         </div>
       </form>{" "}
     </main>

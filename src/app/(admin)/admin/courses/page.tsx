@@ -4,6 +4,8 @@ import { useState, useMemo, useCallback, useRef } from "react"
 import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
 import { Button } from "@/shared/ui/button"
+import { AdminPageContainer } from "@/shared/ui/admin-page-container"
+import { PageHeader } from "@/shared/ui/page-header"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { queryKeys } from "@/shared/lib/query-keys"
 import { PlusIcon, UploadCloudIcon, XIcon } from "lucide-react"
@@ -114,20 +116,21 @@ export default function AdminCoursesPage() {
   )
 
   return (
-    <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
+    <AdminPageContainer>
       <ResumeUploadBanner />
 
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-semibold lg:text-[40px]/[100%]">
-          Courses
-        </h1>
-        <Button
-          asChild
-          className="h-11 rounded-8 bg-ma-admin-primary px-4 py-2.5 text-white hover:bg-ma-admin-primary"
-        >
-          <Link href="/admin/courses/new">Create New Courses</Link>
-        </Button>
-      </div>
+      <PageHeader
+        title="Courses"
+        titleClassName="text-3xl font-semibold lg:text-[40px]/[100%]"
+        action={
+          <Button
+            asChild
+            className="h-11 rounded-8 bg-ma-admin-primary px-4 py-2.5 text-white hover:bg-ma-admin-primary"
+          >
+            <Link href="/admin/courses/new">Create New Courses</Link>
+          </Button>
+        }
+      />
       <CoursesToolbar
         search={search}
         onSearchChange={setSearch}
@@ -141,6 +144,6 @@ export default function AdminCoursesPage() {
         error={error}
         refetch={refetch}
       />
-    </div>
+    </AdminPageContainer>
   )
 }

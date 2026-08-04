@@ -1,5 +1,4 @@
 import Link from "next/link"
-import { Badge } from "@/shared/ui/badge"
 import { Button } from "@/shared/ui/button"
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger,
@@ -7,9 +6,9 @@ import {
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/shared/ui/table"
+import { StatusBadge } from "@/shared/ui/status-badge"
 import { MoreHorizontalIcon, ChartSpline, ArchiveIcon } from "lucide-react"
 import type { Product } from "@/features/admin/products/types"
-import { getStatusColor } from "@/shared/utils"
 
 interface AllProductsTableProps { products: Product[] }
 
@@ -17,10 +16,6 @@ const productStatusLabels: Record<string, string> = {
   published: "Live",
   draft: "Draft",
   archived: "Archived",
-}
-
-function statusDisplay(status: string) {
-  return { label: productStatusLabels[status] ?? status, class: getStatusColor(status) }
 }
 
 export function AllProductsTable({ products }: AllProductsTableProps) {
@@ -38,15 +33,15 @@ export function AllProductsTable({ products }: AllProductsTableProps) {
         </TableHeader>
         <TableBody>
           {products.map((p) => {
-            const disp = statusDisplay(p.status)
             return (
               <TableRow className="hover:bg-ma-bg" key={p.id}>
                 <TableCell className="font-normal">{p.name}</TableCell>
                 <TableCell className="text-center text-primary">${p.salesPrice.toFixed(2)}</TableCell>
                 <TableCell className="text-center">
-                  <Badge variant="secondary" className={`rounded-8 font-normal ${disp.class}`}>
-                    {disp.label}
-                  </Badge>
+                  <StatusBadge
+                    status={p.status}
+                    label={productStatusLabels[p.status] ?? p.status}
+                  />
                 </TableCell>
                 <TableCell className="text-center">
                   <Link href={`/admin/products/sales/${p.id}`} className="text-blue-600 underline underline-offset-2">

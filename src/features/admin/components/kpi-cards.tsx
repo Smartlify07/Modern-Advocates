@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { queryKeys } from "@/shared/lib/query-keys"
 import { Skeleton } from "@/shared/ui/skeleton"
-import { StatCard } from "./stat-card"
+import { StatCard } from "@/shared/ui/stat-card"
 import { Button } from "@/shared/ui/button"
 import {
   ErrorState,

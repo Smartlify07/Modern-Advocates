@@ -4,11 +4,12 @@ import { useState, useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { queryKeys } from "@/shared/lib/query-keys"
-import { PageHeader } from "@/features/admin/products/components/page-header"
+import { PageHeader } from "@/shared/ui/page-header"
+import { AdminPageContainer } from "@/shared/ui/admin-page-container"
 import { SearchExportRow } from "@/features/admin/products/components/search-export-row"
 import { CustomersTable } from "@/features/admin/products/components/customers-table"
-import { PaginationBar } from "@/features/admin/products/components/pagination-bar"
-import { SearchExportSkeleton, TableSkeleton } from "@/features/admin/products/components/products-skeleton"
+import { PaginationBar } from "@/shared/ui/pagination-bar"
+import { DataTableSkeleton } from "@/shared/ui/data-table-skeleton"
 import type { Customer } from "@/features/admin/products/types"
 
 const PAGE_SIZE = 10
@@ -28,13 +29,18 @@ export default function AllCustomersPage() {
   )
 
   return (
-    <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
+    <AdminPageContainer>
       <PageHeader title="All Customers" />
       {isLoading ? (
-        <>
-          <SearchExportSkeleton />
-          <TableSkeleton rows={5} cols={5} />
-        </>
+        <DataTableSkeleton
+          columns={[
+            { label: "Customer name", headClassName: "w-[280px]", skeletonClassName: "w-48" },
+            { label: "Customer email", headClassName: "w-[320px]", skeletonClassName: "w-56" },
+            { label: "Courses Purchased", headClassName: "text-center", center: true, skeletonClassName: "w-12" },
+            { label: "Total Spent", headClassName: "text-center", center: true, skeletonClassName: "w-16" },
+            { label: "Last Purchase", headClassName: "text-center", center: true, skeletonClassName: "w-24" },
+          ]}
+        />
       ) : (
         <>
           <SearchExportRow placeholder="Search customer..." value={search} onChange={setSearch} />
@@ -44,6 +50,6 @@ export default function AllCustomersPage() {
           </div>
         </>
       )}
-    </div>
+    </AdminPageContainer>
   )
 }

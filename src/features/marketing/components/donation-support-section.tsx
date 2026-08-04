@@ -8,7 +8,7 @@ import { toast } from "sonner"
 import * as z from "zod"
 
 import { Field, FieldError, FieldLabel } from "@/shared/ui/field"
-import { Button } from "@/shared/ui/button"
+import { MarketingButton } from "@/shared/ui/marketing-button"
 import { Input } from "@/shared/ui/input"
 import { apiFetch } from "@/shared/lib/api-fetch"
 
@@ -273,21 +273,18 @@ export function DonationSupportSection() {
             )}
           />
 
-          <Button
+          <MarketingButton
             type="submit"
             disabled={submitting}
-            className="group relative h-pill w-full overflow-hidden rounded-pill bg-ma-text px-5 py-4 text-base font-semibold text-white disabled:opacity-60"
+            className="w-full"
           >
-            <span className="relative z-10 inline-flex items-center gap-2.5">
-              {submitting && <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />}
-              Donate Now
-              <ArrowRight
-                className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]"
-                aria-hidden="true"
-              />
-            </span>
-            <div className="pointer-events-none absolute inset-0 rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-          </Button>
+            {submitting && <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />}
+            Donate Now
+            <ArrowRight
+              className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]"
+              aria-hidden="true"
+            />
+          </MarketingButton>
         </form>
       </div>
     </section>

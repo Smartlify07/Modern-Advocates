@@ -4,41 +4,20 @@ import { useState, useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { queryKeys } from "@/shared/lib/query-keys"
-import { Skeleton } from "@/shared/ui/skeleton"
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/shared/ui/table"
+import { TableSkeleton } from "@/shared/ui/table-skeleton"
 import { DonationsTable } from "@/features/admin/donations/components/donations-table"
 import { SearchExportRow } from "@/features/admin/donations/components/search-export-row"
-import { PaginationBar } from "@/features/admin/donations/components/pagination-bar"
+import { PaginationBar } from "@/shared/ui/pagination-bar"
+import { AdminPageContainer } from "@/shared/ui/admin-page-container"
+import { PageHeader } from "@/shared/ui/page-header"
+import {
+  EmptyState,
+  EmptyStateTitle,
+  EmptyStateDescription,
+} from "@/shared/ui/empty-state"
 import type { Donation } from "@/features/admin/donations/types"
 
 const ITEMS_PER_PAGE = 10
-
-function TableSkeleton() {
-  return (
-    <Table>
-      <TableHeader className="rounded-t-2xl">
-        <TableRow className="rounded-t-2xl bg-ma-surface-2 hover:bg-ma-surface-2">
-          <TableHead className="w-[220px]">Name</TableHead>
-          <TableHead className="w-[280px]">Email</TableHead>
-          <TableHead className="w-[120px]">Amount</TableHead>
-          <TableHead className="w-[160px]">Donation Type</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <TableRow key={i}>
-            <TableCell><Skeleton className="h-6 w-32" /></TableCell>
-            <TableCell><Skeleton className="h-6 w-44" /></TableCell>
-            <TableCell><Skeleton className="h-6 w-20" /></TableCell>
-            <TableCell><Skeleton className="h-6 w-28" /></TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  )
-}
 
 export default function AdminDonationsPage() {
   const [search, setSearch] = useState("")
@@ -73,8 +52,8 @@ export default function AdminDonationsPage() {
   const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
 
   return (
-    <div className="mx-auto flex flex-col gap-7.5 p-7.5 lg:max-w-7xl 2xl:max-w-360">
-      <h1 className="text-4xl font-semibold tracking-tight-lg">Donations</h1>
+    <AdminPageContainer className="gap-7.5">
+      <PageHeader title="Donations" />
 
       <SearchExportRow
         search={search}
@@ -84,21 +63,32 @@ export default function AdminDonationsPage() {
       />
 
       {isLoading ? (
-        <TableSkeleton />
+        <TableSkeleton
+          columns={[
+            { label: "Name", headClassName: "w-[220px]" },
+            { label: "Email", headClassName: "w-[280px]" },
+            { label: "Amount", headClassName: "w-[120px]", skeletonClassName: "w-20" },
+            { label: "Donation Type", headClassName: "w-[160px]", skeletonClassName: "w-28" },
+          ]}
+        />
       ) : filtered.length === 0 ? (
-        <div className="flex flex-1 flex-col items-center justify-center gap-2 py-20">
+        <EmptyState className="gap-2 py-20">
           {donations.length === 0 ? (
             <>
-              <p className="text-lg font-medium">No donations yet</p>
-              <p className="text-sm text-muted-foreground">Donations will appear here once supporters contribute.</p>
+              <EmptyStateTitle className="text-lg font-medium">No donations yet</EmptyStateTitle>
+              <EmptyStateDescription className="text-sm">
+                Donations will appear here once supporters contribute.
+              </EmptyStateDescription>
             </>
           ) : (
             <>
-              <p className="text-lg font-medium">No donations found</p>
-              <p className="text-sm text-muted-foreground">There are no donations matching your criteria.</p>
+              <EmptyStateTitle className="text-lg font-medium">No donations found</EmptyStateTitle>
+              <EmptyStateDescription className="text-sm">
+                There are no donations matching your criteria.
+              </EmptyStateDescription>
             </>
           )}
-        </div>
+        </EmptyState>
       ) : (
         <>
           <DonationsTable donations={paginated} />
@@ -110,6 +100,6 @@ export default function AdminDonationsPage() {
           />
         </>
       )}
-    </div>
+    </AdminPageContainer>
   )
 }

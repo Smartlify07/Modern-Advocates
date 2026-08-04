@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useCourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
 import { useSaveCourse } from "@/features/courses/hooks/use-course-mutations"
 import { Stepper } from "@/shared/ui/stepper"
+import { AdminPageContainer } from "@/shared/ui/admin-page-container"
 import { Button } from "@/shared/ui/button"
 import { BasicInfoStep } from "@/features/courses/components/wizard/basic-info-step"
 import { AdvanceInfoStep } from "@/features/courses/components/wizard/advance-info-step"
@@ -39,7 +40,7 @@ const wizardSteps: Step[] = [
 
 function CourseWizardSkeleton() {
   return (
-    <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
+    <AdminPageContainer>
       <div className="flex items-center justify-between gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="flex flex-1 items-center gap-2">
@@ -78,7 +79,7 @@ function CourseWizardSkeleton() {
         <Skeleton className="h-11 w-28 rounded-8" />
         <Skeleton className="h-12 w-40 rounded-8" />
       </div>
-    </div>
+    </AdminPageContainer>
   )
 }
 
@@ -178,7 +179,7 @@ export default function EditCoursePage() {
   const isPending = saveCourse.isPending
 
   return (
-    <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
+    <AdminPageContainer>
       <Stepper
         steps={wizardSteps}
         currentStep={currentStep}
@@ -268,6 +269,6 @@ export default function EditCoursePage() {
           </Button>
         )}
       </div>
-    </div>
+    </AdminPageContainer>
   )
 }

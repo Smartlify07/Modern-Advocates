@@ -8,7 +8,8 @@ import { TeamTable } from "@/features/admin/team/components/team-table"
 import { TeamFilterBar } from "@/features/admin/team/components/team-filter-bar"
 import { AddMemberDialog } from "@/features/admin/team/components/add-member-dialog"
 import { EditPermissionDialog } from "@/features/admin/team/components/edit-permission-dialog"
-import { PaginationBar } from "@/features/admin/team/components/pagination-bar"
+import { PaginationBar } from "@/shared/ui/pagination-bar"
+import { AdminPageContainer } from "@/shared/ui/admin-page-container"
 import type { TeamMember } from "@/features/admin/team/types"
 import { useSession } from "@/shared/hooks/use-session"
 import { queryKeys } from "@/shared/lib/query-keys"
@@ -79,7 +80,7 @@ export default function AdminTeamsPage() {
   const total = data?.total ?? 0
 
   return (
-    <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
+    <AdminPageContainer>
       <TeamFilterBar
         search={search}
         onSearchChange={handleSearchChange}
@@ -105,6 +106,6 @@ export default function AdminTeamsPage() {
 
       <AddMemberDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />
       <EditPermissionDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} member={selectedMember} />
-    </div>
+    </AdminPageContainer>
   )
 }
