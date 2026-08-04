@@ -68,9 +68,9 @@ export function SupportTable({ tickets, onView, onDelete }: SupportTableProps) {
                 <TableCell className="max-w-[260px] truncate text-muted-foreground">
                   {ticket.message}
                 </TableCell>
-                <TableCell>
-                  <StatusBadge status={ticket.status} />
-                </TableCell>
+                  <TableCell>
+                    <StatusBadge status={ticket.status} />
+                  </TableCell>
                 <TableCell className="text-muted-foreground">
                   {formatDate(ticket.createdAt)}
                 </TableCell>
