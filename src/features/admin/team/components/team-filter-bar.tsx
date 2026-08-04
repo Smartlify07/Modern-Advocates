@@ -2,6 +2,7 @@
 
 import { Input } from "@/shared/ui/input"
 import { Button } from "@/shared/ui/button"
+import { ExportButton } from "@/shared/ui/export-button"
 import {
   Select,
   SelectContent,
@@ -9,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select"
-import { SearchIcon, UploadIcon, PlusIcon } from "lucide-react"
+import { SearchIcon, PlusIcon } from "lucide-react"
 
 interface TeamFilterBarProps {
   search: string
@@ -17,6 +18,8 @@ interface TeamFilterBarProps {
   typeFilter: string
   onTypeFilterChange: (value: string) => void
   onAddMember: () => void
+  onExport: () => void
+  exportDisabled?: boolean
   role?: string | null
 }
 
@@ -26,6 +29,8 @@ export function TeamFilterBar({
   typeFilter,
   onTypeFilterChange,
   onAddMember,
+  onExport,
+  exportDisabled = false,
   role,
 }: TeamFilterBarProps) {
   return (
@@ -63,13 +68,7 @@ export function TeamFilterBar({
           </Select>
         </div>
         <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            className="h-11 min-w-[115px] gap-2.5 rounded-8 border-ma-admin-primary bg-white text-ma-admin-primary hover:bg-ma-admin-primary hover:text-white"
-          >
-            Export
-            <UploadIcon className="size-4" />
-          </Button>
+          <ExportButton onClick={onExport} disabled={exportDisabled} />
           {(role === "admin" || role === "manager") && (
             <Button
               className="h-11 gap-2.5 rounded-8 bg-ma-admin-primary text-white hover:bg-ma-admin-primary-dark"

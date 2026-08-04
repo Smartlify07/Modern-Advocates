@@ -14,6 +14,7 @@ import { ActivateUserDialog } from "@/features/admin/users/components/activate-u
 import { DeleteUserDialog } from "@/features/admin/users/components/delete-user-dialog"
 import { useUsers, useCreateUser, useSuspendUser, useActivateUser, useDeleteUser } from "@/features/admin/users/hooks/use-users"
 import type { User } from "@/features/admin/users/types"
+import { downloadCsv } from "@/shared/utils"
 import { AlertCircleIcon, RefreshCwIcon } from "lucide-react"
 import { useSession } from "@/shared/hooks/use-session"
 import {
@@ -93,6 +94,22 @@ export default function AdminUsersPage() {
     setPage(1)
   }, [])
 
+  const handleExport = useCallback(() => {
+    downloadCsv(
+      "users.csv",
+      ["Name", "Email", "Courses Enrolled", "Status", "Last Login", "Created At"],
+      allUsers.map((u) => [
+        u.name,
+        u.email,
+        u.courseEnrolled,
+        u.status,
+        u.lastLogin,
+        u.createdAt,
+      ]),
+    )
+    toast.success(`Exported ${allUsers.length} user${allUsers.length === 1 ? "" : "s"}`)
+  }, [allUsers])
+
   return (
     <AdminPageContainer>
       <ControlsRow
@@ -101,6 +118,8 @@ export default function AdminUsersPage() {
         statusFilter={statusFilter}
         onStatusFilterChange={handleStatusFilterChange}
         onAddUser={() => setAddOpen(true)}
+        onExport={handleExport}
+        exportDisabled={allUsers.length === 0}
         role={sessionPending ? "loading" : role}
       />
 

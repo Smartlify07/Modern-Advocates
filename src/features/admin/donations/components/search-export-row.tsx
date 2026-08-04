@@ -1,6 +1,7 @@
 import { Input } from "@/shared/ui/input"
 import { Button } from "@/shared/ui/button"
-import { SearchIcon, UploadIcon, ChevronDownIcon } from "lucide-react"
+import { ExportButton } from "@/shared/ui/export-button"
+import { SearchIcon, ChevronDownIcon } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,6 +15,8 @@ interface SearchExportRowProps {
   typeFilter: string
   onSearchChange: (value: string) => void
   onTypeFilterChange: (value: string) => void
+  onExport: () => void
+  exportDisabled?: boolean
 }
 
 const filterOptions = [
@@ -28,6 +31,8 @@ export function SearchExportRow({
   typeFilter,
   onSearchChange,
   onTypeFilterChange,
+  onExport,
+  exportDisabled = false,
 }: SearchExportRowProps) {
   const activeLabel =
     filterOptions.find((o) => o.value === typeFilter)?.label ?? "All Donations"
@@ -73,13 +78,7 @@ export function SearchExportRow({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <Button
-        variant="outline"
-        className="h-11 min-w-[115px] gap-2.5 rounded-8 border-ma-admin-primary bg-white text-ma-admin-primary hover:bg-ma-admin-primary hover:text-white"
-      >
-        Export
-        <UploadIcon className="size-4" />
-      </Button>
+      <ExportButton onClick={onExport} disabled={exportDisabled} />
     </div>
   )
 }
