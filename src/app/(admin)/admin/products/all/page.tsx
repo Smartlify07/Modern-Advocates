@@ -30,7 +30,7 @@ export default function AllProductsPage() {
 
   return (
     <AdminPageContainer>
-      <PageHeader title="All Products" />
+      <PageHeader title="All Products" backHref="/admin/products" />
       {isLoading ? (
         <DataTableSkeleton
           columns={[

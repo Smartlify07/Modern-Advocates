@@ -35,7 +35,7 @@ export default function AllSalesPage() {
 
   return (
     <AdminPageContainer>
-      <PageHeader title="All Sales" />
+      <PageHeader title="All Sales" backHref="/admin/products" />
       {isLoading ? (
         <>
           <SalesSummarySkeleton />

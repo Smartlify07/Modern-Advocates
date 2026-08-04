@@ -44,7 +44,7 @@ export default function SaleDetailPage() {
   if (isLoading) {
     return (
       <AdminPageContainer>
-        <PageHeader title="Sale Details" />
+  <PageHeader title="Sale Details" backHref="/admin/products/sales" />
         <SalesSummarySkeleton />
         <div className="flex flex-col gap-4">
           <div className="h-6 w-52 rounded bg-muted animate-pulse" />
@@ -64,7 +64,7 @@ export default function SaleDetailPage() {
   if (!data) {
     return (
       <AdminPageContainer>
-        <PageHeader title="Sale Details" />
+  <PageHeader title="Sale Details" backHref="/admin/products/sales" />
         <p className="text-muted-foreground">Product not found</p>
       </AdminPageContainer>
     )
@@ -82,7 +82,7 @@ export default function SaleDetailPage() {
 
   return (
     <AdminPageContainer>
-      <PageHeader title={data.product.title} />
+      <PageHeader title={data.product.title} backHref="/admin/products/sales" />
       <SalesSummaryCards sales={data.totalSales} volume={data.totalRevenue} />
       <div className="flex flex-col gap-4">
         <h2 className="text-lg font-bold">Customers who purchased</h2>

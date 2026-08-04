@@ -2,10 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { useVideoUploadStore } from "@/features/courses/store/use-video-upload-store"
-import { uploadToStorage, type StorageUploadConfig } from "@/shared/lib/storage-upload"
-import { apiFetch } from "@/shared/lib/api-fetch"
 import { VideoUploadToast } from "@/features/courses/components/video-upload-toast"
-import { getVideoDuration } from "@/features/videos/lib/get-video-duration"
+import { signVideoUpload, uploadVideoWithProgress } from "@/features/videos/lib/upload-video"
 import { toast } from "sonner"
 
 const STORAGE_KEY = "ma_pending_uploads"
@@ -81,19 +79,6 @@ export function clearPendingUploads(): void {
   localStorage.removeItem(STORAGE_KEY)
 }
 
-async function getFreshSignedConfig(
-  courseId: string,
-  moduleId: string,
-  topicId: string,
-  title: string,
-  mimeType: string,
-): Promise<StorageUploadConfig> {
-  return apiFetch<StorageUploadConfig>("/api/videos/sign-upload", {
-    method: "POST",
-    body: { courseId, moduleId, topicId, title, mimeType },
-  })
-}
-
 export function usePendingUploads(courseId?: string) {
   const [pending, setPending] = useState<PendingUpload[]>([])
 
@@ -133,15 +118,17 @@ export function usePendingUploads(courseId?: string) {
     removeTask(pendingUpload.uploadId)
     removePendingUpload(uploadId)
 
-    let config: StorageUploadConfig
+    let config: Awaited<ReturnType<typeof signVideoUpload>>
     try {
-        config = await getFreshSignedConfig(
-          pendingUpload.courseId,
-          pendingUpload.moduleId,
-          pendingUpload.topicId,
-          pendingUpload.fileName,
-          file.type,
-        )
+      config = await signVideoUpload(
+        {
+          courseId: pendingUpload.courseId,
+          moduleId: pendingUpload.moduleId,
+          topicId: pendingUpload.topicId,
+          title: pendingUpload.fileName,
+        },
+        file.type,
+      )
     } catch (err) {
       toast.error("Failed to get upload signature")
       return
@@ -162,16 +149,9 @@ export function usePendingUploads(courseId?: string) {
     })
 
     try {
-      await uploadToStorage(file, config, (progress) => {
-        updateProgress(config.videoId, progress.bytesUploaded)
-        updatePendingUpload(uploadId, progress.bytesUploaded)
-      })
-
-      const duration = await getVideoDuration(file)
-
-      await apiFetch(`/api/videos/${config.videoId}/finalize`, {
-        method: "POST",
-        body: { storageKey: config.storageKey, duration },
+      await uploadVideoWithProgress(file, config, (bytesUploaded) => {
+        updateProgress(config.videoId, bytesUploaded)
+        updatePendingUpload(uploadId, bytesUploaded)
       })
 
       completeTask(config.videoId, "completed")

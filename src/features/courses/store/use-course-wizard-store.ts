@@ -2,7 +2,7 @@
 
 import { create } from "zustand"
 import type { JSONContent } from "@tiptap/react"
-import { minutesToDuration } from "@/features/courses/api/course-service"
+import { minutesToDuration } from "@/features/courses/lib/duration"
 import type { TopicType } from "@/features/courses/types"
 import type { CourseApiResponse } from "@/features/courses/dto"
 
