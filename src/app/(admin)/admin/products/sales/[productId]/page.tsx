@@ -44,7 +44,7 @@ export default function SaleDetailPage() {
   if (isLoading) {
     return (
       <AdminPageContainer>
-        <PageHeader title="Sale Details" backHref="/admin/products/sales" />
+  <PageHeader title="Sale Details" backHref="/admin/products/sales" />
         <SalesSummarySkeleton />
         <div className="flex flex-col gap-4">
           <div className="h-6 w-52 rounded bg-muted animate-pulse" />
@@ -64,7 +64,7 @@ export default function SaleDetailPage() {
   if (!data) {
     return (
       <AdminPageContainer>
-        <PageHeader title="Sale Details" backHref="/admin/products/sales" />
+  <PageHeader title="Sale Details" backHref="/admin/products/sales" />
         <p className="text-muted-foreground">Product not found</p>
       </AdminPageContainer>
     )
