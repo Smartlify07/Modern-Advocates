@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { DURATION_UNITS } from "@/features/courses/api/course-service"
+import { DURATION_UNITS } from "@/features/courses/lib/duration"
 
 const topicSchema = z.object({
   id: z.string(),

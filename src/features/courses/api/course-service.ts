@@ -1,7 +1,6 @@
 import type { CourseWizardStore } from "@/features/courses/store/use-course-wizard-store"
 import type { CourseStatus } from "@/features/courses/types"
 import type { VideoUploadStore } from "@/features/courses/store/use-video-upload-store"
-import { uploadToStorage, type StorageUploadConfig } from "@/shared/lib/storage-upload"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import {
   savePendingUpload,
@@ -9,10 +8,17 @@ import {
   removePendingUpload,
 } from "@/features/courses/hooks/use-pending-uploads"
 import { cacheFile, removeCachedFile } from "@/features/videos/lib/file-cache"
-import { getVideoDuration } from "@/features/videos/lib/get-video-duration"
+import {
+  signVideoUpload,
+  uploadVideoWithProgress,
+} from "@/features/videos/lib/upload-video"
+import {
+  durationToMinutes,
+  type DurationUnit,
+} from "@/features/courses/lib/duration"
 
-export const DURATION_UNITS = ["Minutes", "Hours", "Days", "Weeks"] as const
-export type DurationUnit = (typeof DURATION_UNITS)[number]
+export { DURATION_UNITS } from "@/features/courses/lib/duration"
+export type { DurationUnit } from "@/features/courses/lib/duration"
 
 const LANGUAGE_MAP: Record<string, string> = {
   English: "en",
@@ -83,25 +89,6 @@ function normalizeLanguage(name: string): string {
   return LANGUAGE_MAP[name] ?? name.toLowerCase().slice(0, 2)
 }
 
-const UNIT_TO_MINUTES: Record<DurationUnit, number> = {
-  Minutes: 1,
-  Hours: 60,
-  Days: 1440,
-  Weeks: 10080,
-}
-
-export function durationToMinutes(value: number, unit: DurationUnit): number {
-  return value * UNIT_TO_MINUTES[unit]
-}
-
-export function minutesToDuration(
-  minutes: number,
-  unit: DurationUnit
-): { value: number; unit: DurationUnit } {
-  const divisor = UNIT_TO_MINUTES[unit]
-  return { value: minutes / divisor, unit }
-}
-
 export function buildCoursePayload(
   store: CourseWizardStore,
   thumbnailUrl?: string,
@@ -159,19 +146,6 @@ export async function uploadThumbnail(file: File): Promise<string> {
   return data.url
 }
 
-async function getSignedUploadConfig(
-  courseId: string,
-  moduleId: string,
-  topicId: string,
-  title: string,
-  mimeType: string,
-): Promise<StorageUploadConfig> {
-  return apiFetch<StorageUploadConfig>("/api/videos/sign-upload", {
-    method: "POST",
-    body: { courseId, moduleId, topicId, title, mimeType },
-  })
-}
-
 export async function uploadSingleVideoWithTracking(
   videoFile: File,
   moduleId: string,
@@ -181,7 +155,10 @@ export async function uploadSingleVideoWithTracking(
   courseTitle: string,
   store: VideoUploadStore
 ): Promise<void> {
-  const config = await getSignedUploadConfig(courseId, moduleId, topicId, title, videoFile.type)
+  const config = await signVideoUpload(
+    { courseId, moduleId, topicId, title },
+    videoFile.type
+  )
   const uploadId = config.videoId
 
   cacheFile(uploadId, videoFile)
@@ -210,16 +187,9 @@ export async function uploadSingleVideoWithTracking(
   })
 
   try {
-    await uploadToStorage(videoFile, config, (progress) => {
-      store.updateProgress(uploadId, progress.bytesUploaded)
-      updatePendingUpload(uploadId, progress.bytesUploaded)
-    })
-
-    const duration = await getVideoDuration(videoFile)
-
-    await apiFetch(`/api/videos/${config.videoId}/finalize`, {
-      method: "POST",
-      body: { storageKey: config.storageKey, duration },
+    await uploadVideoWithProgress(videoFile, config, (bytesUploaded) => {
+      store.updateProgress(uploadId, bytesUploaded)
+      updatePendingUpload(uploadId, bytesUploaded)
     })
 
     store.completeTask(uploadId, "completed")

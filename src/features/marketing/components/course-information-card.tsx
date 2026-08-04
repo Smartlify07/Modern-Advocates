@@ -1,8 +1,7 @@
 import { Clock, Languages, Layers, PlayCircle } from "lucide-react"
 
 import { EnrollNowButton } from "@/features/courses/components/enroll-now-button"
-import { minutesToDuration } from "@/features/courses/api/course-service"
-import type { DurationUnit } from "@/features/courses/api/course-service"
+import { minutesToDuration, type DurationUnit } from "@/features/courses/lib/duration"
 
 type CourseContentData = {
   id: string

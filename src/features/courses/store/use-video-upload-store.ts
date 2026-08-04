@@ -1,8 +1,7 @@
 import { create } from "zustand"
 import { getCachedFile, removeCachedFile } from "@/features/videos/lib/file-cache"
-import { getVideoDuration } from "@/features/videos/lib/get-video-duration"
 import type { StorageUploadConfig } from "@/shared/lib/storage-upload"
-import { apiFetch } from "@/shared/lib/api-fetch"
+import { signVideoUpload, uploadVideoWithProgress } from "@/features/videos/lib/upload-video"
 
 export type UploadStatus = "uploading" | "processing" | "completed" | "failed"
 
@@ -97,12 +96,9 @@ export const useVideoUploadStore = create<VideoUploadStore>((set, get) => ({
     const { courseId, moduleId, topicId, title } = task.retryMeta
 
     try {
-      const config: StorageUploadConfig = await apiFetch<StorageUploadConfig>(
-        "/api/videos/sign-upload",
-        {
-          method: "POST",
-          body: { courseId, moduleId, topicId, title, mimeType: file.type },
-        },
+      const config: StorageUploadConfig = await signVideoUpload(
+        { courseId, moduleId, topicId, title },
+        file.type
       )
       const newUploadId = config.videoId
 
@@ -111,39 +107,12 @@ export const useVideoUploadStore = create<VideoUploadStore>((set, get) => ({
         tasks: state.tasks.map((t) =>
           t.uploadId === uploadId
             ? { ...t, uploadId: newUploadId, status: "uploading", bytesUploaded: 0, error: undefined }
-            : t,
+            : t
         ),
       }))
 
-      const xhr = new XMLHttpRequest()
-      xhr.timeout = 7_200_000
-
-      await new Promise<void>((resolve, reject) => {
-        xhr.upload.addEventListener("progress", (e) => {
-          if (e.lengthComputable) {
-            get().updateProgress(newUploadId, Math.round((e.loaded / e.total) * file.size))
-          }
-        })
-
-        xhr.addEventListener("load", () => {
-          if (xhr.status >= 200 && xhr.status < 300) resolve()
-          else reject(new Error(`Upload failed with status ${xhr.status}`))
-        })
-
-        xhr.addEventListener("error", () => reject(new Error("Upload failed")))
-        xhr.addEventListener("abort", () => reject(new Error("Upload cancelled")))
-        xhr.addEventListener("timeout", () => reject(new Error("Upload timed out")))
-
-        xhr.open("PUT", config.uploadUrl)
-        xhr.setRequestHeader("Content-Type", file.type)
-        xhr.send(file)
-      })
-
-      const duration = await getVideoDuration(file)
-
-      await apiFetch(`/api/videos/${newUploadId}/finalize`, {
-        method: "POST",
-        body: { storageKey: config.storageKey, duration },
+      await uploadVideoWithProgress(file, config, (bytesUploaded) => {
+        get().updateProgress(newUploadId, bytesUploaded)
       })
 
       get().completeTask(newUploadId, "completed")
