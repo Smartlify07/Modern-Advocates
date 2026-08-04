@@ -17,7 +17,7 @@ function TableSkeleton() {
   return (
     <Table>
       <TableHeader className="rounded-t-2xl">
-        <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
+        <TableRow className="rounded-t-2xl bg-ma-surface-2 hover:bg-ma-surface-2">
           <TableHead className="w-[220px]">Name</TableHead>
           <TableHead className="w-[280px]">Email</TableHead>
           <TableHead className="w-[120px]">Amount</TableHead>
@@ -77,7 +77,7 @@ export default function AdminDonationsPage() {
 
   return (
     <div className="mx-auto flex flex-col gap-7.5 p-7.5 lg:max-w-7xl 2xl:max-w-360">
-      <h1 className="text-4xl font-semibold tracking-[-3%]">Donations</h1>
+      <h1 className="text-4xl font-semibold tracking-tight-lg">Donations</h1>
 
       <SearchExportRow
         search={search}

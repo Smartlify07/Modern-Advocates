@@ -31,7 +31,7 @@ export function HeroSection() {
           </div>
           <div className="flex w-36 flex-col items-start gap-0.5">
             <div className="flex w-full items-center gap-[9px]">
-              <div className="flex gap-0 text-[#ff9d00]" aria-hidden="true">
+              <div className="flex gap-0 text-ma-star" aria-hidden="true">
                 {Array.from({ length: 5 }).map((_, index) => (
                   <Star key={index} className="size-5 fill-current" />
                 ))}
@@ -46,7 +46,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <h1 className="mt-[30px] max-w-[800px] font-sans text-[26px]/[100%] font-extrabold lg:text-[60px] lg:leading-[70px] lg:tracking-[-5%]">
+        <h1 className="mt-[30px] max-w-[800px] font-sans text-[26px]/[100%] font-extrabold lg:text-[60px] lg:leading-[70px] lg:tracking-tight-xl">
           Navigate today&apos;s world with the skills, resources, and support
           you deserve.
         </h1>
@@ -60,7 +60,7 @@ export function HeroSection() {
         <div className="mt-10 flex items-center gap-5">
           <Link
             href="/contact"
-            className="group relative inline-flex items-center justify-center overflow-hidden rounded-[60px] bg-ma-text px-5 py-4 sm:gap-2.5 sm:text-base"
+            className="group relative inline-flex items-center justify-center overflow-hidden rounded-pill bg-ma-text px-5 py-4 sm:gap-2.5 sm:text-base"
           >
             <span className="relative z-10 inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-nowrap text-white sm:gap-2.5 sm:text-base">
               Book consultation
@@ -69,13 +69,13 @@ export function HeroSection() {
                 aria-hidden="true"
               />
             </span>
-            <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <div className="pointer-events-none absolute inset-0 rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </Link>
           <div className="group relative">
-            <div className="pointer-events-none absolute -inset-[1px] rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <div className="pointer-events-none absolute -inset-[1px] rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <Link
               href="/donation"
-              className="relative inline-flex items-center justify-center gap-1.5 rounded-[60px] bg-white px-5 py-4 text-xs font-semibold text-nowrap text-ma-text transition-colors sm:gap-2.5 sm:text-base"
+              className="relative inline-flex items-center justify-center gap-1.5 rounded-pill bg-white px-5 py-4 text-xs font-semibold text-nowrap text-ma-text transition-colors sm:gap-2.5 sm:text-base"
             >
               Support our mission
               <ArrowRight

@@ -84,7 +84,7 @@ export default function AdminSupportPage() {
 
   return (
     <div className="mx-auto flex flex-col gap-7.5 p-7.5 lg:max-w-7xl 2xl:max-w-360">
-      <h1 className="text-4xl font-bold tracking-[-3%]">Help &amp; Support</h1>
+      <h1 className="text-4xl font-bold tracking-tight-lg">Help &amp; Support</h1>
 
       <KpiCards
         totalTickets={kpis.total}

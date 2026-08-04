@@ -68,7 +68,7 @@ export function Footer() {
               updates, inspiration, and design insights.
             </p>
 
-            <form className="mt-6 flex w-full items-center justify-between rounded-[60px] bg-[#f5f5f5] py-2.5 pr-2.5 pl-5 lg:max-w-[374px]">
+            <form className="mt-6 flex w-full items-center justify-between rounded-pill bg-ma-surface-2 py-2.5 pr-2.5 pl-5 lg:max-w-[374px]">
               <label htmlFor="footer-email" className="sr-only">
                 Email address
               </label>
@@ -76,11 +76,11 @@ export function Footer() {
                 id="footer-email"
                 type="email"
                 placeholder="Enter your email"
-                className="min-w-0 flex-1 bg-transparent text-base text-ma-text outline-none placeholder:text-[#6b7280]"
+                className="min-w-0 flex-1 bg-transparent text-base text-ma-text outline-none placeholder:text-muted-foreground"
               />
               <button
                 type="submit"
-                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-[60px] bg-ma-text px-[15px] py-3 text-[12.31px] font-semibold text-white transition-transform duration-300 hover:scale-[1.1]"
+                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-pill bg-ma-text px-[15px] py-3 text-[12.31px] font-semibold text-white transition-transform duration-300 hover:scale-[1.1]"
               >
                 <span className="relative z-10 inline-flex items-center gap-2">
                   Join
@@ -89,7 +89,7 @@ export function Footer() {
                     aria-hidden="true"
                   />
                 </span>
-                <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="pointer-events-none absolute inset-0 rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               </button>
             </form>
 

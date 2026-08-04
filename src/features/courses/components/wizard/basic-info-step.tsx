@@ -32,7 +32,7 @@ export function BasicInfoStep() {
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Untitled"
           maxLength={80}
-          className="h-[44px] rounded-[8px]"
+          className="h-11 rounded-8"
         />
         <p className="mt-1 text-right text-xs text-slate-400">
           {title.length}/80
@@ -54,7 +54,7 @@ export function BasicInfoStep() {
               type="number"
               min="0"
               step="0.01"
-              className="h-[44px] [appearance:textfield] rounded-[8px] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              className="h-11 [appearance:textfield] rounded-8 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             />
           </div>
           <div>
@@ -68,7 +68,7 @@ export function BasicInfoStep() {
               type="number"
               min="0"
               step="0.01"
-              className="h-[44px] [appearance:textfield] rounded-[8px] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              className="h-11 [appearance:textfield] rounded-8 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             />
           </div>
         </div>

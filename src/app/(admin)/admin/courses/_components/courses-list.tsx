@@ -30,9 +30,9 @@ export default function CoursesList({
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            className="flex w-full flex-col gap-5 rounded-[24px] border border-[#d9d9d9] bg-white px-2.5 pt-2.5 pb-5"
+            className="flex w-full flex-col gap-5 rounded-card-2 border border-ma-border-light bg-white px-2.5 pt-2.5 pb-5"
           >
-            <Skeleton className="h-[254px] rounded-[24px]" />
+            <Skeleton className="h-[254px] rounded-card-2" />
             <div className="flex flex-col gap-2 px-2.5">
               <Skeleton className="h-7 w-3/4" />
               <Skeleton className="h-4 w-1/2" />

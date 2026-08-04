@@ -96,7 +96,7 @@ export function ViewTicketDialog({
         <DialogFooter className="-mx-7.5 border-t bg-white px-7.5 pb-4 sm:justify-start">
           {ticket?.status !== "resolved" ? (
             <Button
-              className="h-[53px] flex-1 rounded-button-medium border border-ma-admin-primary bg-white px-6 py-4 text-ma-admin-primary hover:bg-ma-admin-primary/10"
+              className="h-pill flex-1 rounded-button-medium border border-ma-admin-primary bg-white px-6 py-4 text-ma-admin-primary hover:bg-ma-admin-primary/10"
               onClick={() => {
                 if (ticket && !isPending) onStatusChange(ticket.id, "resolved")
               }}
@@ -113,7 +113,7 @@ export function ViewTicketDialog({
             </Button>
           ) : (
             <Button
-              className="h-[53px] flex-1 rounded-button-medium border border-amber-500 bg-white px-6 py-4 text-amber-600 hover:bg-amber-50"
+              className="h-pill flex-1 rounded-button-medium border border-amber-500 bg-white px-6 py-4 text-amber-600 hover:bg-amber-50"
               onClick={() => {
                 if (ticket && !isPending) onStatusChange(ticket.id, "open")
               }}
@@ -130,7 +130,7 @@ export function ViewTicketDialog({
             </Button>
           )}
           <Button
-            className="h-[53px] flex-1 rounded-button-medium bg-ma-admin-primary px-6 py-4 text-white hover:bg-ma-admin-primary/80"
+            className="h-pill flex-1 rounded-button-medium bg-ma-admin-primary px-6 py-4 text-white hover:bg-ma-admin-primary/80"
             onClick={handleSendMessage}
           >
             <MessageSquareReplyIcon strokeWidth={1.5} className="mr-2 size-4" />

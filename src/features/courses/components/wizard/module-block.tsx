@@ -27,7 +27,7 @@ export function ModuleBlock({ module: mod, index }: { module: Module; index: num
           value={mod.title}
           onChange={(e) => updateModule(mod.id, e.target.value)}
           placeholder="Week 1: AI, Economic Mobility & Entrepreneurship"
-          className="h-[44px] rounded-[8px] text-sm flex-1 min-w-0"
+          className="h-11 rounded-8 text-sm flex-1 min-w-0"
         />
         <div className="flex items-center gap-1 shrink-0">
           <button

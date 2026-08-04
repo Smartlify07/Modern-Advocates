@@ -48,14 +48,14 @@ export default function DashboardNavbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`p-2.5 text-base transition-colors duration-300 hover:text-[#6B7280] ${pathname === item.href || pathname.startsWith(item.href + "/") ? "text-primary" : ""}`}
+                  className={`p-2.5 text-base transition-colors duration-300 hover:text-muted-foreground ${pathname === item.href || pathname.startsWith(item.href + "/") ? "text-primary" : ""}`}
                 >
                   {item.label}
                 </Link>
               ))}
             </nav>
             <div className="flex items-center gap-4">
-              <Bell className="size-5 text-[#6B7280]" />
+              <Bell className="size-5 text-muted-foreground" />
               <ProfileDropdown className="size-12.5" dropdownWidth="w-64" />
             </div>
           </div>
@@ -67,9 +67,9 @@ export default function DashboardNavbar() {
             className="size-10 rounded-[12px] border p-2 md:hidden"
           >
             {mobileOpen ? (
-              <X className="size-6 text-[#6B7280]" />
+              <X className="size-6 text-muted-foreground" />
             ) : (
-              <Menu className="size-6 text-[#6B7280]" />
+              <Menu className="size-6 text-muted-foreground" />
             )}
           </button>
         </div>
@@ -86,7 +86,7 @@ export default function DashboardNavbar() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
-                className={`rounded-lg p-3 text-base transition-all duration-300 hover:text-[#6B7280] ${mobileOpen ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"} ${pathname === item.href || pathname.startsWith(item.href + "/") ? "text-primary" : ""}`}
+                className={`rounded-lg p-3 text-base transition-all duration-300 hover:text-muted-foreground ${mobileOpen ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"} ${pathname === item.href || pathname.startsWith(item.href + "/") ? "text-primary" : ""}`}
                 style={{ transitionDelay: mobileOpen ? `${i * 50}ms` : "0ms" }}
               >
                 {item.label}

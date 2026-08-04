@@ -77,7 +77,7 @@ export function Testimonials() {
               type="button"
               aria-label="Previous review"
               onClick={() => scrollReviews("previous")}
-              className="flex size-[50px] items-center justify-center rounded-2xl bg-[#f5f5f5] text-black transition-colors hover:bg-[#ececec]"
+              className="flex size-[50px] items-center justify-center rounded-2xl bg-ma-surface-2 text-black transition-colors hover:bg-ma-surface-2"
             >
               <ArrowLeft className="size-6" aria-hidden="true" />
             </button>
@@ -85,7 +85,7 @@ export function Testimonials() {
               type="button"
               aria-label="Next review"
               onClick={() => scrollReviews("next")}
-              className="flex size-[50px] items-center justify-center rounded-2xl bg-[#f5f5f5] text-black transition-colors hover:bg-[#ececec]"
+              className="flex size-[50px] items-center justify-center rounded-2xl bg-ma-surface-2 text-black transition-colors hover:bg-ma-surface-2"
             >
               <ArrowRight className="size-6" aria-hidden="true" />
             </button>

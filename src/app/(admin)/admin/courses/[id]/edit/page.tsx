@@ -51,7 +51,7 @@ function CourseWizardSkeleton() {
 
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <Skeleton className="h-9 w-48" />
-        <Skeleton className="h-12 w-36 rounded-[8px]" />
+        <Skeleton className="h-12 w-36 rounded-8" />
       </div>
 
       <div className="space-y-6">
@@ -72,8 +72,8 @@ function CourseWizardSkeleton() {
       </div>
 
       <div className="flex items-center justify-between border-t border-slate-200 pt-4">
-        <Skeleton className="h-11 w-28 rounded-[8px]" />
-        <Skeleton className="h-12 w-40 rounded-[8px]" />
+        <Skeleton className="h-11 w-28 rounded-8" />
+        <Skeleton className="h-12 w-40 rounded-8" />
       </div>
     </div>
   )
@@ -198,7 +198,7 @@ export default function EditCoursePage() {
               variant="ghost"
               onClick={handleSaveAndClose}
               disabled={isPending}
-              className="h-12 rounded-[8px] bg-ma-admin-primary/10 px-4 py-2 text-primary hover:bg-ma-admin-primary hover:text-white"
+              className="h-12 rounded-8 bg-ma-admin-primary/10 px-4 py-2 text-primary hover:bg-ma-admin-primary hover:text-white"
             >
               {isPending ? (
                 <Loader2 className="mr-1 size-4 animate-spin" />
@@ -212,7 +212,7 @@ export default function EditCoursePage() {
             <Button
               variant="outline"
               onClick={handleCancel}
-              className="h-12 w-[156px] rounded-[8px] px-4 py-2"
+              className="h-12 w-[156px] rounded-8 px-4 py-2"
             >
               Cancel
             </Button>
@@ -230,7 +230,7 @@ export default function EditCoursePage() {
           <Button
             variant="outline"
             onClick={handlePrevious}
-            className="h-[44px] rounded-[8px]"
+            className="h-11 rounded-8"
           >
             <ArrowLeftIcon className="mr-1 size-4" />
             Previous
@@ -239,7 +239,7 @@ export default function EditCoursePage() {
           <Button
             variant="outline"
             onClick={handleCancel}
-            className="h-[44px] w-[156px] rounded-[8px]"
+            className="h-11 w-[156px] rounded-8"
           >
             Cancel
           </Button>
@@ -247,7 +247,7 @@ export default function EditCoursePage() {
         {currentStep < wizardSteps.length - 1 && (
           <Button
             onClick={handleSaveAndContinue}
-            className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
+            className="h-12 rounded-8 bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
           >
             <SaveIcon className="mr-1 size-4" />
             Save & Continue
@@ -257,7 +257,7 @@ export default function EditCoursePage() {
           <Button
             onClick={handlePublish}
             disabled={isPending}
-            className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
+            className="h-12 rounded-8 bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
           >
             {isPending ? (
               <Loader2 className="mr-1 size-4 animate-spin" />

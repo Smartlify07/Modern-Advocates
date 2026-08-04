@@ -39,7 +39,7 @@ export function ActivateUserDialog({
             </div>
           </div>
           <p className="text-[30px] font-semibold">Reactivate this user?</p>
-          <p className="text-left align-middle text-sm tracking-[-1.5%] text-muted-foreground">
+          <p className="text-left align-middle text-sm tracking-tight-md text-muted-foreground">
             This user will regain access to their account and can sign in
             immediately. All previous enrollments, course progress,
             certificates, and purchases will be available exactly as they were
@@ -49,14 +49,14 @@ export function ActivateUserDialog({
         <DialogFooter className="-mx-7.5 border-t-0 px-7.5 pb-4 sm:justify-start">
           <Button
             variant="outline"
-            className="h-[53px] flex-1 rounded-button-medium px-6 py-4"
+            className="h-pill flex-1 rounded-button-medium px-6 py-4"
             onClick={() => onOpenChange(false)}
             disabled={isPending}
           >
             Cancel
           </Button>
           <Button
-            className="h-[53px] flex-1 rounded-button-medium bg-ma-admin-primary px-6 py-4 text-ma-admin-primary text-white hover:bg-ma-admin-primary/80 hover:text-white"
+            className="h-pill flex-1 rounded-button-medium bg-ma-admin-primary px-6 py-4 text-ma-admin-primary text-white hover:bg-ma-admin-primary/80 hover:text-white"
             onClick={() => {
               if (user && !isPending) onConfirm(user)
             }}

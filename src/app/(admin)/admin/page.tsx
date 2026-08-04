@@ -32,7 +32,7 @@ function TableSkeleton() {
   return (
     <Table>
       <TableHeader className="rounded-t-2xl">
-        <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
+        <TableRow className="rounded-t-2xl bg-ma-surface-2 hover:bg-ma-surface-2">
           <TableHead className="w-[220px]">User</TableHead>
           <TableHead className="w-[280px]">Email</TableHead>
           <TableHead className="w-[140px] text-center">Course Enrolled</TableHead>
@@ -90,7 +90,7 @@ export default function AdminDashboardPage() {
     <div className="mx-auto flex flex-col gap-10 p-7.5 lg:max-w-7xl 2xl:max-w-360">
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-4xl/[100%] font-semibold tracking-[-3%]">
+          <h1 className="text-4xl leading-none font-semibold tracking-tight-lg">
             Dashboard
           </h1>
         </div>

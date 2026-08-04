@@ -5,11 +5,11 @@ export function DonationHeroSection() {
     <section id="donation" className="bg-white py-12.5 text-ma-text lg:py-25">
       <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="mx-auto max-w-[800px] text-center">
-          <p className="text-base leading-normal font-medium tracking-[10%] text-[#6B7280] uppercase">
+          <p className="text-base leading-normal font-medium tracking-[10%] text-muted-foreground uppercase">
             Donation
           </p>
 
-          <h1 className="mt-5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold text-balance text-primary sm:leading-[70px] lg:mt-7.5 lg:text-[60px]/[70px] lg:tracking-[-5%]">
+          <h1 className="mt-5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold text-balance text-primary sm:leading-[70px] lg:mt-7.5 lg:text-[60px]/[70px] lg:tracking-tight-xl">
             Your Support Keeps Someone in the Game
           </h1>
 
@@ -21,7 +21,7 @@ export function DonationHeroSection() {
         </div>
 
         <div className="mt-16 grid gap-5 lg:grid-cols-2">
-          <div className="relative min-h-[424px] overflow-hidden rounded-[24px] bg-ma-bg lg:min-h-[420px]">
+          <div className="relative min-h-[424px] overflow-hidden rounded-card-2 bg-ma-bg lg:min-h-[420px]">
             <Image
               src="/figma-about/founder.png"
               alt="Melanie Reyes, founder of ModernAdvocates Inc."
@@ -32,7 +32,7 @@ export function DonationHeroSection() {
             />
           </div>
 
-          <article className="flex flex-col rounded-[24px] bg-[#f5f5f5] px-4 py-7.5 lg:min-h-[550px] lg:p-7">
+          <article className="flex flex-col rounded-card-2 bg-ma-surface-2 px-4 py-7.5 lg:min-h-[550px] lg:p-7">
             <div>
               <h2 className="text-[30px] leading-normal font-semibold text-ma-text sm:text-4xl lg:text-[32px]">
                 Melanie Reyes

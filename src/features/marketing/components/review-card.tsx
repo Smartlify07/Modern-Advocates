@@ -11,7 +11,7 @@ type ReviewData = {
 
 export function ReviewCard({ review }: { review: ReviewData }) {
   return (
-    <article className="grid flex-col gap-[22px] rounded-2xl border border-[#d9d9d9] p-5">
+    <article className="grid flex-col gap-[22px] rounded-2xl border border-ma-border-light p-5">
       <p className="text-[15px] leading-normal text-ma-text">
         {review.body ?? "No review text provided."}
       </p>
@@ -33,7 +33,7 @@ export function ReviewCard({ review }: { review: ReviewData }) {
         </div>
 
         <div
-          className="flex items-center text-[#ff9d00]"
+          className="flex items-center text-ma-star"
           aria-label={`${review.rating} stars`}
         >
           {Array.from({ length: review.rating }).map((_, index) => (

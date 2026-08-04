@@ -105,7 +105,7 @@ export default function CourseCardItem({ course }: { course: Course }) {
 
   return (
     <>
-      <div className="group flex w-full flex-col gap-5 rounded-[24px] border border-[#d9d9d9] bg-white px-2.5 pt-2.5 pb-5 transition-colors duration-300 hover:bg-gray-50">
+      <div className="group flex w-full flex-col gap-5 rounded-card-2 border border-ma-border-light bg-white px-2.5 pt-2.5 pb-5 transition-colors duration-300 hover:bg-gray-50">
         <CourseCard.Thumbnail src={course.thumbnailUrl} alt={course.title || "Untitled"} />
         <div className="flex flex-1 flex-col justify-between gap-4">
           <CourseCard.Content className="min-h-[64px]">
@@ -118,9 +118,9 @@ export default function CourseCardItem({ course }: { course: Course }) {
           </CourseCard.Content>
           <div className="flex items-center justify-between px-2.5">
             {course.status === "draft" ? (
-              <p className="text-sm font-medium text-[#6B7280]">In Draft</p>
+              <p className="text-sm font-medium text-muted-foreground">In Draft</p>
             ) : course.status === "archived" ? (
-              <p className="text-sm font-medium text-[#6B7280]">Archived</p>
+              <p className="text-sm font-medium text-muted-foreground">Archived</p>
             ) : course.isFree ? (
               <span className="text-xl font-medium text-ma-text">Free</span>
             ) : (
@@ -142,7 +142,7 @@ export default function CourseCardItem({ course }: { course: Course }) {
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  className="ring- size-6 rounded-full border border-[#141B34]"
+                  className="ring- size-6 rounded-full border border-ma-border-strong"
                 >
                   <MoreHorizontalIcon className="size-3" />
                 </Button>
@@ -152,7 +152,7 @@ export default function CourseCardItem({ course }: { course: Course }) {
                 className="w-36 [&>div]:gap-2.5 [&>div]:p-2"
               >
                 <DropdownMenuItem
-                  className="hover:bg-[#F5F7FA]"
+                  className="hover:bg-ma-bg"
                   onClick={() =>
                     router.push(`/admin/courses/${course.id}/edit`)
                   }
@@ -161,7 +161,7 @@ export default function CourseCardItem({ course }: { course: Course }) {
                   Edit
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="hover:bg-[#F5F7FA]"
+                  className="hover:bg-ma-bg"
                   onClick={() =>
                     setDialogAction(isArchived ? "unarchive" : "archive")
                   }

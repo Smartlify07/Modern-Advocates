@@ -5,7 +5,7 @@ export function KpiSectionSkeleton() {
   return (
     <div className="grid gap-4 md:grid-cols-3">
       {Array.from({ length: 3 }).map((_, i) => (
-        <Card key={i} size="sm" className="gap-0 rounded-[16px] border border-[#E5E7EB] py-4 shadow-none ring-0">
+        <Card key={i} size="sm" className="gap-0 rounded-[16px] border border-border py-4 shadow-none ring-0">
           <CardContent className="px-4">
             <div className="flex items-start justify-between">
               <div className="flex flex-col gap-3">
@@ -29,7 +29,7 @@ export function SalesSectionSkeleton() {
         <Skeleton className="h-11 w-36 rounded-(--radius-button-medium)" />
       </div>
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="gap-0 border border-[#E5E7EB] shadow-none ring-0">
+        <Card className="gap-0 border border-border shadow-none ring-0">
           <CardContent className="flex flex-col gap-13 px-4">
             <Skeleton className="h-4 w-32" />
             <div className="flex flex-col gap-2">
@@ -54,7 +54,7 @@ export function TableSkeleton({ rows = 5, cols = 5 }: { rows?: number; cols?: nu
     <div className="rounded-t-2xl">
       <table className="w-full text-sm">
         <thead>
-          <tr className="rounded-t-2xl bg-[#F5F5F5]">
+          <tr className="rounded-t-2xl bg-ma-surface-2">
             {Array.from({ length: cols }).map((_, i) => (
               <th key={i} className="p-4">
                 <Skeleton className="h-4 w-20" />
@@ -82,7 +82,7 @@ export function SalesSummarySkeleton() {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       {Array.from({ length: 2 }).map((_, i) => (
-        <Card key={i} size="sm" className="gap-0 rounded-[16px] border border-[#E5E7EB] py-4 shadow-none ring-0">
+        <Card key={i} size="sm" className="gap-0 rounded-[16px] border border-border py-4 shadow-none ring-0">
           <CardContent className="px-4">
             <div className="flex items-start justify-between">
               <div className="flex flex-col gap-2">
@@ -101,8 +101,8 @@ export function SalesSummarySkeleton() {
 export function SearchExportSkeleton() {
   return (
     <div className="flex items-center justify-between">
-      <Skeleton className="h-[44px] w-[300px] rounded-[8px]" />
-      <Skeleton className="h-[44px] w-[115px] rounded-[8px]" />
+      <Skeleton className="h-11 w-[300px] rounded-8" />
+      <Skeleton className="h-11 w-[115px] rounded-8" />
     </div>
   )
 }

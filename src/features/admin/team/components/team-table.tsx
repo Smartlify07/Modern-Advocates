@@ -58,7 +58,7 @@ export function TeamTable({
     <div className="rounded-t-2xl">
       <Table>
         <TableHeader className="rounded-t-2xl">
-          <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
+          <TableRow className="rounded-t-2xl bg-ma-surface-2 hover:bg-ma-surface-2">
             <TableHead>Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Role</TableHead>
@@ -89,7 +89,7 @@ export function TeamTable({
             </TableRow>
           ) : (
             members.map((m) => (
-              <TableRow className="hover:bg-[#F5F7FA]" key={m.id}>
+              <TableRow className="hover:bg-ma-bg" key={m.id}>
                 <TableCell className="font-normal">
                   {m.name ?? "—"}
                 </TableCell>
@@ -101,14 +101,14 @@ export function TeamTable({
                   {m.status === "Active" ? (
                     <Badge
                       variant="secondary"
-                      className="rounded-[8px] bg-green-700/10 font-normal text-green-700"
+                      className="rounded-8 bg-green-700/10 font-normal text-green-700"
                     >
                       Active
                     </Badge>
                   ) : (
                     <Badge
                       variant="secondary"
-                      className="rounded-[8px] bg-amber-700/10 font-normal text-amber-700"
+                      className="rounded-8 bg-amber-700/10 font-normal text-amber-700"
                     >
                       Pending
                     </Badge>

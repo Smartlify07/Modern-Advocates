@@ -47,7 +47,7 @@ export default function CoursePlayerNavbar() {
             <button
               type="button"
               onClick={() => setReviewOpen(true)}
-              className="bg-[#E7EBEF] px-3 py-1.5 text-sm text-[#448AFF] md:hidden"
+              className="bg-muted px-3 py-1.5 text-sm text-ma-info md:hidden"
             >
               Leave review
             </button>
@@ -66,13 +66,13 @@ export default function CoursePlayerNavbar() {
             <button
               type="button"
               onClick={() => setReviewOpen(true)}
-              className="hidden bg-[#E7EBEF] px-3 py-1.5 text-sm text-[#448AFF] md:block"
+              className="hidden bg-muted px-3 py-1.5 text-sm text-ma-info md:block"
             >
               Leave review
             </button>
             <Link
               href="#"
-              className="flex items-center gap-1.5 text-sm text-[#6b7280] hover:text-ma-text"
+              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-ma-text"
             >
               <div className="relative size-[33px]">
                 <svg width={size} height={size} className="-rotate-90">
@@ -81,7 +81,7 @@ export default function CoursePlayerNavbar() {
                     cy={size / 2}
                     r={radius}
                     fill="none"
-                    stroke="#E7EBEF"
+                    stroke="var(--muted)"
                     strokeWidth={strokeWidth}
                   />
                   <circle
@@ -110,9 +110,9 @@ export default function CoursePlayerNavbar() {
             className="size-10 rounded-[12px] border p-2 md:hidden"
           >
             {mobileOpen ? (
-              <X className="size-6 text-[#6B7280]" />
+              <X className="size-6 text-muted-foreground" />
             ) : (
-              <Menu className="size-6 text-[#6B7280]" />
+              <Menu className="size-6 text-muted-foreground" />
             )}
           </button>
         </div>
@@ -127,7 +127,7 @@ export default function CoursePlayerNavbar() {
             <Link
               href="#"
               onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-1.5 rounded-lg p-3 text-base text-[#6b7280] transition-all duration-300 hover:text-ma-text"
+              className="flex items-center gap-1.5 rounded-lg p-3 text-base text-muted-foreground transition-all duration-300 hover:text-ma-text"
             >
               <div className="relative size-[33px]">
                 <svg width={size} height={size} className="-rotate-90">
@@ -136,7 +136,7 @@ export default function CoursePlayerNavbar() {
                     cy={size / 2}
                     r={radius}
                     fill="none"
-                    stroke="#E7EBEF"
+                    stroke="var(--muted)"
                     strokeWidth={strokeWidth}
                   />
                   <circle

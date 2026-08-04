@@ -94,8 +94,8 @@ export function SidebarNavigation({
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     className={cn(
-                      "h-10 rounded-[8px] px-2.5 py-2! text-lg text-[#6B7280] hover:bg-ma-admin-primary/10 hover:text-primary [&_svg]:hover:text-ma-admin-primary",
-                      active && "bg-[#F1EEFD] font-semibold text-primary"
+                      "h-10 rounded-8 px-2.5 py-2! text-lg text-muted-foreground hover:bg-ma-admin-primary/10 hover:text-primary [&_svg]:hover:text-ma-admin-primary",
+                      active && "bg-ma-admin-primary/10 font-semibold text-primary"
                     )}
                     asChild
                     tooltip={item.title}
@@ -130,8 +130,8 @@ export function SidebarNavigation({
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     className={cn(
-                      "h-10 rounded-[8px] px-2.5 py-2! text-lg text-[#6B7280] hover:bg-ma-admin-primary/10 hover:text-primary [&_svg]:hover:text-ma-admin-primary",
-                      active && "bg-[#F1EEFD] font-semibold text-primary"
+                      "h-10 rounded-8 px-2.5 py-2! text-lg text-muted-foreground hover:bg-ma-admin-primary/10 hover:text-primary [&_svg]:hover:text-ma-admin-primary",
+                      active && "bg-ma-admin-primary/10 font-semibold text-primary"
                     )}
                     asChild
                     tooltip={item.title}

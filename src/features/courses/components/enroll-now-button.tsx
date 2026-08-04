@@ -49,7 +49,7 @@ export function EnrollNowButton({
     return (
       <Button
         disabled
-        className="flex h-[53px] w-full items-center justify-center rounded-[60px]"
+        className="flex h-pill w-full items-center justify-center rounded-pill"
       >
         <Loader2 className="size-5 animate-spin" />
       </Button>
@@ -59,10 +59,10 @@ export function EnrollNowButton({
   if (variant === "outline") {
     return (
       <div className="group relative">
-        <Button asChild className="w-full rounded-[60px]" variant="outline">
+        <Button asChild className="w-full rounded-pill" variant="outline">
           <Link
             href={href}
-            className="flex h-[53px] w-full items-center justify-center gap-2.5 rounded-[60px] border border-[#e5e7eb] bg-white px-5 py-4 text-base font-semibold text-primary transition-colors duration-300 group-hover:border-transparent group-hover:bg-transparent"
+            className="flex h-pill w-full items-center justify-center gap-2.5 rounded-pill border border-border bg-white px-5 py-4 text-base font-semibold text-primary transition-colors duration-300 group-hover:border-transparent group-hover:bg-transparent"
           >
             {label}
             <ArrowRight className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" />
@@ -73,16 +73,16 @@ export function EnrollNowButton({
   }
 
   return (
-    <Button asChild className="group relative overflow-hidden rounded-[60px]">
+    <Button asChild className="group relative overflow-hidden rounded-pill">
       <Link
         href={href}
-        className="flex h-[53px] w-full items-center justify-center gap-2.5 rounded-[60px] bg-ma-text px-5 py-4 text-base font-semibold text-white"
+        className="flex h-pill w-full items-center justify-center gap-2.5 rounded-pill bg-ma-text px-5 py-4 text-base font-semibold text-white"
       >
         <span className="relative z-10 inline-flex items-center gap-2.5">
           {label}
           <ArrowRight className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" />
         </span>
-        <div className="pointer-events-none absolute inset-0 rounded-[60px] bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        <div className="pointer-events-none absolute inset-0 rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       </Link>
     </Button>
   )

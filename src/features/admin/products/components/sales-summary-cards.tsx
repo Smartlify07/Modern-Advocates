@@ -4,7 +4,7 @@ import { TrendingUp, ShoppingBag } from "lucide-react"
 export function SalesSummaryCards({ sales, volume }: { sales: number; volume: number }) {
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <Card size="sm" className="gap-0 rounded-[16px] border border-[#E5E7EB] py-4 shadow-none ring-0">
+      <Card size="sm" className="gap-0 rounded-[16px] border border-border py-4 shadow-none ring-0">
         <CardContent className="px-4">
           <div className="flex items-start justify-between">
             <div className="flex flex-col gap-1">
@@ -17,7 +17,7 @@ export function SalesSummaryCards({ sales, volume }: { sales: number; volume: nu
           </div>
         </CardContent>
       </Card>
-      <Card size="sm" className="gap-0 rounded-[16px] border border-[#E5E7EB] py-4 shadow-none ring-0">
+      <Card size="sm" className="gap-0 rounded-[16px] border border-border py-4 shadow-none ring-0">
         <CardContent className="px-4">
           <div className="flex items-start justify-between">
             <div className="flex flex-col gap-1">

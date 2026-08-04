@@ -27,13 +27,13 @@ export function PaymentSuccessContent({
         </div>
 
         <div className="mt-3 text-center">
-          <h2 className="text-xl font-normal tracking-[-1.5%] text-[#6B7280] text-ma-text">
+          <h2 className="text-xl font-normal tracking-tight-md text-muted-foreground text-ma-text">
             Payment Successful!
           </h2>
           <p className="mt-3 text-[30px] font-semibold text-ma-text">{amount}</p>
 
           {polling && (
-            <p className="mt-4 text-sm text-[#6b7280]">
+            <p className="mt-4 text-sm text-muted-foreground">
               We're preparing your course access...
             </p>
           )}
@@ -54,7 +54,7 @@ export function PaymentSuccessContent({
         <button
           type="button"
           onClick={onRedirect}
-          className="flex w-full items-center justify-center gap-2 rounded-[60px] bg-[#F5F7FA] px-5 py-4 text-base font-semibold tracking-[-0.8%] text-ma-text transition-colors hover:bg-gray-200"
+          className="flex w-full items-center justify-center gap-2 rounded-pill bg-ma-bg px-5 py-4 text-base font-semibold tracking-[-0.8%] text-ma-text transition-colors hover:bg-gray-200"
         >
           <Download className="size-5" />
           Go to My Learning

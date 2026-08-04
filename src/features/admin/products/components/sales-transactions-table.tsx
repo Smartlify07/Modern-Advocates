@@ -28,7 +28,7 @@ export function SalesTransactionsTable({ sales, showProduct, getRowHref }: Sales
     <div className="rounded-t-2xl">
       <Table>
         <TableHeader className="rounded-t-2xl">
-          <TableRow className="rounded-t-2xl bg-[#F5F5F5] hover:bg-[#f5f5f5]">
+          <TableRow className="rounded-t-2xl bg-ma-surface-2 hover:bg-ma-surface-2">
             {showProduct && <TableHead className="w-[200px]">Product</TableHead>}
             <TableHead className="w-[200px]">Customer name</TableHead>
             <TableHead className="w-[260px]">Customer email</TableHead>
@@ -40,7 +40,7 @@ export function SalesTransactionsTable({ sales, showProduct, getRowHref }: Sales
           {sales.map((s) => (
             <TableRow
               key={s.id}
-              className={getRowHref ? "cursor-pointer hover:bg-[#F5F7FA]" : "hover:bg-[#F5F7FA]"}
+              className={getRowHref ? "cursor-pointer hover:bg-ma-bg" : "hover:bg-ma-bg"}
               onClick={getRowHref ? () => router.push(getRowHref(s)) : undefined}
             >
               {showProduct && <TableCell className="font-normal">{s.product}</TableCell>}

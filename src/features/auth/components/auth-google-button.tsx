@@ -51,7 +51,7 @@ export function AuthGoogleButton({ label }: { label: string }) {
       type="button"
       variant="outline"
       disabled={pending}
-      className="h-[53px] w-full gap-2.5 rounded-[60px] border-[#d9d9d9] bg-white px-5 py-4 text-base font-medium text-ma-text hover:bg-[#f5f5f5] disabled:opacity-60"
+      className="h-pill w-full gap-2.5 rounded-pill border-ma-border-light bg-white px-5 py-4 text-base font-medium text-ma-text hover:bg-ma-surface-2 disabled:opacity-60"
       onClick={handleSignIn}
     >
       {pending ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <GoogleMark />}

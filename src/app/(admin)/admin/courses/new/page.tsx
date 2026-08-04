@@ -95,7 +95,7 @@ export default function CreateCoursePage() {
           variant="ghost"
           onClick={handleSaveAndClose}
           disabled={isPending}
-          className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
+          className="h-12 rounded-8 bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
         >
           {isPending ? (
             <Loader2 className="mr-1 size-4 animate-spin" />
@@ -116,7 +116,7 @@ export default function CreateCoursePage() {
           <Button
             variant="outline"
             onClick={handlePrevious}
-            className="h-[44px] rounded-[8px]"
+            className="h-11 rounded-8"
           >
             <ArrowLeftIcon className="mr-1 size-4" />
             Previous
@@ -127,7 +127,7 @@ export default function CreateCoursePage() {
         {currentStep < wizardSteps.length - 1 && (
           <Button
             onClick={handleSaveAndContinue}
-            className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
+            className="h-12 rounded-8 bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
           >
             <SaveIcon className="mr-1 size-4" />
             Save & Continue
@@ -137,7 +137,7 @@ export default function CreateCoursePage() {
           <Button
             onClick={handlePublish}
             disabled={isPending}
-            className="h-12 rounded-[8px] bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
+            className="h-12 rounded-8 bg-ma-admin-primary px-4 py-2 text-white hover:bg-ma-admin-primary/90"
           >
             {isPending ? (
               <Loader2 className="mr-1 size-4 animate-spin" />

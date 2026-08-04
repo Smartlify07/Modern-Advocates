@@ -44,7 +44,7 @@ export function CourseMetadataFields() {
           Course Language
         </label>
         <Select value={language} onValueChange={setLanguage}>
-          <SelectTrigger className="w-full rounded-[8px] data-[size=default]:h-[44px]">
+          <SelectTrigger className="w-full rounded-8 data-[size=default]:h-11">
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="flex flex-col gap-1 p-2">
@@ -63,7 +63,7 @@ export function CourseMetadataFields() {
       <div>
         <label className="mb-2 block text-sm font-normal">Course Level</label>
         <Select value={level} onValueChange={setLevel}>
-          <SelectTrigger className="w-full rounded-[8px] data-[size=default]:h-[44px]">
+          <SelectTrigger className="w-full rounded-8 data-[size=default]:h-11">
             <SelectValue placeholder="Select..." />
           </SelectTrigger>
           <SelectContent className="space-y-1 p-2">
@@ -88,10 +88,10 @@ export function CourseMetadataFields() {
             placeholder="Duration"
             type="number"
             min="0"
-            className="flex-1[appearance:textfield] h-[44px] rounded-[8px] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="flex-1[appearance:textfield] h-11 rounded-8 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
           <Select value={durationUnit} onValueChange={setDurationUnit}>
-            <SelectTrigger className="w-1/2 rounded-[8px] data-[size=default]:h-[44px]">
+            <SelectTrigger className="w-1/2 rounded-8 data-[size=default]:h-11">
               <SelectValue placeholder="Select unit" />
             </SelectTrigger>
             <SelectContent className="space-y-1 p-2">

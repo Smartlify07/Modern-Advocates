@@ -28,7 +28,7 @@ export function DateFilter({ value, onChange }: DateFilterProps) {
       <DropdownMenuContent align="end" className="w-40">
         {dateOptions.map((option) => (
           <DropdownMenuItem
-            className="rounded-[8px] p-2"
+            className="rounded-8 p-2"
             key={option}
             onSelect={() => onChange(option)}
           >

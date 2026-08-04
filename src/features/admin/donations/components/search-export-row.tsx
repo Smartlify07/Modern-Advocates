@@ -39,7 +39,7 @@ export function SearchExportRow({
           <SearchIcon className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search"
-            className="h-[44px] w-[300px] rounded-[8px] pl-9"
+            className="h-11 w-[300px] rounded-8 pl-9"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
           />
@@ -48,13 +48,13 @@ export function SearchExportRow({
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="h-[44px] w-[176px] justify-between rounded-[8px] bg-white"
+              className="h-11 w-[176px] justify-between rounded-8 bg-white"
             >
               {activeLabel}
               <ChevronDownIcon className="size-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="rounded-[8px]" align="start">
+          <DropdownMenuContent className="rounded-8" align="start">
             <DropdownMenuRadioGroup
               className="space-y-1"
               value={typeFilter}
@@ -64,7 +64,7 @@ export function SearchExportRow({
                 <DropdownMenuRadioItem
                   key={opt.value}
                   value={opt.value}
-                  className="rounded-[8px] p-2 data-[state=checked]:bg-ma-admin-primary data-[state=checked]:text-primary-foreground [&_svg]:hidden"
+                  className="rounded-8 p-2 data-[state=checked]:bg-ma-admin-primary data-[state=checked]:text-primary-foreground [&_svg]:hidden"
                 >
                   {opt.label}
                 </DropdownMenuRadioItem>
@@ -75,7 +75,7 @@ export function SearchExportRow({
       </div>
       <Button
         variant="outline"
-        className="h-[44px] min-w-[115px] gap-2.5 rounded-[8px] border-ma-admin-primary bg-white text-ma-admin-primary hover:bg-ma-admin-primary hover:text-white"
+        className="h-11 min-w-[115px] gap-2.5 rounded-8 border-ma-admin-primary bg-white text-ma-admin-primary hover:bg-ma-admin-primary hover:text-white"
       >
         Export
         <UploadIcon className="size-4" />
