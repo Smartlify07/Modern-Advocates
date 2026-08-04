@@ -85,6 +85,8 @@ File: `src/app/globals.css`
 - `use-video-upload` unify sign→upload→finalize (4→1)
 - One shared course-detail RSC page (2 byte-identical pages → 1)
 
+**Status (2026-08-04):** P6 done on `refactor/frontend-p6-data-flow-stores` (commit `9fec8ec`). The legacy form store was already gone (merged into the wizard store in a prior phase), so the store merge was a no-op. Circular import **broken**: duration utils (`DURATION_UNITS`/`DurationUnit`/`durationToMinutes`/`minutesToDuration`) moved out of `api/course-service.ts` into `features/courses/lib/duration.ts`; the wizard store, schemas, and `course-information-card` now import from lib instead of the service. Video upload **unified**: new `features/videos/lib/upload-video.ts` (`signVideoUpload` + `uploadVideoWithProgress` doing sign→XHR→duration→finalize); the three duplicated pipelines in `course-service` (`uploadSingleVideoWithTracking`), `use-pending-uploads.tsx` (`resumeUpload`), and `use-video-upload-store.ts` (`retryUpload`) all delegate — the last inline XHR copy (store `retryUpload`) is removed. Course-detail **unified**: byte-identical `(marketing)/courses/[id]` and `(user)/dashboard/course/[id]` pages collapsed into one shared RSC `features/marketing/components/course-detail-page.tsx` (accepts optional `breadcrumbHref`); both routes are thin wrappers. tsc + eslint + build all pass. P6 merge pending.
+
 ### P7 — Size compliance (≤170 lines)
 
 - Re-measure all files; split anything still over 170 (see audit §1 + appendix)
