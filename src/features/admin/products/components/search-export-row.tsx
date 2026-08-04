@@ -1,17 +1,21 @@
 import { Input } from "@/shared/ui/input"
-import { Button } from "@/shared/ui/button"
-import { SearchIcon, UploadIcon } from "lucide-react"
+import { SearchIcon } from "lucide-react"
+import { ExportButton } from "@/shared/ui/export-button"
 
 interface SearchExportRowProps {
   placeholder: string
   value: string
   onChange: (value: string) => void
+  onExport: () => void
+  exportDisabled?: boolean
 }
 
 export function SearchExportRow({
   placeholder,
   value,
   onChange,
+  onExport,
+  exportDisabled = false,
 }: SearchExportRowProps) {
   return (
     <div className="flex items-center justify-between">
@@ -24,13 +28,7 @@ export function SearchExportRow({
           onChange={(e) => onChange(e.target.value)}
         />
       </div>
-      <Button
-        variant="outline"
-        className="h-11 min-w-[115px] gap-2.5 rounded-8 border-ma-admin-primary bg-white text-ma-admin-primary hover:bg-ma-admin-primary hover:text-white"
-      >
-        Export
-        <UploadIcon className="size-4" />
-      </Button>
+      <ExportButton onClick={onExport} disabled={exportDisabled} />
     </div>
   )
 }

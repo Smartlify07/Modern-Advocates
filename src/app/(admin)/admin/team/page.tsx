@@ -4,6 +4,7 @@ import { useState, useCallback } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import { downloadCsv } from "@/shared/utils"
 import { TeamTable } from "@/features/admin/team/components/team-table"
 import { TeamFilterBar } from "@/features/admin/team/components/team-filter-bar"
 import { AddMemberDialog } from "@/features/admin/team/components/add-member-dialog"
@@ -79,6 +80,21 @@ export default function AdminTeamsPage() {
   const members = data?.members ?? []
   const total = data?.total ?? 0
 
+  const allMembersQuery = useQuery<ListTeamMembersResponse>({
+    queryKey: queryKeys.admin.team.all,
+    queryFn: () => apiFetch<ListTeamMembersResponse>("/api/admin/team?page=1&pageSize=10000"),
+  })
+
+  const handleExport = () => {
+    const allMembers = allMembersQuery.data?.members ?? []
+    downloadCsv(
+      "team.csv",
+      ["Name", "Email", "Role", "Status", "Last Login"],
+      allMembers.map((m) => [m.name, m.email, m.role, m.status, m.lastLogin]),
+    )
+    toast.success(`Exported ${allMembers.length} member${allMembers.length === 1 ? "" : "s"}`)
+  }
+
   return (
     <AdminPageContainer>
       <TeamFilterBar
@@ -87,6 +103,8 @@ export default function AdminTeamsPage() {
         typeFilter={typeFilter}
         onTypeFilterChange={handleTypeFilterChange}
         onAddMember={() => setAddDialogOpen(true)}
+        onExport={handleExport}
+        exportDisabled={(allMembersQuery.data?.members?.length ?? 0) === 0}
         role={role}
       />
 

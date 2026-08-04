@@ -2,8 +2,10 @@
 
 import { useState, useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
+import { toast } from "sonner"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { queryKeys } from "@/shared/lib/query-keys"
+import { downloadCsv } from "@/shared/utils"
 import { PageHeader } from "@/shared/ui/page-header"
 import { AdminPageContainer } from "@/shared/ui/admin-page-container"
 import { SearchExportRow } from "@/features/admin/products/components/search-export-row"
@@ -28,6 +30,15 @@ export default function AllCustomersPage() {
     [search, customers],
   )
 
+  const handleExport = () => {
+    downloadCsv(
+      "customers.csv",
+      ["Name", "Email", "Courses Purchased", "Total Spent", "Last Purchase"],
+      customers.map((c) => [c.name, c.email, c.courseCount, c.totalSpent, c.lastPurchase]),
+    )
+    toast.success(`Exported ${customers.length} customer${customers.length === 1 ? "" : "s"}`)
+  }
+
   return (
     <AdminPageContainer>
       <PageHeader title="All Customers" backHref="/admin/products" />
@@ -43,7 +54,7 @@ export default function AllCustomersPage() {
         />
       ) : (
         <>
-          <SearchExportRow placeholder="Search customer..." value={search} onChange={setSearch} />
+          <SearchExportRow placeholder="Search customer..." value={search} onChange={setSearch} onExport={handleExport} exportDisabled={customers.length === 0} />
           <div className="flex flex-col gap-8">
             <CustomersTable customers={filtered} />
             <PaginationBar page={page} total={filtered.length} pageSize={PAGE_SIZE} onPageChange={setPage} />
