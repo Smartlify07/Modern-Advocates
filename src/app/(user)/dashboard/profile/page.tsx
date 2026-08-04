@@ -1,10 +1,10 @@
 "use client"
 
-import { authClient } from "@/infrastructure/auth/client"
+import { useSession } from "@/shared/hooks/use-session"
 import { UserAvatar } from "@/shared/ui/user-avatar"
 
 export default function UserProfilePage() {
-  const { data: session } = authClient.useSession()
+  const { data: session } = useSession()
   const user = session?.user
 
   return (

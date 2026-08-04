@@ -5,6 +5,7 @@ import { useParams } from "next/navigation"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { SendHorizonal, Star } from "lucide-react"
+import { apiFetch } from "@/shared/lib/api-fetch"
 
 import {
   Dialog,
@@ -17,7 +18,8 @@ import {
 import { Field, FieldLabel } from "@/shared/ui/field"
 import { Button } from "@/shared/ui/button"
 import { cn } from "@/shared/utils/index"
-import { authClient } from "@/infrastructure/auth/client"
+import { useSession } from "@/shared/hooks/use-session"
+import { queryKeys } from "@/shared/lib/query-keys"
 
 const ratingLabels: Record<number, string> = {
   1: "Poor",
@@ -39,7 +41,7 @@ export function ReviewDialog({
   const params = useParams()
   const courseId = params.courseId as string
   const queryClient = useQueryClient()
-  const { data: session } = authClient.useSession()
+  const { data: session } = useSession()
 
   const [internalOpen, setInternalOpen] = useState(false)
   const open = openProp ?? internalOpen
@@ -48,27 +50,20 @@ export function ReviewDialog({
   const feedbackRef = useRef<HTMLTextAreaElement>(null)
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async () => {
-      const r = await fetch("/api/reviews", {
+    mutationFn: () =>
+      apiFetch(`/api/reviews`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: {
           courseId,
           rating,
           body: feedbackRef.current?.value.trim() || undefined,
-        }),
-      })
-      if (!r.ok) {
-        const { error } = await r.json()
-        throw new Error(error ?? "Failed to submit review")
-      }
-      return r.json()
-    },
+        },
+      }),
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["course", courseId] })
-      const prev = queryClient.getQueryData(["course", courseId])
+      await queryClient.cancelQueries({ queryKey: queryKeys.course.detail(courseId) })
+      const prev = queryClient.getQueryData(queryKeys.course.detail(courseId))
 
-      queryClient.setQueryData(["course", courseId], (old: any) => {
+      queryClient.setQueryData(queryKeys.course.detail(courseId), (old: any) => {
         if (!old) return old
         const optimisticReview = {
           id: crypto.randomUUID(),
@@ -95,13 +90,13 @@ export function ReviewDialog({
     },
     onError: (err, _vars, context) => {
       if (context?.prev) {
-        queryClient.setQueryData(["course", courseId], context.prev)
+        queryClient.setQueryData(queryKeys.course.detail(courseId), context.prev)
       }
       toast.error(err.message)
       setOpen(true)
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["course", courseId] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.course.detail(courseId) })
     },
   })
 

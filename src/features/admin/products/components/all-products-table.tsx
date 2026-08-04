@@ -9,13 +9,18 @@ import {
 } from "@/shared/ui/table"
 import { MoreHorizontalIcon, ChartSpline, ArchiveIcon } from "lucide-react"
 import type { Product } from "@/features/admin/products/types"
+import { getStatusColor } from "@/shared/utils"
 
 interface AllProductsTableProps { products: Product[] }
 
+const productStatusLabels: Record<string, string> = {
+  published: "Live",
+  draft: "Draft",
+  archived: "Archived",
+}
+
 function statusDisplay(status: string) {
-  if (status === "published") return { label: "Live", class: "bg-green-700/10 text-green-700" }
-  if (status === "draft") return { label: "Draft", class: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" }
-  return { label: "Archived", class: "bg-muted text-muted-foreground" }
+  return { label: productStatusLabels[status] ?? status, class: getStatusColor(status) }
 }
 
 export function AllProductsTable({ products }: AllProductsTableProps) {

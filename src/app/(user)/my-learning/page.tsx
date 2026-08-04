@@ -3,6 +3,8 @@
 import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
 import { Skeleton } from "@/shared/ui/skeleton"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import {
   CourseCard,
   type Course,
@@ -21,18 +23,8 @@ export default function MyLearningPage() {
     isError,
     error,
   } = useQuery<Course[]>({
-    queryKey: ["my-learning"],
-    queryFn: async () => {
-      try {
-        const res = await fetch("/api/enrollments")
-        if (!res.ok)
-          throw new Error(`Failed to fetch enrollments (${res.status})`)
-        return res.json()
-      } catch (error) {
-        throw error
-      }
-    },
-    refetchOnWindowFocus: false,
+    queryKey: queryKeys.myLearning,
+    queryFn: () => apiFetch<Course[]>("/api/enrollments"),
   })
 
   if (isLoading) {

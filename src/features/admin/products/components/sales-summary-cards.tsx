@@ -1,5 +1,6 @@
 import { Card, CardContent, CardTitle } from "@/shared/ui/card"
 import { TrendingUp, ShoppingBag } from "lucide-react"
+import { formatCurrency } from "@/shared/utils"
 
 export function SalesSummaryCards({ sales, volume }: { sales: number; volume: number }) {
   return (
@@ -22,7 +23,7 @@ export function SalesSummaryCards({ sales, volume }: { sales: number; volume: nu
           <div className="flex items-start justify-between">
             <div className="flex flex-col gap-1">
               <CardTitle className="text-base font-normal text-muted-foreground">Total Volume</CardTitle>
-              <span className="font-semibold lg:text-4xl 2xl:text-[40px]">${volume.toLocaleString()}</span>
+              <span className="font-semibold lg:text-4xl 2xl:text-[40px]">{formatCurrency(volume)}</span>
             </div>
             <div className="flex size-10 shrink-0 items-center justify-center rounded-[10px] bg-ma-admin-primary/10">
               <ShoppingBag strokeWidth={1.5} className="size-5 text-ma-admin-primary" />

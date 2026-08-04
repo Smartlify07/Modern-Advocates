@@ -4,14 +4,14 @@ import { forwardRef, useImperativeHandle, useState } from "react"
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js"
 import { User, Mail } from "lucide-react"
 
-import { authClient } from "@/infrastructure/auth/client"
+import { useSession } from "@/shared/hooks/use-session"
 import type { CheckoutFormHandle } from "@/features/user-dashboard/types/checkout"
 
 export const CheckoutForm = forwardRef<CheckoutFormHandle, { onReadyChange?: (ready: boolean) => void }>(
   function CheckoutForm({ onReadyChange }, ref) {
     const stripe = useStripe()
     const elements = useElements()
-    const { data: session } = authClient.useSession()
+    const { data: session } = useSession()
     const [error, setError] = useState<string | null>(null)
 
     useImperativeHandle(ref, () => ({

@@ -1,3 +1,5 @@
+import { apiFetch } from "@/shared/lib/api-fetch"
+
 export type Order = {
   id: string
   studentId: string
@@ -30,58 +32,31 @@ export type RetryEnrollmentResponse = { enrollment: Enrollment }
 export type ConfirmPaymentResponse = { order: Order; enrollment: Enrollment | null }
 
 export async function createOrder(courseId: string): Promise<CreateOrderResponse> {
-  const res = await fetch("/api/orders", {
+  return apiFetch<CreateOrderResponse>("/api/orders", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ courseId }),
+    body: { courseId },
   })
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error ?? "Failed to create order")
-  }
-  return res.json()
 }
 
 export async function createPaymentIntent(courseId: string): Promise<CreatePaymentIntentResponse> {
-  const res = await fetch("/api/orders", {
+  return apiFetch<CreatePaymentIntentResponse>("/api/orders", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ courseId }),
+    body: { courseId },
   })
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error ?? "Failed to create payment")
-  }
-  return res.json()
 }
 
 export async function confirmPaymentOnServer(orderId: string): Promise<ConfirmPaymentResponse> {
-  const res = await fetch(`/api/orders/${orderId}/confirm-payment`, {
+  return apiFetch<ConfirmPaymentResponse>(`/api/orders/${orderId}/confirm-payment`, {
     method: "POST",
   })
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error ?? "Failed to confirm payment")
-  }
-  return res.json()
 }
 
 export async function getOrderStatus(orderId: string): Promise<OrderStatusResponse> {
-  const res = await fetch(`/api/orders/${orderId}/status`)
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error ?? "Failed to get order status")
-  }
-  return res.json()
+  return apiFetch<OrderStatusResponse>(`/api/orders/${orderId}/status`)
 }
 
 export async function retryEnrollment(orderId: string): Promise<RetryEnrollmentResponse> {
-  const res = await fetch(`/api/orders/${orderId}/retry-enrollment`, {
+  return apiFetch<RetryEnrollmentResponse>(`/api/orders/${orderId}/retry-enrollment`, {
     method: "POST",
   })
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error ?? "Failed to retry enrollment")
-  }
-  return res.json()
 }

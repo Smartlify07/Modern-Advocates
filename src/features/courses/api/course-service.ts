@@ -2,6 +2,7 @@ import type { CourseWizardStore } from "@/features/courses/store/use-course-wiza
 import type { CourseStatus } from "@/features/courses/types"
 import type { VideoUploadStore } from "@/features/courses/store/use-video-upload-store"
 import { uploadToStorage, type StorageUploadConfig } from "@/shared/lib/storage-upload"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import {
   savePendingUpload,
   updatePendingUpload,
@@ -57,22 +58,6 @@ export interface CreateCoursePayload {
   isFree: boolean
   status: CourseStatus
   modules: ModulePayload[]
-}
-
-export interface CourseResponse {
-  id: string
-  modules: Array<{
-    id: string
-    clientId: string
-    title: string
-    sortOrder: number
-    topics: Array<{
-      id: string
-      clientId: string
-      title: string
-      sortOrder: number
-    }>
-  }>
 }
 
 export interface UpdateCoursePayload {
@@ -167,24 +152,11 @@ export async function uploadThumbnail(file: File): Promise<string> {
   const formData = new FormData()
   formData.append("file", file)
 
-  const res = await fetch("/api/upload/image", {
+  const data = await apiFetch<{ url: string }>("/api/upload/image", {
     method: "POST",
     body: formData,
   })
-
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error ?? "Failed to upload thumbnail")
-  }
-
-  const data = await res.json()
-  return data.url as string
-}
-
-export async function getCourse(courseId: string): Promise<CourseResponse> {
-  const res = await fetch(`/api/courses/${courseId}`)
-  if (!res.ok) throw new Error("Failed to fetch course")
-  return res.json()
+  return data.url
 }
 
 async function getSignedUploadConfig(
@@ -194,18 +166,10 @@ async function getSignedUploadConfig(
   title: string,
   mimeType: string,
 ): Promise<StorageUploadConfig> {
-  const res = await fetch("/api/videos/sign-upload", {
+  return apiFetch<StorageUploadConfig>("/api/videos/sign-upload", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ courseId, moduleId, topicId, title, mimeType }),
+    body: { courseId, moduleId, topicId, title, mimeType },
   })
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error(err.error ?? "Failed to get upload signature")
-  }
-
-  return res.json()
 }
 
 export async function uploadSingleVideoWithTracking(
@@ -253,16 +217,10 @@ export async function uploadSingleVideoWithTracking(
 
     const duration = await getVideoDuration(videoFile)
 
-    const finalizeRes = await fetch(`/api/videos/${config.videoId}/finalize`, {
+    await apiFetch(`/api/videos/${config.videoId}/finalize`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ storageKey: config.storageKey, duration }),
+      body: { storageKey: config.storageKey, duration },
     })
-
-    if (!finalizeRes.ok) {
-      const errBody = await finalizeRes.json().catch(() => null)
-      throw new Error(errBody?.error ?? "Failed to finalize upload")
-    }
 
     store.completeTask(uploadId, "completed")
     removePendingUpload(uploadId)

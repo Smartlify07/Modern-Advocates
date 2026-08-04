@@ -9,6 +9,8 @@ import {
   RefreshCwIcon,
 } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { StatCard } from "./stat-card"
 import { Button } from "@/shared/ui/button"
@@ -89,12 +91,8 @@ function SkeletonCards() {
 
 export function KpiCards({ role }: KpiCardsProps) {
   const { data, isLoading, isError, refetch } = useQuery<DashboardStats>({
-    queryKey: ["admin-dashboard-stats"],
-    queryFn: async () => {
-      const res = await fetch("/api/admin/dashboard")
-      if (!res.ok) throw new Error("Failed to fetch")
-      return res.json()
-    },
+    queryKey: queryKeys.admin.dashboardStats,
+    queryFn: () => apiFetch<DashboardStats>("/api/admin/dashboard"),
   })
 
   if (isLoading) return <SkeletonCards />

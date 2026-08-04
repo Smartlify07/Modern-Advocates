@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/ui/table"
+import { formatCurrency } from "@/shared/utils"
 import type { Donation } from "@/features/admin/donations/types"
 import { donationTypeLabels } from "@/features/admin/donations/types"
 
@@ -35,10 +36,7 @@ export function DonationsTable({ donations }: DonationsTableProps) {
                 {d.donorEmail}
               </TableCell>
               <TableCell className="font-medium tabular-nums">
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                }).format(d.amount)}
+                {formatCurrency(d.amount)}
               </TableCell>
               <TableCell className="font-normal">
                 {donationTypeLabels[d.donationType]}

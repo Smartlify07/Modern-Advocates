@@ -2,14 +2,16 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import {
   buildCoursePayload,
   uploadThumbnail,
   uploadCourseVideos,
   type CreateCoursePayload,
   type UpdateCoursePayload,
-  type CourseResponse,
 } from "@/features/courses/api/course-service"
+import type { CourseSaveResult } from "@/features/courses/dto"
 import { useVideoUploadStore } from "@/features/courses/store/use-video-upload-store"
 import { VideoUploadToast } from "@/features/courses/components/video-upload-toast"
 import type { CourseStatus } from "@/features/courses/types"
@@ -19,20 +21,14 @@ export function useCreateCourse() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (payload: CreateCoursePayload): Promise<CourseResponse> => {
-      const res = await fetch("/api/courses", {
+    mutationFn: async (payload: CreateCoursePayload): Promise<CourseSaveResult> => {
+      return apiFetch<CourseSaveResult>("/api/courses", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: payload,
       })
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}))
-        throw new Error(body.error ?? "Failed to create course")
-      }
-      return res.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.courses })
     },
   })
 }
@@ -47,28 +43,22 @@ export function useUpdateCourse() {
     }: {
       courseId: string
       payload: UpdateCoursePayload
-    }): Promise<CourseResponse> => {
-      const res = await fetch(`/api/courses/${courseId}`, {
+    }): Promise<CourseSaveResult> => {
+      return apiFetch<CourseSaveResult>(`/api/courses/${courseId}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: payload,
       })
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}))
-        throw new Error(body.error ?? "Failed to update course")
-      }
-      return res.json()
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["admin-courses"] })
-      queryClient.invalidateQueries({ queryKey: ["course", variables.courseId] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.courses })
+      queryClient.invalidateQueries({ queryKey: queryKeys.course.detail(variables.courseId) })
     },
   })
 }
 
 interface SaveCourseOptions {
   status: CourseStatus
-  onSuccess?: (result: CourseResponse) => void
+  onSuccess?: (result: CourseSaveResult) => void
   courseId?: string
   toastMessage?: string
 }
@@ -92,7 +82,7 @@ export function useSaveCourse() {
     }: {
       store: CourseWizardStore
       options: SaveCourseOptions
-    }): Promise<CourseResponse> => {
+    }): Promise<CourseSaveResult> => {
       let thumbnailUrl: string | undefined
       let instructorImageUrl: string | null = null
 

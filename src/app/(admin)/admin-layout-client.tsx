@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { authClient } from "@/infrastructure/auth/client"
+import { useSession } from "@/shared/hooks/use-session"
 import { SidebarNavigation } from "@/features/platform/components/sidebar-navigation"
 import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar"
 import { TooltipProvider } from "@/shared/ui/tooltip"
@@ -15,7 +15,7 @@ export default function AdminLayoutClient({
   children: React.ReactNode
 }) {
   const router = useRouter()
-  const { data: session } = authClient.useSession()
+  const { data: session } = useSession()
   const userName = session?.user?.name ?? ""
   return (
     <TooltipProvider>

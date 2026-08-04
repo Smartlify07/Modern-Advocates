@@ -7,6 +7,8 @@ import { CheckCircle, LoaderCircle } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 
 import { Button } from "@/shared/ui/button"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import type { Donation } from "@/features/admin/donations/types"
 
 function DonationSuccessContent() {
@@ -14,15 +16,9 @@ function DonationSuccessContent() {
   const sessionId = searchParams.get("session_id")
 
   const { data, isLoading, error } = useQuery<{ donation: Donation }>({
-    queryKey: ["donation-success", sessionId],
-    queryFn: async () => {
-      const res = await fetch(`/api/donations/success?session_id=${sessionId}`)
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}))
-        throw new Error(body.error ?? "Failed to verify donation")
-      }
-      return res.json()
-    },
+    queryKey: queryKeys.donationSuccess(sessionId),
+    queryFn: () =>
+      apiFetch<{ donation: Donation }>(`/api/donations/success?session_id=${sessionId}`),
     enabled: !!sessionId,
   })
 

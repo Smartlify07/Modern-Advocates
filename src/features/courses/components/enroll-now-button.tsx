@@ -4,7 +4,9 @@ import Link from "next/link"
 import { ArrowRight, Loader2 } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { Button } from "@/shared/ui/button"
-import { authClient } from "@/infrastructure/auth/client"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { useSession } from "@/shared/hooks/use-session"
+import { queryKeys } from "@/shared/lib/query-keys"
 
 export function EnrollNowButton({
   courseId,
@@ -13,18 +15,20 @@ export function EnrollNowButton({
   courseId: string
   variant?: "primary" | "outline"
 }) {
-  const { data: session, isPending: sessionPending } = authClient.useSession()
+  const { data: session, isPending: sessionPending } = useSession()
   const enabled = !!session
 
   const { data: enrollmentCheck, isLoading: checkLoading } = useQuery<{
     enrolled: boolean
   }>({
-    queryKey: ["enrollment-check", courseId],
-    queryFn: () =>
-      fetch(`/api/enrollments/check/${courseId}`).then((r) => {
-        if (!r.ok) return { enrolled: false }
-        return r.json()
-      }),
+    queryKey: queryKeys.enrollment.check(courseId),
+    queryFn: async () => {
+      try {
+        return await apiFetch<{ enrolled: boolean }>(`/api/enrollments/check/${courseId}`)
+      } catch {
+        return { enrolled: false }
+      }
+    },
     enabled,
   })
 

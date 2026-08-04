@@ -4,7 +4,9 @@ import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { toast } from "sonner"
-import { authClient } from "@/infrastructure/auth/client"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { useSession } from "@/shared/hooks/use-session"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { useOtpAuth } from "./use-otp-auth"
 import type { ValidateResult, AcceptStep } from "./types"
 import { InviteLoading } from "./invite-loading"
@@ -31,19 +33,16 @@ export default function InviteAcceptContent() {
   const otp = useOtpAuth()
 
   const validateQuery = useQuery({
-    queryKey: ["invite-validate", token],
-    queryFn: async () => {
-      const r = await fetch(
+    queryKey: queryKeys.inviteValidate(token),
+    queryFn: () =>
+      apiFetch<ValidateResult>(
         `/api/admin/team/invite/validate?token=${encodeURIComponent(token!.trim())}`
-      )
-      if (!r.ok) throw new Error("Failed to validate invitation. Please try again.")
-      return r.json() as Promise<ValidateResult>
-    },
+      ),
     enabled: !!token?.trim(),
     retry: false,
   })
 
-  const { data: session } = authClient.useSession()
+  const { data: session } = useSession()
 
   useEffect(() => {
     if (!token?.trim()) {
@@ -94,16 +93,9 @@ export default function InviteAcceptContent() {
 
   const acceptMutation = useMutation({
     mutationFn: () =>
-      fetch("/api/admin/team/invite/accept", {
+      apiFetch(`/api/admin/team/invite/accept`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: token!.trim() }),
-      }).then(async (r) => {
-        if (!r.ok) {
-          const { error } = await r.json()
-          throw new Error(error ?? "Failed to accept invitation")
-        }
-        return r.json()
+        body: { token: token!.trim() },
       }),
     onSuccess: () => {
       setStep({ type: "accepted" })
@@ -115,12 +107,9 @@ export default function InviteAcceptContent() {
 
   const declineMutation = useMutation({
     mutationFn: () =>
-      fetch("/api/admin/team/invite/decline", {
+      apiFetch(`/api/admin/team/invite/decline`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: token!.trim() }),
-      }).then(async (r) => {
-        if (!r.ok) throw new Error("Failed to decline invitation")
+        body: { token: token!.trim() },
       }),
     onSuccess: () => {
       if (step.type === "authenticated")

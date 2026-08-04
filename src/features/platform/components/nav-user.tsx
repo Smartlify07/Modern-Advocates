@@ -21,11 +21,12 @@ import {
   useSidebar,
 } from "@/shared/ui/sidebar"
 import { ChevronsUpDownIcon, SparklesIcon, BadgeCheckIcon, CreditCardIcon, BellIcon, LogOutIcon } from "lucide-react"
+import { useSession } from "@/shared/hooks/use-session"
 import { authClient } from "@/infrastructure/auth/client"
 
 export function NavUser() {
   const { isMobile } = useSidebar()
-  const { data: session, isPending } = authClient.useSession()
+  const { data: session, isPending } = useSession()
 
   const user = session?.user
 

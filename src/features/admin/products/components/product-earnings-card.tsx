@@ -1,4 +1,5 @@
 import { Card, CardContent, CardTitle } from "@/shared/ui/card"
+import { formatCurrency } from "@/shared/utils"
 
 interface ProductEarningsCardProps {
   totalRevenue: number
@@ -14,7 +15,7 @@ export function ProductEarningsCard({ totalRevenue, periodLabel }: ProductEarnin
         </CardTitle>
         <div className="flex flex-col gap-1">
           <span className="text-5xl font-medium lg:text-[64px]">
-            ${totalRevenue.toLocaleString()}
+            {formatCurrency(totalRevenue)}
           </span>
           <span className="text-sm font-medium text-ma-admin-primary">
             {periodLabel}

@@ -2,6 +2,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/shared/ui/table"
 import type { Customer } from "@/features/admin/products/types"
+import { formatDate, formatCurrency } from "@/shared/utils"
 
 interface CustomersTableProps { customers: Customer[] }
 
@@ -28,7 +29,7 @@ export function CustomersTable({ customers }: CustomersTableProps) {
                 ${Number(c.totalSpent).toFixed(2)}
               </TableCell>
               <TableCell className="text-center text-muted-foreground">
-                {c.lastPurchase ? new Date(c.lastPurchase).toLocaleDateString() : "—"}
+                {formatDate(c.lastPurchase)}
               </TableCell>
             </TableRow>
           ))}

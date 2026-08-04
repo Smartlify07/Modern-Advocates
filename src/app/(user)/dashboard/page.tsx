@@ -3,12 +3,14 @@
 import { useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Skeleton } from "@/shared/ui/skeleton"
+import { apiFetch } from "@/shared/lib/api-fetch"
 import { UserAvatar } from "@/shared/ui/user-avatar"
 import {
   CourseCard,
   type Course,
 } from "@/features/courses/components/course-card"
-import { authClient } from "@/infrastructure/auth/client"
+import { useSession } from "@/shared/hooks/use-session"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { cn } from "@/shared/utils"
 import { Button } from "@/shared/ui/button"
 import {
@@ -19,7 +21,7 @@ import {
 } from "@/shared/ui/error-state"
 
 export default function UserDashboardPage() {
-  const { data: session } = authClient.useSession()
+  const { data: session } = useSession()
   const user = session?.user
 
   const firstName = user?.name?.split(" ")[0] ?? "User"
@@ -31,13 +33,8 @@ export default function UserDashboardPage() {
     error: coursesErrorObj,
     refetch,
   } = useQuery<Course[]>({
-    queryKey: ["user-courses"],
-    queryFn: async () => {
-      const res = await fetch("/api/courses/featured")
-      if (!res.ok) throw new Error("Failed to fetch courses")
-      return res.json()
-    },
-    refetchOnWindowFocus: false,
+    queryKey: queryKeys.userCourses,
+    queryFn: () => apiFetch<Course[]>("/api/courses/featured"),
   })
 
   const {
@@ -47,13 +44,8 @@ export default function UserDashboardPage() {
     error: enrollmentsErrorObj,
     refetch: refetchEnrollments,
   } = useQuery<Course[]>({
-    queryKey: ["user-enrollments"],
-    queryFn: async () => {
-      const res = await fetch("/api/enrollments")
-      if (!res.ok) throw new Error("Failed to fetch enrollments")
-      return res.json()
-    },
-    refetchOnWindowFocus: false,
+    queryKey: queryKeys.userEnrollments,
+    queryFn: () => apiFetch<Course[]>("/api/enrollments"),
   })
 
   const isLoading = coursesLoading || enrollmentsLoading

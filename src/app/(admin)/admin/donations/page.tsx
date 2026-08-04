@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
+import { apiFetch } from "@/shared/lib/api-fetch"
+import { queryKeys } from "@/shared/lib/query-keys"
 import { Skeleton } from "@/shared/ui/skeleton"
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
@@ -44,13 +46,8 @@ export default function AdminDonationsPage() {
   const [page, setPage] = useState(1)
 
   const { data: donations = [], isLoading } = useQuery<Donation[]>({
-    queryKey: ["admin-donations"],
-    queryFn: async () => {
-      const res = await fetch("/api/admin/donations")
-      if (!res.ok) throw new Error("Failed to fetch donations")
-      return res.json() as Promise<Donation[]>
-    },
-    refetchOnWindowFocus: false,
+    queryKey: queryKeys.admin.donations,
+    queryFn: () => apiFetch<Donation[]>("/api/admin/donations"),
   })
 
   const filtered = useMemo(() => {
