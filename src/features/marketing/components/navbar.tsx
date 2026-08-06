@@ -104,7 +104,7 @@ const Navbar = () => {
             ))}
             <Button
               asChild
-              className="group relative mt-2 overflow-hidden rounded-pill"
+              className="group relative mt-2 overflow-hidden rounded-pill bg-ma-admin-primary"
             >
               <Link
                 href="/contact"
