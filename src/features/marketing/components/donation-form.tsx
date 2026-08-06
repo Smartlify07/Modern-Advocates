@@ -50,7 +50,9 @@ const DonationForm = () => {
   return (
     <div className="flex flex-col gap-7.5 rounded-xl bg-white px-7.5 py-10">
       <div>
-        <h1 className="mb-5 text-xl font-semibold">Make a Donation</h1>
+        <h1 className="mb-5 text-lg font-semibold sm:text-2xl">
+          Make a Donation
+        </h1>
         <p className="text-base">
           Help us bring hope. support, and real impact in communities
         </p>

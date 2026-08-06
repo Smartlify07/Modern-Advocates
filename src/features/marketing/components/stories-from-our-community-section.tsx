@@ -74,10 +74,10 @@ export const StoriesSection = () => {
     <section className="bg-white py-12.5 text-ma-text sm:py-25">
       <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360">
         <header className="mx-auto max-w-[774px] text-center">
-          <h2 className="text-[32px]/[1.1] font-bold text-primary sm:text-5xl">
+          <h2 className="text-[32px]/[1.1] font-bold text-primary lg:text-[3.5rem]">
             Stories from our community
           </h2>
-          <p className="mx-auto mt-7.5 max-w-[704px] text-base font-medium text-ma-text sm:text-lg">
+          <p className="mx-auto mt-7.5 max-w-[704px] text-base font-medium text-ma-text sm:text-xl">
             Kind words from family and friends we have supported mentally,
             emotionally, physically, and financially throughout the years.
           </p>

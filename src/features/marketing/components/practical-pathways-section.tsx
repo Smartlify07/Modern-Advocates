@@ -11,7 +11,7 @@ const PracticalPathwaysSection = () => {
           <p className="text-center text-xl font-medium">Our shared values</p>
         </div>
 
-        <div className="flex items-center gap-25">
+        <div className="mx-auto flex items-center justify-center gap-25">
           <div className="max-w-[400px]">
             <h1 className="mb-7.5 text-5xl font-bold text-white">
               Restoring Hope
