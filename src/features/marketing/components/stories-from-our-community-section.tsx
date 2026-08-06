@@ -100,11 +100,11 @@ export const StoriesSection = () => {
             </div>
 
             <div className="flex min-h-[420px] flex-col justify-between lg:min-h-[560px]">
-              <p className="text-3xl font-medium text-primary">
+              <p className="text-lg font-medium text-primary sm:text-3xl">
                 {activeStory.quote}
               </p>
 
-              <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between lg:mt-10">
+              <div className="mt-4 flex flex-col gap-6 sm:mt-8 sm:flex-row sm:items-center sm:justify-between lg:mt-10">
                 <div className="space-y-3 sm:space-y-4">
                   <h3 className="text-base font-semibold text-primary sm:text-2xl">
                     {activeStory.name}
@@ -114,7 +114,7 @@ export const StoriesSection = () => {
                   </p>
                 </div>
 
-                <div className="flex gap-[18px]">
+                <div className="flex gap-[18px] self-end sm:self-start">
                   <button
                     type="button"
                     aria-label="Previous community story"

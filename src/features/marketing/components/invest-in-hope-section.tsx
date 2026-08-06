@@ -4,7 +4,7 @@ import DonationForm from "./donation-form"
 const InvestInHopeSection = () => {
   return (
     <section className="bg-[#ECE8FF] py-12.5 text-ma-text sm:py-25">
-      <div className="mx-auto grid grid-cols-2 items-center gap-25 px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360">
+      <div className="mx-auto grid items-center gap-10 px-4 sm:grid-cols-2 sm:gap-25 lg:max-w-7xl lg:px-25 2xl:max-w-360">
         <div>
           <h1 className="mb-7.5 text-4xl font-bold sm:text-[3.5rem]">
             Invest in Hope

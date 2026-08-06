@@ -48,7 +48,7 @@ const DonationForm = () => {
   const [selectedDonationType, setSelectedDonationType] =
     useState<DonationType["value"]>("one_time")
   return (
-    <div className="flex flex-col gap-7.5 rounded-xl bg-white px-7.5 py-10">
+    <div className="flex flex-col gap-7.5 rounded-xl bg-white px-4 py-10 sm:px-7.5">
       <div>
         <h1 className="mb-5 text-lg font-semibold sm:text-2xl">
           Make a Donation
@@ -58,8 +58,8 @@ const DonationForm = () => {
         </p>
       </div>
 
-      <div className="5 flex flex-col gap-7.5 border-b pb-7.5">
-        <div className="grid grid-cols-5 items-center gap-3">
+      <div className="flex flex-col gap-7.5 border-b pb-7.5">
+        <div className="grid grid-cols-3 items-center gap-3 sm:grid-cols-5">
           {prices.map((price) => (
             <button
               className={cn(
@@ -78,7 +78,7 @@ const DonationForm = () => {
             type="number"
             name="custom-amount"
             id="custom-amount"
-            className="h-auto w-full appearance-none rounded-md border-none bg-ma-bg px-5 py-2.5 text-primary ring-0 placeholder:text-xs placeholder:text-muted-foreground"
+            className="col-span-2 h-auto appearance-none rounded-md border-none bg-ma-bg px-5 py-2.5 text-primary ring-0 placeholder:text-xs placeholder:text-muted-foreground sm:col-span-1 sm:w-full"
             placeholder="Enter amount"
             min={1}
           />

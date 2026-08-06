@@ -8,7 +8,7 @@ export function HeroSection() {
       <div className="absolute inset-0" aria-hidden="true">
         <Image
           src="/figma-home/hero-life-direction.png"
-          alt=""
+          alt="A woman sitting and gazing at the sunset"
           fill
           priority
           sizes="100vw"

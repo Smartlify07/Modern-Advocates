@@ -8,11 +8,11 @@ export function EmpowermentSection() {
   return (
     <section id="about" className="bg-white">
       <div className="mx-auto px-4 py-12.5 sm:py-25 lg:max-w-7xl lg:px-25 2xl:max-w-360">
-        <header className="mx-auto mb-20 max-w-[508px] text-center text-3xl font-bold lg:text-5xl">
+        <header className="mx-auto mb-10 text-center text-3xl font-bold sm:mb-20 sm:max-w-[508px] lg:text-5xl">
           <h1 className="text-center">Empowering People to Move Forward</h1>
         </header>
 
-        <div className="grid lg:grid-cols-3 lg:items-end lg:gap-10">
+        <div className="grid gap-10 lg:grid-cols-3 lg:items-end lg:gap-10">
           <RestoreHopeCard />
           <BuildIndependenceCard />
           <NeverNavigateAloneCard />
@@ -33,8 +33,8 @@ export function RestoreHopeCard() {
         </p>
       </div>
 
-      <div className="translate-y-10 rounded-t-2xl bg-white px-4 py-5 2xl:w-[340px]">
-        <h1 className="mb-5 text-xl font-bold">Get the support you need</h1>
+      <div className="h-[272px] translate-y-10 rounded-t-2xl bg-white px-4 py-5 2xl:w-[340px]">
+        <h1 className="mb-5 text-lg font-bold">Get the support you need</h1>
         <div className="flex flex-col gap-2">
           <Field
             label="Support type"
@@ -61,7 +61,7 @@ export function NeverNavigateAloneCard() {
       </div>
 
       <div className="h-[272px] translate-y-10 overflow-hidden rounded-t-2xl bg-white px-4 py-5 2xl:w-[340px]">
-        <h1 className="mb-5 text-xl font-bold">Connect to a specialist</h1>
+        <h1 className="mb-5 text-lg font-bold">Connect to a specialist</h1>
 
         <div className="grid gap-2.5">
           <div className="flex items-start gap-2 p-2.5">
@@ -95,7 +95,7 @@ export function NeverNavigateAloneCard() {
             <div className="flex flex-col gap-2">
               <div className="flex flex-col gap-0.5">
                 <h2 className="text-sm font-semibold text-primary">
-                  Dr. M. Anderson
+                  Dr. A. Rivera
                 </h2>
                 <p className="text-xs text-muted-foreground">
                   Washington D.C, USA
