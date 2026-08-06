@@ -1,118 +1,58 @@
-"use client"
-import { motion } from "motion/react"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Star } from "lucide-react"
-
-const supporters = [
-  "/figma-home/person-1.png",
-  "/figma-home/person-2.png",
-  "/figma-home/person-3.png",
-  "/figma-home/person-4.png",
-]
+import { ArrowRight } from "lucide-react"
 
 export function HeroSection() {
   return (
-    <section className="relative isolate bg-white text-ma-text">
-      <div className="relative z-10 mx-auto flex flex-col items-center px-4 py-12.5 text-center lg:min-h-[924px] lg:max-w-7xl lg:py-[118px] lg:px-25 2xl:max-w-360 2xl:px-50">
-        <div className="flex items-center justify-center gap-4">
-          <div className="flex -space-x-2">
-            {supporters.map((src, index) => (
-              <Image
-                key={src}
-                src={src}
-                alt=""
-                width={40}
-                height={40}
-                className="size-10 rounded-full border-2 border-white object-cover"
-                style={{ zIndex: supporters.length - index }}
-              />
-            ))}
-          </div>
-          <div className="flex w-36 flex-col items-start gap-0.5">
-            <div className="flex w-full items-center gap-[9px]">
-              <div className="flex gap-0 text-ma-star" aria-hidden="true">
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <Star key={index} className="size-5 fill-current" />
-                ))}
-              </div>
-              <strong className="text-sm leading-normal font-semibold text-black">
-                4.9/5
-              </strong>
-            </div>
-            <p className="w-full text-left text-sm leading-normal text-black">
-              5k+ people supported
-            </p>
-          </div>
-        </div>
+    <section className="relative isolate overflow-hidden bg-[#fefafd] text-ma-text">
+      <div className="absolute inset-0" aria-hidden="true">
+        <Image
+          src="/figma-home/hero-life-direction.png"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center lg:object-[72%_center]"
+          quality={100}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#fefafd] via-[#fefafd]/60 to-[#fefafd] lg:bg-gradient-to-r lg:from-[#fefafd] lg:from-[0%] lg:via-[#fefafd]/80 lg:via-[16%] lg:to-transparent lg:to-[38%]" />
+      </div>
 
-        <h1 className="mt-[30px] max-w-[800px] font-sans text-[26px]/[100%] font-extrabold lg:text-[60px] lg:leading-[70px] lg:tracking-tight-xl">
-          Navigate today&apos;s world with the skills, resources, and support
-          you deserve.
-        </h1>
+      <div className="relative z-10 mx-auto flex min-h-[680px] max-w-360 items-center px-5 pt-14 pb-12 sm:px-8 lg:min-h-[924px] lg:px-18 lg:py-25 xl:px-25">
+        <div className="text-center lg:text-left xl:max-w-[640px] 2xl:max-w-[709px]">
+          <h1 className="font-sans text-[38px]/[1.08] font-bold tracking-[-5%] text-balance text-ma-text sm:text-[52px]/[1.08] lg:text-[70px]/[1.08]">
+            When Life Takes an Unexpected Direction,
+            <br /> You Don&apos;t Have to Face It Alone.
+          </h1>
 
-        <p className="mt-6 max-w-[750px] text-base text-ma-text lg:mt-10">
-          ModernAdvocates Inc. helps low-to-moderate income individuals access
-          AI workforce training and healthcare resources - so a diagnosis or a
-          job displacement does not define your future.
-        </p>
+          <p className="mx-auto mt-7 max-w-[597px] text-base leading-7 text-ma-text sm:text-lg lg:mx-0 lg:mt-12 lg:text-xl lg:leading-8">
+            Modern Advocates empowers people facing chronic illness, disability,
+            and financial hardship with education, advocacy, AI skills, and
+            practical opportunities to rebuild hope and independence.
+          </p>
 
-        <div className="mt-10 flex items-center gap-5">
-          <Link
-            href="/contact"
-            className="group relative inline-flex items-center justify-center overflow-hidden rounded-pill bg-ma-text px-5 py-4 sm:gap-2.5 sm:text-base"
-          >
-            <span className="relative z-10 inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-nowrap text-white sm:gap-2.5 sm:text-base">
-              Book consultation
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row lg:mt-20 lg:justify-start lg:gap-5">
+            <Link
+              href="/signup"
+              className="group inline-flex h-[54px] items-center justify-center gap-2.5 rounded-pill bg-ma-admin-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-ma-admin-primary-dark sm:text-base"
+            >
+              Start your journey
               <ArrowRight
-                className="hidden size-5 transition-transform duration-300 group-hover:-rotate-30 md:inline"
+                className="size-5 transition-transform duration-300 group-hover:translate-x-1"
                 aria-hidden="true"
               />
-            </span>
-            <div className="pointer-events-none absolute inset-0 rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-          </Link>
-          <div className="group relative">
-            <div className="pointer-events-none absolute -inset-[1px] rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            </Link>
             <Link
-              href="/donation"
-              className="relative inline-flex items-center justify-center gap-1.5 rounded-pill bg-white px-5 py-4 text-xs font-semibold text-nowrap text-ma-text transition-colors sm:gap-2.5 sm:text-base"
+              href="/about"
+              className="group inline-flex h-[54px] items-center justify-center gap-2.5 rounded-pill border border-ma-admin-primary bg-white px-5 text-sm font-semibold text-ma-admin-primary transition-colors hover:bg-ma-bg sm:text-base"
             >
-              Support our mission
+              Learn our story
               <ArrowRight
-                className="hidden size-5 transition-transform duration-300 group-hover:-rotate-30 md:inline"
+                className="size-5 transition-transform duration-300 group-hover:translate-x-1"
                 aria-hidden="true"
               />
             </Link>
           </div>
-        </div>
-
-        <div className="relative mt-15 w-full lg:mt-[100px]">
-          <div
-            className="pointer-events-none absolute top-1/2 left-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 lg:top-1/3"
-            aria-hidden="true"
-          >
-            <div className="flex gap-[5%]">
-              <div className="size-[616px] shrink-0 translate-x-[30%] rounded-full bg-ma-glow-blue blur-3xl max-lg:size-[308px]" />
-              <div className="size-[616px] shrink-0 -translate-x-[50%] rounded-full bg-ma-glow-violet blur-3xl max-lg:size-[308px]" />
-            </div>
-          </div>
-          <motion.div
-            initial={{ scale: 700 / 1024 }}
-            whileInView={{ scale: 1 }}
-            transition={{ duration: 0.8 }}
-            // viewport={{ once: true }}
-          >
-            <div className="relative h-[280px] overflow-hidden rounded-[20px] bg-ma-bg lg:h-[693px]">
-              <Image
-                src="/figma-home/hero.jpg"
-                alt="Two students smiling in a city setting"
-                fill
-                priority
-                sizes="(min-width: 768px) 700px, calc(100vw - 0px)"
-                className="object-cover"
-              />
-            </div>
-          </motion.div>
         </div>
       </div>
     </section>
