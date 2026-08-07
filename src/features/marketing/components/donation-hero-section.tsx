@@ -21,16 +21,14 @@ export function DonationHeroSection() {
         </div>
 
         <div className="mt-16 grid gap-5 lg:grid-cols-2">
-          <div className="relative min-h-[424px] overflow-hidden rounded-card-2 bg-ma-bg lg:min-h-[420px]">
-            <Image
-              src="/figma-home/melanie-and-will.png"
-              alt="Melanie Reyes, founder of ModernAdvocates Inc."
-              fill
-              priority
-              sizes="(min-width: 1024px) 510px, calc(100vw - 48px)"
-              className="object-cover object-[center_42%]"
-            />
-          </div>
+          <Image
+            src="/figma-home/melanie-and-will.png"
+            alt="Melanie Reyes, founder of ModernAdvocates Inc."
+            priority
+            className="rounded-card-2 object-cover sm:h-full"
+            width={510}
+            height={560}
+          />
 
           <article className="flex flex-col rounded-card-2 bg-ma-surface-2 px-4 py-7.5 lg:min-h-[550px] lg:p-7">
             <div>
