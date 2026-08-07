@@ -32,7 +32,7 @@ export function DonationHeroSection() {
 
           <article className="flex flex-col rounded-card-2 bg-ma-surface-2 px-4 py-7.5 lg:min-h-[550px] lg:p-7">
             <div>
-              <h2 className="text-[30px] leading-normal font-semibold text-ma-text sm:text-4xl lg:text-[32px]">
+              <h2 className="text-3xl leading-normal font-semibold text-ma-text sm:text-4xl">
                 Melanie And Will
               </h2>
               <p className="text-base leading-normal">Founders</p>
