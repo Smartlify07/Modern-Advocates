@@ -8,7 +8,7 @@ import { cn } from "@/shared/utils"
 
 const playfairDisplayHeading = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-heading",
+  variable: "--font-playfair",
 })
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" })

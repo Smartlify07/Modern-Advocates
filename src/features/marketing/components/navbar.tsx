@@ -1,9 +1,11 @@
 "use client"
 
 import { Button } from "@/shared/ui/button"
+import { cn } from "@/shared/utils"
 import { ArrowRight, Menu, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { useState } from "react"
 
 const navItems = [
@@ -17,10 +19,11 @@ const navItems = [
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const pathname = usePathname()
 
   return (
     <header className="bg-white">
-      <div className="relative z-20 mx-auto px-4 py-5 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
+      <div className="relative z-20 mx-auto px-4 py-5 lg:max-w-7xl lg:px-25 2xl:max-w-360">
         <div className="flex w-full items-center justify-between">
           <Link href="/" className="flex w-[157px] flex-col gap-1">
             <Image
@@ -92,11 +95,13 @@ const Navbar = () => {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
-                className={`rounded-lg p-3 text-base transition-all duration-300 hover:text-muted-foreground ${
+                className={cn(
+                  "rounded-lg p-3 text-base transition-all duration-300 hover:text-muted-foreground",
                   mobileOpen
                     ? "translate-y-0 opacity-100"
-                    : "translate-y-1 opacity-0"
-                }`}
+                    : "translate-y-1 opacity-0",
+                  item.href === pathname && "text-muted-foreground"
+                )}
                 style={{ transitionDelay: mobileOpen ? `${i * 50}ms` : "0ms" }}
               >
                 {item.label}
@@ -104,7 +109,7 @@ const Navbar = () => {
             ))}
             <Button
               asChild
-              className="group relative mt-2 overflow-hidden rounded-pill"
+              className="group relative mt-2 overflow-hidden rounded-pill bg-ma-admin-primary"
             >
               <Link
                 href="/contact"
