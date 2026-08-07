@@ -13,7 +13,7 @@ export function Footer() {
   return (
     <footer className="overflow-hidden bg-white text-ma-text">
       <div className="relative mx-auto min-h-125 px-4 pt-12.5 lg:max-w-7xl lg:px-25 lg:pt-17.5 2xl:max-w-360">
-        <div className="grid gap-10 md:grid-cols-[0.9fr_0.6fr_1.5fr] lg:gap-10 xl:grid-cols-[254px_180px_1fr] xl:justify-between xl:gap-[154px] 2xl:gap-50">
+        <div className="grid gap-10 md:grid-cols-[0.9fr_0.6fr_1.5fr] lg:gap-10 xl:grid-cols-[254px_180px_1fr] xl:justify-between xl:gap-[140px] 2xl:gap-50">
           <section className="">
             <h2 className="font-sans text-lg font-extrabold lg:text-2xl">
               Get in Touch
@@ -80,7 +80,7 @@ export function Footer() {
               />
               <button
                 type="submit"
-                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-pill bg-ma-text px-[15px] py-3 text-[12.31px] font-semibold text-white transition-transform duration-300 hover:scale-[1.1]"
+                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-pill bg-ma-admin-primary px-[15px] py-3 text-[12.31px] font-semibold text-white transition-transform duration-300 hover:scale-[1.1]"
               >
                 <span className="relative z-10 inline-flex items-center gap-2">
                   Join
