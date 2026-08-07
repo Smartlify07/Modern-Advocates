@@ -11,8 +11,13 @@ import { Field, FieldError, FieldLabel } from "@/shared/ui/field"
 import { MarketingButton } from "@/shared/ui/marketing-button"
 import { Input } from "@/shared/ui/input"
 import { apiFetch } from "@/shared/lib/api-fetch"
+import DonationForm from "./donation-form"
 
-const donationTypes = ["Fixed Donation", "Tier Donation", "Monthly Pay"] as const
+const donationTypes = [
+  "Fixed Donation",
+  "Tier Donation",
+  "Monthly Pay",
+] as const
 const donationAmounts = [100, 200, 1000]
 
 const donationFormSchema = z.object({
@@ -46,7 +51,8 @@ export function DonationSupportSection() {
 
   const watchedDonationType = form.watch("donationType")
   const showAmountSelector =
-    watchedDonationType === "Tier Donation" || watchedDonationType === "Monthly Pay"
+    watchedDonationType === "Tier Donation" ||
+    watchedDonationType === "Monthly Pay"
 
   async function onSubmit(data: z.infer<typeof donationFormSchema>) {
     setSubmitting(true)
@@ -63,17 +69,21 @@ export function DonationSupportSection() {
 
       window.location.href = result.url
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Something went wrong. Please try again.")
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again."
+      )
       setSubmitting(false)
     }
   }
 
   return (
-    <section className="bg-white py-12.5 text-ma-text lg:py-25">
+    <section className="bg-ma-bg py-12.5 text-ma-text lg:py-25">
       <div className="mx-auto grid items-start gap-12 px-4 lg:max-w-7xl lg:grid-cols-2 lg:gap-6 lg:px-25 2xl:max-w-360 2xl:px-50">
         <div className="pt-0 lg:pt-2">
           <h2 className="font-sans text-[28px]/[100%] leading-[1.12] font-extrabold text-balance text-primary lg:text-[60px]/[70px] lg:tracking-tight-xl">
-            Support us and make a difference for the future!
+            Invest in Hope
           </h2>
           <p className="mt-[30px] max-w-[506px] text-base leading-normal text-primary lg:text-lg">
             Together, we can make a real impact in communities around the world.
@@ -81,211 +91,7 @@ export function DonationSupportSection() {
           </p>
         </div>
 
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex w-full flex-col gap-[30px] rounded-card-2 border border-ma-border-light bg-ma-surface-2 px-4 pt-[30px] pb-7 sm:px-[30px] lg:px-7"
-        >
-          <div className="border-b border-ma-border-light pb-2.5">
-            <h3 className="text-2xl leading-normal font-bold text-black">
-              Make Your Donation
-            </h3>
-          </div>
-
-          <Controller
-            control={form.control}
-            name="donationType"
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <legend className="text-xl leading-normal font-semibold text-black">
-                  Type of Donation
-                </legend>
-
-                <div className="grid gap-3 sm:grid-cols-3">
-                  {donationTypes.map((type) => (
-                    <label
-                      key={type}
-                      className="flex min-w-0 items-start gap-2 text-base leading-normal text-muted-foreground"
-                    >
-                      <input
-                        type="radio"
-                        name={field.name}
-                        value={type}
-                        checked={field.value === type}
-                        onChange={() => field.onChange(type)}
-                        aria-invalid={fieldState.invalid}
-                        className="mt-0.5 size-5 shrink-0 accent-ma-glow-violet"
-                      />
-                      <span>{type}</span>
-                    </label>
-                  ))}
-                </div>
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
-
-          {showAmountSelector ? (
-            <Controller
-              control={form.control}
-              name="amount"
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <label className="text-xl leading-normal font-semibold text-black">
-                    Select Donation Amount
-                  </label>
-                  <div className="flex flex-col gap-2">
-                    {donationAmounts.map((amount) => (
-                      <label
-                        key={amount}
-                        className={`relative cursor-pointer rounded-[6px] ${
-                          field.value === amount
-                            ? "bg-linear-[90deg] from-[#4F7CF7] from-[0%] to-[#7B5CFF] to-[68.27%] p-[1.1px] pb-[1.3px]"
-                            : "border border-border"
-                        }`}
-                      >
-                        <div
-                          className={`flex items-center justify-between rounded-[5px] bg-white px-4 py-2.5 text-base/[100%] font-medium ${
-                            field.value === amount
-                              ? "text-ma-text"
-                              : "text-ma-text"
-                          }`}
-                        >
-                          <span>${amount}</span>
-                          <input
-                            type="radio"
-                            name={field.name}
-                            value={amount}
-                            checked={field.value === amount}
-                            onChange={() => field.onChange(amount)}
-                            aria-invalid={fieldState.invalid}
-                            className="size-5 accent-ma-glow-violet"
-                          />
-                        </div>
-                      </label>
-                    ))}
-                  </div>
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </Field>
-              )}
-            />
-          ) : (
-            <Controller
-              control={form.control}
-              name="amount"
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <label htmlFor={field.name} className="sr-only">
-                    Donation amount
-                  </label>
-                  <div className="relative">
-                    <Input
-                      id={field.name}
-                      type="number"
-                      inputMode="decimal"
-                      placeholder="Enter Amount"
-                      value={field.value || ""}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                      aria-invalid={fieldState.invalid}
-                      className="h-10 rounded-[6px] border-border bg-white px-4 py-2.5 pr-10 text-base placeholder:text-muted-foreground"
-                    />
-                    <span
-                      className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-xl leading-none font-bold text-ma-text"
-                      aria-hidden="true"
-                    >
-                      $
-                    </span>
-                  </div>
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </Field>
-              )}
-            />
-          )}
-
-          <div className="flex flex-col gap-4">
-            <h3 className="text-xl leading-normal font-semibold text-black">
-              Personal Info
-            </h3>
-
-            <Controller
-              control={form.control}
-              name="donorName"
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>
-                    Full Name
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    autoComplete="name"
-                    placeholder="Enter full name"
-                    aria-invalid={fieldState.invalid}
-                    className="h-10 rounded-md border-border bg-white px-4 py-2.5 text-base placeholder:text-muted-foreground"
-                  />
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </Field>
-              )}
-            />
-
-            <Controller
-              control={form.control}
-              name="donorEmail"
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>
-                    Email
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    type="email"
-                    autoComplete="email"
-                    placeholder="Enter email"
-                    aria-invalid={fieldState.invalid}
-                    className="h-10 rounded-md border-border bg-white px-4 py-2.5 text-base placeholder:text-muted-foreground"
-                  />
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </Field>
-              )}
-            />
-          </div>
-
-          <Controller
-            control={form.control}
-            name="confirmation"
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid} orientation="horizontal">
-                <input
-                  type="checkbox"
-                  id={field.name}
-                  name={field.name}
-                  checked={field.value === true}
-                  onChange={(e) => field.onChange(e.target.checked)}
-                  aria-invalid={fieldState.invalid}
-                  className="mt-1 size-[18px] shrink-0 rounded border-border bg-white accent-ma-text"
-                />
-                <label htmlFor={field.name} className="text-base leading-normal text-muted-foreground">
-                  By submitting this form, you confirm the accuracy of the donation
-                  amount and authorize the payment processing via the checkout page.
-                </label>
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
-
-          <MarketingButton
-            type="submit"
-            disabled={submitting}
-            className="w-full"
-          >
-            {submitting && <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />}
-            Donate Now
-            <ArrowRight
-              className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]"
-              aria-hidden="true"
-            />
-          </MarketingButton>
-        </form>
+        <DonationForm />
       </div>
     </section>
   )
