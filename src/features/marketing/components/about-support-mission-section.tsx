@@ -13,7 +13,7 @@ const AboutSupportMissionSection = () => {
             alt="People putting hands together"
             width={600}
             height={560}
-            className="h-70 w-75 object-cover sm:h-140 sm:w-150"
+            className="h-70 w-full rounded-2xl object-cover sm:h-140 sm:w-150"
           />
 
           <div className="r flex max-w-[430px] flex-col gap-6 sm:gap-12.5">
@@ -26,7 +26,7 @@ const AboutSupportMissionSection = () => {
               education, and health advocacy.
             </p>
 
-            <Button className="h-13 w-75 max-w-75 self-start rounded-pill">
+            <Button className="h-13 w-full self-start rounded-pill sm:w-75 sm:max-w-75">
               Support our mission <ArrowRight />
             </Button>
           </div>

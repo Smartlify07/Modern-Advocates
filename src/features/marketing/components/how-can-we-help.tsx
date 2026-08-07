@@ -17,7 +17,7 @@ const cardsData = [
       "Learn how to use AI to simplify daily life, strengthen career opportunities, navigate healthcare, and increase productivity.",
   },
   {
-    id: 1,
+    id: 3,
     icon: Handshake,
     title: "Community Support",
     description:
@@ -42,7 +42,10 @@ const HowCanWeHelpSection = () => {
 
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {cardsData.map((item) => (
-            <div className="flex flex-col gap-12.5 rounded-2xl border bg-white px-5 py-7.5">
+            <div
+              key={item.id}
+              className="flex flex-col gap-12.5 rounded-2xl border bg-white px-5 py-7.5"
+            >
               <item.icon className="-ma-admin-primary text-ma-admin-primary" />
               <div className="flex flex-col gap-5">
                 <h3 className="text-lg font-bold text-primary sm:text-2xl">
