@@ -2,8 +2,10 @@
 
 import { useState, useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
+import { toast } from "sonner"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { queryKeys } from "@/shared/lib/query-keys"
+import { downloadCsv } from "@/shared/utils"
 import { PageHeader } from "@/shared/ui/page-header"
 import { AdminPageContainer } from "@/shared/ui/admin-page-container"
 import { SearchExportRow } from "@/features/admin/products/components/search-export-row"
@@ -33,6 +35,22 @@ export default function AllSalesPage() {
     [search, sales],
   )
 
+  const handleExport = () => {
+    downloadCsv(
+      "sales.csv",
+      ["Customer Name", "Customer Email", "Product", "Date", "Amount", "Payment Status"],
+      sales.map((s) => [
+        s.customerName,
+        s.customerEmail,
+        s.product,
+        s.date,
+        s.amount,
+        s.paymentStatus,
+      ]),
+    )
+    toast.success(`Exported ${sales.length} sale${sales.length === 1 ? "" : "s"}`)
+  }
+
   return (
     <AdminPageContainer>
       <PageHeader title="All Sales" backHref="/admin/products" />
@@ -52,7 +70,7 @@ export default function AllSalesPage() {
       ) : (
         <>
           <SalesSummaryCards sales={summary.totalSales} volume={summary.totalVolume} />
-          <SearchExportRow placeholder="Search sales..." value={search} onChange={setSearch} />
+          <SearchExportRow placeholder="Search sales..." value={search} onChange={setSearch} onExport={handleExport} exportDisabled={sales.length === 0} />
           <div className="flex flex-col gap-8">
             <SalesTransactionsTable
               sales={filtered}

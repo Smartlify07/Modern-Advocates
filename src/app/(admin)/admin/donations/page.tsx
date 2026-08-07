@@ -2,8 +2,10 @@
 
 import { useState, useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
+import { toast } from "sonner"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { queryKeys } from "@/shared/lib/query-keys"
+import { downloadCsv } from "@/shared/utils"
 import { TableSkeleton } from "@/shared/ui/table-skeleton"
 import { DonationsTable } from "@/features/admin/donations/components/donations-table"
 import { SearchExportRow } from "@/features/admin/donations/components/search-export-row"
@@ -51,6 +53,22 @@ export default function AdminDonationsPage() {
 
   const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
 
+  const handleExport = () => {
+    downloadCsv(
+      "donations.csv",
+      ["Donor Name", "Donor Email", "Amount", "Donation Type", "Payment Status", "Created At"],
+      donations.map((d) => [
+        d.donorName,
+        d.donorEmail,
+        d.amount,
+        d.donationType,
+        d.paymentStatus,
+        d.createdAt,
+      ]),
+    )
+    toast.success(`Exported ${donations.length} donation${donations.length === 1 ? "" : "s"}`)
+  }
+
   return (
     <AdminPageContainer className="gap-7.5">
       <PageHeader title="Donations" />
@@ -60,6 +78,8 @@ export default function AdminDonationsPage() {
         typeFilter={typeFilter}
         onSearchChange={(v) => { setSearch(v); setPage(1) }}
         onTypeFilterChange={(v) => { setTypeFilter(v); setPage(1) }}
+        onExport={handleExport}
+        exportDisabled={donations.length === 0}
       />
 
       {isLoading ? (
