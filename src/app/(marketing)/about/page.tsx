@@ -1,13 +1,15 @@
-import { AboutAiHealthcareSection } from "@/features/marketing/components/about-ai-healthcare-section"
 import { AboutHeroSection } from "@/features/marketing/components/about-hero-section"
-import AboutOurValuesSection from "@/features/marketing/components/about-our-values-section"
+import AboutSupportMissionSection from "@/features/marketing/components/about-support-mission-section"
+import HowCanWeHelpSection from "@/features/marketing/components/how-can-we-help"
+import OurVisionSection from "@/features/marketing/components/our-vision-section"
 
 export default function AboutPage() {
   return (
     <main className="min-h-svh overflow-hidden bg-white text-ma-text">
       <AboutHeroSection />
-      <AboutOurValuesSection />
-      <AboutAiHealthcareSection />
+      <HowCanWeHelpSection />
+      <OurVisionSection />
+      <AboutSupportMissionSection />
     </main>
   )
 }

@@ -11,94 +11,81 @@ const supporters = [
 export function AboutHeroSection() {
   return (
     <section className="bg-white py-12.5 text-ma-text lg:py-25">
-      <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
-        <div className="mx-auto max-w-200 text-center">
-          <p className="text-base leading-normal font-medium tracking-[10%] text-muted-foreground uppercase">
-            About us
-          </p>
+      <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360">
+        <header className="mx-auto mb-15 max-w-230 text-center">
+          <h4 className="mb-7.5 text-base text-muted-foreground uppercase">
+            Our story
+          </h4>
 
-          <h1 className="mt-7.5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold tracking-tight-xl text-balance text-primary sm:leading-[70px] lg:text-[60px]">
-            This Organization Exists Now Because It Didn&apos;t When I Needed
-            It.
+          <h1 className="max-w-230 text-3xl font-bold text-primary capitalize sm:text-[3.5rem]">
+            Why we started modern advocates
           </h1>
+        </header>
 
-          <div className="mt-11.5 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-4">
-            <div className="flex -space-x-3">
-              {supporters.map((src, index) => (
-                <Image
-                  key={src}
-                  src={src}
-                  alt=""
-                  width={40}
-                  height={40}
-                  className="size-10 rounded-full border-2 border-white object-cover"
-                  style={{ zIndex: supporters.length - index }}
-                />
-              ))}
-            </div>
+        <div className="mb-12 flex flex-col gap-17.5 sm:flex-row">
+          <Image
+            src="/figma-home/melanie-and-will.png"
+            alt="Melanie and Will"
+            className="rounded-2xl object-cover sm:w-[532px] sm:w-[570px]"
+            width={570}
+            height={532}
+          />
 
-            <div className="flex w-36 flex-col items-start gap-0.5">
-              <div className="flex w-full items-center gap-[9px]">
-                <div className="flex gap-0 text-ma-star" aria-hidden="true">
-                  {Array.from({ length: 5 }).map((_, index) => (
-                    <Star key={index} className="size-5 fill-current" />
-                  ))}
-                </div>
-                <strong className="text-sm leading-normal font-semibold text-black">
-                  4.9/5
-                </strong>
-              </div>
-              <p className="w-full text-left text-sm leading-normal text-black">
-                5k+ people supported
-              </p>
-            </div>
-          </div>
+          <p className="text-base sm:text-xl">
+            Our own journey with endometriosis taught us that chronic illness
+            affects far more than physical health. It can reshape your
+            education, career, finances, relationships, and sense of security. A
+            single diagnosis can begin a chain of events that leaves individuals
+            and families facing lost income, mounting medical expenses, and an
+            uncertain future. <br /> <br />
+            We have lived that reality. <br /> <br />
+            We also experienced something extraordinary. Along our journey,
+            compassionate people stepped in to help us when we could not help
+            ourselves. Their kindness changed the direction of our lives.
+            <br />
+            <br />
+            Modern Advocates Inc. was created because we believe every person
+            deserves that same opportunity.
+          </p>
         </div>
 
-        <div className="mt-22.5 grid gap-5 lg:grid-cols-2">
-          <div className="relative min-h-[424px] overflow-hidden rounded-card-2 bg-ma-bg sm:min-h-[550px] lg:min-h-[420px]">
-            <Image
-              src="/figma-about/founder.png"
-              alt="Melanie Reyes, founder of ModernAdvocates Inc."
-              fill
-              priority
-              sizes="(min-width: 1024px) 510px, calc(100vw - 48px)"
-              className="object-cover"
-            />
-          </div>
-
-          <article className="flex min-h-[550px] flex-col rounded-card-2 bg-ma-surface-2 px-4 py-7.5 sm:p-[30px] lg:p-7">
-            <div>
-              <h2 className="text-[30px] leading-normal font-semibold text-ma-text sm:text-4xl sm:text-[32px]">
-                Melanie Reyes
-              </h2>
-              <p className="text-base leading-normal text-primary">Founder</p>
-            </div>
-
-            <div className="mt-[31px] space-y-5 text-base leading-normal text-ma-text sm:text-lg">
-              <p>
-                I built ModernAdvocates Inc. out of something I lived - not
-                something I studied.
-              </p>
-              <p>
-                Navigating Endometriosis in a healthcare system that kept
-                dismissing me taught me that the gap between the help that
-                exists and the people who need it most is not a coincidence.
-                It&apos;s a design flaw.
-              </p>
-              <p>
-                And as AI began reshaping how we work, how we access care, and
-                how we navigate every major system in our lives, I saw that same
-                gap widening. So, I built the bridge.
-              </p>
-              <p>
-                A new model of care-one that integrates artificial intelligence,
-                clinical insight, and real-world education to improve how
-                individuals navigate complex health conditions.
-              </p>
-            </div>
-          </article>
-        </div>
+        <p className="text-base sm:text-xl">
+          Our mission is to help individuals facing disability, chronic illness,
+          and financial hardship regain a sense of control through education,
+          technology, community, and practical support. We believe that
+          knowledge reduces fear. Technology creates opportunity. Community
+          multiplies hope. <br /> <br />
+          Artificial intelligence is more than a new technology—it can be a
+          powerful equalizer. Used responsibly, AI can help people organize
+          healthcare information, prepare for medical appointments, learn
+          valuable skills, create digital assets, and build new opportunities
+          for financial independence. <br /> <br />
+          For individuals living with endometriosis and other complex
+          conditions, AI can also support symptom tracking, medical history
+          organization, preparation for specialist consultations, and navigation
+          of an often overwhelming healthcare system. But no one should face
+          these challenges alone.
+          <br />
+          <br /> <strong className="font-bold">Our goal is simple: </strong>
+          <br />
+          i. Replace fear with knowledge. <br /> ii. Replace isolation with
+          community. <br /> iii. Replace uncertainty with opportunity. <br />{" "}
+          <br /> Together, we can build healthier lives, stronger futures, and
+          greater independence. <br />
+          <br />
+          Many organizations ask, “How can we help people?”
+          <br />
+          <br /> Modern Advocates asks a different question: “How can we equip
+          people to help themselves—and then empower them to help others?”{" "}
+          <br />
+          <br />
+          We believe lasting change begins with education. When people gain
+          knowledge, practical skills, and confidence, they become more
+          resilient. As they grow stronger, they can encourage others facing
+          similar challenges, creating a community where empowerment spreads
+          from one person to the next. That is the future we are working to
+          build.
+        </p>
       </div>
     </section>
   )
