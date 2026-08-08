@@ -28,6 +28,14 @@ export async function generatePresignedDownloadUrl(
   return getSignedUrl(s3, command, { expiresIn })
 }
 
+export async function resolveStoredUrl(
+  key: string | null | undefined,
+  fallbackUrl: string | null | undefined,
+): Promise<string | null> {
+  if (!key) return fallbackUrl ?? null
+  return generatePresignedDownloadUrl(key)
+}
+
 export async function generatePresignedUploadUrl(
   key: string,
   contentType: string,
@@ -46,7 +54,7 @@ export async function uploadBufferToStorage(
   key: string,
   contentType: string,
   expiresIn = 604800,
-): Promise<string> {
+): Promise<{ url: string; key: string }> {
   await s3.send(
     new PutObjectCommand({
       Bucket: B2_BUCKET,
@@ -56,5 +64,6 @@ export async function uploadBufferToStorage(
     }),
   )
 
-  return generatePresignedDownloadUrl(key, expiresIn)
+  const url = await generatePresignedDownloadUrl(key, expiresIn)
+  return { url, key }
 }

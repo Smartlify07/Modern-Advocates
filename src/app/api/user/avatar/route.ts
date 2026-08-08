@@ -22,7 +22,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 })
     }
 
-    const url = await uploadImageAsset({
+    const { url } = await uploadImageAsset({
       file,
       maxSize: 2 * 1024 * 1024,
       keyPrefix: `avatars/${session.user.id}/`,

@@ -84,17 +84,23 @@ export function useSaveCourse() {
       options: SaveCourseOptions
     }): Promise<CourseSaveResult> => {
       let thumbnailUrl: string | undefined
+      let thumbnailKey: string | null | undefined
       let instructorImageUrl: string | null = null
+      let instructorImageKey: string | null | undefined
 
       if (store.thumbnail instanceof File) {
-        thumbnailUrl = await uploadThumbnail(store.thumbnail)
+        const { url, key } = await uploadThumbnail(store.thumbnail)
+        thumbnailUrl = url
+        thumbnailKey = key
       }
       if (store.instructorPhoto instanceof File) {
-        instructorImageUrl = await uploadThumbnail(store.instructorPhoto)
+        const { url, key } = await uploadThumbnail(store.instructorPhoto)
+        instructorImageUrl = url
+        instructorImageKey = key
       }
 
       const isNew = !store.courseId && !options.courseId
-      const payload = buildCoursePayload(store, thumbnailUrl, options.status, instructorImageUrl)
+      const payload = buildCoursePayload(store, thumbnailUrl, options.status, instructorImageUrl, thumbnailKey, instructorImageKey)
 
       if (isNew) {
         return await createCourse.mutateAsync(payload as CreateCoursePayload)

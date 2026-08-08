@@ -10,6 +10,7 @@ import {
   deleteVideo,
   getProgress,
 } from "@/features/videos/services/video-service"
+import { generatePresignedDownloadUrl } from "@/infrastructure/storage/service"
 import * as Sentry from "@sentry/nextjs"
 
 export async function GET(
@@ -36,13 +37,18 @@ export async function GET(
 
     const progress = await getProgress(user.id, videoId)
 
+    const playbackUrl =
+      video.status === "ready" && video.storageKey
+        ? await generatePresignedDownloadUrl(video.storageKey)
+        : video.playbackUrl
+
     return NextResponse.json({
       id: video.id,
       courseId: video.courseId,
       moduleId: video.moduleId,
       title: video.title,
       description: video.description,
-      playbackUrl: video.playbackUrl,
+      playbackUrl,
       thumbnailUrl: video.thumbnailUrl,
       duration: video.duration,
       status: video.status,
