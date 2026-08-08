@@ -9,6 +9,7 @@ import {
 import { requireInstructorOrAdmin } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import { updateCourseSchema } from "@/features/courses/schemas"
+import { resolveStoredUrl } from "@/infrastructure/storage/service"
 import * as Sentry from "@sentry/nextjs"
 
 export async function GET() {
@@ -25,6 +26,7 @@ export async function GET() {
         discountedPrice: courses.discountedPrice,
         isFree: courses.isFree,
         thumbnailUrl: courses.thumbnailUrl,
+        thumbnailKey: courses.thumbnailKey,
         tutorId: courses.tutorId,
         instructorName: courses.instructorName,
         createdAt: courses.createdAt,
@@ -36,7 +38,14 @@ export async function GET() {
       ? list
       : list.filter((c) => c.status === "published" || c.tutorId === sessionUser.id)
 
-    return NextResponse.json(filtered)
+    const resolved = await Promise.all(
+      filtered.map(async ({ thumbnailKey, ...c }) => ({
+        ...c,
+        thumbnailUrl: await resolveStoredUrl(thumbnailKey, c.thumbnailUrl),
+      })),
+    )
+
+    return NextResponse.json(resolved)
   } catch (error) {
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -73,12 +82,14 @@ export async function POST(request: Request) {
       instructorSpecialty,
       aboutInstructor,
       instructorImage,
+      instructorImageKey,
       price,
       discountedPrice,
       isFree,
       language,
       status,
       thumbnailUrl,
+      thumbnailKey,
       modules: modulesData,
     } = parsed.data
 
@@ -100,6 +111,7 @@ export async function POST(request: Request) {
           instructorSpecialty,
           aboutInstructor,
           instructorImage,
+          instructorImageKey,
           language: language ?? "en",
           level,
           price: isFree ? 0 : (price ?? 0),
@@ -107,6 +119,7 @@ export async function POST(request: Request) {
           isFree: isFree ?? false,
           status: status ?? "draft",
           thumbnailUrl,
+          thumbnailKey,
           tutorId: user.id,
         })
         .returning()

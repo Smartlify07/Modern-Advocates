@@ -15,13 +15,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 })
     }
 
-    const url = await uploadImageAsset({
+    const { url, key } = await uploadImageAsset({
       file,
       maxSize: 5 * 1024 * 1024,
       keyPrefix: "course-thumbnails/",
     })
 
-    return NextResponse.json({ url })
+    return NextResponse.json({ url, key })
   } catch (error) {
     if (error instanceof ImageUploadError) {
       return NextResponse.json({ error: error.message }, { status: 400 })

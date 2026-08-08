@@ -251,6 +251,7 @@ async function seed() {
         content: data.content,
         overview: data.overview,
         thumbnailUrl,
+        thumbnailKey: data.thumbnailKey,
         language: "en",
         level: "beginner" as const,
         price: 550.00,

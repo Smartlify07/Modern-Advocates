@@ -14,9 +14,14 @@ export interface UploadImageOptions {
   keyPrefix: string
 }
 
+export interface UploadImageResult {
+  url: string
+  key: string
+}
+
 export async function uploadImageAsset(
   options: UploadImageOptions,
-): Promise<string> {
+): Promise<UploadImageResult> {
   if (!options.file.type.startsWith("image/")) {
     throw new ImageUploadError("File must be an image")
   }
