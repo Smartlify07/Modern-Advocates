@@ -16,30 +16,30 @@ export function CoursesHeroSection() {
   })
 
   return (
-    <section className="bg-white py-20 pb-20 text-ma-text sm:pt-25 sm:pb-25 lg:pt-18">
-      <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
+    <section className="bg-white text-ma-text">
+      <div className="marketing-container">
         <div className="mx-auto max-w-200 text-center">
           <p className="text-base leading-normal font-medium tracking-[0.1em] text-muted-foreground uppercase">
-            Courses
+            Trainings
           </p>
 
           <h1 className="mt-7.5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold text-balance text-ma-text sm:text-[60px] sm:leading-[70px] lg:tracking-tight-xl">
             Build the Skills That Keep You Moving Forward
           </h1>
 
-          <p className="mt-5 text-base leading-normal text-ma-text lg:mt-10 lg:text-lg">
+          <p className="mt-5 text-base leading-normal text-ma-text sm:mt-10 sm:text-xl">
             Our AI training sessions are designed for people who are managing
             life&apos;s challenges and still showing up. No tech background
             required.
           </p>
         </div>
 
-        <div className="mt-10 grid justify-items-center gap-5 md:grid-cols-2 lg:mt-16 lg:grid-cols-3">
+        <div className="mt-10 grid gap-5 md:grid-cols-2 lg:mt-16 lg:grid-cols-3">
           {isLoading
             ? Array.from({ length: 3 }).map((_, i) => (
                 <div
                   key={i}
-                  className="flex w-full flex-col gap-5 sm:max-w-[334px]"
+                  className="flex w-full flex-col gap-5 sm:max-w-[400px]"
                 >
                   <Skeleton className="h-[254px] rounded-card-2" />
                   <div className="flex flex-col gap-2 px-2.5">

@@ -39,6 +39,7 @@ export function apiHandler<P extends ApiRouteContext>(
           { status: error.status }
         )
       }
+      console.error(error)
       Sentry.captureException(error)
       return NextResponse.json(
         { error: "Internal server error" },

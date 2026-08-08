@@ -5,9 +5,9 @@ import React from "react"
 
 const AboutSupportMissionSection = () => {
   return (
-    <section className="">
-      <div className="mx-auto flex flex-col items-center px-4 py-12.5 sm:gap-50 sm:py-25 lg:max-w-7xl lg:px-25 2xl:max-w-360">
-        <div className="flex flex-col gap-12 sm:flex-row sm:items-center sm:gap-25">
+    <section>
+      <div className="marketing-container flex flex-col items-center border sm:gap-50">
+        <div className="flex w-full flex-col gap-12 sm:flex-row sm:items-center sm:gap-25">
           <Image
             src={"/figma-home/community.png"}
             alt="People putting hands together"
@@ -26,7 +26,7 @@ const AboutSupportMissionSection = () => {
               education, and health advocacy.
             </p>
 
-            <Button className="h-13 w-full self-start rounded-pill sm:w-75 sm:max-w-75">
+            <Button className="h-15 w-full self-start rounded-pill sm:w-75 sm:max-w-75">
               Support our mission <ArrowRight />
             </Button>
           </div>

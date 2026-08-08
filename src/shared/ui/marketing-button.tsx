@@ -18,7 +18,7 @@ export function MarketingButton({
       className={cn(
         "group relative h-pill overflow-hidden rounded-pill px-5 py-4 text-base font-semibold disabled:opacity-60",
         tone === "solid"
-          ? "bg-ma-text text-white"
+          ? "text-white"
           : "border-ma-text/20 bg-white text-ma-text",
         className
       )}

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 export function EmpowermentSection() {
   return (
     <section id="about" className="bg-white">
-      <div className="mx-auto px-4 py-12.5 sm:py-25 lg:max-w-7xl lg:px-25 2xl:max-w-360">
+      <div className="marketing-container">
         <header className="mx-auto mb-10 text-center text-3xl font-bold sm:mb-20 sm:max-w-[508px] lg:text-5xl">
           <h1 className="text-center">Empowering People to Move Forward</h1>
         </header>

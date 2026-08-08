@@ -3,7 +3,7 @@ import Link from "next/link"
 
 export function DonationCtaSection() {
   return (
-    <section className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
+    <section className="marketing-container">
       <div className="relative mx-auto my-5 flex min-h-[450px] w-full flex-col items-center justify-center overflow-hidden rounded-card-2 bg-ma-text px-6 text-center lg:my-20">
         <div className="mx-auto">
           <h2 className="mx-auto font-sans text-[28px]/[40px] font-extrabold tracking-[0%] text-white md:tracking-tight-xl lg:text-[40px]/[60px]">
