@@ -19,7 +19,7 @@ export default function DashboardNavbar() {
 
   return (
     <header className="bg-white">
-      <div className="marketing-container relative z-20 mx-auto px-0! py-5!">
+      <div className="marketing-container relative z-20 mx-auto py-5!">
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center gap-3 md:hidden">
             <ProfileDropdown
