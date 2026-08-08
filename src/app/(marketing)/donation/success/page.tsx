@@ -10,6 +10,7 @@ import { Button } from "@/shared/ui/button"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { queryKeys } from "@/shared/lib/query-keys"
 import type { Donation } from "@/features/admin/donations/types"
+import { computeDonationTotal } from "@/features/marketing/lib/donation-pricing"
 
 function DonationSuccessContent() {
   const searchParams = useSearchParams()
@@ -58,7 +59,7 @@ function DonationSuccessContent() {
         <p className="max-w-md text-lg text-muted-foreground">
           Your donation of{" "}
           <span className="font-semibold text-ma-text">
-            ${Number(donation?.amount ?? 0).toFixed(2)} USD
+            ${computeDonationTotal(Number(donation?.amount ?? 0)).toFixed(2)} USD
           </span>{" "}
           has been received. Your support helps us make a real impact.
         </p>

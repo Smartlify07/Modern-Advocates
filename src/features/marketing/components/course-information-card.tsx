@@ -1,7 +1,10 @@
 import { Clock, Languages, Layers, PlayCircle } from "lucide-react"
 
 import { EnrollNowButton } from "@/features/courses/components/enroll-now-button"
-import { minutesToDuration, type DurationUnit } from "@/features/courses/lib/duration"
+import {
+  minutesToDuration,
+  type DurationUnit,
+} from "@/features/courses/lib/duration"
 
 type CourseContentData = {
   id: string
@@ -55,8 +58,6 @@ export function CourseInformationCard({
     { label: "Level:", value: levelCapitalized, icon: Layers },
     { label: "Language:", value: languageDisplay, icon: Languages },
   ]
-
-  console.log(course)
 
   return (
     <aside className="w-full rounded-2xl border border-ma-border-light bg-white px-4 pt-4 pr-3.5 pb-[25px] lg:top-8">

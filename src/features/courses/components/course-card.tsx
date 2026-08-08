@@ -13,7 +13,7 @@ function Root({ href, children }: RootProps) {
   return (
     <Link
       href={href}
-      className="group flex w-full flex-col gap-5 rounded-card-2 border border-ma-border-light bg-white px-2.5 pt-2.5 pb-7.5 transition-colors duration-300 hover:bg-gray-50 sm:max-w-[334px]"
+      className="group flex w-full flex-col gap-5 rounded-card-2 border border-ma-border-light bg-white px-2.5 pt-2.5 pb-7.5 transition-colors duration-300 hover:bg-gray-50 sm:max-w-[400px]"
     >
       {children}
     </Link>
@@ -73,7 +73,9 @@ function Title({
 
 function Tutor({ name }: { name: string | null }) {
   return (
-    <p className="text-sm leading-normal font-medium text-muted-foreground">{name}</p>
+    <p className="text-sm leading-normal font-medium text-muted-foreground">
+      {name}
+    </p>
   )
 }
 
@@ -81,10 +83,7 @@ function Rating({ avg, count }: { avg: number; count: number }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       <span className="inline-flex items-center gap-1 rounded-md border border-border p-[5px] text-sm leading-normal font-medium text-muted-foreground">
-        <Star
-          className="size-5 fill-ma-star text-ma-star"
-          aria-hidden="true"
-        />
+        <Star className="size-5 fill-ma-star text-ma-star" aria-hidden="true" />
         {Number(avg).toFixed(1)}
       </span>
       <span className="inline-flex items-center rounded-md border border-border px-[5px] py-1.5 text-sm leading-normal font-medium text-muted-foreground">
@@ -138,7 +137,9 @@ function DisplayPrice({
   className?: string
 }) {
   return (
-    <p className={cn("text-base text-muted-foreground line-through", className)}>
+    <p
+      className={cn("text-base text-muted-foreground line-through", className)}
+    >
       $ {displayPrice?.toFixed(2)} USD
     </p>
   )

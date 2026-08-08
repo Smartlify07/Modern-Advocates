@@ -21,7 +21,9 @@ export default function CoursePlayerNavbar() {
   const { data: enrollment } = useQuery({
     queryKey: queryKeys.enrollment.progress(courseId),
     queryFn: () =>
-      apiFetch<{ id: string; progress: number }>(`/api/enrollments/by-course/${courseId}`),
+      apiFetch<{ id: string; progress: number }>(
+        `/api/enrollments/by-course/${courseId}`
+      ),
     enabled: !!courseId,
   })
 
@@ -34,7 +36,7 @@ export default function CoursePlayerNavbar() {
 
   return (
     <header className="bg-white">
-      <div className="relative z-20 mx-auto px-4 py-5 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
+      <div className="marketing-container relative z-20 px-4 py-5!">
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center gap-4 md:hidden">
             <ProfileDropdown
@@ -51,7 +53,10 @@ export default function CoursePlayerNavbar() {
               Leave review
             </button>
           </div>
-          <Link href="/dashboard" className="hidden w-[157px] flex-col gap-1 md:flex">
+          <Link
+            href="/dashboard"
+            className="hidden w-[157px] flex-col gap-1 md:flex"
+          >
             <Image
               src="/figma-home/logo.svg"
               alt="ModernAdvocates Inc."

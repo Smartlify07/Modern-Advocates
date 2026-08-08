@@ -58,7 +58,7 @@ export default function UserDashboardPage() {
   }, [enrollments])
 
   return (
-    <div className="mx-auto px-4 py-8 lg:max-w-7xl lg:px-25 lg:py-19.25 2xl:max-w-360 2xl:px-50">
+    <div className="marketing-container py-8! sm:py-19.25!">
       <div className="mb-[70px] flex items-center gap-4 lg:mb-26.75">
         <UserAvatar user={user} className="size-[50px] lg:size-12.5" />
         <p className="text-xl font-bold text-ma-text lg:text-2xl">
@@ -73,11 +73,11 @@ export default function UserDashboardPage() {
       </div>
 
       {isLoading ? (
-        <div className="grid justify-items-center gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="flex w-full flex-col gap-5 sm:max-w-[334px]"
+              className="flex w-full flex-col gap-5 sm:max-w-[300px]"
             >
               <Skeleton className="h-[254px] rounded-card-2" />
               <div className="flex flex-col gap-2 px-2.5">
@@ -116,7 +116,7 @@ export default function UserDashboardPage() {
           </ErrorStateAction>
         </ErrorState>
       ) : (
-        <div className="grid justify-items-center gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {courses?.map((course) => {
             const enrolledProgress = enrollmentMap.get(course.id)
             const isEnrolled = enrolledProgress !== undefined
@@ -124,7 +124,11 @@ export default function UserDashboardPage() {
             return (
               <CourseCard.Root
                 key={course.id}
-                href={isEnrolled ? `/my-learning/${course.id}` : `/dashboard/course/${course.id}`}
+                href={
+                  isEnrolled
+                    ? `/my-learning/${course.id}`
+                    : `/dashboard/course/${course.id}`
+                }
               >
                 <CourseCard.Thumbnail
                   src={course.thumbnailUrl}

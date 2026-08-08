@@ -59,8 +59,8 @@ export function Testimonials() {
   }
 
   return (
-    <section className="bg-white py-12.5 lg:py-25">
-      <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
+    <section className="bg-white">
+      <div className="marketing-container">
         <div className="flex w-full flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="font-sans text-[28px]/[100%] font-extrabold text-primary lg:text-[40px] lg:leading-15">
