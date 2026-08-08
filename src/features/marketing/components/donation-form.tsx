@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/shared/ui/select"
 import { cn } from "@/shared/utils"
+import { computeAdminFee, computeDonationTotal } from "@/features/marketing/lib/donation-pricing"
 
 const prices = [
   { id: 1, amount: 10 },
@@ -63,8 +64,8 @@ const DonationForm = () => {
   const watchedAmount = useWatch({ control: form.control, name: "amount" })
   const isConfirmed = useWatch({ control: form.control, name: "confirmation" })
 
-  const fee = watchedAmount * 0.03
-  const total = watchedAmount + fee
+  const fee = computeAdminFee(watchedAmount)
+  const total = computeDonationTotal(watchedAmount)
 
   async function onSubmit(data: DonationFormValues) {
     setSubmitting(true)

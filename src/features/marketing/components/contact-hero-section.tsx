@@ -39,11 +39,14 @@ export function ContactHeroSection({
   defaultName = "",
   defaultEmail = "",
 }: ContactHeroSectionProps) {
-  const { form, submitting, onSubmit } = useContactForm({ name: defaultName, email: defaultEmail })
+  const { form, submitting, onSubmit } = useContactForm({
+    name: defaultName,
+    email: defaultEmail,
+  })
 
   return (
-    <section id="contact" className="bg-white py-12.5 text-ma-text lg:py-25">
-      <div className="mx-auto grid items-start gap-14 px-4 lg:max-w-7xl lg:grid-cols-[444px_1fr] lg:gap-[88px] lg:px-25 2xl:max-w-360 2xl:px-50">
+    <section id="contact" className="bg-white text-ma-text">
+      <div className="marketing-container grid items-start gap-14 lg:grid-cols-[444px_1fr] lg:gap-[88px]">
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-5 lg:gap-[30px]">
             <p className="text-base leading-normal font-medium tracking-[0.1em] text-muted-foreground uppercase">
@@ -117,7 +120,10 @@ export function ContactHeroSection({
               name="name"
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name} className="text-lg font-normal text-ma-text">
+                  <FieldLabel
+                    htmlFor={field.name}
+                    className="text-lg font-normal text-ma-text"
+                  >
                     Full Name
                   </FieldLabel>
                   <Input
@@ -128,7 +134,9 @@ export function ContactHeroSection({
                     aria-invalid={fieldState.invalid}
                     className="h-9 rounded-md border-border bg-white px-2.5 py-2.5 text-base placeholder:text-muted-foreground"
                   />
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />
@@ -139,7 +147,10 @@ export function ContactHeroSection({
                 name="email"
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name} className="text-lg font-normal text-ma-text">
+                    <FieldLabel
+                      htmlFor={field.name}
+                      className="text-lg font-normal text-ma-text"
+                    >
                       Email
                     </FieldLabel>
                     <Input
@@ -151,7 +162,9 @@ export function ContactHeroSection({
                       aria-invalid={fieldState.invalid}
                       className="h-9 rounded-md border-border bg-white px-2.5 py-2.5 text-base placeholder:text-muted-foreground"
                     />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
                   </Field>
                 )}
               />
@@ -161,7 +174,10 @@ export function ContactHeroSection({
                 name="phone"
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name} className="text-lg font-normal text-ma-text">
+                    <FieldLabel
+                      htmlFor={field.name}
+                      className="text-lg font-normal text-ma-text"
+                    >
                       Phone number
                     </FieldLabel>
                     <Input
@@ -173,7 +189,9 @@ export function ContactHeroSection({
                       aria-invalid={fieldState.invalid}
                       className="h-9 rounded-md border-border bg-white px-2.5 py-2.5 text-base placeholder:text-muted-foreground"
                     />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
                   </Field>
                 )}
               />
@@ -184,7 +202,10 @@ export function ContactHeroSection({
               name="message"
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name} className="text-lg font-normal text-ma-text">
+                  <FieldLabel
+                    htmlFor={field.name}
+                    className="text-lg font-normal text-ma-text"
+                  >
                     Message
                   </FieldLabel>
                   <textarea
@@ -194,7 +215,9 @@ export function ContactHeroSection({
                     aria-invalid={fieldState.invalid}
                     className="h-[180px] w-full min-w-0 resize-none rounded-md border border-border bg-white px-2.5 py-2.5 text-base transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20"
                   />
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />
@@ -204,7 +227,12 @@ export function ContactHeroSection({
               disabled={submitting}
               className="mt-1 w-full"
             >
-              {submitting && <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />}
+              {submitting && (
+                <LoaderCircle
+                  className="size-4 animate-spin"
+                  aria-hidden="true"
+                />
+              )}
               Send your message
               <ArrowRight
                 className="size-5 transition-transform duration-300 group-hover:rotate-[-30deg]"

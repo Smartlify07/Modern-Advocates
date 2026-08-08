@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm"
 import { db } from "@/infrastructure/database/client"
 import { donations } from "@/infrastructure/database/schema/donation"
 import { getStripe } from "@/infrastructure/payment/stripe"
+import { computeDonationTotal } from "@/features/marketing/lib/donation-pricing"
 import * as Sentry from "@sentry/nextjs"
 
 export async function POST(request: Request) {
@@ -65,6 +66,7 @@ export async function POST(request: Request) {
       `${request.headers.get("x-forwarded-proto") ?? "https"}://${request.headers.get("host") ?? "localhost:3000"}`
 
     const stripe = getStripe()
+    const total = computeDonationTotal(amount)
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       customer_email: donorEmail,
@@ -72,7 +74,7 @@ export async function POST(request: Request) {
         {
           price_data: {
             currency: "usd",
-            unit_amount: Math.round(amount * 100),
+            unit_amount: Math.round(total * 100),
             product_data: {
               name: "Donation to Modern Advocates",
             },
