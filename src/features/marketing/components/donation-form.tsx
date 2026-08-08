@@ -1,52 +1,100 @@
 "use client"
+
+import { zodResolver } from "@hookform/resolvers/zod"
+import { ArrowRight, LoaderCircle } from "lucide-react"
+import { useState } from "react"
+import { Controller, useForm, useWatch } from "react-hook-form"
+import { toast } from "sonner"
+import * as z from "zod"
+
+import { apiFetch } from "@/shared/lib/api-fetch"
 import { Button } from "@/shared/ui/button"
 import { Checkbox } from "@/shared/ui/checkbox"
-import { Field } from "@/shared/ui/field"
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/shared/ui/field"
 import { Input } from "@/shared/ui/input"
-import { Label } from "@/shared/ui/label"
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select"
 import { cn } from "@/shared/utils"
-import { ArrowRight } from "lucide-react"
-import React, { useState } from "react"
 
-const prices: { id: number; amount: number }[] = [
-  {
-    id: 1,
-    amount: 10,
-  },
-  {
-    id: 2,
-    amount: 20,
-  },
-  {
-    id: 3,
-    amount: 30,
-  },
-  {
-    id: 4,
-    amount: 40,
-  },
+const prices = [
+  { id: 1, amount: 10 },
+  { id: 2, amount: 20 },
+  { id: 3, amount: 30 },
+  { id: 4, amount: 40 },
 ]
 
-type DonationType = { label: string; value: string }
-const donationTypes = [
-  { label: "One time Donation", value: "one time" },
-  { label: "Monthly Donation", value: "monthly_donation" },
-  { label: "Fixed Donation", value: "fixed_donation" },
-]
+const donationTypeOptions = [
+  { label: "Fixed Donation", value: "fixed" },
+  { label: "Tier Donation", value: "tier" },
+  { label: "Monthly Donation", value: "monthly" },
+] as const
+
+const donationFormSchema = z.object({
+  donationType: z.enum(["fixed", "tier", "monthly"]),
+  amount: z
+    .number({ message: "Enter a donation amount" })
+    .positive("Amount must be greater than 0"),
+  donorName: z.string().min(1, "Full name is required"),
+  donorEmail: z.email("Please enter a valid email address"),
+  confirmation: z.boolean(),
+})
+
+type DonationFormValues = z.infer<typeof donationFormSchema>
 
 const DonationForm = () => {
-  const [selectedPrice, setSelectedPrice] = useState<null | number>(null)
-  const [selectedDonationType, setSelectedDonationType] =
-    useState<DonationType["value"]>("one_time")
+  const [submitting, setSubmitting] = useState(false)
+  const form = useForm<DonationFormValues>({
+    resolver: zodResolver(donationFormSchema),
+    defaultValues: {
+      donationType: "fixed",
+      amount: 0,
+      donorName: "",
+      donorEmail: "",
+      confirmation: false,
+    },
+  })
+
+  const watchedAmount = useWatch({ control: form.control, name: "amount" })
+  const isConfirmed = useWatch({ control: form.control, name: "confirmation" })
+
+  const fee = watchedAmount * 0.03
+  const total = watchedAmount + fee
+
+  async function onSubmit(data: DonationFormValues) {
+    setSubmitting(true)
+    try {
+      const result = await apiFetch<{ url: string }>("/api/donations", {
+        method: "POST",
+        body: {
+          amount: data.amount,
+          donorName: data.donorName,
+          donorEmail: data.donorEmail,
+          donationType: data.donationType,
+        },
+      })
+
+      window.location.assign(result.url)
+    } catch (err) {
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again."
+      )
+      setSubmitting(false)
+    }
+  }
+
   return (
     <div className="flex flex-col gap-7.5 rounded-xl bg-white px-4 py-10 sm:px-7.5">
       <div>
@@ -58,76 +106,168 @@ const DonationForm = () => {
         </p>
       </div>
 
-      <div className="flex flex-col gap-7.5 border-b pb-7.5">
-        <div className="grid grid-cols-3 items-center gap-3 sm:grid-cols-5">
-          {prices.map((price) => (
-            <button
-              className={cn(
-                "rounded-md px-5 py-2.5 text-base font-medium",
-                selectedPrice === price.amount
-                  ? "bg-ma-admin-primary text-white"
-                  : "bg-ma-bg text-primary"
-              )}
-              key={price.id}
-            >
-              ${price.amount}
-            </button>
-          ))}
-
-          <Input
-            type="number"
-            name="custom-amount"
-            id="custom-amount"
-            className="col-span-2 h-auto appearance-none rounded-md border-none bg-ma-bg px-5 py-2.5 text-primary ring-0 placeholder:text-xs placeholder:text-muted-foreground sm:col-span-1 sm:w-full"
-            placeholder="Enter amount"
-            min={1}
+      <form
+        id="donation-form"
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-7.5"
+      >
+        <FieldGroup className="gap-7.5">
+          <Controller
+            control={form.control}
+            name="donationType"
+            render={({ field }) => (
+              <Field className="flex flex-col gap-2">
+                <FieldLabel>Frequency</FieldLabel>
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full rounded-md bg-ma-bg data-[size=default]:h-12">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-md">
+                    <SelectGroup>
+                      {donationTypeOptions.map((item) => (
+                        <SelectItem
+                          className="px-4 py-2"
+                          key={item.value}
+                          value={item.value}
+                        >
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
+            )}
           />
+
+          <Controller
+            control={form.control}
+            name="amount"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="donation-amount">
+                  Donation amount
+                </FieldLabel>
+                <div className="grid grid-cols-3 items-center gap-3 sm:grid-cols-5">
+                  {prices.map((price) => (
+                    <button
+                      type="button"
+                      key={price.id}
+                      onClick={() =>
+                        form.setValue("amount", price.amount, {
+                          shouldValidate: true,
+                        })
+                      }
+                      className={cn(
+                        "rounded-md px-5 py-2.5 text-base font-medium transition-colors",
+                        watchedAmount === price.amount
+                          ? "bg-ma-admin-primary text-white"
+                          : "bg-ma-bg text-primary"
+                      )}
+                    >
+                      ${price.amount}
+                    </button>
+                  ))}
+
+                  <Input
+                    id="donation-amount"
+                    type="number"
+                    inputMode="numeric"
+                    min={1}
+                    value={field.value === 0 ? "" : field.value}
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value === "" ? 0 : Number(e.target.value)
+                      )
+                    }
+                    className="col-span-2 h-auto rounded-md border-none bg-ma-bg px-5 py-2.5 text-primary ring-0 placeholder:text-xs placeholder:text-muted-foreground [-moz-appearance:textfield] focus-visible:ring-2 sm:col-span-1 sm:w-full"
+                    placeholder="Enter amount"
+                  />
+                </div>
+                <FieldError errors={[fieldState.error]} />
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="donorName"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="donor-name">Full name</FieldLabel>
+                <Input
+                  {...field}
+                  id="donor-name"
+                  autoComplete="name"
+                  placeholder="Your full name"
+                  className="h-11 rounded-md bg-ma-bg px-5 text-base placeholder:text-muted-foreground"
+                />
+                <FieldError errors={[fieldState.error]} />
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="donorEmail"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="donor-email">Email address</FieldLabel>
+                <Input
+                  {...field}
+                  id="donor-email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  className="h-11 rounded-md bg-ma-bg px-5 text-base placeholder:text-muted-foreground"
+                />
+                <FieldError errors={[fieldState.error]} />
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="confirmation"
+            render={({ field }) => (
+              <Field orientation="horizontal">
+                <Checkbox
+                  id="donation-confirmation"
+                  checked={field.value}
+                  onCheckedChange={(checked) =>
+                    field.onChange(checked === true)
+                  }
+                  className="data-checked:border-ma-admin-primary data-checked:bg-ma-admin-primary"
+                />
+                <FieldLabel htmlFor="donation-confirmation" className="w-fit">
+                  Authorize payment processing at the checkout page
+                </FieldLabel>
+              </Field>
+            )}
+          />
+        </FieldGroup>
+      </form>
+
+      <div className="flex flex-col gap-1.5 border-t pt-5">
+        <div className="flex items-center justify-between">
+          <span>3% Administration fee</span>
+          <span>${fee.toFixed(2)}</span>
         </div>
-
-        <Field className="flex flex-col gap-2">
-          <Label>Frequency</Label>
-          <Select defaultValue={donationTypes[0].value}>
-            <SelectTrigger className="w-full rounded-md bg-ma-bg data-[size=default]:h-12">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="rounded-md">
-              <SelectGroup>
-                {donationTypes.map((item) => (
-                  <SelectItem
-                    className="px-4 py-2"
-                    key={item.value}
-                    value={item.value}
-                  >
-                    {item.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </Field>
-
-        <Field orientation="horizontal">
-          <Checkbox
-            className="data-checked:border-ma-admin-primary data-checked:bg-ma-admin-primary"
-            id="authorize-checkbox"
-            name="authorize-checkbox"
-          />
-          <Label htmlFor="authorize-checkbox">
-            Authorize payment processing at the checkout page{" "}
-          </Label>
-        </Field>
+        <div className="flex items-center justify-between">
+          <span>Total</span>
+          <span>${total.toFixed(2)}</span>
+        </div>
       </div>
 
-      <div className="flex items-center justify-between">
-        <span>3% Administration fee</span>
-        <span>$0.6</span>
-      </div>
-      <div className="flex items-center justify-between">
-        <span>Total </span>
-        <span>$300</span>
-      </div>
-
-      <Button className="h-[51px] rounded-[60px] bg-ma-admin-primary hover:bg-ma-admin-primary-dark">
+      <Button
+        type="submit"
+        form="donation-form"
+        disabled={!isConfirmed || submitting}
+        className="h-[51px] rounded-[60px] bg-ma-admin-primary hover:bg-ma-admin-primary-dark"
+      >
+        {submitting && (
+          <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
+        )}
         Donate Now <ArrowRight />
       </Button>
     </div>
