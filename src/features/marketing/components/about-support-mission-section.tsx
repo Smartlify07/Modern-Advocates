@@ -6,7 +6,7 @@ import React from "react"
 const AboutSupportMissionSection = () => {
   return (
     <section>
-      <div className="marketing-container flex flex-col items-center border sm:gap-50">
+      <div className="marketing-container flex flex-col items-center sm:gap-50">
         <div className="flex w-full flex-col gap-12 sm:flex-row sm:items-center sm:gap-25">
           <Image
             src={"/figma-home/community.png"}
