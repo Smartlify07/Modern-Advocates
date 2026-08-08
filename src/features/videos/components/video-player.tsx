@@ -76,7 +76,10 @@ export function VideoPlayer({
         src={playbackUrl}
         className="h-full w-full"
         controls
+        controlsList="nodownload"
+        disablePictureInPicture
         playsInline
+        onContextMenu={(e) => e.preventDefault()}
       />
     </div>
   )

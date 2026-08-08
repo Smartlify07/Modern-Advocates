@@ -10,6 +10,7 @@ import {
 } from "@/infrastructure/database/schema/course"
 import { requireSession } from "@/infrastructure/auth/helpers"
 import { UnauthorizedError } from "@/infrastructure/auth/errors"
+import { resolveStoredUrl } from "@/infrastructure/storage/service"
 import * as Sentry from "@sentry/nextjs"
 
 export async function POST(request: Request) {
@@ -97,6 +98,7 @@ export async function GET() {
         title: courses.title,
         overview: courses.overview,
         thumbnailUrl: courses.thumbnailUrl,
+        thumbnailKey: courses.thumbnailKey,
         level: courses.level,
         price: courses.price,
         discountedPrice: courses.discountedPrice,
@@ -116,6 +118,7 @@ export async function GET() {
         courses.title,
         courses.overview,
         courses.thumbnailUrl,
+        courses.thumbnailKey,
         courses.level,
         courses.price,
         courses.discountedPrice,
@@ -123,7 +126,14 @@ export async function GET() {
       )
       .orderBy(desc(courses.createdAt))
 
-    return NextResponse.json(enrolled)
+    const resolved = await Promise.all(
+      enrolled.map(async ({ thumbnailKey, ...course }) => ({
+        ...course,
+        thumbnailUrl: await resolveStoredUrl(thumbnailKey, course.thumbnailUrl),
+      })),
+    )
+
+    return NextResponse.json(resolved)
   } catch (error) {
     if (error instanceof UnauthorizedError) {
       return NextResponse.json(

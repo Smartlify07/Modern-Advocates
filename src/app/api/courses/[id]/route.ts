@@ -18,6 +18,7 @@ import {
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import { updateCourseSchema } from "@/features/courses/schemas"
 import { isValidUuid } from "@/shared/utils"
+import { generatePresignedDownloadUrl, resolveStoredUrl } from "@/infrastructure/storage/service"
 import * as Sentry from "@sentry/nextjs"
 
 export async function GET(
@@ -38,6 +39,7 @@ export async function GET(
         content: courses.content,
         overview: courses.overview,
         thumbnailUrl: courses.thumbnailUrl,
+        thumbnailKey: courses.thumbnailKey,
         language: courses.language,
         level: courses.level,
         price: courses.price,
@@ -52,6 +54,7 @@ export async function GET(
         createdAt: courses.createdAt,
         updatedAt: courses.updatedAt,
         instructorImage: courses.instructorImage,
+        instructorImageKey: courses.instructorImageKey,
       })
       .from(courses)
       .where(eq(courses.id, id))
@@ -88,6 +91,8 @@ export async function GET(
               topicId: courseVideos.topicId,
               id: courseVideos.id,
               title: courseVideos.title,
+              storageKey: courseVideos.storageKey,
+              status: courseVideos.status,
               playbackUrl: courseVideos.playbackUrl,
               duration: courseVideos.duration,
             })
@@ -96,7 +101,17 @@ export async function GET(
         : []
 
     const videoByTopicId = new Map(
-      videoRows.map((v) => [v.topicId, { id: v.id, title: v.title, playbackUrl: v.playbackUrl, duration: v.duration }]),
+      videoRows.map((v) => [
+        v.topicId,
+        {
+          id: v.id,
+          title: v.title,
+          storageKey: v.storageKey,
+          status: v.status,
+          playbackUrl: v.playbackUrl,
+          duration: v.duration,
+        },
+      ]),
     )
 
     function parseContent(content: string | null): unknown {
@@ -106,6 +121,15 @@ export async function GET(
       } catch {
         return content
       }
+    }
+
+    const videoUrlByTopicId = new Map<string, string | null>()
+    for (const video of videoRows) {
+      const url =
+        video.status === "ready" && video.storageKey
+          ? await generatePresignedDownloadUrl(video.storageKey)
+          : video.playbackUrl
+      videoUrlByTopicId.set(video.topicId, url)
     }
 
     const modulesWithTopics = (() => {
@@ -148,7 +172,7 @@ export async function GET(
               row.topicFormat === "video" ? "video_and_text" : row.topicFormat!,
             description: parseContent(row.topicContent),
             order: row.topicOrder!,
-            videoUrl: videoByTopicId.get(row.topicId)?.playbackUrl ?? null,
+            videoUrl: videoUrlByTopicId.get(row.topicId) ?? null,
             videoId: videoByTopicId.get(row.topicId)?.id ?? null,
             videoTitle: videoByTopicId.get(row.topicId)?.title ?? null,
             videoDuration: videoByTopicId.get(row.topicId)?.duration ?? null,
@@ -178,8 +202,12 @@ export async function GET(
       .where(eq(enrollments.courseId, id))
       .then((r) => r[0])
 
+    const { thumbnailKey, instructorImageKey, ...coursePayload } = course
+
     return NextResponse.json({
-      ...course,
+      ...coursePayload,
+      thumbnailUrl: await resolveStoredUrl(thumbnailKey, course.thumbnailUrl),
+      instructorImage: await resolveStoredUrl(instructorImageKey, course.instructorImage),
       modules: modulesWithTopics,
       reviews: courseReviews,
       enrollmentCount: enrollmentResult?.count ?? 0,
@@ -226,12 +254,14 @@ export async function PATCH(
       instructorSpecialty,
       aboutInstructor,
       instructorImage,
+      instructorImageKey,
       price,
       discountedPrice,
       isFree,
       language,
       status,
       thumbnailUrl,
+      thumbnailKey,
       modules: modulesData,
     } = parsed.data
 
@@ -265,6 +295,8 @@ export async function PATCH(
         updateData.aboutInstructor = aboutInstructor
       if (instructorImage !== undefined)
         updateData.instructorImage = instructorImage
+      if (instructorImageKey !== undefined)
+        updateData.instructorImageKey = instructorImageKey
       if (price !== undefined) updateData.price = isFree ? 0 : price
       if (discountedPrice !== undefined)
         updateData.discountedPrice = isFree ? null : discountedPrice
@@ -272,6 +304,7 @@ export async function PATCH(
       if (status !== undefined) updateData.status = status
       if (language !== undefined) updateData.language = language
       if (thumbnailUrl !== undefined) updateData.thumbnailUrl = thumbnailUrl
+      if (thumbnailKey !== undefined) updateData.thumbnailKey = thumbnailKey
 
       if (Object.keys(updateData).length > 0) {
         const updated = await tx

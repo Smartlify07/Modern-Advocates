@@ -27,12 +27,14 @@ export const createCourseSchema = z.object({
   instructorSpecialty: z.string().max(255).optional(),
   aboutInstructor: z.string().optional(),
   instructorImage: z.string().optional().nullable(),
+  instructorImageKey: z.string().optional().nullable(),
   price: z.number().min(0).default(0),
   discountedPrice: z.number().min(0).optional().nullable(),
   isFree: z.boolean().optional(),
   language: z.string().min(1).max(10).default("en"),
   status: z.enum(["draft", "published", "archived"]).default("draft"),
   thumbnailUrl: z.string().url().optional().nullable(),
+  thumbnailKey: z.string().optional().nullable(),
   modules: z.array(moduleSchema).default([]),
 })
 
@@ -65,11 +67,13 @@ export const updateCourseSchema = z.object({
   instructorSpecialty: z.string().max(255).optional().nullable(),
   aboutInstructor: z.string().optional().nullable(),
   instructorImage: z.string().optional().nullable(),
+  instructorImageKey: z.string().optional().nullable(),
   price: z.number().min(0).optional(),
   discountedPrice: z.number().min(0).optional().nullable(),
   isFree: z.boolean().optional(),
   language: z.string().min(1).max(10).optional(),
   status: z.enum(["draft", "published", "archived"]).optional(),
   thumbnailUrl: z.string().optional().nullable(),
+  thumbnailKey: z.string().optional().nullable(),
   modules: z.array(updateModuleSchema).optional(),
 })

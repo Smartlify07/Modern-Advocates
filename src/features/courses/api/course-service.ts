@@ -50,6 +50,7 @@ export interface TopicPayload {
 export interface CreateCoursePayload {
   title: string
   thumbnailUrl?: string | null
+  thumbnailKey?: string | null
   overview?: string | null
   language: string
   level: string
@@ -59,6 +60,7 @@ export interface CreateCoursePayload {
   instructorSpecialty?: string | null
   aboutInstructor?: string | null
   instructorImage?: string | null
+  instructorImageKey?: string | null
   price: number
   discountedPrice?: number | null
   isFree: boolean
@@ -69,6 +71,7 @@ export interface CreateCoursePayload {
 export interface UpdateCoursePayload {
   title?: string
   thumbnailUrl?: string | null
+  thumbnailKey?: string | null
   overview?: string | null
   language?: string
   level?: string
@@ -78,6 +81,7 @@ export interface UpdateCoursePayload {
   instructorSpecialty?: string | null
   aboutInstructor?: string | null
   instructorImage?: string | null
+  instructorImageKey?: string | null
   price?: number
   discountedPrice?: number | null
   isFree?: boolean
@@ -93,11 +97,14 @@ export function buildCoursePayload(
   store: CourseWizardStore,
   thumbnailUrl?: string,
   status?: CourseStatus,
-  instructorImageUrl?: string | null
+  instructorImageUrl?: string | null,
+  thumbnailKey?: string | null,
+  instructorImageKey?: string | null
 ): CreateCoursePayload {
   return {
     title: store.title,
     thumbnailUrl: thumbnailUrl ?? store.thumbnailPreview ?? null,
+    thumbnailKey: thumbnailKey ?? null,
     overview: store.overview ? JSON.stringify(store.overview) : null,
     language: normalizeLanguage(store.language),
     level: store.level,
@@ -112,6 +119,7 @@ export function buildCoursePayload(
     instructorSpecialty: store.instructorSpecialty || null,
     aboutInstructor: store.aboutInstructor || null,
     instructorImage: instructorImageUrl ?? store.instructorPhotoPreview ?? null,
+    instructorImageKey: instructorImageKey ?? null,
     price: store.originalPrice ? Number(store.originalPrice) : 0,
     discountedPrice:
       store.showStrikedOriginal && store.salePrice
@@ -135,15 +143,15 @@ export function buildCoursePayload(
   }
 }
 
-export async function uploadThumbnail(file: File): Promise<string> {
+export async function uploadThumbnail(file: File): Promise<{ url: string; key: string }> {
   const formData = new FormData()
   formData.append("file", file)
 
-  const data = await apiFetch<{ url: string }>("/api/upload/image", {
+  const data = await apiFetch<{ url: string; key: string }>("/api/upload/image", {
     method: "POST",
     body: formData,
   })
-  return data.url
+  return data
 }
 
 export async function uploadSingleVideoWithTracking(

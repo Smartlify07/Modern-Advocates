@@ -35,6 +35,7 @@ export const courses = pgTable(
     content: text("content"),
     overview: text("overview"),
     thumbnailUrl: text("thumbnail_url"),
+    thumbnailKey: text("thumbnail_key"),
     language: text("language").notNull().default("en"),
     level: level("level"),
     price: numeric("price", { precision: 10, scale: 2, mode: "number" }).notNull().default(0),
@@ -46,6 +47,7 @@ export const courses = pgTable(
     instructorSpecialty: text("instructor_specialty"),
     aboutInstructor: text("about_instructor"),
     instructorImage: text("instructor_image"),
+    instructorImageKey: text("instructor_image_key"),
     status: courseStatus("status").notNull().default("draft"),
     tutorId: text("tutor_id")
       .notNull()
