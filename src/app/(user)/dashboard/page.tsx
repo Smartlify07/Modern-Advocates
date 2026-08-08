@@ -58,7 +58,7 @@ export default function UserDashboardPage() {
   }, [enrollments])
 
   return (
-    <div className="marketing-container px-4! py-8! sm:py-19.25!">
+    <div className="marketing-container px-0! py-8! sm:py-19.25!">
       <div className="mb-[70px] flex items-center gap-4 lg:mb-26.75">
         <UserAvatar user={user} className="size-[50px] lg:size-12.5" />
         <p className="text-xl font-bold text-ma-text lg:text-2xl">
