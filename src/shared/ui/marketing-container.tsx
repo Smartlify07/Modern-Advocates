@@ -8,10 +8,7 @@ export function MarketingContainer({
   return (
     <div
       data-slot="marketing-container"
-      className={cn(
-        "mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360",
-        className
-      )}
+      className={cn("marketing-container", className)}
       {...props}
     />
   )

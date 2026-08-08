@@ -27,8 +27,8 @@ const cardsData = [
 
 const HowCanWeHelpSection = () => {
   return (
-    <section className="bg-ma-bg py-12.5 text-ma-text lg:py-25">
-      <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360">
+    <section className="bg-ma-bg text-ma-text">
+      <div className="marketing-container">
         <header className="mx-auto mb-7.5 text-center text-3xl font-bold text-primary sm:text-5xl">
           <h1>How Can We Help</h1>
         </header>

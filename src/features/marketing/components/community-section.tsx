@@ -4,7 +4,7 @@ import React from "react"
 const CommunitySection = () => {
   return (
     <section className="">
-      <div className="mx-auto flex flex-col-reverse items-center gap-12 px-4 py-12.5 sm:flex-row sm:gap-25 sm:py-25 lg:max-w-7xl lg:px-25 2xl:max-w-360">
+      <div className="marketing-container flex flex-col-reverse items-center gap-12 sm:flex-row sm:gap-25">
         <Image
           src="/figma-home/community.png"
           alt="People putting hands together"

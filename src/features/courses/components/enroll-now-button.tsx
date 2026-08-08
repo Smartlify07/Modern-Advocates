@@ -24,7 +24,9 @@ export function EnrollNowButton({
     queryKey: queryKeys.enrollment.check(courseId),
     queryFn: async () => {
       try {
-        return await apiFetch<{ enrolled: boolean }>(`/api/enrollments/check/${courseId}`)
+        return await apiFetch<{ enrolled: boolean }>(
+          `/api/enrollments/check/${courseId}`
+        )
       } catch {
         return { enrolled: false }
       }
@@ -80,7 +82,7 @@ export function EnrollNowButton({
     <Button asChild className="group relative overflow-hidden rounded-pill">
       <Link
         href={href}
-        className="flex h-pill w-full items-center justify-center gap-2.5 rounded-pill bg-ma-text px-5 py-4 text-base font-semibold text-white"
+        className="flex h-pill w-full items-center justify-center gap-2.5 rounded-pill bg-ma-admin-primary px-5 py-4 text-base font-semibold text-white"
       >
         <span className="relative z-10 inline-flex items-center gap-2.5">
           {label}

@@ -44,8 +44,8 @@ export function Faq() {
   }
 
   return (
-    <section id="faq" className="bg-white py-12.5 lg:py-25">
-      <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360">
+    <section id="faq" className="bg-white">
+      <div className="marketing-container">
         <div className="grid gap-12 lg:grid-cols-[425px_1fr] lg:gap-[77px]">
           <div>
             <h2 className="max-w-[425px] font-sans text-[28px]/[100%] font-extrabold text-primary lg:text-[40px]/[60px] lg:tracking-tight-xl">

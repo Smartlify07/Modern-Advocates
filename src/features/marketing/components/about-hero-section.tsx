@@ -10,8 +10,8 @@ const supporters = [
 
 export function AboutHeroSection() {
   return (
-    <section className="bg-white py-12.5 text-ma-text lg:py-25">
-      <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360">
+    <section className="bg-white text-ma-text">
+      <div className="marketing-container">
         <header className="mx-auto mb-15 max-w-230 text-center">
           <h4 className="mb-7.5 text-base text-muted-foreground uppercase">
             Our story

@@ -188,6 +188,9 @@
 }
 
 @layer utilities {
+  .marketing-container {
+    @apply mx-auto px-4 py-12.5 sm:py-25 lg:max-w-7xl lg:px-25 2xl:max-w-360;
+  }
   .hide-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;

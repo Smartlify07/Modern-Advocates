@@ -10,12 +10,7 @@ import * as z from "zod"
 import { apiFetch } from "@/shared/lib/api-fetch"
 import { Button } from "@/shared/ui/button"
 import { Checkbox } from "@/shared/ui/checkbox"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/shared/ui/field"
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/shared/ui/field"
 import { Input } from "@/shared/ui/input"
 import {
   Select,
@@ -58,7 +53,7 @@ const DonationForm = () => {
     resolver: zodResolver(donationFormSchema),
     defaultValues: {
       donationType: "fixed",
-      amount: 0,
+      amount: prices[1].amount,
       donorName: "",
       donorEmail: "",
       confirmation: false,
@@ -96,7 +91,7 @@ const DonationForm = () => {
   }
 
   return (
-    <div className="flex flex-col gap-7.5 rounded-xl bg-white px-4 py-10 sm:px-7.5">
+    <div className="flex flex-col gap-7.5 bg-white px-4 py-10 shadow-[0_-6px_40px_0_rgba(0,0,0,0.08)] sm:px-7.5">
       <div>
         <h1 className="mb-5 text-lg font-semibold sm:text-2xl">
           Make a Donation
@@ -112,34 +107,6 @@ const DonationForm = () => {
         className="flex flex-col gap-7.5"
       >
         <FieldGroup className="gap-7.5">
-          <Controller
-            control={form.control}
-            name="donationType"
-            render={({ field }) => (
-              <Field className="flex flex-col gap-2">
-                <FieldLabel>Frequency</FieldLabel>
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="w-full rounded-md bg-ma-bg data-[size=default]:h-12">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-md">
-                    <SelectGroup>
-                      {donationTypeOptions.map((item) => (
-                        <SelectItem
-                          className="px-4 py-2"
-                          key={item.value}
-                          value={item.value}
-                        >
-                          {item.label}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </Field>
-            )}
-          />
-
           <Controller
             control={form.control}
             name="amount"
@@ -159,7 +126,7 @@ const DonationForm = () => {
                         })
                       }
                       className={cn(
-                        "rounded-md px-5 py-2.5 text-base font-medium transition-colors",
+                        "rounded-none px-5 py-2.5 text-base font-medium transition-colors",
                         watchedAmount === price.amount
                           ? "bg-ma-admin-primary text-white"
                           : "bg-ma-bg text-primary"
@@ -180,11 +147,39 @@ const DonationForm = () => {
                         e.target.value === "" ? 0 : Number(e.target.value)
                       )
                     }
-                    className="col-span-2 h-auto rounded-md border-none bg-ma-bg px-5 py-2.5 text-primary ring-0 placeholder:text-xs placeholder:text-muted-foreground [-moz-appearance:textfield] focus-visible:ring-2 sm:col-span-1 sm:w-full"
+                    className="col-span-2 h-auto rounded-none border-none bg-ma-bg px-5 py-2.5 text-primary ring-0 [-moz-appearance:textfield] placeholder:text-xs placeholder:text-muted-foreground focus-visible:ring-2 sm:col-span-1 sm:w-full"
                     placeholder="Enter amount"
                   />
                 </div>
                 <FieldError errors={[fieldState.error]} />
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="donationType"
+            render={({ field }) => (
+              <Field className="flex flex-col gap-2">
+                <FieldLabel>Frequency</FieldLabel>
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full rounded-none bg-ma-bg data-[size=default]:h-12">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-none">
+                    <SelectGroup>
+                      {donationTypeOptions.map((item) => (
+                        <SelectItem
+                          className="px-4 py-2"
+                          key={item.value}
+                          value={item.value}
+                        >
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </Field>
             )}
           />
@@ -200,7 +195,7 @@ const DonationForm = () => {
                   id="donor-name"
                   autoComplete="name"
                   placeholder="Your full name"
-                  className="h-11 rounded-md bg-ma-bg px-5 text-base placeholder:text-muted-foreground"
+                  className="h-11 rounded-none bg-ma-bg px-5 text-base placeholder:text-muted-foreground"
                 />
                 <FieldError errors={[fieldState.error]} />
               </Field>
@@ -219,7 +214,7 @@ const DonationForm = () => {
                   type="email"
                   autoComplete="email"
                   placeholder="you@example.com"
-                  className="h-11 rounded-md bg-ma-bg px-5 text-base placeholder:text-muted-foreground"
+                  className="h-11 rounded-none bg-ma-bg px-5 text-base placeholder:text-muted-foreground"
                 />
                 <FieldError errors={[fieldState.error]} />
               </Field>
@@ -248,7 +243,7 @@ const DonationForm = () => {
         </FieldGroup>
       </form>
 
-      <div className="flex flex-col gap-1.5 border-t pt-5">
+      <div className="flex flex-col gap-7.5 border-t pt-7.5">
         <div className="flex items-center justify-between">
           <span>3% Administration fee</span>
           <span>${fee.toFixed(2)}</span>

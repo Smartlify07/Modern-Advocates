@@ -2,8 +2,8 @@ import Image from "next/image"
 
 export function DonationHeroSection() {
   return (
-    <section id="donation" className="bg-white py-12.5 text-ma-text lg:py-25">
-      <div className="mx-auto px-4 lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
+    <section id="donation" className="bg-white text-ma-text">
+      <div className="marketing-container">
         <div className="mx-auto max-w-[800px] text-center">
           <p className="text-base leading-normal font-medium tracking-[10%] text-muted-foreground uppercase">
             Donation
@@ -30,7 +30,7 @@ export function DonationHeroSection() {
             height={560}
           />
 
-          <article className="flex flex-col rounded-card-2 bg-ma-surface-2 px-4 py-7.5 lg:min-h-[550px] lg:p-7">
+          <article className="flex flex-col rounded-card-2 bg-ma-surface-2 p-5 lg:min-h-[550px]">
             <div>
               <h2 className="text-3xl leading-normal font-semibold text-ma-text sm:text-4xl">
                 Melanie And Will
