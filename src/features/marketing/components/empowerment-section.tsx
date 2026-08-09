@@ -1,5 +1,6 @@
 "use client"
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
 import { ChevronDown, Gift, Star, Stethoscope } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
@@ -24,7 +25,7 @@ export function EmpowermentSection() {
 
 export function RestoreHopeCard() {
   return (
-    <div className="relative flex h-120 w-full flex-col justify-between overflow-hidden rounded-2xl bg-[#ECE8FF] px-7.5 py-10">
+    <div className="relative flex h-120 w-full flex-col items-center justify-between overflow-hidden rounded-2xl bg-[#ECE8FF] px-7.5 py-10">
       <div>
         <h1 className="mb-2 text-start text-3xl font-bold">Restore Hope</h1>
         <p className="text-sm font-normal">
@@ -49,7 +50,7 @@ export function RestoreHopeCard() {
 
 export function NeverNavigateAloneCard() {
   return (
-    <div className="relative flex h-120 w-full flex-col justify-between overflow-hidden rounded-2xl bg-[#ECE8FF] px-7.5 py-10">
+    <div className="relative flex h-120 w-full flex-col items-center justify-between overflow-hidden rounded-2xl bg-[#ECE8FF] px-7.5 py-10">
       <div>
         <h1 className="mb-2 text-start text-3xl font-bold">
           Never Navigate Alone
@@ -65,7 +66,10 @@ export function NeverNavigateAloneCard() {
 
         <div className="grid gap-2.5">
           <div className="flex items-start gap-2 p-2.5">
-            <div className="size-12 shrink-0 rounded-full bg-muted object-cover"></div>
+            <Avatar className="size-12 shrink-0">
+              <AvatarImage src="/figma-home/M-Anderson.png" />
+              <AvatarFallback>MA</AvatarFallback>
+            </Avatar>
             <div className="flex flex-col gap-2">
               <div className="flex flex-col gap-0.5">
                 <h2 className="text-sm font-semibold text-primary">
@@ -91,7 +95,10 @@ export function NeverNavigateAloneCard() {
             </div>
           </div>
           <div className="flex items-start gap-2 p-2.5">
-            <div className="size-12 shrink-0 rounded-full bg-muted object-cover"></div>
+            <Avatar className="size-12 shrink-0">
+              <AvatarImage src="/figma-home/A-Rivera.png" />
+              <AvatarFallback>AR</AvatarFallback>
+            </Avatar>
             <div className="flex flex-col gap-2">
               <div className="flex flex-col gap-0.5">
                 <h2 className="text-sm font-semibold text-primary">
@@ -124,7 +131,7 @@ export function NeverNavigateAloneCard() {
 
 export function BuildIndependenceCard() {
   return (
-    <div className="relative flex h-152 w-full flex-col justify-between overflow-hidden rounded-2xl bg-ma-admin-primary px-7.5 py-10">
+    <div className="relative flex h-152 w-full flex-col items-center justify-between overflow-hidden rounded-2xl bg-ma-admin-primary px-7.5 py-10">
       <div>
         <h1 className="mb-2 text-start text-3xl font-bold text-white">
           Build Independence
@@ -134,30 +141,39 @@ export function BuildIndependenceCard() {
           strengthen financial resilience
         </p>
       </div>
-      <div className="h-[375px] translate-y-10 rounded-t-2xl bg-[#201063] px-4 py-5 2xl:w-[340px]"></div>
+      <div className="relative flex h-[375px] translate-y-10 items-center justify-center rounded-t-2xl bg-[#201063] px-4 py-5 2xl:w-[340px]">
+        <Image
+          src="/figma-home/girl-with-phone.png"
+          alt="A girl with a phone wearing a blue shirt"
+          width={235}
+          height={340}
+          className="translate-y-8"
+        />
 
-      <div className="absolute top-1/2 right-2 flex h-14 w-[174px] justify-between rounded-sm bg-white p-2.5">
-        <div>
-          <h3 className="mb-0.5 text-[8px] font-semibold text-primary">
-            Week 2: AI, Economic Mobility
-          </h3>
-          <p className="text-[6px] text-primary">0/9 | 1 hr 30mins</p>{" "}
+        <div className="absolute top-[14%] -right-4 flex h-14 w-[174px] justify-between rounded-sm bg-white p-2.5">
+          <div>
+            <h3 className="mb-0.5 text-[8px] font-semibold text-primary">
+              Week 2: AI, Economic Mobility
+            </h3>
+            <p className="text-[6px] text-primary">0/9 | 1 hr 30mins</p>{" "}
+          </div>
+
+          <div className="flex size-3.5 items-center justify-center rounded-full border text-primary">
+            <ChevronDown size={7} />
+          </div>
         </div>
 
-        <div className="flex size-3.5 items-center justify-center rounded-full border text-primary">
-          <ChevronDown size={7} />
-        </div>
-      </div>
-      <div className="absolute bottom-20 left-2 flex h-14 w-[174px] justify-between rounded-sm bg-white p-2.5">
-        <div>
-          <h3 className="mb-0.5 text-[8px] font-semibold text-primary">
-            Week 2: AI Productivity and Prompting
-          </h3>
-          <p className="text-[6px] text-primary">0/9 | 1 hr 30mins</p>{" "}
-        </div>
+        <div className="absolute bottom-12 -left-4 flex h-14 w-[174px] justify-between rounded-sm bg-white p-2.5">
+          <div>
+            <h3 className="mb-0.5 text-[8px] font-semibold text-primary">
+              Week 2: AI Productivity and Prompting
+            </h3>
+            <p className="text-[6px] text-primary">0/9 | 1 hr 30mins</p>{" "}
+          </div>
 
-        <div className="flex size-3.5 items-center justify-center rounded-full border text-primary">
-          <ChevronDown size={7} />
+          <div className="flex size-3.5 items-center justify-center rounded-full border text-primary">
+            <ChevronDown size={7} />
+          </div>
         </div>
       </div>
     </div>
