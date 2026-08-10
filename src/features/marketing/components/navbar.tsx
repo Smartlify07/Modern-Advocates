@@ -27,7 +27,7 @@ const Navbar = () => {
         <div className="flex w-full items-center justify-between">
           <Link href="/" className="flex w-[195px] flex-col gap-1">
             <Image
-              src="/figma-home/Logo.svg"
+              src="/figma-home/ma-logo.svg"
               alt="ModernAdvocates Inc."
               width={190}
               height={52}
