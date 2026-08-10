@@ -25,12 +25,12 @@ const Navbar = () => {
     <header className="bg-white">
       <div className="relative z-20 mx-auto px-4 py-5 lg:max-w-7xl lg:px-25 2xl:max-w-360">
         <div className="flex w-full items-center justify-between">
-          <Link href="/" className="flex w-[157px] flex-col gap-1">
+          <Link href="/" className="flex w-[195px] flex-col gap-1">
             <Image
-              src="/figma-home/logo.svg"
+              src="/figma-home/Logo.svg"
               alt="ModernAdvocates Inc."
-              width={58}
-              height={44}
+              width={190}
+              height={52}
               priority
             />
           </Link>
