@@ -94,11 +94,7 @@ export const StoriesSection = () => {
 
         <div className="mt-12.5 overflow-hidden lg:mt-20">
           <article className="grid gap-8 lg:grid-cols-[minmax(0,600px)_minmax(0,605px)] lg:items-start lg:gap-[50px]">
-            <AnimatePresence
-              mode="popLayout"
-              custom={direction}
-              initial={false}
-            >
+            <AnimatePresence mode="wait" custom={direction} initial={false}>
               <motion.div
                 key={activeIndex}
                 custom={direction}
