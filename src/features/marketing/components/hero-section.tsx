@@ -18,7 +18,7 @@ export function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#fefafd] via-[#fefafd]/60 to-[#fefafd] lg:bg-gradient-to-r lg:from-[#fefafd] lg:from-[0%] lg:via-[#fefafd]/80 lg:via-[16%] lg:to-transparent lg:to-[38%]" />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-[680px] max-w-360 items-center px-5 pt-14 pb-12 sm:px-8 lg:min-h-[924px] lg:px-18 lg:py-25 xl:px-25">
+      <div className="marketing-container relative z-10 flex min-h-[680px] max-w-360 items-center px-5 pt-14 pb-12 sm:px-8 lg:min-h-[924px]">
         <div className="text-center lg:text-left xl:max-w-[640px] 2xl:max-w-[709px]">
           <h1 className="font-sans text-[38px]/[1.08] font-bold tracking-[-5%] text-balance text-ma-text sm:text-[52px]/[1.08] lg:text-[70px]/[1.08]">
             When Life Takes an Unexpected Direction,

@@ -134,7 +134,7 @@ export default function ScrollStory() {
 
           invalidateOnRefresh: true,
 
-          markers: true,
+          markers: false,
         },
       })
 
@@ -186,8 +186,8 @@ export default function ScrollStory() {
       ref={sectionRef}
       className="relative min-h-screen overflow-hidden bg-[#101827] text-white"
     >
-      <div className="relative min-h-screen px-6 py-14 md:px-12 md:py-16 lg:px-20">
-        <div className="inset-x-0 top-14 z-20 px-6 text-center md:top-16">
+      <div className="marketing-container relative flex min-h-screen flex-col">
+        <div className="text-center">
           <h2 className="mx-auto max-w-[850px] text-3xl leading-[0.95] font-semibold text-white sm:text-[3.5rem]">
             Practical pathways to improved health outcomes
           </h2>
@@ -197,26 +197,9 @@ export default function ScrollStory() {
           </p>
         </div>
 
-        <div className="grid min-h-screen grid-cols-1 gap-10 md:grid-cols-2 md:gap-16">
-          {/* ==================================================
-              LEFT — TEXT
-          ================================================== */}
-
+        <div className="grid min-h-screen max-w-260 grid-cols-1 justify-items-center gap-10 self-center md:grid-cols-2 md:gap-16">
           <div className="relative flex min-h-screen items-center">
-            {/*
-             * This is the viewport through which the text
-             * track moves.
-             *
-             * It sits BELOW the heading.
-             */}
-
             <div className="relative mt-40 h-[420px] w-full overflow-hidden md:mt-48 md:h-[460px]">
-              {/*
-               * TEXT TRACK
-               *
-               * This is the element GSAP moves vertically.
-               */}
-
               <div ref={textContainerRef} className="top-0 left-0 w-full">
                 {items.map((item) => (
                   <div
@@ -235,10 +218,6 @@ export default function ScrollStory() {
               </div>
             </div>
           </div>
-
-          {/* ==================================================
-              RIGHT — STATIC IMAGE
-          ================================================== */}
 
           <div className="relative flex min-h-screen items-center justify-center">
             <div className="relative w-full max-w-[520px] overflow-hidden">

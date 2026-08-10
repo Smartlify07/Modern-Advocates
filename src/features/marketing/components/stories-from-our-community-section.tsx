@@ -103,10 +103,7 @@ export const StoriesSection = () => {
                   alt={activeStory.imageAlt}
                   fill
                   sizes="(min-width: 1024px) 600px, calc(100vw - 32px)"
-                  className={cn(
-                    "object-cover",
-                    activeStory.imageClassName
-                  )}
+                  className={cn("object-cover", activeStory.imageClassName)}
                 />
               </motion.div>
             </AnimatePresence>
@@ -115,9 +112,9 @@ export const StoriesSection = () => {
               <motion.div
                 key={activeIndex}
                 custom={direction}
-                initial={{ opacity: 0, x: direction * 48 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: direction * -48 }}
+                initial={{ x: direction * 48 }}
+                animate={{ x: 0 }}
+                exit={{ x: direction * -48 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
                 className="flex min-h-[420px] flex-col justify-between lg:min-h-[560px]"
               >
