@@ -42,20 +42,13 @@ export function RestoreHopeCard() {
         transition={{ duration: 0.7, ease: "easeOut" }}
         className="h-[272px] rounded-t-2xl bg-white px-4 py-5 2xl:w-[340px]"
       >
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 1.5, duration: 0.5 }}
-        >
-          <h1 className="mb-5 text-lg font-bold">Get the support you need</h1>
-        </motion.div>
+        <h1 className="mb-5 text-lg font-bold">Get the support you need</h1>
         <div className="flex flex-col gap-2">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 1.8, duration: 0.5 }}
+            transition={{ delay: 1, duration: 0.5 }}
           >
             <Field
               label="Support type"
@@ -66,7 +59,7 @@ export function RestoreHopeCard() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 2.1, duration: 0.5 }}
+            transition={{ delay: 1.2, duration: 0.5 }}
           >
             <Field label="Estimated cost" placeholder="$750-$1,250" />
           </motion.div>
@@ -96,21 +89,14 @@ export function NeverNavigateAloneCard() {
         transition={{ duration: 0.7, ease: "easeOut" }}
         className="h-[272px] overflow-hidden rounded-t-2xl bg-white px-4 py-5 2xl:w-[340px]"
       >
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 1.5, duration: 0.5 }}
-        >
-          <h1 className="mb-5 text-lg font-bold">Connect to a specialist</h1>
-        </motion.div>
+        <h1 className="mb-5 text-lg font-bold">Connect to a specialist</h1>
 
         <div className="grid gap-2.5">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 1.8, duration: 0.5 }}
+            transition={{ delay: 1, duration: 0.5 }}
           >
             <div className="flex items-start gap-2 p-2.5">
               <Avatar className="size-12 shrink-0">
@@ -150,7 +136,7 @@ export function NeverNavigateAloneCard() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 2.1, duration: 0.5 }}
+            transition={{ delay: 1.2, duration: 0.5 }}
           >
             <div className="flex items-start gap-2 p-2.5">
               <Avatar className="size-12 shrink-0">
