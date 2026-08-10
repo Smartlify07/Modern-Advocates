@@ -3,6 +3,7 @@
 import Image from "next/image"
 import { useState } from "react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
+import { AnimatePresence, motion } from "motion/react"
 
 import { cn } from "@/shared/utils"
 
@@ -55,19 +56,21 @@ const stories = [
 ]
 
 export const StoriesSection = () => {
-  const [activeIndex, setActiveIndex] = useState(0)
+  const [[activeIndex, direction], setActiveIndex] = useState([0, 0])
   const activeStory = stories[activeIndex]
 
   function showPreviousStory() {
-    setActiveIndex((currentIndex) =>
-      currentIndex === 0 ? stories.length - 1 : currentIndex - 1
-    )
+    setActiveIndex(([currentIndex]) => [
+      currentIndex === 0 ? stories.length - 1 : currentIndex - 1,
+      -1,
+    ])
   }
 
   function showNextStory() {
-    setActiveIndex((currentIndex) =>
-      currentIndex === stories.length - 1 ? 0 : currentIndex + 1
-    )
+    setActiveIndex(([currentIndex]) => [
+      currentIndex === stories.length - 1 ? 0 : currentIndex + 1,
+      1,
+    ])
   }
 
   return (
@@ -85,55 +88,74 @@ export const StoriesSection = () => {
 
         <div className="mt-12.5 overflow-hidden lg:mt-20">
           <article className="grid gap-8 lg:grid-cols-[minmax(0,600px)_minmax(0,605px)] lg:items-start lg:gap-[50px]">
-            <div className="relative min-h-[340px] overflow-hidden rounded-3xl bg-ma-bg sm:min-h-[460px] lg:h-[560px]">
-              <Image
-                key={activeStory.image}
-                src={activeStory.image}
-                alt={activeStory.imageAlt}
-                fill
-                sizes="(min-width: 1024px) 600px, calc(100vw - 32px)"
-                className={cn(
-                  "object-cover transition-opacity duration-300",
-                  activeStory.imageClassName
-                )}
-              />
-            </div>
+            <AnimatePresence mode="wait" custom={direction} initial={false}>
+              <motion.div
+                key={activeIndex}
+                custom={direction}
+                initial={{ opacity: 0, x: direction * 48 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: direction * -48 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="relative min-h-[340px] overflow-hidden rounded-3xl bg-ma-bg sm:min-h-[460px] lg:h-[560px]"
+              >
+                <Image
+                  src={activeStory.image}
+                  alt={activeStory.imageAlt}
+                  fill
+                  sizes="(min-width: 1024px) 600px, calc(100vw - 32px)"
+                  className={cn(
+                    "object-cover",
+                    activeStory.imageClassName
+                  )}
+                />
+              </motion.div>
+            </AnimatePresence>
 
-            <div className="flex min-h-[420px] flex-col justify-between lg:min-h-[560px]">
-              <p className="text-lg font-medium text-primary sm:text-3xl">
-                {activeStory.quote}
-              </p>
+            <AnimatePresence mode="wait" custom={direction} initial={false}>
+              <motion.div
+                key={activeIndex}
+                custom={direction}
+                initial={{ opacity: 0, x: direction * 48 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: direction * -48 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="flex min-h-[420px] flex-col justify-between lg:min-h-[560px]"
+              >
+                <p className="text-lg font-medium text-primary sm:text-3xl">
+                  {activeStory.quote}
+                </p>
 
-              <div className="mt-4 flex flex-col gap-6 sm:mt-8 sm:flex-row sm:items-center sm:justify-between lg:mt-10">
-                <div className="space-y-3 sm:space-y-4">
-                  <h3 className="text-base font-semibold text-primary sm:text-2xl">
-                    {activeStory.name}
-                  </h3>
-                  <p className="text-base text-ma-muted-text sm:text-xl">
-                    {activeStory.role}
-                  </p>
+                <div className="mt-4 flex flex-col gap-6 sm:mt-8 sm:flex-row sm:items-center sm:justify-between lg:mt-10">
+                  <div className="space-y-3 sm:space-y-4">
+                    <h3 className="text-base font-semibold text-primary sm:text-2xl">
+                      {activeStory.name}
+                    </h3>
+                    <p className="text-base text-ma-muted-text sm:text-xl">
+                      {activeStory.role}
+                    </p>
+                  </div>
+
+                  <div className="flex gap-[18px] self-end sm:self-start">
+                    <button
+                      type="button"
+                      aria-label="Previous community story"
+                      onClick={showPreviousStory}
+                      className="flex size-[50px] items-center justify-center rounded-full border border-border bg-ma-bg text-primary transition-colors hover:border-ma-text/20 hover:bg-white sm:size-[60px]"
+                    >
+                      <ArrowLeft className="size-6" aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Next community story"
+                      onClick={showNextStory}
+                      className="flex size-[50px] items-center justify-center rounded-full border border-border bg-ma-bg text-primary transition-colors hover:border-ma-text/20 hover:bg-white sm:size-[60px]"
+                    >
+                      <ArrowRight className="size-6" aria-hidden="true" />
+                    </button>
+                  </div>
                 </div>
-
-                <div className="flex gap-[18px] self-end sm:self-start">
-                  <button
-                    type="button"
-                    aria-label="Previous community story"
-                    onClick={showPreviousStory}
-                    className="flex size-[50px] items-center justify-center rounded-full border border-border bg-ma-bg text-primary transition-colors hover:border-ma-text/20 hover:bg-white sm:size-[60px]"
-                  >
-                    <ArrowLeft className="size-6" aria-hidden="true" />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Next community story"
-                    onClick={showNextStory}
-                    className="flex size-[50px] items-center justify-center rounded-full border border-border bg-ma-bg text-primary transition-colors hover:border-ma-text/20 hover:bg-white sm:size-[60px]"
-                  >
-                    <ArrowRight className="size-6" aria-hidden="true" />
-                  </button>
-                </div>
-              </div>
-            </div>
+              </motion.div>
+            </AnimatePresence>
           </article>
         </div>
       </div>
