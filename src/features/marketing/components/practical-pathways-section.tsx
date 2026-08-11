@@ -1,6 +1,6 @@
 "use client"
 
-import { useLayoutEffect, useRef } from "react"
+import { Fragment, useLayoutEffect, useRef } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 
@@ -53,13 +53,15 @@ const items: Item[] = [
 
 export default function ScrollStory() {
   const sectionRef = useRef<HTMLElement | null>(null)
+  const viewportRef = useRef<HTMLDivElement | null>(null)
   const textContainerRef = useRef<HTMLDivElement | null>(null)
 
   useLayoutEffect(() => {
     const section = sectionRef.current
+    const viewport = viewportRef.current
     const textContainer = textContainerRef.current
 
-    if (!section || !textContainer) return
+    if (!section || !viewport || !textContainer) return
 
     const ctx = gsap.context(() => {
       /*
@@ -77,102 +79,40 @@ export default function ScrollStory() {
       if (!blocks.length) return
 
       /*
-       * --------------------------------------------------
-       * INITIAL POSITION
-       * --------------------------------------------------
+       * The track travels exactly one "step" per
+       * transition.
        *
-       * Block 1 starts in the viewport.
+       * The step is the distance from the top of one
+       * block to the top of the next one — block height
+       * plus the spacer that keeps the next item out of
+       * view until the previous exits.
        *
-       * Blocks 2–5 are underneath it in the vertical
-       * track and therefore aren't visible.
+       * Measuring it in the DOM makes the animation
+       * independent of viewport dimensions.
        */
 
-      gsap.set(textContainer, {
-        y: 0,
-      })
+      const distance = () => {
+        const step =
+          blocks.length > 1
+            ? blocks[1].offsetTop - blocks[0].offsetTop
+            : blocks[0].offsetHeight
 
-      /*
-       * --------------------------------------------------
-       * SCROLL DISTANCE
-       * --------------------------------------------------
-       *
-       * There are 4 transitions for 5 items.
-       *
-       * Each transition gets 80% of a viewport.
-       *
-       * You can change this to:
-       *
-       * 1    = slower
-       * 0.8  = current
-       * 0.6  = faster
-       */
+        return step * (items.length - 1)
+      }
 
-      const transitionDistance = window.innerHeight * 1
-
-      const timeline = gsap.timeline({
+      gsap.to(textContainer, {
+        y: () => -distance(),
+        ease: "none",
         scrollTrigger: {
-          trigger: section,
-
-          /*
-           * Pin when the section reaches the top.
-           */
-          start: "200px top",
-
-          /*
-           * Four transitions.
-           */
-          end: `+=${transitionDistance * (items.length - 1)}`,
-
-          pin: true,
-
-          /*
-           * Direct relationship between scroll and movement.
-           */
-          scrub: 0.4,
-
+          trigger: viewport,
+          start: "top top",
+          end: () => `+=${distance()}`,
+          pin: section,
+          scrub: true,
           anticipatePin: 1,
-
           invalidateOnRefresh: true,
-
           markers: false,
         },
-      })
-
-      /*
-       * --------------------------------------------------
-       * MOVE THE TEXT TRACK
-       * --------------------------------------------------
-       *
-       * Instead of fading individual blocks, we move
-       * the entire stack.
-       *
-       * Each block has the same height.
-       *
-       * 0%   = Item 1
-       * -100% = Item 2
-       * -200% = Item 3
-       * -300% = Item 4
-       * -400% = Item 5
-       */
-
-      timeline.to(textContainer, {
-        y: () => {
-          /*
-           * The container needs to move by exactly one
-           * block height for every transition.
-           *
-           * Using the first block's height makes this
-           * independent of viewport dimensions.
-           */
-
-          const blockHeight = blocks[0].offsetHeight
-
-          return -(blockHeight * (items.length - 1))
-        },
-
-        ease: "none",
-
-        duration: items.length - 1,
       })
     }, section)
 
@@ -200,23 +140,34 @@ export default function ScrollStory() {
         <div className="grid min-h-screen max-w-260 grid-cols-1 justify-items-center gap-10 self-center md:grid-cols-2 md:gap-16">
           <div className="relative flex min-h-screen items-center">
             <div className="relative mt-40 h-[420px] w-full overflow-hidden md:mt-48 md:h-[460px]">
-              <div ref={textContainerRef} className="top-0 left-0 w-full">
-                {items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="scroll-story-block flex h-[394px] w-full flex-col justify-center md:h-[394px]"
-                  >
-                    <h3 className="marketing-header marketing-headline max-w-xl text-white!">
-                      {item.label}
-                    </h3>
+              <div
+                ref={viewportRef}
+                className="absolute inset-0 overflow-hidden"
+              >
+                <div ref={textContainerRef} className="top-0 left-0 w-full">
+                {items.map((item, index) => (
+                  <Fragment key={item.id}>
+                    <div className="scroll-story-block flex h-[394px] w-full flex-col justify-center md:h-[394px]">
+                      <h3 className="marketing-header marketing-headline max-w-xl text-white!">
+                        {item.label}
+                      </h3>
 
-                    <p className="mt-7 max-w-[460px] font-inter text-base font-medium text-white/60 sm:text-xl">
-                      {item.description}
-                    </p>
-                  </div>
+                      <p className="mt-7 max-w-[460px] font-inter text-base font-medium text-white/60 sm:text-xl">
+                        {item.description}
+                      </p>
+                    </div>
+
+                    {index < items.length - 1 && (
+                      <div
+                        aria-hidden="true"
+                        className="h-[420px] md:h-[460px]"
+                      />
+                    )}
+                  </Fragment>
                 ))}
               </div>
             </div>
+          </div>
           </div>
 
           <div className="relative flex min-h-screen items-center justify-center">
