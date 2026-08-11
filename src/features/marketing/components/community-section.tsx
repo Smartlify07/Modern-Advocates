@@ -15,7 +15,7 @@ const CommunitySection = () => {
           quality={100}
         />
         <div className="flex flex-col gap-8 sm:max-w-[430px] sm:gap-17.5">
-          <h1 className="text-2xl font-bold text-primary sm:text-5xl">
+          <h1 className="marketing-header marketing-headline">
             Be part of our community
           </h1>
           <p className="text-base font-medium text-primary sm:text-xl">

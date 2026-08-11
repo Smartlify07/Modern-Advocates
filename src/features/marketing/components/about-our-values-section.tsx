@@ -10,7 +10,7 @@ const AboutOurValuesSection = () => {
           OUR VALUES{" "}
         </p>
         <div className="mx-auto text-center">
-          <h2 className="mx-auto max-w-160 text-center font-sans text-[28px]/[100%] font-extrabold text-ma-text sm:text-5xl lg:text-[40px]">
+          <h2 className="marketing-header mx-auto max-w-160 text-center text-[28px]/[100%] font-extrabold text-ma-text sm:text-5xl lg:text-[40px]">
             How can we support your healthcare journey?{" "}
           </h2>
         </div>

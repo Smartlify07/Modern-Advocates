@@ -10,10 +10,10 @@ import { useState } from "react"
 
 const navItems = [
   { label: "Home", href: "/" },
-  { label: "Courses", href: "/courses" },
   { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
+  { label: "Trainings", href: "/courses" },
   { label: "Donation", href: "/donation" },
+  { label: "Contact", href: "/contact" },
   { label: "Login", href: "/login" },
 ]
 

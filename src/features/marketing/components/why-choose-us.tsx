@@ -41,7 +41,7 @@ export function WhyChooseUs() {
   return (
     <section id="why-choose-us" className="bg-white py-20 sm:py-28 lg:py-32">
       <div className="mx-auto max-w-6xl px-6">
-        <h2 className="font-heading text-4xl leading-[1.15] font-extrabold tracking-tight text-ma-text sm:text-5xl">
+        <h2 className="marketing-header text-4xl leading-[1.15] font-extrabold tracking-tight text-ma-text sm:text-5xl">
           Learning Designed for Real-World Success
         </h2>
 
@@ -59,7 +59,7 @@ export function WhyChooseUs() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/10" />
               <div className="relative flex h-full flex-col justify-end p-6 sm:p-8">
-                <h3 className="text-xl font-bold text-white sm:text-2xl">
+                <h3 className="marketing-header text-xl font-bold text-white sm:text-2xl">
                   {card.title}
                 </h3>
                 <p className="mt-2 max-w-md text-sm leading-relaxed text-white/80">

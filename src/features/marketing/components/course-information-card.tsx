@@ -61,7 +61,7 @@ export function CourseInformationCard({
 
   return (
     <aside className="w-full rounded-2xl border border-ma-border-light bg-white px-4 pt-4 pr-3.5 pb-[25px] lg:top-8">
-      <h2 className="leading/[100%]-normal text-xl font-extrabold text-ma-text sm:text-2xl">
+      <h2 className="marketing-header leading/[100%]-normal text-xl font-extrabold text-ma-text sm:text-2xl">
         Course information
       </h2>
 

@@ -87,7 +87,7 @@ export default function MyLearningPage() {
   }
 
   return (
-    <div className="mx-auto px-4 py-12.5 lg:max-w-7xl lg:px-25 lg:py-19.25 2xl:max-w-360 2xl:px-50">
+    <div className="marketing-container">
       <h1 className="mb-10 text-2xl font-bold text-ma-text lg:text-[32px]">
         My Learning
       </h1>

@@ -30,7 +30,7 @@ export function MissionBridgeSection() {
     <section id="about" className="bg-white">
       <div className="marketing-container">
         <div className="mx-auto max-w-xl text-center">
-          <h2 className="font-sans text-[28px]/[100%] font-extrabold tracking-[0%] text-ma-text sm:text-[40px]/[60px] sm:tracking-[-0.01em]">
+          <h2 className="marketing-header text-[28px]/[100%] font-extrabold tracking-[0%] text-ma-text sm:text-[40px]/[60px] sm:tracking-[-0.01em]">
             Bridging the Gap between Technology and Care
           </h2>
         </div>
@@ -120,7 +120,7 @@ export function MissionBridgeSection() {
               </div>
 
               <div className="flex flex-col items-start gap-4">
-                <h3 className="text-xl font-semibold text-ma-text">
+                <h3 className="marketing-header text-xl font-semibold text-ma-text">
                   Get Assistance
                 </h3>
                 <p className="text-sm text-balance text-ma-text/80">
@@ -158,7 +158,7 @@ export function MissionBridgeSection() {
               </div>
 
               <div className="flex flex-col items-start gap-4">
-                <h3 className="text-xl font-semibold text-balance text-ma-text">
+                <h3 className="marketing-header text-xl font-semibold text-balance text-ma-text">
                   Support mission
                 </h3>
                 <p className="text-sm text-balance text-ma-text/80">
@@ -205,7 +205,7 @@ export function FounderStorySection() {
             height={500}
           />
           <div>
-            <h2 className="hidden font-sans text-[28px]/[100%] font-extrabold tracking-[0%] text-ma-text sm:text-5xl lg:block lg:text-[40px]/[60px]">
+            <h2 className="marketing-header hidden text-[28px]/[100%] font-extrabold tracking-[0%] text-ma-text sm:text-5xl lg:block lg:text-[40px]/[60px]">
               I built ModernAdvocates Inc. out of something I lived...
             </h2>
 
@@ -238,7 +238,7 @@ export function FounderStorySection() {
 
         {/* Small screens */}
         <div className="flex flex-col items-start gap-5 lg:hidden">
-          <h2 className="font-sans text-[28px]/[100%] font-extrabold tracking-[0%] text-ma-text">
+          <h2 className="marketing-header text-[28px]/[100%] font-extrabold tracking-[0%] text-ma-text">
             I built ModernAdvocates Inc. out of something I lived...
           </h2>
 

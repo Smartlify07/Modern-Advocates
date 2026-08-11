@@ -6,7 +6,7 @@ export function HeroContent() {
           New — Online courses now available
         </span>
 
-        <h1 className="mt-6 text-balance font-heading text-5xl font-extrabold leading-[1.1] tracking-tight text-ma-text sm:text-6xl lg:text-7xl">
+        <h1 className="marketing-header mt-6 text-balance text-5xl font-extrabold leading-[1.1] tracking-tight text-ma-text sm:text-6xl lg:text-7xl">
           Master In-Demand Skills That Move Your Career Forward
         </h1>
 

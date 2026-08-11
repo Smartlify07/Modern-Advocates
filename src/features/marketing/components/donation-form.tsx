@@ -21,7 +21,11 @@ import {
   SelectValue,
 } from "@/shared/ui/select"
 import { cn } from "@/shared/utils"
-import { computeAdminFee, computeDonationTotal } from "@/features/marketing/lib/donation-pricing"
+import {
+  computeAdminFee,
+  computeDonationTotal,
+} from "@/features/marketing/lib/donation-pricing"
+import { GradientButton } from "@/shared/ui/gradient-button"
 
 const prices = [
   { id: 1, amount: 10 },
@@ -31,13 +35,12 @@ const prices = [
 ]
 
 const donationTypeOptions = [
-  { label: "Fixed Donation", value: "fixed" },
-  { label: "Tier Donation", value: "tier" },
+  { label: "One-Time Donation", value: "fixed" },
   { label: "Monthly Donation", value: "monthly" },
 ] as const
 
 const donationFormSchema = z.object({
-  donationType: z.enum(["fixed", "tier", "monthly"]),
+  donationType: z.enum(["fixed", "monthly"]),
   amount: z
     .number({ message: "Enter a donation amount" })
     .positive("Amount must be greater than 0"),
@@ -50,6 +53,7 @@ type DonationFormValues = z.infer<typeof donationFormSchema>
 
 const DonationForm = () => {
   const [submitting, setSubmitting] = useState(false)
+  const [customAmount, setCustomAmount] = useState("")
   const form = useForm<DonationFormValues>({
     resolver: zodResolver(donationFormSchema),
     defaultValues: {
@@ -64,16 +68,28 @@ const DonationForm = () => {
   const watchedAmount = useWatch({ control: form.control, name: "amount" })
   const isConfirmed = useWatch({ control: form.control, name: "confirmation" })
 
-  const fee = computeAdminFee(watchedAmount)
-  const total = computeDonationTotal(watchedAmount)
+  const hasCustomAmount = customAmount.trim() !== ""
+  const parsedCustomAmount = Number(customAmount)
+  const effectiveAmount = hasCustomAmount ? parsedCustomAmount : watchedAmount
+
+  const fee = computeAdminFee(effectiveAmount)
+  const total = computeDonationTotal(effectiveAmount)
 
   async function onSubmit(data: DonationFormValues) {
+    if (
+      hasCustomAmount &&
+      (!Number.isFinite(parsedCustomAmount) || parsedCustomAmount <= 0)
+    ) {
+      toast.error("Enter a valid donation amount")
+      return
+    }
+
     setSubmitting(true)
     try {
       const result = await apiFetch<{ url: string }>("/api/donations", {
         method: "POST",
         body: {
-          amount: data.amount,
+          amount: hasCustomAmount ? parsedCustomAmount : data.amount,
           donorName: data.donorName,
           donorEmail: data.donorEmail,
           donationType: data.donationType,
@@ -94,7 +110,7 @@ const DonationForm = () => {
   return (
     <div className="flex flex-col gap-7.5 bg-white px-4 py-10 shadow-[0_-6px_40px_0_rgba(0,0,0,0.08)] sm:px-7.5">
       <div>
-        <h1 className="mb-5 text-lg font-semibold sm:text-2xl">
+        <h1 className="marketing-header mb-5 text-lg font-semibold sm:text-2xl">
           Make a Donation
         </h1>
         <p className="text-base">
@@ -111,7 +127,7 @@ const DonationForm = () => {
           <Controller
             control={form.control}
             name="amount"
-            render={({ field, fieldState }) => (
+            render={({ fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="donation-amount">
                   Donation amount
@@ -121,14 +137,15 @@ const DonationForm = () => {
                     <button
                       type="button"
                       key={price.id}
-                      onClick={() =>
+                      onClick={() => {
                         form.setValue("amount", price.amount, {
                           shouldValidate: true,
                         })
-                      }
+                        setCustomAmount("")
+                      }}
                       className={cn(
                         "rounded-none px-5 py-2.5 text-base font-medium transition-colors",
-                        watchedAmount === price.amount
+                        !hasCustomAmount && watchedAmount === price.amount
                           ? "bg-ma-admin-primary text-white"
                           : "bg-ma-bg text-primary"
                       )}
@@ -142,13 +159,9 @@ const DonationForm = () => {
                     type="number"
                     inputMode="numeric"
                     min={1}
-                    value={field.value === 0 ? "" : field.value}
-                    onChange={(e) =>
-                      field.onChange(
-                        e.target.value === "" ? 0 : Number(e.target.value)
-                      )
-                    }
-                    className="col-span-2 h-auto rounded-none border-none bg-ma-bg px-5 py-2.5 text-primary ring-0 [-moz-appearance:textfield] placeholder:text-xs placeholder:text-muted-foreground focus-visible:ring-2 sm:col-span-1 sm:w-full"
+                    value={customAmount}
+                    onChange={(e) => setCustomAmount(e.target.value)}
+                    className="col-span-2 h-auto rounded-none border-none bg-ma-bg px-5 py-2.5 text-primary ring-0 [-moz-appearance:textfield] placeholder:text-xs placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ma-admin-primary sm:col-span-1 sm:w-full"
                     placeholder="Enter amount"
                   />
                 </div>
@@ -171,7 +184,7 @@ const DonationForm = () => {
                     <SelectGroup>
                       {donationTypeOptions.map((item) => (
                         <SelectItem
-                          className="px-4 py-2"
+                          className="rounded-none px-4 py-2"
                           key={item.value}
                           value={item.value}
                         >
@@ -255,17 +268,13 @@ const DonationForm = () => {
         </div>
       </div>
 
-      <Button
-        type="submit"
-        form="donation-form"
-        disabled={!isConfirmed || submitting}
-        className="h-[51px] rounded-[60px] bg-ma-admin-primary hover:bg-ma-admin-primary-dark"
-      >
+      <GradientButton className="h-[51px]">
         {submitting && (
           <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
         )}
-        Donate Now <ArrowRight />
-      </Button>
+        Donate Now
+        <ArrowRight className="relative z-10 size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" />{" "}
+      </GradientButton>
     </div>
   )
 }

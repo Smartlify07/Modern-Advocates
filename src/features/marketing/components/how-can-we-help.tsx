@@ -29,8 +29,10 @@ const HowCanWeHelpSection = () => {
   return (
     <section className="bg-ma-bg text-ma-text">
       <div className="marketing-container">
-        <header className="mx-auto mb-7.5 text-center text-3xl font-bold text-primary sm:text-5xl">
-          <h1>How Can We Help</h1>
+        <header className="mx-auto mb-7.5 text-center">
+          <h1 className="marketing-header marketing-headline">
+            How Can We Help
+          </h1>
         </header>
 
         <p className="mx-auto mb-16 max-w-[750px] text-center sm:text-xl">
@@ -48,7 +50,7 @@ const HowCanWeHelpSection = () => {
             >
               <item.icon className="-ma-admin-primary text-ma-admin-primary" />
               <div className="flex flex-col gap-5">
-                <h3 className="text-lg font-bold text-primary sm:text-2xl">
+                <h3 className="marketing-header text-lg font-bold text-primary sm:text-2xl">
                   {item.title}
                 </h3>
                 <p className="sm:text-xl/[32px]">{item.description}</p>

@@ -9,7 +9,7 @@ const SupportSection = () => {
     <section id="about" className="bg-white">
       <div className="marketing-container">
         <div className="mx-auto text-center">
-          <h2 className="mx-auto max-w-160 text-center font-sans text-[26px]/[100%] font-extrabold tracking-[0%] text-ma-text sm:text-[40px]/[60px]">
+          <h2 className="marketing-header mx-auto max-w-160 text-center text-[26px]/[100%] font-extrabold tracking-[0%] text-ma-text sm:text-[40px]/[60px]">
             How can we support your healthcare journey?{" "}
           </h2>
         </div>

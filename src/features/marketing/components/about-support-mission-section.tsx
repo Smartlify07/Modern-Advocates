@@ -1,4 +1,5 @@
 import { Button } from "@/shared/ui/button"
+import { GradientButton } from "@/shared/ui/gradient-button"
 import { ArrowRight } from "lucide-react"
 import Image from "next/image"
 import React from "react"
@@ -17,7 +18,7 @@ const AboutSupportMissionSection = () => {
           />
 
           <div className="r flex max-w-[430px] flex-col gap-6 sm:gap-12.5">
-            <h1 className="text-3xl font-bold capitalize sm:text-5xl">
+            <h1 className="marketing-header marketing-headline leading-[60px]">
               Help someone build a better future
             </h1>
             <p className="text-base sm:text-xl">
@@ -26,9 +27,10 @@ const AboutSupportMissionSection = () => {
               education, and health advocacy.
             </p>
 
-            <Button className="h-15 w-full self-start rounded-pill sm:w-75 sm:max-w-75">
-              Support our mission <ArrowRight />
-            </Button>
+            <GradientButton className="h-15 w-full sm:w-75 sm:text-base">
+              Support our mission{" "}
+              <ArrowRight className="relative z-10 size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" />{" "}
+            </GradientButton>
           </div>
         </div>
       </div>

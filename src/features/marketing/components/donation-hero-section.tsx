@@ -9,7 +9,7 @@ export function DonationHeroSection() {
             Donation
           </p>
 
-          <h1 className="mt-5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold text-balance text-primary sm:leading-[70px] lg:mt-7.5 lg:text-[60px]/[70px] lg:tracking-tight-xl">
+          <h1 className="marketing-header marketing-headline mt-5">
             Changing Lives Through Education, Advocacy & Hope{" "}
           </h1>
 
@@ -32,7 +32,7 @@ export function DonationHeroSection() {
 
           <article className="flex flex-col rounded-card-2 bg-ma-surface-2 p-5 lg:min-h-[550px]">
             <div>
-              <h2 className="text-3xl leading-normal font-semibold text-ma-text sm:text-4xl">
+              <h2 className="marketing-header text-3xl leading-normal font-semibold text-ma-text sm:text-4xl">
                 Melanie And Will
               </h2>
               <p className="text-base leading-normal">Founders</p>

@@ -25,7 +25,7 @@ export function CourseModule({
         onClick={() => setOpen(!open)}
         className="flex w-full cursor-pointer items-center justify-between gap-4 text-left"
       >
-        <h3 className="text-sm/[100%] leading-normal font-bold text-ma-text sm:text-base">
+        <h3 className="marketing-header text-sm/[100%] leading-normal font-bold text-ma-text sm:text-base">
           {title}
         </h3>
         <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-[15px] border border-ma-border-light bg-white">

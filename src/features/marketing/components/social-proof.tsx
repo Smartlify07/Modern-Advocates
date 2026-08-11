@@ -14,7 +14,7 @@ export function SocialProof() {
       <div className="mx-auto max-w-6xl px-6">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
           <div>
-            <h2 className="font-heading text-4xl font-extrabold leading-[1.15] tracking-tight text-ma-text sm:text-5xl">
+            <h2 className="marketing-header text-4xl font-extrabold leading-[1.15] tracking-tight text-ma-text sm:text-5xl">
               Thousands of Learners. Real Results.
             </h2>
             <p className="mt-5 text-base leading-relaxed text-ma-text/60">

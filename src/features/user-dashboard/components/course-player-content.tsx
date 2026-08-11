@@ -104,7 +104,7 @@ export function CoursePlayerContent({
     try {
       await apiFetch(
         `/api/enrollments/${enrollmentData.id}/topics/${selectedTopicId}`,
-        { method: "POST" },
+        { method: "POST" }
       )
     } finally {
       queryClient.invalidateQueries({
@@ -149,7 +149,7 @@ export function CoursePlayerContent({
       if (!enrollmentData.completedTopicIds.includes(selectedTopicId)) {
         await apiFetch(
           `/api/enrollments/${enrollmentData.id}/topics/${selectedTopicId}`,
-          { method: "POST" },
+          { method: "POST" }
         )
       }
 
@@ -164,11 +164,11 @@ export function CoursePlayerContent({
     <div className="flex flex-col gap-4">
       {selectedTopicId && isVideoTopic ? (
         !selectedVideoId ? (
-          <div className="flex aspect-video items-center justify-center rounded-lg bg-muted text-muted-foreground">
+          <div className="flex aspect-video items-center justify-center bg-muted text-muted-foreground">
             Video not yet available
           </div>
         ) : videoPending ? (
-          <Skeleton className="aspect-video w-full rounded-xl" />
+          <Skeleton className="aspect-video w-full" />
         ) : video?.playbackUrl ? (
           <VideoPlayer
             playbackUrl={video.playbackUrl}
@@ -178,7 +178,7 @@ export function CoursePlayerContent({
             onEnded={handleEnded}
           />
         ) : video ? (
-          <div className="flex aspect-video items-center justify-center rounded-lg bg-muted text-muted-foreground">
+          <div className="flex aspect-video items-center justify-center bg-muted text-muted-foreground">
             {video.status === "uploading"
               ? "Video is being processed..."
               : "Video not available"}
@@ -262,7 +262,9 @@ export function CoursePlayerContent({
               myReviews.map((r) => <ReviewCard key={r.id} review={r} />)
             ) : (
               <div className="w-full rounded-lg border border-ma-border-light py-12 text-center">
-                <p className="text-base text-muted-foreground">No reviews yet.</p>
+                <p className="text-base text-muted-foreground">
+                  No reviews yet.
+                </p>
               </div>
             )}
           </div>

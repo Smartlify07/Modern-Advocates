@@ -21,7 +21,7 @@ export function AboutAiHealthcareSection() {
         </div>
 
         <div className="pt-0 lg:pt-1">
-          <h2 className="max-w-[578px] font-sans text-[28px]/[100%] font-extrabold text-balance text-ma-text sm:leading-[60px] lg:text-[40px] lg:tracking-tight-xl">
+          <h2 className="marketing-header max-w-[578px] text-[28px]/[100%] font-extrabold text-balance text-ma-text sm:leading-[60px] lg:text-[40px] lg:tracking-tight-xl">
             ModernAdvocates is redefining how AI is used in Healthcare
           </h2>
 

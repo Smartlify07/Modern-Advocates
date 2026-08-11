@@ -33,7 +33,7 @@ export function TutorCard({
 
       <div className="flex flex-col gap-4 sm:gap-[22px]">
         <div className="flex flex-col gap-1 text-ma-text">
-          <h3 className="text-base leading-normal font-bold">
+          <h3 className="marketing-header text-base leading-normal font-bold">
             {tutor?.name ?? "Instructor"}
           </h3>
           <p className="text-xs leading-normal sm:text-[15px]">

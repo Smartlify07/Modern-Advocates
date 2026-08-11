@@ -8,7 +8,7 @@ export default function MarketingLayout({
   children: React.ReactNode
 }>) {
   return (
-    <div className="bg-white">
+    <div className="bg-white font-inter!">
       <Navbar />
       {children}
       <ConditionalLayoutSections />
