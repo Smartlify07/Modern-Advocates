@@ -1,12 +1,13 @@
+import { GradientButton } from "@/shared/ui/gradient-button"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 
 const quickLinks = [
   { label: "Home", href: "/" },
-  { label: "Courses", href: "/courses" },
   { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
+  { label: "Trainings", href: "/courses" },
   { label: "Donate", href: "/donation" },
+  { label: "Contact", href: "/contact" },
 ]
 
 export function Footer() {
@@ -15,7 +16,7 @@ export function Footer() {
       <div className="marketing-container relative min-h-125 pt-12.5 lg:pt-17.5">
         <div className="grid w-full justify-between gap-10 md:grid-cols-[0.9fr_0.6fr_1.5fr] lg:gap-10 xl:grid-cols-[254px_180px_388px] xl:justify-between xl:gap-[140px]">
           <section className="">
-            <h2 className="font-sans text-lg font-extrabold lg:text-2xl">
+            <h2 className="marketing-header text-lg font-extrabold lg:text-2xl">
               Get in Touch
             </h2>
             <address className="mt-5 not-italic">
@@ -42,7 +43,7 @@ export function Footer() {
           </section>
 
           <nav aria-label="Footer navigation">
-            <h2 className="font-sans text-lg font-extrabold lg:text-2xl">
+            <h2 className="marketing-header text-lg font-extrabold lg:text-2xl">
               Quick Links
             </h2>
             <ul className="mt-5 space-y-3">
@@ -60,7 +61,7 @@ export function Footer() {
           </nav>
 
           <section className="">
-            <h2 className="font-sans text-lg font-extrabold lg:text-2xl">
+            <h2 className="marketing-header text-lg font-extrabold lg:text-2xl">
               Join our News letter
             </h2>
             <p className="mt-5 text-base leading-normal xl:max-w-[387px]">
@@ -78,19 +79,11 @@ export function Footer() {
                 placeholder="Enter your email"
                 className="min-w-0 flex-1 bg-transparent text-base text-ma-text outline-none placeholder:text-muted-foreground"
               />
-              <button
-                type="submit"
-                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-pill bg-ma-admin-primary px-[15px] py-3 text-[12.31px] font-semibold text-white transition-transform duration-300 hover:scale-[1.1]"
-              >
-                <span className="relative z-10 inline-flex items-center gap-2">
-                  Join
-                  <ArrowRight
-                    className="size-[15px] transition-transform duration-300 group-hover:rotate-[-30deg]"
-                    aria-hidden="true"
-                  />
-                </span>
-                <div className="pointer-events-none absolute inset-0 rounded-pill bg-gradient-to-r from-ma-glow-blue to-ma-glow-violet opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-              </button>
+
+              <GradientButton className="h-11 p-[15px] text-xs hover:scale-[1.1]">
+                Join
+                <ArrowRight className="relative z-10 size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" />
+              </GradientButton>
             </form>
 
             <p className="mt-8 text-sm leading-normal text-nowrap sm:text-base">

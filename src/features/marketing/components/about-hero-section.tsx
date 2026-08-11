@@ -13,11 +13,11 @@ export function AboutHeroSection() {
     <section className="bg-white text-ma-text">
       <div className="marketing-container">
         <header className="mx-auto mb-15 max-w-230 text-center">
-          <h4 className="mb-7.5 text-base text-muted-foreground uppercase">
+          <h4 className="marketing-header mb-7.5 text-base text-muted-foreground uppercase">
             Our story
           </h4>
 
-          <h1 className="max-w-230 text-3xl font-bold text-primary capitalize sm:text-[3.5rem]">
+          <h1 className="marketing-header marketing-headline max-w-230 capitalize">
             Why we started modern advocates
           </h1>
         </header>
@@ -31,7 +31,7 @@ export function AboutHeroSection() {
             height={532}
           />
 
-          <p className="text-base sm:text-xl">
+          <p className="text-base sm:text-xl/[32px]">
             Our own journey with endometriosis taught us that chronic illness
             affects far more than physical health. It can reshape your
             education, career, finances, relationships, and sense of security. A

@@ -23,7 +23,7 @@ export function CoursesHeroSection() {
             Trainings
           </p>
 
-          <h1 className="mt-7.5 font-sans text-[28px]/[100%] leading-[1.16] font-extrabold text-balance text-ma-text sm:text-[60px] sm:leading-[70px] lg:tracking-tight-xl">
+          <h1 className="marketing-header marketing-headline mt-7.5">
             Build the Skills That Keep You Moving Forward
           </h1>
 

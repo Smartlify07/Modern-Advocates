@@ -5,17 +5,11 @@ import { useQuery } from "@tanstack/react-query"
 import { useSearchParams, useRouter, notFound } from "next/navigation"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { apiFetch, ApiError } from "@/shared/lib/api-fetch"
-import {
-  ErrorState,
-  ErrorStateDescription,
-} from "@/shared/ui/error-state"
+import { ErrorState, ErrorStateDescription } from "@/shared/ui/error-state"
 import { CoursePlayerContent } from "@/features/user-dashboard/components/course-player-content"
 import { CourseModuleSidebar } from "@/features/user-dashboard/components/course-module-sidebar"
 import { queryKeys } from "@/shared/lib/query-keys"
-import type {
-  CourseApiResponse,
-  PlayerCourse,
-} from "@/features/courses/dto"
+import type { CourseApiResponse, PlayerCourse } from "@/features/courses/dto"
 
 function extractText(input: unknown): string {
   if (typeof input !== "string") return ""
@@ -132,7 +126,7 @@ export function CoursePlayerShell({ courseId }: { courseId: string }) {
       <div className="mx-auto py-8">
         <div className="grid gap-0 md:grid-cols-[2.2fr_0.8fr]">
           <div className="flex flex-col gap-6">
-            <Skeleton className="aspect-video w-full rounded-xl" />
+            <Skeleton className="aspect-video w-full rounded-none" />
 
             <div className="mx-3 flex gap-6 border-b border-border pb-2">
               <Skeleton className="h-5 w-16" />

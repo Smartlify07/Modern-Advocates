@@ -188,7 +188,7 @@ export default function ScrollStory() {
     >
       <div className="marketing-container relative flex min-h-screen flex-col">
         <div className="text-center">
-          <h2 className="mx-auto max-w-[850px] text-3xl leading-[0.95] font-semibold text-white sm:text-[3.5rem]">
+          <h2 className="marketing-header marketing-headline mx-auto max-w-[850px] text-white!">
             Practical pathways to improved health outcomes
           </h2>
 
@@ -206,11 +206,11 @@ export default function ScrollStory() {
                     key={item.id}
                     className="scroll-story-block flex h-[394px] w-full flex-col justify-center md:h-[394px]"
                   >
-                    <h3 className="max-w-xl text-3xl leading-[0.95] font-semibold text-white sm:text-5xl">
+                    <h3 className="marketing-header marketing-headline max-w-xl text-white!">
                       {item.label}
                     </h3>
 
-                    <p className="mt-7 max-w-[460px] text-sm leading-[1.6] text-white/60 md:text-base lg:text-lg">
+                    <p className="mt-7 max-w-[460px] font-inter text-base font-medium text-white/60 sm:text-xl">
                       {item.description}
                     </p>
                   </div>

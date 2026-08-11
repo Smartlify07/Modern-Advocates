@@ -46,16 +46,16 @@ export function ContactHeroSection({
 
   return (
     <section id="contact" className="bg-white text-ma-text">
-      <div className="marketing-container grid items-start gap-14 lg:grid-cols-[444px_1fr] lg:gap-[88px]">
+      <div className="marketing-container grid items-start gap-14 lg:grid-cols-[562px_1fr] lg:gap-[88px]">
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-5 lg:gap-[30px]">
             <p className="text-base leading-normal font-medium tracking-[0.1em] text-muted-foreground uppercase">
               Contact
             </p>
-            <h1 className="font-sans text-[28px]/[100%] leading-[1.15] font-extrabold text-balance text-ma-text sm:leading-[70px] lg:text-[55px] lg:tracking-tight-xl">
+            <h1 className="marketing-header marketing-headline sm:tracking-[-5%]!">
               Reach out today
             </h1>
-            <p className="max-w-[444px] text-base leading-normal text-ma-text lg:text-lg">
+            <p className="text-base leading-normal text-ma-text lg:text-lg">
               Have questions about our membership and donation programs? Reach
               out using the form below, and our team will get back to you
               promptly.

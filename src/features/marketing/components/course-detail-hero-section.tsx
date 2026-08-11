@@ -63,7 +63,7 @@ export function CourseDetailHeroSection({
             </nav>
 
             <div>
-              <h1 className="max-w-[510px] text-[28px] leading-normal font-bold text-ma-text lg:text-[40px]">
+              <h1 className="marketing-header max-w-[510px] text-[28px] leading-normal font-bold text-ma-text lg:text-[40px]">
                 {course.title}
               </h1>
               <p className="mt-5 text-lg leading-normal text-ma-text">

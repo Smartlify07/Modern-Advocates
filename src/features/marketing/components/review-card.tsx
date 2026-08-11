@@ -23,7 +23,7 @@ export function ReviewCard({ review }: { review: ReviewData }) {
             <AvatarFallback>{review.studentName?.[0] ?? "?"}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col gap-1 text-ma-text">
-            <h3 className="text-base/[100%] leading-normal font-bold text-nowrap">
+            <h3 className="marketing-header text-base/[100%] leading-normal font-bold text-nowrap">
               {review.studentName ?? "Student"}
             </h3>
             <p className="text-[15px]/[100%] font-normal text-primary">

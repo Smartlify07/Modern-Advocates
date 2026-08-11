@@ -1,4 +1,4 @@
-import { Geist_Mono, DM_Sans, Playfair_Display } from "next/font/google"
+import { Geist_Mono, DM_Sans, Inter, Playfair_Display } from "next/font/google"
 import { Providers } from "@/providers"
 
 import "./globals.css"
@@ -20,6 +20,8 @@ const playfairDisplayHeading = Playfair_Display({
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" })
 
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
+
 const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
@@ -39,6 +41,7 @@ export default function RootLayout({
         fontMono.variable,
         "font-sans",
         dmSans.variable,
+        inter.variable,
         playfairDisplayHeading.variable
       )}
     >

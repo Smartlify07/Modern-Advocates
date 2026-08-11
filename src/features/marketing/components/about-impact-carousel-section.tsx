@@ -104,6 +104,8 @@ export function AboutImpactCarouselSection() {
                   src={photo.src}
                   alt={photo.alt}
                   fill
+                  priority
+                  quality={100}
                   sizes="(min-width: 640px) 550px, calc(100vw - 64px)"
                   className={photo.imageClassName ?? "object-cover"}
                 />

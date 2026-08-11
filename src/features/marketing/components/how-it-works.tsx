@@ -30,7 +30,7 @@ export function HowItWorks() {
     <section className="bg-ma-bg py-20 sm:py-28 lg:py-32">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="mt-3 font-heading text-4xl leading-[1.15] font-extrabold tracking-tight text-ma-text sm:text-5xl">
+          <h2 className="marketing-header mt-3 text-4xl leading-[1.15] font-extrabold tracking-tight text-ma-text sm:text-5xl">
             Start Learning in Three Simple Steps
           </h2>
         </div>
@@ -53,7 +53,7 @@ export function HowItWorks() {
                 <span className="font-heading text-4xl leading-none font-bold text-ma-text/10">
                   {step.number}
                 </span>
-                <h3 className="mt-2 text-lg font-bold text-ma-text">
+                <h3 className="marketing-header mt-2 text-lg font-bold text-ma-text">
                   {step.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-ma-text/60">

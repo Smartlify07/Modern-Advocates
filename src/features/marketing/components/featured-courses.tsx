@@ -34,7 +34,7 @@ export function FeaturedCourses() {
     <section id="courses" className="bg-muted py-20 sm:py-28 lg:py-32">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-heading text-4xl leading-[1.15] font-extrabold tracking-tight text-ma-text sm:text-5xl">
+          <h2 className="marketing-header text-4xl leading-[1.15] font-extrabold tracking-tight text-ma-text sm:text-5xl">
             Explore Our Most Popular Programs
           </h2>
           <p className="mt-4 text-base leading-relaxed text-ma-text/60">

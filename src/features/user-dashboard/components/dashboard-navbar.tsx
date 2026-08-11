@@ -29,15 +29,12 @@ export default function DashboardNavbar() {
               alignOffset={8}
             />
           </div>
-          <Link
-            href="/dashboard"
-            className="hidden w-[157px] flex-col gap-1 md:flex"
-          >
+          <Link href="/dashboard" className="flex w-48.75 flex-col gap-1">
             <Image
-              src="/figma-home/logo.svg"
+              src="/figma-home/ma-logo.svg"
               alt="ModernAdvocates Inc."
-              width={58}
-              height={44}
+              width={190}
+              height={52}
               priority
             />
           </Link>

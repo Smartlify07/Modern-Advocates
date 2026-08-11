@@ -20,12 +20,12 @@ export function HeroSection() {
 
       <div className="marketing-container relative z-10 flex min-h-[680px] max-w-360 items-center px-5 pt-14 pb-12 sm:px-8 lg:min-h-[924px]">
         <div className="text-center lg:text-left xl:max-w-[640px] 2xl:max-w-[709px]">
-          <h1 className="font-sans text-[38px]/[1.08] font-bold tracking-[-5%] text-balance text-ma-text sm:text-[52px]/[1.08] lg:text-[70px]/[1.08]">
+          <h1 className="marketing-header text-[38px]/[1.08] font-bold tracking-[-5%] text-balance text-ma-text sm:text-[52px]/[1.08] lg:text-[70px]/[1.08]">
             When Life Takes an Unexpected Direction,
             <br /> You Don&apos;t Have to Face It Alone.
           </h1>
 
-          <p className="mx-auto mt-7 max-w-[597px] text-base leading-7 text-ma-text sm:text-lg lg:mx-0 lg:mt-12 lg:text-xl lg:leading-8">
+          <p className="marketing-header mx-auto mt-7 max-w-[597px] text-base leading-7 font-medium text-ma-text sm:text-lg lg:mx-0 lg:mt-12 lg:text-xl lg:leading-8">
             Modern Advocates empowers people facing chronic illness, disability,
             and financial hardship with education, advocacy, AI skills, and
             practical opportunities to rebuild hope and independence.

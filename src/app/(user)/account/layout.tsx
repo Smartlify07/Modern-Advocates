@@ -30,7 +30,7 @@ export default function AccountLayout({
   }
 
   return (
-    <div className="px-4 py-8 lg:mx-auto lg:max-w-7xl lg:px-25 2xl:max-w-360 2xl:px-50">
+    <div className="marketing-container px-4 py-8">
       {sessionError && (
         <div className="mb-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           Failed to load session. Please try refreshing the page.

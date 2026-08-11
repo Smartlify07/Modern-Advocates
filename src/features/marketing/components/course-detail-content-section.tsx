@@ -52,7 +52,7 @@ export function CourseDetailContentSection({
       <div className="marketing-container flex flex-col-reverse gap-12 py-0! sm:py-0 lg:grid lg:grid-cols-[0.6fr_0.4fr] lg:items-start lg:justify-between xl:grid-cols-[598px_335px] 2xl:grid-cols-[650px_400px]">
         <div className="flex w-full max-w-[598px] flex-col gap-[30px]">
           <section className="flex flex-col gap-4">
-            <h2 className="text-xl/[100%] leading-normal font-extrabold text-ma-text sm:text-2xl">
+            <h2 className="marketing-header text-xl/[100%] leading-normal font-extrabold text-ma-text sm:text-2xl">
               Course overview
             </h2>
             <p className="text-base leading-normal text-ma-text">
@@ -61,7 +61,7 @@ export function CourseDetailContentSection({
           </section>
 
           <section className="flex flex-col gap-5">
-            <h2 className="text-xl/[100%] leading-normal font-extrabold text-ma-text sm:text-2xl">
+            <h2 className="marketing-header text-xl/[100%] leading-normal font-extrabold text-ma-text sm:text-2xl">
               Course Module
             </h2>
             <div className="flex flex-col gap-4">
@@ -77,7 +77,7 @@ export function CourseDetailContentSection({
           </section>
 
           <section className="flex flex-col gap-5">
-            <h2 className="text-xl/[100%] leading-normal font-extrabold text-ma-text sm:text-2xl">
+            <h2 className="marketing-header text-xl/[100%] leading-normal font-extrabold text-ma-text sm:text-2xl">
               Meet your tutor
             </h2>
             <TutorCard
@@ -89,7 +89,7 @@ export function CourseDetailContentSection({
           </section>
 
           <section className="flex flex-col gap-5">
-            <h2 className="text-xl/[100%] leading-normal font-extrabold text-ma-text sm:text-2xl">
+            <h2 className="marketing-header text-xl/[100%] leading-normal font-extrabold text-ma-text sm:text-2xl">
               Student review of this course
             </h2>
             {course.reviews.length > 0 ? (

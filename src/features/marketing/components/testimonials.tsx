@@ -3,6 +3,7 @@
 import Image from "next/image"
 import { useRef, useState, useEffect } from "react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
+import { AnimatePresence, motion } from "motion/react"
 
 const reviews = [
   {
@@ -35,35 +36,49 @@ function useIsMobile() {
   return isMobile
 }
 
+const slideVariants = {
+  enter: (dir: number) => ({ x: dir * 64, opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (dir: number) => ({ x: dir * -64, opacity: 0 }),
+}
+
 export function Testimonials() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [[pageIndex, direction], setPageIndex] = useState([0, 0])
 
-  function scrollReviews(direction: "previous" | "next") {
-    const el = scrollRef.current
-    if (!el) return
+  const visibleCount = isMobile ? 1 : 3
+  const maxIndex = Math.max(0, reviews.length - visibleCount)
 
-    const cards = el.querySelectorAll<HTMLElement>("article")
-    const firstCard = cards[0]
-    const secondCard = cards[1]
-    const cardStep = secondCard
-      ? secondCard.offsetLeft - firstCard.offsetLeft
-      : firstCard?.offsetWidth || el.clientWidth
-    const currentIndex = Math.round(el.scrollLeft / cardStep)
-    const nextIndex = direction === "next" ? currentIndex + 1 : currentIndex - 1
-    const clampedIndex = Math.max(
-      0,
-      Math.min(nextIndex, cards.length - (isMobile ? 1 : 3))
+  function showPrevious() {
+    setPageIndex(([currentIndex]) => [
+      currentIndex === 0 ? maxIndex : currentIndex - 1,
+      -1,
+    ])
+    setActiveIndex((currentIndex) =>
+      currentIndex === 0 ? maxIndex : currentIndex - 1
     )
-    el.scrollTo({ left: clampedIndex * cardStep, behavior: "smooth" })
   }
+
+  function showNext() {
+    setPageIndex(([currentIndex]) => [
+      currentIndex === maxIndex ? 0 : currentIndex + 1,
+      1,
+    ])
+    setActiveIndex((currentIndex) =>
+      currentIndex === maxIndex ? 0 : currentIndex + 1
+    )
+  }
+
+  const visibleReviews = reviews.slice(pageIndex, pageIndex + visibleCount)
 
   return (
     <section className="bg-white">
       <div className="marketing-container">
         <div className="flex w-full flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="font-sans text-[28px]/[100%] font-extrabold text-primary lg:text-[40px] lg:leading-15">
+            <h2 className="marketing-header text-[28px]/[100%] font-extrabold text-primary lg:text-[40px] lg:leading-15">
               What they say about us?
             </h2>
             <p className="mt-6 max-w-[650px] text-[18px] leading-normal text-primary">
@@ -76,7 +91,7 @@ export function Testimonials() {
             <button
               type="button"
               aria-label="Previous review"
-              onClick={() => scrollReviews("previous")}
+              onClick={showPrevious}
               className="flex size-[50px] items-center justify-center rounded-2xl bg-ma-surface-2 text-black transition-colors hover:bg-ma-surface-2"
             >
               <ArrowLeft className="size-6" aria-hidden="true" />
@@ -84,7 +99,7 @@ export function Testimonials() {
             <button
               type="button"
               aria-label="Next review"
-              onClick={() => scrollReviews("next")}
+              onClick={showNext}
               className="flex size-[50px] items-center justify-center rounded-2xl bg-ma-surface-2 text-black transition-colors hover:bg-ma-surface-2"
             >
               <ArrowRight className="size-6" aria-hidden="true" />
@@ -95,39 +110,52 @@ export function Testimonials() {
 
       <div
         ref={scrollRef}
-        className="hide-scrollbar relative mx-auto mt-21.5 flex gap-7.5 overflow-x-auto scroll-smooth px-4 pb-2 lg:w-full lg:max-w-[1050px] lg:overflow-hidden lg:px-0"
+        className="relative mx-auto mt-21.5 overflow-hidden px-4 lg:w-full lg:max-w-[1050px] lg:px-0"
       >
-        {reviews.map((review) => (
-          <article
-            key={review.image}
-            className="relative flex h-[500px] w-[330px] shrink-0 flex-col justify-end overflow-hidden rounded-3xl px-[15px] pb-[30px] lg:w-[calc((100%-60px)/3)]"
+        <AnimatePresence mode="wait" custom={direction} initial={false}>
+          <motion.div
+            key={pageIndex}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="hide-scrollbar flex gap-7.5 overflow-x-auto pb-2"
           >
-            <Image
-              src={review.image}
-              alt=""
-              fill
-              sizes="330px"
-              className="object-cover"
-            />
-            <div
-              className="absolute inset-0 bg-gradient-to-b from-transparent from-[30%] to-black"
-              aria-hidden="true"
-            />
+            {visibleReviews.map((review) => (
+              <article
+                key={review.image}
+                className="relative flex h-[500px] w-[330px] shrink-0 flex-col justify-end overflow-hidden rounded-3xl px-[15px] pb-[30px] lg:w-[calc((100%-60px)/3)]"
+              >
+                <Image
+                  src={review.image}
+                  alt=""
+                  fill
+                  sizes="330px"
+                  className="object-cover"
+                />
+                <div
+                  className="absolute inset-0 bg-gradient-to-b from-transparent from-[30%] to-black"
+                  aria-hidden="true"
+                />
 
-            <div className="relative z-10 h-[166px] w-[300px] text-white">
-              <p className="font-heading text-[100px] leading-[60px] font-extrabold">
-                &ldquo;
-              </p>
-              <p className="mt-[-14px] text-[18px] leading-normal font-semibold">
-                ModernAdvocates helped me see a clear path forward. The guidance
-                and training resources gave
-              </p>
-              <p className="mt-5 text-[18px] leading-normal font-semibold">
-                -{review.name}
-              </p>
-            </div>
-          </article>
-        ))}
+                <div className="relative z-10 h-[166px] w-[300px] text-white">
+                  <p className="font-heading text-[100px] leading-[60px] font-extrabold">
+                    &ldquo;
+                  </p>
+                  <p className="mt-[-14px] text-[18px] leading-normal font-semibold">
+                    ModernAdvocates helped me see a clear path forward. The
+                    guidance and training resources gave
+                  </p>
+                  <p className="mt-5 text-[18px] leading-normal font-semibold">
+                    -{review.name}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </section>
   )
