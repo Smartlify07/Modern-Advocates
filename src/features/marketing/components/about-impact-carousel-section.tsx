@@ -1,9 +1,10 @@
 "use client"
 
+import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { useGSAP } from "@gsap/react"
 import Image from "next/image"
 import { useRef } from "react"
-import { useGSAP } from "@gsap/react"
 
 const impactPhotos = [
   {
@@ -46,14 +47,43 @@ const impactPhotos = [
 gsap.registerPlugin(useGSAP, ScrollTrigger)
 
 export function AboutImpactCarouselSection() {
-  const containerRef = useRef(null)
+  const sectionRef = useRef<HTMLElement | null>(null)
+  const viewportRef = useRef<HTMLDivElement | null>(null)
+  const stackRef = useRef<HTMLDivElement | null>(null)
 
-  useGSAP(() => {}, { scope: containerRef })
+  useGSAP(
+    () => {
+      const section = sectionRef.current
+      const viewport = viewportRef.current
+      const stack = stackRef.current
+
+      if (!section || !viewport || !stack) return
+
+      const distance = () =>
+        Math.max(stack.scrollHeight - viewport.clientHeight, 0)
+
+      gsap.to(stack, {
+        y: () => -distance(),
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: () => `+=${distance()}`,
+          pin: section,
+          scrub: 1,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          markers: false,
+        },
+      })
+    },
+    { scope: sectionRef }
+  )
 
   return (
     <section
-      ref={containerRef}
-      className="relative isolate max-h-[950px] overflow-hidden bg-ma-text"
+      ref={sectionRef}
+      className="relative isolate overflow-hidden bg-ma-text lg:min-h-[963px]"
     >
       <Image
         src="/figma-home/about-impact-bg.png"
@@ -67,12 +97,15 @@ export function AboutImpactCarouselSection() {
         aria-hidden="true"
       />
 
-      <div className="mx-auto h-[718px] max-w-[590px] px-4 sm:px-0">
-        <div className="hide-scrollbar flex h-full flex-col gap-10 overflow-y-scroll pt-35 pb-10 sm:gap-20">
+      <div
+        ref={viewportRef}
+        className="mx-auto max-w-[590px] overflow-hidden px-4 pt-[150px] sm:px-0"
+      >
+        <div ref={stackRef} className="flex flex-col gap-10 sm:gap-20">
           {impactPhotos.map((photo) => (
             <article
               key={photo.src}
-              className="shrink-0 bg-white p-4 shadow-2xl shadow-black/20 last:pb-14 sm:h-[470px] sm:p-5 sm:pb-[70px]"
+              className="shrink-0 border bg-white p-4 pb-14 shadow-2xl shadow-black/20 sm:h-[470px] sm:p-5"
             >
               <div className="relative aspect-[55/38] w-full overflow-hidden bg-ma-bg sm:h-[380px]">
                 <Image
