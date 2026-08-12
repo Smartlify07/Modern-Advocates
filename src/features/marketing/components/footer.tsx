@@ -20,7 +20,7 @@ export function Footer() {
               Get in Touch
             </h2>
             <address className="mt-5 not-italic">
-              <p className="text-base leading-normal">
+              <p className="text-base/[22px] tracking-[0%] whitespace-nowrap">
                 2695 N. Military Trail Suite 22-1012
                 <br />
                 West Palm Beach,

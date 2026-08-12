@@ -53,15 +53,13 @@ const items: Item[] = [
 
 export default function ScrollStory() {
   const sectionRef = useRef<HTMLElement | null>(null)
-  const viewportRef = useRef<HTMLDivElement | null>(null)
   const textContainerRef = useRef<HTMLDivElement | null>(null)
 
   useLayoutEffect(() => {
     const section = sectionRef.current
-    const viewport = viewportRef.current
     const textContainer = textContainerRef.current
 
-    if (!section || !viewport || !textContainer) return
+    if (!section || !textContainer) return
 
     const ctx = gsap.context(() => {
       /*
@@ -79,40 +77,110 @@ export default function ScrollStory() {
       if (!blocks.length) return
 
       /*
-       * The track travels exactly one "step" per
-       * transition.
+       * --------------------------------------------------
+       * INITIAL POSITION
+       * --------------------------------------------------
        *
-       * The step is the distance from the top of one
-       * block to the top of the next one — block height
-       * plus the spacer that keeps the next item out of
-       * view until the previous exits.
+       * Block 1 starts in the viewport.
        *
-       * Measuring it in the DOM makes the animation
-       * independent of viewport dimensions.
+       * Blocks 2–5 are underneath it in the vertical
+       * track and therefore aren't visible.
        */
 
-      const distance = () => {
-        const step =
-          blocks.length > 1
-            ? blocks[1].offsetTop - blocks[0].offsetTop
-            : blocks[0].offsetHeight
+      gsap.set(textContainer, {
+        y: 0,
+      })
 
-        return step * (items.length - 1)
-      }
+      /*
+       * --------------------------------------------------
+       * SCROLL DISTANCE
+       * --------------------------------------------------
+       *
+       * There are 4 transitions for 5 items.
+       *
+       * Each transition gets 80% of a viewport.
+       *
+       * You can change this to:
+       *
+       * 1    = slower
+       * 0.8  = current
+       * 0.6  = faster
+       */
 
-      gsap.to(textContainer, {
-        y: () => -distance(),
-        ease: "none",
+      const transitionDistance = window.innerHeight * 1.4
+
+      const timeline = gsap.timeline({
         scrollTrigger: {
-          trigger: viewport,
-          start: "top top",
-          end: () => `+=${distance()}`,
-          pin: section,
-          scrub: true,
+          trigger: section,
+
+          /*
+           * Pin when the section reaches the top.
+           */
+          start: "200px top",
+
+          /*
+           * Four transitions.
+           */
+          end: `+=${transitionDistance * (items.length - 1)}`,
+
+          pin: true,
+
+          /*
+           * Direct relationship between scroll and movement.
+           */
+          scrub: 0.4,
+
           anticipatePin: 1,
+
           invalidateOnRefresh: true,
+
           markers: false,
         },
+      })
+
+      /*
+       * --------------------------------------------------
+       * MOVE THE TEXT TRACK
+       * --------------------------------------------------
+       *
+       * Instead of fading individual blocks, we move
+       * the entire stack.
+       *
+       * Each block has the same height.
+       *
+       * 0%   = Item 1
+       * -100% = Item 2
+       * -200% = Item 3
+       * -300% = Item 4
+       * -400% = Item 5
+       */
+
+      timeline.to(textContainer, {
+        y: () => {
+          /*
+           * The container needs to move by exactly one
+           * "step" for every transition.
+           *
+           * The step is the distance from the top of one
+           * block to the top of the next one — block
+           * height plus the spacer that keeps the next
+           * item out of view until the previous exits.
+           *
+           * Measuring it in the DOM makes the animation
+           * independent of viewport dimensions.
+           */
+
+          const step =
+            blocks.length > 1
+              ? blocks[1].offsetTop - blocks[0].offsetTop
+              : blocks[0].offsetHeight
+
+          return -(step * (items.length - 1))
+        },
+
+        ease: "none",
+
+        duration: items.length - 1,
       })
     }, section)
 
@@ -140,11 +208,7 @@ export default function ScrollStory() {
         <div className="grid min-h-screen max-w-260 grid-cols-1 justify-items-center gap-10 self-center md:grid-cols-2 md:gap-16">
           <div className="relative flex min-h-screen items-center">
             <div className="relative mt-40 h-[420px] w-full overflow-hidden md:mt-48 md:h-[460px]">
-              <div
-                ref={viewportRef}
-                className="absolute inset-0 overflow-hidden"
-              >
-                <div ref={textContainerRef} className="top-0 left-0 w-full">
+              <div ref={textContainerRef} className="top-0 left-0 w-full">
                 {items.map((item, index) => (
                   <Fragment key={item.id}>
                     <div className="scroll-story-block flex h-[394px] w-full flex-col justify-center md:h-[394px]">
@@ -167,7 +231,6 @@ export default function ScrollStory() {
                 ))}
               </div>
             </div>
-          </div>
           </div>
 
           <div className="relative flex min-h-screen items-center justify-center">
