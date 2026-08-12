@@ -1,6 +1,6 @@
 "use client"
 
-import { useLayoutEffect, useRef } from "react"
+import { Fragment, useLayoutEffect, useRef } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 
@@ -107,7 +107,7 @@ export default function ScrollStory() {
        * 0.6  = faster
        */
 
-      const transitionDistance = window.innerHeight * 1
+      const transitionDistance = window.innerHeight * 1.4
 
       const timeline = gsap.timeline({
         scrollTrigger: {
@@ -159,15 +159,23 @@ export default function ScrollStory() {
         y: () => {
           /*
            * The container needs to move by exactly one
-           * block height for every transition.
+           * "step" for every transition.
            *
-           * Using the first block's height makes this
+           * The step is the distance from the top of one
+           * block to the top of the next one — block
+           * height plus the spacer that keeps the next
+           * item out of view until the previous exits.
+           *
+           * Measuring it in the DOM makes the animation
            * independent of viewport dimensions.
            */
 
-          const blockHeight = blocks[0].offsetHeight
+          const step =
+            blocks.length > 1
+              ? blocks[1].offsetTop - blocks[0].offsetTop
+              : blocks[0].offsetHeight
 
-          return -(blockHeight * (items.length - 1))
+          return -(step * (items.length - 1))
         },
 
         ease: "none",
@@ -201,19 +209,25 @@ export default function ScrollStory() {
           <div className="relative flex min-h-screen items-center">
             <div className="relative mt-40 h-[420px] w-full overflow-hidden md:mt-48 md:h-[460px]">
               <div ref={textContainerRef} className="top-0 left-0 w-full">
-                {items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="scroll-story-block flex h-[394px] w-full flex-col justify-center md:h-[394px]"
-                  >
-                    <h3 className="marketing-header marketing-headline max-w-xl text-white!">
-                      {item.label}
-                    </h3>
+                {items.map((item, index) => (
+                  <Fragment key={item.id}>
+                    <div className="scroll-story-block flex h-[394px] w-full flex-col justify-center md:h-[394px]">
+                      <h3 className="marketing-header marketing-headline max-w-xl text-white!">
+                        {item.label}
+                      </h3>
 
-                    <p className="mt-7 max-w-[460px] font-inter text-base font-medium text-white/60 sm:text-xl">
-                      {item.description}
-                    </p>
-                  </div>
+                      <p className="mt-7 max-w-[460px] font-inter text-base font-medium text-white/60 sm:text-xl">
+                        {item.description}
+                      </p>
+                    </div>
+
+                    {index < items.length - 1 && (
+                      <div
+                        aria-hidden="true"
+                        className="h-[420px] md:h-[460px]"
+                      />
+                    )}
+                  </Fragment>
                 ))}
               </div>
             </div>

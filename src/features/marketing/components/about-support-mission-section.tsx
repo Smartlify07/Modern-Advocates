@@ -18,7 +18,7 @@ const AboutSupportMissionSection = () => {
           />
 
           <div className="r flex max-w-[430px] flex-col gap-6 sm:gap-12.5">
-            <h1 className="marketing-header marketing-headline leading-[60px]">
+            <h1 className="marketing-header marketing-headline text-3xl! leading-[60px]! sm:text-5xl!">
               Help someone build a better future
             </h1>
             <p className="text-base sm:text-xl">
