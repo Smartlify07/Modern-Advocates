@@ -23,15 +23,13 @@ export function AboutHeroSection() {
         </header>
 
         <div className="mb-12 flex flex-col gap-17.5 md:flex-row">
-          <div className="h-[532px] rounded-2xl border bg-muted md:w-[570px]!">
-            <Image
-              src="/figma-home/melanie-and-will.png"
-              alt="Melanie and Will"
-              className="h-full object-cover md:w-[570px]"
-              width={570}
-              height={532}
-            />
-          </div>
+          <Image
+            src="/figma-home/melanie-and-will.png"
+            alt="Melanie and Will"
+            className="rounded-2xl object-cover md:w-[570px]"
+            width={570}
+            height={532}
+          />
 
           <p className="text-base md:text-xl/[32px]">
             Our own journey with endometriosis taught us that chronic illness
