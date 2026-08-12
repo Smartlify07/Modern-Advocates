@@ -4,17 +4,17 @@ import React from "react"
 const CommunitySection = () => {
   return (
     <section className="">
-      <div className="marketing-container flex flex-col-reverse items-center gap-12 sm:flex-row sm:gap-25">
+      <div className="marketing-container flex flex-col-reverse items-center gap-12 md:flex-row md:gap-25">
         <Image
           src="/figma-home/community.png"
           alt="People putting hands together"
           width={505}
           height={560}
-          sizes="(min-width: 640px) 505px, calc(100vw - 32px)"
-          className="object-cover"
+          sizes="(min-width: 768px) 505px, calc(100vw - 32px)"
+          className="w-full object-cover sm:w-auto"
           quality={100}
         />
-        <div className="flex flex-col gap-8 sm:max-w-[430px] sm:gap-17.5">
+        <div className="flex flex-col gap-8 md:max-w-[430px] md:gap-17.5">
           <h1 className="marketing-header marketing-headline">
             Be part of our community
           </h1>
