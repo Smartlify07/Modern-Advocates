@@ -8,17 +8,16 @@ const CommunitySection = () => {
         <Image
           src="/figma-home/community.png"
           alt="People putting hands together"
-          width={505}
+          width={600}
           height={560}
-          sizes="(min-width: 768px) 505px, calc(100vw - 32px)"
-          className="w-full object-cover sm:w-auto"
+          className="w-full object-cover md:h-[560px] md:w-[600px]"
           quality={100}
         />
-        <div className="flex flex-col gap-8 md:max-w-[430px] md:gap-17.5">
+        <div className="flex flex-col gap-8 md:max-w-[490px] md:gap-17.5">
           <h1 className="marketing-header marketing-headline">
             Be part of our community
           </h1>
-          <p className="text-base font-medium text-primary sm:text-xl">
+          <p className="text-base font-medium text-primary md:text-xl">
             Modern Advocates helps people affected by chronic illness,
             disability, and financial hardship rebuild confidence through AI
             education, and health advocacy.

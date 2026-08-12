@@ -1,6 +1,9 @@
 "use client"
 
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import Image from "next/image"
+import { useRef } from "react"
+import { useGSAP } from "@gsap/react"
 
 const impactPhotos = [
   {
@@ -40,9 +43,18 @@ const impactPhotos = [
   },
 ]
 
+gsap.registerPlugin(useGSAP, ScrollTrigger)
+
 export function AboutImpactCarouselSection() {
+  const containerRef = useRef(null)
+
+  useGSAP(() => {}, { scope: containerRef })
+
   return (
-    <section className="relative isolate max-h-[950px] overflow-hidden bg-ma-text">
+    <section
+      ref={containerRef}
+      className="relative isolate max-h-[950px] overflow-hidden bg-ma-text"
+    >
       <Image
         src="/figma-home/about-impact-bg.png"
         alt=""
