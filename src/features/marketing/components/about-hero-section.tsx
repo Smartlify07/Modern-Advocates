@@ -22,16 +22,18 @@ export function AboutHeroSection() {
           </h1>
         </header>
 
-        <div className="mb-12 flex flex-col gap-17.5 sm:flex-row">
-          <Image
-            src="/figma-home/melanie-and-will.png"
-            alt="Melanie and Will"
-            className="rounded-2xl object-cover sm:w-[532px] sm:w-[570px]"
-            width={570}
-            height={532}
-          />
+        <div className="mb-12 flex flex-col gap-17.5 md:flex-row">
+          <div className="h-[532px] rounded-2xl border bg-muted md:w-[570px]!">
+            <Image
+              src="/figma-home/melanie-and-will.png"
+              alt="Melanie and Will"
+              className="h-full object-cover md:w-[570px]"
+              width={570}
+              height={532}
+            />
+          </div>
 
-          <p className="text-base sm:text-xl/[32px]">
+          <p className="text-base md:text-xl/[32px]">
             Our own journey with endometriosis taught us that chronic illness
             affects far more than physical health. It can reshape your
             education, career, finances, relationships, and sense of security. A
@@ -49,7 +51,7 @@ export function AboutHeroSection() {
           </p>
         </div>
 
-        <p className="text-base sm:text-xl">
+        <p className="text-base md:text-xl">
           Our mission is to help individuals facing disability, chronic illness,
           and financial hardship regain a sense of control through education,
           technology, community, and practical support. We believe that

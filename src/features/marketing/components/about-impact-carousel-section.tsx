@@ -42,7 +42,7 @@ const impactPhotos = [
 
 export function AboutImpactCarouselSection() {
   return (
-    <section className="relative isolate max-h-[950px] overflow-hidden bg-ma-text pt-16 sm:pt-25 lg:pt-[150px]">
+    <section className="relative isolate max-h-[950px] overflow-hidden bg-ma-text">
       <Image
         src="/figma-home/about-impact-bg.png"
         alt=""
@@ -56,7 +56,7 @@ export function AboutImpactCarouselSection() {
       />
 
       <div className="mx-auto h-[718px] max-w-[590px] px-4 sm:px-0">
-        <div className="hide-scrollbar flex h-full flex-col gap-10 overflow-y-scroll pb-10 sm:gap-20">
+        <div className="hide-scrollbar flex h-full flex-col gap-10 overflow-y-scroll pt-35 pb-10 sm:gap-20">
           {impactPhotos.map((photo) => (
             <article
               key={photo.src}
