@@ -119,12 +119,12 @@ export default function ScrollStory() {
           /*
            * Pin when the section reaches the top.
            */
-          start: "300px top",
+          start: () => "300px top",
 
           /*
            * Four transitions.
            */
-          end: `+=${transitionDistance * (items.length - 1)}`,
+          end: () => `+=${transitionDistance * (items.length - 1)}`,
 
           pin: true,
 
