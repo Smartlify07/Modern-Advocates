@@ -53,6 +53,15 @@ const stories = [
     role: "Friend & Supporter",
     imageClassName: "object-center",
   },
+  {
+    image: "/figma-home/community-story-7.png",
+    imageAlt: "Edith Stephenson",
+    quote:
+      "I’ve watched Mel and Wil turn some of life’s hardest challenges into something meaningful for others. Their determination to take their personal experiences and use them to help people facing similar struggles speaks to their compassion and resilience. I wish them every success with this mission.",
+    name: "Edith Stephenson",
+    role: "Friend & Supporter",
+    imageClassName: "object-center",
+  },
 ]
 
 export const StoriesSection = () => {
