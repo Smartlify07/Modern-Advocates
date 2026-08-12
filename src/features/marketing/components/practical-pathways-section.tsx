@@ -1,11 +1,12 @@
 "use client"
 
-import { Fragment, useLayoutEffect, useRef } from "react"
+import { Fragment, useRef } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { useGSAP } from "@gsap/react"
 import Image from "next/image"
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(useGSAP, ScrollTrigger)
 
 type Item = {
   id: number
@@ -56,15 +57,14 @@ export default function ScrollStory() {
   const sectionRef = useRef<HTMLElement | null>(null)
   const textContainerRef = useRef<HTMLDivElement | null>(null)
 
-  useLayoutEffect(() => {
-    const section = sectionRef.current
-    const textContainer = textContainerRef.current
+  useGSAP(
+    () => {
+      const section = sectionRef.current
+      const textContainer = textContainerRef.current
 
-    if (!section || !textContainer) return
+      if (!section || !textContainer) return
 
-    if (!window.matchMedia("(min-width: 768px)").matches) return
-
-    const ctx = gsap.context(() => {
+      if (!window.matchMedia("(min-width: 768px)").matches) return
       /*
        * Each text block occupies one full viewport-sized
        * "slot" in the vertical text track.
@@ -185,12 +185,9 @@ export default function ScrollStory() {
 
         duration: items.length - 1,
       })
-    }, section)
-
-    return () => {
-      ctx.revert()
-    }
-  }, [])
+    },
+    { scope: sectionRef }
+  )
 
   return (
     <section

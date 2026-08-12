@@ -27,6 +27,7 @@
     "@aws-sdk/s3-request-presigner": "^3.1093.0",
     "@better-auth/drizzle-adapter": "^1.6.18",
     "@better-auth/infra": "^0.2.14",
+    "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.4.0",
     "@neondatabase/serverless": "^1.1.0",
     "@sentry/nextjs": "^10.57.0",
