@@ -3,6 +3,7 @@
 import { Fragment, useLayoutEffect, useRef } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import Image from "next/image"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -61,6 +62,8 @@ export default function ScrollStory() {
 
     if (!section || !textContainer) return
 
+    if (!window.matchMedia("(min-width: 768px)").matches) return
+
     const ctx = gsap.context(() => {
       /*
        * Each text block occupies one full viewport-sized
@@ -116,7 +119,7 @@ export default function ScrollStory() {
           /*
            * Pin when the section reaches the top.
            */
-          start: "200px top",
+          start: "300px top",
 
           /*
            * Four transitions.
@@ -194,7 +197,7 @@ export default function ScrollStory() {
       ref={sectionRef}
       className="relative min-h-screen overflow-hidden bg-[#101827] text-white"
     >
-      <div className="marketing-container relative flex min-h-screen flex-col">
+      <div className="marketing-container relative flex min-h-screen flex-col gap-20 md:gap-0">
         <div className="text-center">
           <h2 className="marketing-header marketing-headline mx-auto max-w-[850px] text-white!">
             Practical pathways to improved health outcomes
@@ -205,8 +208,24 @@ export default function ScrollStory() {
           </p>
         </div>
 
-        <div className="grid min-h-screen max-w-260 grid-cols-1 justify-items-center gap-10 self-center md:grid-cols-2 md:gap-16">
-          <div className="relative flex min-h-screen items-center">
+        <div className="flex min-h-screen flex-col-reverse gap-10 md:grid md:max-w-260 md:grid-cols-2 md:justify-items-center md:gap-16 md:self-center">
+          <div className="relative flex items-center md:hidden">
+            <div className="flex w-full flex-col gap-14">
+              {items.map((item) => (
+                <div key={item.id}>
+                  <h3 className="marketing-header marketing-headline text-white! md:max-w-xl">
+                    {item.label}
+                  </h3>
+
+                  <p className="mt-7 font-inter text-base font-medium text-white/60 sm:text-xl md:max-w-[460px]">
+                    {item.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative hidden min-h-screen items-center md:flex">
             <div className="relative mt-40 h-[420px] w-full overflow-hidden md:mt-48 md:h-[460px]">
               <div ref={textContainerRef} className="top-0 left-0 w-full">
                 {items.map((item, index) => (

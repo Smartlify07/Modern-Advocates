@@ -16,7 +16,7 @@ export function EmpowermentSection() {
           </h1>
         </header>
 
-        <div className="grid gap-10 sm:grid-cols-3 sm:items-end sm:gap-10">
+        <div className="grid gap-10 md:grid-cols-3 md:items-end md:gap-10">
           <RestoreHopeCard />
           <BuildIndependenceCard />
           <NeverNavigateAloneCard />

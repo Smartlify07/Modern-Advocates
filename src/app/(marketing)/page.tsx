@@ -1,9 +1,5 @@
 import { HeroSection } from "@/features/marketing/components/hero-section"
 
-import { FeaturedCourses } from "@/features/marketing/components/featured-courses"
-import { HowItWorks } from "@/features/marketing/components/how-it-works"
-import { Testimonials } from "@/features/marketing/components/testimonials"
-import SupportSection from "@/features/marketing/components/how-can-we-support"
 import { EmpowermentSection } from "@/features/marketing/components/empowerment-section"
 import CommunitySection from "@/features/marketing/components/community-section"
 import PracticalPathwaysSection from "@/features/marketing/components/practical-pathways-section"

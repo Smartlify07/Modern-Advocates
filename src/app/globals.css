@@ -193,7 +193,7 @@
     @apply font-inter;
   }
   .marketing-headline {
-    @apply font-inter text-3xl leading-[70px] font-extrabold tracking-[0%] text-primary lg:text-[3.5rem];
+    @apply font-inter text-4xl font-extrabold tracking-[0%] text-primary md:leading-[70px] lg:text-[3.5rem];
   }
   .hide-scrollbar {
     -ms-overflow-style: none;
