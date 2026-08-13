@@ -13,8 +13,8 @@ const quickLinks = [
 export function Footer() {
   return (
     <footer className="overflow-hidden bg-white text-ma-text">
-      <div className="marketing-container relative py-0! pt-12.5! lg:min-h-125 lg:pt-17.5!">
-        <div className="grid w-full justify-between gap-10 lg:gap-10 xl:grid-cols-[254px_180px_388px] xl:justify-between xl:gap-[140px]">
+      <div className="marketing-container relative py-0! pt-12.5! lg:min-h-125 lg:pt-17.5">
+        <div className="grid w-full justify-between gap-10 lg:grid-cols-[0.6fr_0.9fr_1.1fr] lg:gap-10 xl:grid-cols-[254px_180px_388px] xl:justify-between xl:gap-[140px]">
           <section className="">
             <h2 className="marketing-header text-lg font-extrabold lg:text-2xl">
               Get in Touch
