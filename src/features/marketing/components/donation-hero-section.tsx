@@ -25,7 +25,7 @@ export function DonationHeroSection() {
             src="/figma-home/melanie-and-will.png"
             alt="Melanie Reyes, founder of ModernAdvocates Inc."
             priority
-            className="w-full rounded-card-2 object-cover sm:h-full sm:w-auto"
+            className="w-full rounded-card-2 object-cover lg:h-full lg:w-auto"
             width={510}
             height={560}
           />

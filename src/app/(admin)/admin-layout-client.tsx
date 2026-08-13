@@ -37,7 +37,12 @@ export default function AdminLayoutClient({
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Button variant="ghost" size="icon" className="relative" onClick={() => router.push("/admin/support")}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative"
+                  onClick={() => router.push("/admin/support")}
+                >
                   <BellIcon
                     stroke="var(--muted-foreground)"
                     strokeWidth={1.5}
@@ -51,7 +56,10 @@ export default function AdminLayoutClient({
                   className="flex cursor-pointer items-center gap-2"
                   aria-label="Go to profile"
                 >
-                  <UserCircle2 stroke="var(--muted-foreground)" strokeWidth={1.5} />
+                  <UserCircle2
+                    stroke="var(--muted-foreground)"
+                    strokeWidth={1.5}
+                  />
                   <h2 className="text-primary">{userName}</h2>
                 </button>
               </div>
