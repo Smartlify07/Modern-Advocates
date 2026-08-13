@@ -6,7 +6,7 @@ import { ArrowRight, Menu, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -19,10 +19,22 @@ const navItems = [
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 0)
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
   return (
-    <header className="bg-white">
+    <header
+      className={`sticky top-0 z-50 transition-colors duration-300 ${
+        scrolled ? "bg-white/70 backdrop-blur-lg" : "bg-white"
+      }`}
+    >
       <div className="relative z-20 mx-auto px-4 py-5 lg:max-w-7xl lg:px-12.5 xl:px-25 2xl:max-w-360">
         <div className="flex w-full items-center justify-between">
           <Link href="/" className="flex w-[195px] flex-col gap-1">
