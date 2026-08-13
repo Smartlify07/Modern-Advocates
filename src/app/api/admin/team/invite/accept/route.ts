@@ -20,7 +20,6 @@ export async function POST(request: Request) {
     return NextResponse.json(result)
   } catch (error) {
     if (error instanceof Error) {
-      console.log(error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
     Sentry.captureException(error)

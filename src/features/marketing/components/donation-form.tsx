@@ -255,26 +255,26 @@ const DonationForm = () => {
             )}
           />
         </FieldGroup>
+
+        <div className="flex flex-col gap-7.5 border-t pt-7.5">
+          <div className="flex items-center justify-between">
+            <span>3% Administration fee</span>
+            <span>${fee.toFixed(2)}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span>Total</span>
+            <span>${total.toFixed(2)}</span>
+          </div>
+        </div>
+
+        <GradientButton type="submit" className="h-[51px]">
+          {submitting && (
+            <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
+          )}
+          Donate Now
+          <ArrowRight className="relative z-10 size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" />{" "}
+        </GradientButton>
       </form>
-
-      <div className="flex flex-col gap-7.5 border-t pt-7.5">
-        <div className="flex items-center justify-between">
-          <span>3% Administration fee</span>
-          <span>${fee.toFixed(2)}</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span>Total</span>
-          <span>${total.toFixed(2)}</span>
-        </div>
-      </div>
-
-      <GradientButton className="h-[51px]">
-        {submitting && (
-          <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
-        )}
-        Donate Now
-        <ArrowRight className="relative z-10 size-5 transition-transform duration-300 group-hover:rotate-[-30deg]" />{" "}
-      </GradientButton>
     </div>
   )
 }

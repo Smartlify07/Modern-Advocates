@@ -18,7 +18,10 @@ import {
 import { UnauthorizedError, ForbiddenError } from "@/infrastructure/auth/errors"
 import { updateCourseSchema } from "@/features/courses/schemas"
 import { isValidUuid } from "@/shared/utils"
-import { generatePresignedDownloadUrl, resolveStoredUrl } from "@/infrastructure/storage/service"
+import {
+  generatePresignedDownloadUrl,
+  resolveStoredUrl,
+} from "@/infrastructure/storage/service"
 import * as Sentry from "@sentry/nextjs"
 
 export async function GET(
@@ -111,7 +114,7 @@ export async function GET(
           playbackUrl: v.playbackUrl,
           duration: v.duration,
         },
-      ]),
+      ])
     )
 
     function parseContent(content: string | null): unknown {
@@ -207,7 +210,10 @@ export async function GET(
     return NextResponse.json({
       ...coursePayload,
       thumbnailUrl: await resolveStoredUrl(thumbnailKey, course.thumbnailUrl),
-      instructorImage: await resolveStoredUrl(instructorImageKey, course.instructorImage),
+      instructorImage: await resolveStoredUrl(
+        instructorImageKey,
+        course.instructorImage
+      ),
       modules: modulesWithTopics,
       reviews: courseReviews,
       enrollmentCount: enrollmentResult?.count ?? 0,
@@ -275,8 +281,16 @@ export async function PATCH(
       const effectiveTitle = title ?? existing?.title
       const effectiveLevel = level ?? existing?.level
 
-      if (!effectiveTitle) return NextResponse.json({ error: "Title is required to publish" }, { status: 400 })
-      if (!effectiveLevel) return NextResponse.json({ error: "Level is required to publish" }, { status: 400 })
+      if (!effectiveTitle)
+        return NextResponse.json(
+          { error: "Title is required to publish" },
+          { status: 400 }
+        )
+      if (!effectiveLevel)
+        return NextResponse.json(
+          { error: "Level is required to publish" },
+          { status: 400 }
+        )
     }
 
     const resultModules = await db.transaction(async (tx) => {
@@ -322,7 +336,12 @@ export async function PATCH(
         clientId: string
         title: string
         sortOrder: number
-        topics: Array<{ id: string; clientId: string; title: string; sortOrder: number }>
+        topics: Array<{
+          id: string
+          clientId: string
+          title: string
+          sortOrder: number
+        }>
       }> = []
 
       if (modulesData) {
@@ -390,7 +409,12 @@ export async function PATCH(
             }
           }
 
-          const resultTopics: Array<{ id: string; clientId: string; title: string; sortOrder: number }> = []
+          const resultTopics: Array<{
+            id: string
+            clientId: string
+            title: string
+            sortOrder: number
+          }> = []
 
           for (const topic of mod.topics ?? []) {
             if (topic.id && existingTopicIds.includes(topic.id)) {
@@ -432,7 +456,9 @@ export async function PATCH(
                   moduleId,
                   title: topic.title,
                   format:
-                    topic.type === "video_and_text" ? "video" : (topic.type ?? "text"),
+                    topic.type === "video_and_text"
+                      ? "video"
+                      : (topic.type ?? "text"),
                   content: topic.description
                     ? JSON.stringify(topic.description)
                     : null,
@@ -463,7 +489,6 @@ export async function PATCH(
 
     return NextResponse.json({ id, modules: resultModules })
   } catch (error) {
-    console.log(error)
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }

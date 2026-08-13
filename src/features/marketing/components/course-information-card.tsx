@@ -25,7 +25,6 @@ export function CourseInformationCard({
     0
   )
 
-  console.log(course.durationUnit)
   const displayDuration =
     course.duration && course.durationUnit
       ? minutesToDuration(course.duration, course.durationUnit as DurationUnit)
