@@ -27,7 +27,7 @@ export default function AccountSupportPage() {
     <main className="w-full overflow-hidden bg-white text-ma-text">
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full rounded-card-2 bg-ma-surface-2 px-4 py-7.5 lg:w-[600px] lg:p-[30px]"
+        className="w-full rounded-card-2 bg-ma-surface-2 px-4 py-7.5 md:max-w-lg lg:w-[600px] lg:p-[30px]"
       >
         <div className="flex flex-col gap-5">
           <Controller
