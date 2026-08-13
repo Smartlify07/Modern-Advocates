@@ -8,17 +8,17 @@ const AboutSupportMissionSection = () => {
   return (
     <section>
       <div className="marketing-container flex flex-col items-center sm:gap-50">
-        <div className="flex w-full flex-col gap-12 sm:flex-row sm:items-center sm:gap-25">
+        <div className="flex w-full flex-col gap-12 sm:flex-row sm:items-center xl:gap-25">
           <Image
             src={"/figma-home/community.png"}
             alt="People putting hands together"
             width={600}
             height={560}
-            className="h-70 w-full rounded-2xl object-cover sm:h-140 sm:w-150"
+            className="h-70 w-full rounded-2xl object-cover md:h-140 xl:w-150"
           />
 
-          <div className="r flex max-w-[430px] flex-col gap-6 sm:gap-12.5">
-            <h1 className="marketing-header marketing-headline text-3xl! leading-[60px]! sm:text-5xl!">
+          <div className="flex flex-col gap-6 sm:gap-12.5 md:max-w-[330px] lg:max-w-[430px]">
+            <h1 className="marketing-header marketing-headline text-3xl! lg:text-5xl! lg:leading-[60px]!">
               Help someone build a better future
             </h1>
             <p className="text-base sm:text-xl">

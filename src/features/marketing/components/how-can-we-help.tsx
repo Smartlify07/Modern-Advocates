@@ -50,10 +50,12 @@ const HowCanWeHelpSection = () => {
             >
               <item.icon className="-ma-admin-primary text-ma-admin-primary" />
               <div className="flex flex-col gap-5">
-                <h3 className="marketing-header text-lg font-bold text-primary sm:text-2xl">
+                <h3 className="marketing-header text-lg font-bold text-primary lg:text-xl xl:text-2xl">
                   {item.title}
                 </h3>
-                <p className="sm:text-xl/[32px]">{item.description}</p>
+                <p className="lg:text-lg/[32px] xl:text-xl/[32px]">
+                  {item.description}
+                </p>
               </div>
             </div>
           ))}

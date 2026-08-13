@@ -46,8 +46,8 @@ export function Faq() {
   return (
     <section id="faq" className="bg-white">
       <div className="marketing-container">
-        <div className="grid gap-12 lg:grid-cols-[524px_1fr] lg:gap-[77px]">
-          <div className="max-w-[524px] self-start">
+        <div className="grid gap-12 lg:grid-cols-[524px_1fr] lg:gap-[40px] xl:gap-[77px]">
+          <div className="self-start lg:max-w-[524px]">
             <h2 className="marketing-header marketing-headline lg:tracking-[-5%]!">
               Got questions? We&apos;ve got answers
             </h2>

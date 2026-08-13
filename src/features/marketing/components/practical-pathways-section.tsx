@@ -192,9 +192,9 @@ export default function ScrollStory() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden bg-[#101827] text-white"
+      className="relative overflow-hidden bg-[#101827] text-white md:min-h-screen"
     >
-      <div className="marketing-container relative flex min-h-screen flex-col gap-20 md:gap-0">
+      <div className="marketing-container relative flex flex-col gap-20 md:min-h-screen md:gap-0">
         <div className="text-center">
           <h2 className="marketing-header marketing-headline mx-auto max-w-[850px] text-white!">
             Practical pathways to improved health outcomes
@@ -205,7 +205,7 @@ export default function ScrollStory() {
           </p>
         </div>
 
-        <div className="flex min-h-screen flex-col-reverse gap-10 md:grid md:max-w-260 md:grid-cols-2 md:justify-items-center md:gap-16 md:self-center">
+        <div className="flex flex-col-reverse gap-10 md:grid md:min-h-screen md:max-w-260 md:grid-cols-2 md:justify-items-center md:gap-16 md:self-center">
           <div className="relative flex items-center md:hidden">
             <div className="flex w-full flex-col gap-14">
               {items.map((item) => (
@@ -222,8 +222,8 @@ export default function ScrollStory() {
             </div>
           </div>
 
-          <div className="relative hidden min-h-screen items-center md:flex">
-            <div className="relative mt-40 h-[420px] w-full overflow-hidden md:mt-48 md:h-[460px]">
+          <div className="relative hidden items-center md:flex md:min-h-screen">
+            <div className="relative w-full overflow-hidden md:mt-40 md:mt-48 md:h-[420px] md:h-[460px]">
               <div ref={textContainerRef} className="top-0 left-0 w-full">
                 {items.map((item, index) => (
                   <Fragment key={item.id}>
@@ -249,7 +249,7 @@ export default function ScrollStory() {
             </div>
           </div>
 
-          <div className="relative flex min-h-screen items-center justify-center">
+          <div className="relative flex items-center justify-center md:min-h-screen">
             <div className="relative w-full max-w-[520px] overflow-hidden">
               <img
                 src="/figma-home/restoring-hope.png"

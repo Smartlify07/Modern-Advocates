@@ -127,16 +127,16 @@ export const StoriesSection = () => {
                 </div>
 
                 <div className="flex min-h-[420px] flex-col justify-between lg:min-h-[560px]">
-                  <p className="text-xl font-medium text-primary sm:text-3xl">
+                  <p className="text-xl font-medium text-primary lg:text-2xl xl:text-3xl">
                     {story.quote}
                   </p>
 
                   <div className="flex items-center justify-between">
                     <div className="space-y-3 sm:space-y-4">
-                      <h3 className="marketing-header text-base font-semibold text-primary sm:text-2xl">
+                      <h3 className="marketing-header text-base font-semibold text-primary lg:text-xl xl:text-2xl">
                         {story.name}
                       </h3>
-                      <p className="text-base text-ma-muted-text sm:text-xl">
+                      <p className="text-base text-ma-muted-text lg:text-lg xl:text-xl">
                         {story.role}
                       </p>
                     </div>

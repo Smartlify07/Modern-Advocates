@@ -144,7 +144,7 @@ const DonationForm = () => {
                         setCustomAmount("")
                       }}
                       className={cn(
-                        "rounded-none px-5 py-2.5 text-base font-medium transition-colors",
+                        "flex items-center justify-center rounded-none px-5 py-2.5 text-center text-base font-medium transition-colors",
                         !hasCustomAmount && watchedAmount === price.amount
                           ? "bg-ma-admin-primary text-white"
                           : "bg-ma-bg text-primary"

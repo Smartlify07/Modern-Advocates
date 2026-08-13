@@ -17,13 +17,13 @@ export function AboutHeroSection() {
             Our story
           </h4>
 
-          <h1 className="marketing-header marketing-headline max-w-230 capitalize">
+          <h1 className="marketing-header marketing-headline mx-auto text-center capitalize md:max-w-140 lg:max-w-200 xl:max-w-230">
             Why we started modern advocates
           </h1>
         </header>
 
-        <div className="mb-12 flex flex-col gap-17.5 md:flex-row">
-          <div className="h-133 w-142.5 rounded-2xl bg-ma-bg">
+        <div className="mb-12 flex flex-col gap-12 md:flex-row xl:gap-17.5">
+          <div className="rounded-2xl bg-ma-bg md:h-133 md:w-142.5">
             <Image
               src="/figma-home/melanie-and-will.png"
               alt="Melanie and Will"
@@ -35,7 +35,7 @@ export function AboutHeroSection() {
             />
           </div>
 
-          <p className="text-base md:max-w-[600px] md:text-xl/[32px]">
+          <p className="text-base md:max-w-[300px] lg:max-w-[500px] lg:text-lg/[32px] xl:max-w-[600px] xl:text-xl/[32px]">
             Our own journey with endometriosis taught us that chronic illness
             affects far more than physical health. It can reshape your
             education, career, finances, relationships, and sense of security. A
@@ -53,7 +53,7 @@ export function AboutHeroSection() {
           </p>
         </div>
 
-        <p className="text-base md:text-xl">
+        <p className="text-base lg:text-lg/[32px] xl:text-xl">
           Our mission is to help individuals facing disability, chronic illness,
           and financial hardship regain a sense of control through education,
           technology, community, and practical support. We believe that

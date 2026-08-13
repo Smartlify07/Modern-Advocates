@@ -13,8 +13,8 @@ const quickLinks = [
 export function Footer() {
   return (
     <footer className="overflow-hidden bg-white text-ma-text">
-      <div className="marketing-container relative min-h-125 pt-12.5 lg:pt-17.5">
-        <div className="grid w-full justify-between gap-10 md:grid-cols-[0.9fr_0.6fr_1.5fr] lg:gap-10 xl:grid-cols-[254px_180px_388px] xl:justify-between xl:gap-[140px]">
+      <div className="marketing-container relative py-0! pt-12.5! lg:min-h-125 lg:pt-17.5!">
+        <div className="grid w-full justify-between gap-10 lg:gap-10 xl:grid-cols-[254px_180px_388px] xl:justify-between xl:gap-[140px]">
           <section className="">
             <h2 className="marketing-header text-lg font-extrabold lg:text-2xl">
               Get in Touch
@@ -69,7 +69,7 @@ export function Footer() {
               updates, inspiration, and design insights.
             </p>
 
-            <form className="mt-6 flex w-full items-center justify-between rounded-pill bg-ma-surface-2 py-2.5 pr-2.5 pl-5 lg:max-w-[374px]">
+            <form className="mt-6 flex w-full items-center justify-between rounded-pill bg-ma-surface-2 py-2.5 pr-2.5 pl-5 md:max-w-[374px]">
               <label htmlFor="footer-email" className="sr-only">
                 Email address
               </label>
@@ -92,7 +92,7 @@ export function Footer() {
           </section>
         </div>
 
-        <p className="pointer-events-none mx-auto mt-10 bg-gradient-to-b from-ma-text from-[40%] to-ma-text/0 to-[74%] bg-clip-text text-center font-playfair text-[40px] leading-none font-extrabold whitespace-nowrap text-transparent select-none md:text-[100px] lg:absolute lg:top-[72%] lg:left-1/2 lg:-translate-x-[calc(1280px/2-124px)] xl:text-[124px] 2xl:max-w-[1100px] 2xl:-translate-x-[calc(1280px/2-116px)]">
+        <p className="pointer-events-none mx-auto mt-10 bg-gradient-to-b from-ma-text from-[40%] to-ma-text/0 to-[74%] bg-clip-text text-center font-playfair text-[40px] leading-none font-extrabold whitespace-nowrap text-transparent select-none md:text-[100px] lg:absolute lg:top-[77%] lg:left-1/2 lg:-translate-x-[calc(1024px/2-100px)] xl:top-[72%] xl:-translate-x-[calc(1280px/2-124px)] xl:text-[124px] 2xl:max-w-[1100px] 2xl:-translate-x-[calc(1280px/2-116px)]">
           ModernAdvocates
         </p>
       </div>

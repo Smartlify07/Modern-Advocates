@@ -3,7 +3,7 @@ import Image from "next/image"
 const OurVisionSection = () => {
   return (
     <section className="bg-[#111827]">
-      <div className="marketing-container flex flex-col items-center gap-20 text-white sm:gap-50">
+      <div className="marketing-container flex flex-col items-center gap-20 text-white lg:gap-50">
         <div className="mx-auto self-center">
           <h1 className="marketing-header mx-auto mb-4 max-w-[850px] text-center text-3xl font-bold sm:mb-7.5 lg:text-[3.5rem]">
             Everyone deserves the opportunity to move forward{" "}
@@ -13,12 +13,12 @@ const OurVisionSection = () => {
           </p>
         </div>
 
-        <div className="mx-auto flex flex-col items-center justify-center gap-12 sm:flex-row sm:gap-25">
-          <div className="sm:max-w-[400px]">
+        <div className="mx-auto flex flex-col items-center justify-center gap-12 sm:flex-row lg:gap-25">
+          <div className="lg:max-w-[400px]">
             <h1 className="marketing-header mb-4 text-2xl font-bold text-white sm:mb-7.5 sm:text-5xl">
               Our Vision{" "}
             </h1>
-            <p className="text-base sm:text-xl">
+            <p className="text-base lg:text-lg xl:text-xl">
               We envision communities where illness, disability, or financial
               hardship no longer determines a person’s future. <br />
               <br />

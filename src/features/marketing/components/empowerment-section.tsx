@@ -30,7 +30,7 @@ export function RestoreHopeCard() {
   return (
     <div className="relative flex h-120 w-full flex-col items-center justify-between overflow-hidden rounded-2xl bg-[#ECE8FF] px-7.5 py-10">
       <div>
-        <h1 className="marketing-header mb-2 text-start text-3xl font-bold">
+        <h1 className="marketing-header mb-2 text-start text-2xl font-bold xl:text-3xl">
           Restore Hope
         </h1>
         <p className="text-sm font-normal">
@@ -79,7 +79,7 @@ export function NeverNavigateAloneCard() {
   return (
     <div className="relative flex h-120 w-full flex-col items-center justify-between overflow-hidden rounded-2xl bg-[#ECE8FF] px-7.5 py-10">
       <div>
-        <h1 className="marketing-header mb-2 text-start text-3xl font-bold">
+        <h1 className="marketing-header mb-2 text-start text-2xl font-bold xl:text-3xl">
           Never Navigate Alone
         </h1>
         <p className="text-sm font-normal">
@@ -190,7 +190,7 @@ export function BuildIndependenceCard() {
   return (
     <div className="relative flex h-152 w-full flex-col items-center justify-between overflow-hidden rounded-2xl bg-ma-admin-primary px-7.5 py-10">
       <div>
-        <h1 className="marketing-header mb-2 text-start text-3xl font-bold text-white">
+        <h1 className="marketing-header mb-2 text-start text-2xl font-bold text-white xl:text-3xl">
           Build Independence
         </h1>
         <p className="text-sm font-normal text-white">
@@ -210,7 +210,7 @@ export function BuildIndependenceCard() {
           alt="A girl with a phone wearing a blue shirt"
           width={235}
           height={340}
-          className="translate-y-8"
+          className="translate-y-10 lg:translate-y-4 xl:translate-y-8"
           priority
         />
 

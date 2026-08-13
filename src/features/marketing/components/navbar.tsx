@@ -23,7 +23,7 @@ const Navbar = () => {
 
   return (
     <header className="bg-white">
-      <div className="relative z-20 mx-auto px-4 py-5 lg:max-w-7xl lg:px-25 2xl:max-w-360">
+      <div className="relative z-20 mx-auto px-4 py-5 lg:max-w-7xl lg:px-12.5 xl:px-25 2xl:max-w-360">
         <div className="flex w-full items-center justify-between">
           <Link href="/" className="flex w-[195px] flex-col gap-1">
             <Image
@@ -37,7 +37,7 @@ const Navbar = () => {
 
           <nav
             aria-label="Main navigation"
-            className="hidden items-center gap-2 text-ma-text md:flex"
+            className="hidden items-center gap-2 text-ma-text lg:flex"
           >
             {navItems.map((item) => (
               <Link
@@ -52,7 +52,7 @@ const Navbar = () => {
 
           <Button
             asChild
-            className="group relative hidden overflow-hidden rounded-pill md:inline-flex"
+            className="group relative hidden overflow-hidden rounded-pill lg:inline-flex"
           >
             <Link
               href="/contact"
@@ -71,7 +71,7 @@ const Navbar = () => {
             type="button"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             onClick={() => setMobileOpen((prev) => !prev)}
-            className="size-10 rounded-[12px] border p-2 md:hidden"
+            className="size-10 rounded-[12px] border p-2 lg:hidden"
           >
             {mobileOpen ? (
               <X className="size-6 text-muted-foreground" />
@@ -82,7 +82,7 @@ const Navbar = () => {
         </div>
 
         <div
-          className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${
+          className={`overflow-hidden transition-all duration-300 ease-in-out lg:hidden ${
             mobileOpen ? "mt-4 max-h-100 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
