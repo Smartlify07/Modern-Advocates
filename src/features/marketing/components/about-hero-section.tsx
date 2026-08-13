@@ -23,7 +23,7 @@ export function AboutHeroSection() {
         </header>
 
         <div className="mb-12 flex flex-col gap-17.5 md:flex-row">
-          <div className="h-133 w-142.5 rounded-2xl bg-muted">
+          <div className="h-133 w-142.5 rounded-2xl bg-ma-bg">
             <Image
               src="/figma-home/melanie-and-will.png"
               alt="Melanie and Will"
