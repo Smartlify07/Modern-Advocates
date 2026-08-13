@@ -46,7 +46,7 @@ export function ContactHeroSection({
 
   return (
     <section id="contact" className="bg-white text-ma-text">
-      <div className="marketing-container grid items-start gap-14 lg:grid-cols-[562px_1fr] lg:gap-[88px]">
+      <div className="marketing-container grid items-start gap-14 lg:grid-cols-2 xl:grid-cols-[562px_1fr] xl:gap-[88px]">
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-5 lg:gap-[30px]">
             <p className="text-base leading-normal font-medium tracking-[0.1em] text-muted-foreground uppercase">
