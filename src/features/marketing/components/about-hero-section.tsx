@@ -23,15 +23,19 @@ export function AboutHeroSection() {
         </header>
 
         <div className="mb-12 flex flex-col gap-17.5 md:flex-row">
-          <Image
-            src="/figma-home/melanie-and-will.png"
-            alt="Melanie and Will"
-            className="rounded-2xl object-cover md:w-[570px]"
-            width={570}
-            height={532}
-          />
+          <div className="h-133 w-142.5 rounded-2xl bg-muted">
+            <Image
+              src="/figma-home/melanie-and-will.png"
+              alt="Melanie and Will"
+              className="h-full w-full rounded-2xl object-cover"
+              width={570}
+              height={532}
+              priority
+              quality={100}
+            />
+          </div>
 
-          <p className="text-base md:text-xl/[32px]">
+          <p className="text-base md:max-w-[600px] md:text-xl/[32px]">
             Our own journey with endometriosis taught us that chronic illness
             affects far more than physical health. It can reshape your
             education, career, finances, relationships, and sense of security. A
