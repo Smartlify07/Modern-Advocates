@@ -60,10 +60,10 @@ export function AboutImpactCarouselSection() {
       if (!section || !viewport || !stack) return
 
       const distance = () =>
-        Math.max(stack.scrollHeight - viewport.clientHeight, 0)
+        Math.max(viewport.scrollHeight - viewport.clientHeight, 0)
 
       gsap.to(stack, {
-        y: () => -distance(),
+        y: () => -distance() - 80,
         ease: "none",
         scrollTrigger: {
           trigger: section,
@@ -83,7 +83,7 @@ export function AboutImpactCarouselSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative isolate overflow-hidden bg-ma-text lg:min-h-[963px]"
+      className="relative isolate overflow-hidden bg-ma-text lg:h-[963px]"
     >
       <Image
         src="/figma-home/about-impact-bg.png"
@@ -99,13 +99,16 @@ export function AboutImpactCarouselSection() {
 
       <div
         ref={viewportRef}
-        className="mx-auto max-w-[590px] overflow-hidden px-4 pt-[150px] sm:px-0"
+        className="mx-auto h-full max-w-[590px] overflow-hidden px-4 pt-[150px] pb-10 sm:px-0"
       >
-        <div ref={stackRef} className="flex flex-col gap-10 sm:gap-20">
+        <div
+          ref={stackRef}
+          className="flex h-[560px] flex-col gap-10 sm:h-[718px] sm:gap-20"
+        >
           {impactPhotos.map((photo) => (
             <article
               key={photo.src}
-              className="shrink-0 border bg-white p-4 pb-14 shadow-2xl shadow-black/20 sm:h-[470px] sm:p-5"
+              className="shrink-0 bg-white p-4 pb-14 shadow-2xl shadow-black/20 sm:h-[470px] sm:p-5"
             >
               <div className="relative aspect-[55/38] w-full overflow-hidden bg-ma-bg sm:h-[380px]">
                 <Image
