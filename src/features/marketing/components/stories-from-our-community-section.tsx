@@ -127,7 +127,7 @@ export const StoriesSection = () => {
                 </div>
 
                 <div className="flex min-h-[420px] flex-col justify-between lg:min-h-[560px]">
-                  <p className="text-xl font-medium text-primary lg:text-2xl xl:text-3xl">
+                  <p className="text-xl font-medium text-primary lg:text-2xl/[32px] xl:text-3xl/[45px]">
                     {story.quote}
                   </p>
 
